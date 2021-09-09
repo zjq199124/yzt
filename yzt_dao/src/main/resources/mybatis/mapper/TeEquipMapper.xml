@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.TeEquipMapper">
+
+    <resultMap id="UserMap" type="com.maizhiyu.yzt.entity.TeEquip">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="agencyId" column="agencyid" jdbcType="BIGINT"/>
+        <result property="customerId" column="customerid" jdbcType="BIGINT"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="modelId" column="modelid" jdbcType="BIGINT"/>
+        <result property="code" column="code" jdbcType="VARCHAR"/>
+        <result property="identity" column="identity" jdbcType="VARCHAR"/>
+        <result property="warranty" column="warranty" jdbcType="VARCHAR"/>
+        <result property="buyTime" column="buy_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="selectEquipList" resultType="hashmap">
+        select
+            X.id, X.type, X.status, X.code, X.identity, X.warranty,
+            DATE_FORMAT(DATE_ADD(X.buy_time, INTERVAL X.warranty MONTH), '%Y-%m-%d %T') warranty_deadline,
+            DATE_FORMAT(X.buy_time, '%Y-%m-%d %T') buy_time,
+            DATE_FORMAT(X.update_time, '%Y-%m-%d %T') update_time,
+            DATE_FORMAT(X.create_time, '%Y-%m-%d %T') create_time,
+            A.id as agencyId, A.name as agencyName,
+            C.id as customerId, C.name as customerName,
+            M.id as modelId, M.name as modelName,
+            D.content as typeName
+        from
+            te_equip X
+            left join ms_agency A on X.agency_id = A.id
+            left join ms_customer C on X.customer_id = C.id
+            left join te_model M on X.model_id = M.id
+            left join ( select * from dict_common where cate = "CATE_EQUIP_TYPE" ) D on D.value = X.type
+        <where>
+            <if test="agencyId != null">
+                and X.agency_id = #{agencyId}
+            </if>
+            <if test="customerId != null">
+                and X.customer_id = #{customerId}
+            </if>
+            <if test="modelId != null">
+                and X.model_id = #{modelId}
+            </if>
+            <if test="type != null">
+                and X.type = #{type}
+            </if>
+            <if test="status != null">
+                and X.status = #{status}
+            </if>
+            <if test="term != null and term != ''">
+                and (X.code like concat(concat('%',#{term}),'%'))
+            </if>
+        </where>
+    </select>
+
+    <select id="selectEquipListWithRunData" resultType="hashmap">
+        select
+            X.id, X.type, X.status, X.state, X.code, X.identity,
+            C.id as customerId, C.name as customerName,
+            M.id as modelId, M.name as modelName,
+            N.*
+        from
+            te_equip X
+            left join ms_agency A on X.agency_id = A.id
+            left join ms_customer C on X.customer_id = C.id
+            left join te_model M on X.model_id = M.id
+            left join (
+                select id rid, code, runid, duration, neck_temp, waist_temp,
+                       DATE_FORMAT(start_time, '%Y-%m-%d %T') start_time,
+                       DATE_FORMAT(end_time, '%Y-%m-%d %T') end_time,
+                       DATE_FORMAT(max(start_time), '%Y-%m-%d %T') last_run_time,
+                       TIMESTAMPDIFF(MINUTE, start_time, NOW()) run_minute
+                from tx_xzc_run
+                group by code
+            ) N on X.code = N.code
+        <where>
+            <if test="customerId != null">
+                and X.customer_id = #{customerId}
+            </if>
+            <if test="modelId != null">
+                and X.model_id = #{modelId}
+            </if>
+            <if test="type != null">
+                and X.type = #{type}
+            </if>
+            <if test="status != null">
+                and X.status = #{status}
+            </if>
+            <if test="term != null and term != ''">
+                and (X.code like concat(concat('%',#{term}),'%'))
+            </if>
+        </where>
+    </select>
+
+    <select id="selectEquipListWithMaintain" resultType="hashmap">
+        select
+            X.id, X.type, X.status, X.code, X.identity, X.warranty,
+            DATE_FORMAT(X.buy_time, '%Y-%m-%d %T') buy_time,
+            DATE_FORMAT(X.update_time, '%Y-%m-%d %T') update_time,
+            DATE_FORMAT(X.create_time, '%Y-%m-%d %T') create_time,
+            A.id as agencyId, A.name as agencyName,
+            C.id as customerId, C.name as customerName,
+            M.id as modelId, M.name as modelName,
+            N.last_maintain_time,
+            D.content as typeName
+        from
+            te_equip X
+            left join ms_agency A on X.agency_id = A.id
+            left join ms_customer C on X.customer_id = C.id
+            left join te_model M on X.model_id = M.id
+            left join ( select eid, max(time) last_maintain_time from te_maintain group by eid ) N on X.id = N.eid
+            left join ( select * from dict_common where cate = "CATE_MAINTAIN_TYPE" ) D on D.value = X.type
+        <where>
+            <if test="agencyId != null">
+                and X.agency_id = #{agencyId}
+            </if>
+            <if test="customerId != null">
+                and X.customer_id = #{customerId}
+            </if>
+            <if test="modelId != null">
+                and X.model_id = #{modelId}
+            </if>
+            <if test="type != null">
+                and X.type = #{type}
+            </if>
+            <if test="status != null">
+                and X.status = #{status}
+            </if>
+            <if test="term != null and term != ''">
+                and (X.code like concat(concat('%',#{term}),'%'))
+            </if>
+        </where>
+    </select>
+
+</mapper>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.TeFaultMapper">
+
+    <resultMap id="TeFaultMap" type="com.maizhiyu.yzt.entity.TeFault">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="eid" column="eid" jdbcType="BIGINT"/>
+        <result property="status" column="type" jdbcType="INTEGER"/>
+        <result property="reportUid" column="report_uid" jdbcType="BIGINT"/>
+        <result property="reportPhone" column="report_phone" jdbcType="VARCHAR"/>
+        <result property="reportTime" column="report_time" jdbcType="TIMESTAMP"/>
+        <result property="reportContent" column="report_content" jdbcType="VARCHAR"/>
+        <result property="resolveUid" column="resolve_uid" jdbcType="BIGINT"/>
+        <result property="resolveTime" column="resolve_time" jdbcType="TIMESTAMP"/>
+        <result property="resolveContent" column="resolve_content" jdbcType="VARCHAR"/>
+        <result property="followupUid" column="followup_uid" jdbcType="BIGINT"/>
+        <result property="followupTime" column="followup_time" jdbcType="TIMESTAMP"/>
+        <result property="followupContent" column="followup_content" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectFaultList" resultType="hashmap">
+        select
+            X.id, X.eid, X.status,
+            X.report_uid, X.report_phone, X.report_content, DATE_FORMAT(X.report_time, '%Y-%m-%d %T') report_time,
+            X.resolve_uid, X.resolve_content, DATE_FORMAT(X.resolve_time, '%Y-%m-%d %T') resolve_time,
+            X.followup_uid, X.followup_content, DATE_FORMAT(X.followup_time, '%Y-%m-%d %T') followup_time,
+            A.type, A.model_id, A.code, A.identity,
+            B.name modelName,
+            U1.realname report_name,
+            U2.realname resolve_name,
+            U3.realname followup_name
+        from
+            te_fault X
+            join te_equip A on X.eid = A.id
+            join te_model B on A.model_id = B.id
+            join hs_user U1 on X.report_uid = U1.id
+            left join ms_user U2 on X.resolve_uid = U2.id
+            left join ms_user U3 on X.followup_uid = U3.id
+        <where>
+            <if test="customerId != null">
+                and A.customer_id = #{customerId}
+            </if>
+            <if test="status != null">
+                and X.status = #{status}
+            </if>
+        </where>
+    </select>
+
+</mapper>

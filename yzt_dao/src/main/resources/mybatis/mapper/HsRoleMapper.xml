@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.HsRoleMapper">
+
+    <resultMap id="RoleMap" type="com.maizhiyu.yzt.entity.HsRole">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="customerId" column="customer_id" jdbcType="BIGINT"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="rolename" column="username" jdbcType="VARCHAR"/>
+        <result property="descrip" column="password" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+
+    <!--查询角色列表-->
+    <select id="selectRoleList" resultType="hashmap">
+        select
+            X.customer_id, X.id, X.status, X.rolename, X.descrip,
+            DATE_FORMAT(X.update_time, '%Y-%m-%d %T' ) update_time,
+            DATE_FORMAT(X.create_time, '%Y-%m-%d %T' ) create_time
+        from
+            hs_role X
+        <where>
+            <if test="customerId != null">
+                and X.customer_id = #{customerId}
+            </if>
+            <if test="status != null">
+                and X.status = #{status}
+            </if>
+            <if test="term != null and term != ''">
+                and (X.rolename like concat(concat('%',#{term}),'%'))
+            </if>
+        </where>
+    </select>
+
+</mapper>

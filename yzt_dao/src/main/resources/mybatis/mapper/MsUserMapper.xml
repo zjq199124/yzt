@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.MsUserMapper">
+
+    <resultMap id="UserMap" type="com.maizhiyu.yzt.entity.MsUser">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="realname" column="realname" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="INTEGER"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询用户信息，所属部门，所属角色-->
+    <select id="selectUserList" resultType="hashmap">
+        select
+            U.id, U.status, U.username, U.nickname, U.realname, U.phone, U.sex,
+            DATE_FORMAT(U.create_time, '%Y-%m-%d %T') create_time,
+            D.id department_id, D.dname dname, D.descrip department_desc,
+            R.id role_id, R.rolename rolename, R.descrip role_desc
+        from
+            ms_user U
+            left join ms_user_department X on X.user_id = U.id
+            left join ms_department D on X.department_id = D.id
+            join ms_user_role Y on Y.user_id = U.id
+            join ms_role R on Y.role_id = R.id
+        <where>
+            <if test="departmentId != null and departmentId != 0">
+                and D.id = #{departmentId}
+            </if>
+            <if test="roleId != null and roleId != 0">
+                and R.id = #{roleId}
+            </if>
+            <if test="status != null">
+                and U.status = #{status}
+            </if>
+            <if test="term != null and term != ''">
+                and (U.username like concat(concat('%',#{term}),'%')
+                    or U.nickname like concat(concat('%',#{term}),'%')
+                    or U.realname like concat(concat('%',#{term}),'%')
+                    or U.phone like concat(concat('%',#{term}),'%'))
+            </if>
+        </where>
+    </select>
+
+</mapper>

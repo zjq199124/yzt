@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.MsCustomerMapper">
+
+    <select id="selectCustomer" resultType="hashmap">
+        select
+            X.id, X.agency_id, X.`status`, X.wxswitch, X.`name`,  X.address, X.contacts, X.descrip, X.avatar,
+            X.province, X.city, X.locationx, X.locationy, X.time_slots,
+            DATE_FORMAT(X.update_time, '%Y-%m-%d %T') update_time,
+            DATE_FORMAT(X.create_time, '%Y-%m-%d %T') create_time,
+            A.name agency_name
+        from
+            ms_customer X
+            left join ms_agency A on X.agency_id = A.id
+        where
+            X.id = #{id}
+    </select>
+
+    <select id="selectCustomerList" resultType="hashmap">
+        select
+            X.id, X.agency_id, X.`status`, X.wxswitch, X.`name`,  X.address, X.contacts, X.descrip, X.avatar,
+            X.province, X.city,
+            DATE_FORMAT(X.update_time, '%Y-%m-%d %T') update_time,
+            DATE_FORMAT(X.create_time, '%Y-%m-%d %T') create_time,
+            A.name agency_name
+        from
+            ms_customer X
+            left join ms_agency A on X.agency_id = A.id
+        <where>
+            <if test="agencyId != null">
+                and X.agency_id = #{agencyId}
+            </if>
+            <if test="status != null">
+                and X.status = #{status}
+            </if>
+            <if test="term != null and term != ''">
+                and ( (X.name like concat(concat('%',#{term}),'%')) or (X.contacts like concat(concat('%',#{term}),'%')) )
+            </if>
+        </where>
+    </select>
+
+    <select id="selectCustomerListByLocation" resultType="hashmap">
+        select
+            X.*
+        from
+            ms_customer X
+        <where>
+            <if test="province != null">
+                and X.province like concat(concat('%',#{province}),'%')
+            </if>
+            <if test="city != null">
+                and X.city like concat(concat('%',#{city}),'%')
+            </if>
+            <if test="term != null and term != ''">
+                and ( (X.name like concat(concat('%',#{term}),'%')) or (X.contacts like concat(concat('%',#{term}),'%')) )
+            </if>
+        </where>
+    </select>
+
+    <select id="selectCustomerProvinceList" resultType="hashmap">
+        select
+            distinct province
+        from
+            ms_customer
+        <where>
+            province <![CDATA[ <> ]]> ''
+        </where>
+    </select>
+
+    <select id="selectCustomerCityList" resultType="hashmap">
+        select
+            distinct city
+        from
+            ms_customer
+        <where>
+            city <![CDATA[ <> ]]> ''
+            <if test="province != null and province != ''">
+                and province like concat(concat('%',#{province}),'%')
+            </if>
+        </where>
+    </select>
+
+</mapper>
