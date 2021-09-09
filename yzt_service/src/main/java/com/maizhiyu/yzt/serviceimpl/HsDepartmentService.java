@@ -1,0 +1,58 @@
+package com.maizhiyu.yzt.serviceimpl;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.maizhiyu.yzt.entity.HsDepartment;
+import com.maizhiyu.yzt.mapper.HsDepartmentMapper;
+import com.maizhiyu.yzt.service.IHsDepartmentService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
+
+
+@Service
+@Transactional(rollbackFor=Exception.class)
+public class HsDepartmentService implements IHsDepartmentService {
+
+    @Autowired
+    private HsDepartmentMapper mapper;
+
+    @Override
+    public Integer addDepartment(HsDepartment department) {
+        return mapper.insert(department);
+    }
+
+    @Override
+    public Integer delDepartment(Long id) {
+        return mapper.deleteById(id);
+    }
+
+    @Override
+    public Integer setDepartment(HsDepartment department) {
+        return mapper.updateById(department);
+    }
+
+    @Override
+    public HsDepartment getDepartment(Long id) {
+        return mapper.selectById(id);
+    }
+
+    @Override
+    public List<Map<String, Object>> getDepartmentList(Long customerId, Integer status, String term) {
+        QueryWrapper<HsDepartment> wrapper = new QueryWrapper<>();
+        wrapper.select("id", "status", "dname", "descrip",
+                "DATE_FORMAT(update_time, '%Y-%m-%d %T') update_time",
+                "DATE_FORMAT(create_time, '%Y-%m-%d %T') create_time");
+        wrapper.eq("customer_id", customerId);
+        if (status != null) {
+            wrapper.eq("status", status);
+        }
+        if (term != null) {
+            wrapper.like("dname", term);
+        }
+        List<Map<String, Object>> list = mapper.selectMaps(wrapper);
+        return list;
+    }
+}
