@@ -59,8 +59,7 @@ public class DictCommonService implements IDictCommonService {
         if (term != null) {
             wrapper.like("content", term);
         }
-        List<Map<String, Object>> list = mapper.selectMaps(wrapper);
-        return list;
+        return mapper.selectMaps(wrapper);
     }
 
     @Override
@@ -107,8 +106,7 @@ public class DictCommonService implements IDictCommonService {
         if (term != null) {
             wrapper.like("content", term);
         }
-        List<Map<String, Object>> list = mapper.selectMaps(wrapper);
-        return list;
+        return mapper.selectMaps(wrapper);
     }
 
     @Override
@@ -129,8 +127,8 @@ public class DictCommonService implements IDictCommonService {
 
     private List<Map<String, Object>> getDictItemList(String cate) {
         QueryWrapper<DictCommon> wrapper = new QueryWrapper<>();
+        wrapper.ne("parent", 0);
         wrapper.eq("cate", cate);
-        List<Map<String, Object>> list =  mapper.selectMaps(wrapper);
-        return list;
+        return mapper.selectMaps(wrapper);
     }
 }
