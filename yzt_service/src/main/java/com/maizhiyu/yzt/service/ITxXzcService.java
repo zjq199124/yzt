@@ -5,6 +5,7 @@ import com.maizhiyu.yzt.entity.TxXzcData;
 import com.maizhiyu.yzt.entity.TxXzcRun;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ITxXzcService {
 
@@ -18,9 +19,13 @@ public interface ITxXzcService {
 
     Integer setRun(TxXzcRun run);
 
+    Integer setRunWarn(TxXzcRun run);
+
     Integer addData(TxXzcData data);
 
     List<TxXzcRun> getRunList(String code, String startDate, String endDate);
 
     List<TxXzcData> getRunData(String code, String runId);
+
+    List<Map<String, Object>> getRunWarnList(String code, String runId);
 }

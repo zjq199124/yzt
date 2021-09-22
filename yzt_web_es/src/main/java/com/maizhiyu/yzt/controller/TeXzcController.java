@@ -116,20 +116,20 @@ public class TeXzcController {
         Integer minute = jsonObject.getInteger("TimeMin");
         Integer second = jsonObject.getInteger("TimeSec");
 
-        Integer neckSetTemp = jsonObject.getInteger("NSetTemper");
-        Integer neckWaterTemp = jsonObject.getInteger("NWaterTemper");
-        Integer neckSteamTemp = jsonObject.getInteger("NSteamTemper");
+        Double neckSetTemp = jsonObject.getDouble("NSetTemper");
+        Double neckWaterTemp = jsonObject.getDouble("NWaterTemper");
+        Double neckSteamTemp = jsonObject.getDouble("NSteamTemper");
 
-        Integer waistSetTemp = jsonObject.getInteger("NSetTemper");
-        Integer waistWaterTemp = jsonObject.getInteger("NWaterTemper");
-        Integer waistSteamTemp = jsonObject.getInteger("NSteamTemper");
+        Double waistSetTemp = jsonObject.getDouble("WSetTemper");
+        Double waistWaterTemp = jsonObject.getDouble("WWaterTemper");
+        Double waistSteamTemp = jsonObject.getDouble("WSteamTemper");
 
         // 更新设备状态
         doUpdateState(code, state);
 
         // 计算运行时间
         // TODO
-        Integer duration = minute * 60 + second;
+        Integer duration = minute;
 
         // 处理运行设置
         TxXzcRun run = new TxXzcRun();
@@ -148,20 +148,25 @@ public class TeXzcController {
         String code = jsonObject.getString("DeviceID");
         String runId = jsonObject.getString("RunID");
         String errorId = jsonObject.getString("ErrorID");
-        Integer type = Integer.parseInt(errorId);
+        Integer errorType = Integer.parseInt(errorId);
 
         // 更新设备状态
         doUpdateState(code, 2);
 
         // 处理报警信息
-        if (type > 0) {
+        if (errorType > 0) {
+            // 添加预警记录
             TeWarn warn = new TeWarn();
             warn.setCode(code);
             warn.setRunid(runId);
-            warn.setType(type);
+            warn.setType(errorType);
             warn.setTime(new Date());
             warnService.addWarn(warn);
-            // 1颈部体感超温 2颈部药液超温 3颈部液位过低  4腰部体感超温 5腰部药液超温 6腰部液位过低 7颈腰部体感超温 8颈腰部药液超温 9颈腰部液位过低
+            // 更新运行预警
+            TxXzcRun run = new TxXzcRun();
+            run.setCode(code);
+            run.setRunid(runId);
+            xzcService.setRunWarn(run);
         }
 
         // 生成返回数据
@@ -189,16 +194,16 @@ public class TeXzcController {
                 case 5: // 继续
                 case 7: // 结束
                 case 6: // 设置（所有的操作都用此命令来实现）
-                    Integer sysState = cmd.getSysStatus();
-                    Double nSetTemper = cmd.getNeckTemp().doubleValue() * 10;
-                    Double wSetTemper = cmd.getWaistTemp().doubleValue() * 10;
-                    if (sysState != null) {
+                    if (cmd.getSysState() != null) {
+                        Integer sysState = cmd.getSysState();
                         object.put("SysState", sysState);
                     }
-                    if (nSetTemper != null) {
+                    if (cmd.getNeckTemp() != null) {
+                        Integer nSetTemper = cmd.getNeckTemp().intValue() * 10;
                         object.put("NSetTemper", nSetTemper);
                     }
-                    if (wSetTemper != null) {
+                    if (cmd.getWaistTemp() != null) {
+                        Integer wSetTemper = cmd.getWaistTemp().intValue() * 10;
                         object.put("WSetTemper", wSetTemper);
                     }
                     break;

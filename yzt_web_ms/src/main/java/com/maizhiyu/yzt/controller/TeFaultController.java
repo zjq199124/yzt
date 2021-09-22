@@ -69,15 +69,16 @@ public class TeFaultController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "customerId", value = "用户ID", required = false),
             @ApiImplicitParam(name = "status", value = "状态", required = false),
+            @ApiImplicitParam(name = "code", value = "设备编码", required = false),
             @ApiImplicitParam(name = "pageNum", value = "开始页数", required = false),
             @ApiImplicitParam(name = "pageSize", value = "每页大小", required = false),
     })
     @GetMapping("/getFaultList")
-    public Result getFaultList(Long customerId, Integer status,
+    public Result getFaultList(Long customerId, Integer status, String code,
                                 @RequestParam(defaultValue = "1") Integer pageNum,
                                 @RequestParam(defaultValue = "10") Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = service.getFaultList(customerId, status);
+        List<Map<String, Object>> list = service.getFaultList(customerId, status, code);
         PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
         return Result.success(pageInfo);
     }

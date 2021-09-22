@@ -35,10 +35,10 @@ public class TxXzcRun {
     private Integer duration;
 
     @ApiModelProperty(value = "颈部温度")
-    private Integer neckTemp;
+    private Double neckTemp;
 
     @ApiModelProperty(value = "腰部温度")
-    private Integer waistTemp;
+    private Double waistTemp;
 
     @ApiModelProperty(value = "开始时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
@@ -47,4 +47,7 @@ public class TxXzcRun {
     @ApiModelProperty(value = "结束时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
     private Date endTime;
+
+    @ApiModelProperty(value = "预警信息")
+    private Integer warn;
 }

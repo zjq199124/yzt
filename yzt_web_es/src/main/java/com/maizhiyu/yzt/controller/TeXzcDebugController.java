@@ -71,7 +71,7 @@ public class TeXzcDebugController {
     })
     @GetMapping("/getMaintainList")
     public Result getMaintainList(Long equipId) {
-        List<Map<String, Object>> list = maintainService.getMaintainList(equipId, null, null, null);
+        List<Map<String, Object>> list = maintainService.getMaintainList(null, equipId, null, null, null);
         return Result.success(list);
     }
 

@@ -103,7 +103,7 @@ public class MsCustomerController {
     @GetMapping("/getCustomerList")
     public Result getCustomerList(Long agencyId, Integer status, String term,
             @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
+            @RequestParam(defaultValue = "20") Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<Map<String, Object>> list = service.getCustomerList(agencyId, status, term);
         PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list);

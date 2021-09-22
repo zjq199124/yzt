@@ -18,8 +18,13 @@
         from
             te_maintain X
             join te_equip A on X.eid = A.id
-            left join ( select * from dict_common where cate = "CATE_MAINTAIN_TYPE" ) D on D.value = A.type
+            left join (
+                select * from dict_common where cate = "CATE_MAINTAIN_TYPE" and parent != 0
+            ) D on D.value = A.type
         <where>
+            <if test="customerId != null">
+                and A.customer_id = #{customerId}
+            </if>
             <if test="equipId != null">
                 and X.eid = #{equipId}
             </if>
@@ -33,6 +38,7 @@
                 and X.time &lt; #{endDate}
             </if>
         </where>
+        order by `time` desc
     </select>
 
 </mapper>

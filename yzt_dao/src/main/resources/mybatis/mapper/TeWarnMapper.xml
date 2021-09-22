@@ -43,7 +43,7 @@
         select
             X.id, X.eid, X.code, X.runid, X.type,
             D.content typeName, D.note typeNote,
-            DATE_FORMAT(X.time, '%Y-%m-%d %T' ) as `time`
+            DATE_FORMAT(X.time, '%Y-%m-%d %T') as `time`
         from
             te_warn X
             left join ( select * from dict_common where cate = "CATE_XZC_WARN_TYPE" ) D on X.type = D.value

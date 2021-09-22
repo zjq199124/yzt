@@ -122,6 +122,7 @@ public class TeEquipController {
 
     @ApiOperation(value = "获取设备维护列表", notes = "获取设备维护列表")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "customerId", value = "客户ID", required = false),
             @ApiImplicitParam(name = "equipId", value = "设备ID", required = false),
             @ApiImplicitParam(name = "type", value = "维护类型", required = false),
             @ApiImplicitParam(name = "startDate", value = "开始日期", required = false),
@@ -130,11 +131,11 @@ public class TeEquipController {
             @ApiImplicitParam(name = "pageSize", value = "每页大小", required = false),
     })
     @GetMapping("/getMaintainList")
-    public Result getMaintainList(Long equipId, Integer type, String startDate, String endDate,
+    public Result getMaintainList(Long customerId, Long equipId, Integer type, String startDate, String endDate,
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = maintainService.getMaintainList(equipId, type, startDate, endDate);
+        List<Map<String, Object>> list = maintainService.getMaintainList(customerId, equipId, type, startDate, endDate);
         PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
         return Result.success(pageInfo);
     }

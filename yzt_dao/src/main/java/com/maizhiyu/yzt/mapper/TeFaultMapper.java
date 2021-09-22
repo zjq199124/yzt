@@ -16,5 +16,6 @@ public interface TeFaultMapper extends BaseMapper<TeFault> {
 
     List<Map<String, Object>> selectFaultList(
             @Param("customerId") Long customerId,
-            @Param("status") Integer status);
+            @Param("status") Integer status,
+            @Param("code") String code);
 }

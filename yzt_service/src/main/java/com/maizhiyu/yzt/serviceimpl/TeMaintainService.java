@@ -39,8 +39,8 @@ public class TeMaintainService implements ITeMaintainService {
     }
 
     @Override
-    public List<Map<String, Object>> getMaintainList(Long equipId, Integer type, String startDate, String endDate) {
-        List<Map<String, Object>> list = mapper.selectMaintainList(equipId, type, startDate, endDate);
+    public List<Map<String, Object>> getMaintainList(Long customerId, Long equipId, Integer type, String startDate, String endDate) {
+        List<Map<String, Object>> list = mapper.selectMaintainList(customerId, equipId, type, startDate, endDate);
         return list;
     }
 

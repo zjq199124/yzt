@@ -1,5 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.maizhiyu.yzt.entity.TeWarn;
 import com.maizhiyu.yzt.mapper.TeWarnMapper;
 import com.maizhiyu.yzt.service.ITeWarnService;
@@ -20,7 +22,17 @@ public class TeWarnService implements ITeWarnService {
 
     @Override
     public Integer addWarn(TeWarn warn) {
-        return mapper.insert(warn);
+        Integer res = 0;
+        QueryWrapper<TeWarn> wrapper = new QueryWrapper<>();
+        wrapper.eq("code", warn.getCode())
+                .eq("runid", warn.getRunid());
+        List<TeWarn> list = mapper.selectList(wrapper);
+        if (list == null || list.size() == 0) {
+            res = mapper.insert(warn);
+        } else {
+            res = mapper.update(warn, wrapper);
+        }
+        return res;
     }
 
     @Override

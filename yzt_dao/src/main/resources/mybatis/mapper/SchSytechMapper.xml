@@ -7,7 +7,7 @@
             X.id, X.status, X.disease_id, X.syndrome_id, X.name, X.detail, X.operation,
             A.content disease_name,
             B.name syndrome_name, B.symptoms,
-            C.name sytech_name
+            C.id sytech_id, C.name sytech_name
         from
             sch_sytech X
             left join dict_disease A on X.disease_id = A.id
@@ -24,7 +24,10 @@
                 and X.status = #{status}
             </if>
             <if test="term != null and term != ''">
-                and X.name like concat(concat('%',#{term}),'%')
+                and ( A.content like concat(concat('%',#{term}),'%')
+                or B.name like concat(concat('%',#{term}),'%')
+                or C.name like concat(concat('%',#{term}),'%')
+                or X.name like concat(concat('%',#{term}),'%') )
             </if>
         </where>
     </select>

@@ -34,14 +34,14 @@ public class TxXzcCmd {
     @ApiModelProperty(value = "命令标识(1:开机 2:关机 3:开始 4:暂停 5:继续 6:设置 7:结束)")
     private Integer cmd;
 
-    @ApiModelProperty(value = "设备状态")
-    private Integer sysStatus;
+    @ApiModelProperty(value = "设备状态(0:待机 1:预热 2:治疗 3:暂停 4:结束)")
+    private Integer sysState;
 
     @ApiModelProperty(value = "颈部温度")
-    private Integer neckTemp;
+    private Double neckTemp;
 
     @ApiModelProperty(value = "腰部温度")
-    private Integer waistTemp;
+    private Double waistTemp;
 
     @ApiModelProperty(value = "额外数据")
     private String extraData;

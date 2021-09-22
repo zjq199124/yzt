@@ -15,6 +15,7 @@ import java.util.Map;
 public interface TeMaintainMapper extends BaseMapper<TeMaintain> {
 
     public List<Map<String, Object>> selectMaintainList(
+            @Param("customerId") Long customerId,
             @Param("equipId") Long equipId,
             @Param("type") Integer type,
             @Param("startDate") String startDate,

@@ -49,6 +49,7 @@
                 or X.code like concat(concat('%',#{term}),'%'))
             </if>
         </where>
+        order by X.create_time desc
     </select>
 
     <select id="selectPsUserOutpatientList" resultType="hashmap">

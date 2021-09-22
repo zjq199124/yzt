@@ -69,7 +69,7 @@ public class MsUserController {
 
 
     @ApiOperation(value = "修改用户基础信息", notes = "修改用户基础信息")
-    @GetMapping("/setUserBasic")
+    @PostMapping("/setUserBasic")
     public Result setUserBasic(@RequestBody MsUser user) {
         if (user.getPassword() != null) {
             BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();

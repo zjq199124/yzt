@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.maizhiyu.yzt.entity.TeWarn;
 import com.maizhiyu.yzt.entity.TxXzcCmd;
 import com.maizhiyu.yzt.entity.TxXzcData;
 import com.maizhiyu.yzt.entity.TxXzcRun;
@@ -13,9 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Service
@@ -76,13 +75,22 @@ public class TxXzcService implements ITxXzcService {
         cmd.setStatus(1);
         cmd.setCode(run.getCode());
         cmd.setRunid(run.getRunid());
-        cmd.setSysStatus(run.getStatus());
+        cmd.setSysState(run.getStatus());
         cmd.setNeckTemp(run.getNeckTemp());
         cmd.setWaistTemp(run.getWaistTemp());
         cmd.setCreateTime(new Date());
         res = cmdMapper.insert(cmd);
         // 返回执行结果
         return res;
+    }
+
+    @Override
+    public Integer setRunWarn(TxXzcRun run) {
+        UpdateWrapper<TxXzcRun> wrapper = new UpdateWrapper<>();
+        wrapper.eq("code", run.getCode())
+                .eq("runid", run.getRunid());
+        wrapper.set("warn", run.getWarn());
+        return runMapper.update(run, wrapper);
     }
 
     @Override
@@ -94,6 +102,7 @@ public class TxXzcService implements ITxXzcService {
     public List<TxXzcRun> getRunList(String code, String startDate, String endDate) {
         QueryWrapper<TxXzcRun> wrapper = new QueryWrapper<>();
         wrapper.eq("code", code);
+        wrapper.orderByDesc("start_time");
         if (startDate != null) {
             wrapper.ge("start_time", startDate);
         }
@@ -112,6 +121,53 @@ public class TxXzcService implements ITxXzcService {
         wrapper.eq("code", code);
         wrapper.eq("runid", runId);
         List<TxXzcData> list = dataMapper.selectList(wrapper);
+        return list;
+    }
+
+    @Override
+    public List<Map<String, Object>> getRunWarnList(String code, String runid) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        // 查询预警信息
+        QueryWrapper<TxXzcRun> wrapper = new QueryWrapper<>();
+        wrapper.eq("code", code)
+                .eq("runid", runid);
+        TxXzcRun run = runMapper.selectOne(wrapper);
+        // 整理预警信息（b6:腰部液位低 b5:腰部药液超温 b4:腰部体感超温 b2:颈部液位低 b1:颈部药液超温 b0:颈部体感超温）
+        if (run != null) {
+            Integer warnInt = run.getWarn();
+            if (warnInt != null) {
+                if ((warnInt & 0b01000000) > 0) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("typeName", "腰部液位低");
+                    list.add(map);
+                }
+                if ((warnInt & 0b00100000) > 0) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("typeName", "腰部药液超温");
+                    list.add(map);
+                }
+                if ((warnInt & 0b00010000) > 0) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("typeName", "腰部体感超温");
+                    list.add(map);
+                }
+                if ((warnInt & 0b00000100) > 0) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("typeName", "颈部液位低");
+                    list.add(map);
+                }
+                if ((warnInt & 0b00000010) > 0) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("typeName", "颈部药液超温");
+                    list.add(map);
+                }
+                if ((warnInt & 0b00000001) > 0) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("typeName", "颈部体感超温");
+                    list.add(map);
+                }
+            }
+        }
         return list;
     }
 }

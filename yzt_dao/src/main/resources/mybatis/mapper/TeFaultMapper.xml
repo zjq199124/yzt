@@ -43,6 +43,9 @@
             <if test="status != null">
                 and X.status = #{status}
             </if>
+            <if test="code != null">
+                and (A.code like concat(concat('%',#{code}),'%'))
+            </if>
         </where>
     </select>
 
