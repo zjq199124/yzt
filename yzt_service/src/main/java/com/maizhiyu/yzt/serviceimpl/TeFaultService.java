@@ -46,8 +46,8 @@ public class TeFaultService implements ITeFaultService {
     }
 
     @Override
-    public List<Map<String, Object>> getFaultList(Long customerId, Integer status) {
-        List<Map<String, Object>> list = mapper.selectFaultList(customerId, status);
+    public List<Map<String, Object>> getFaultList(Long customerId, Integer status, String code) {
+        List<Map<String, Object>> list = mapper.selectFaultList(customerId, status, code);
         return list;
     }
 

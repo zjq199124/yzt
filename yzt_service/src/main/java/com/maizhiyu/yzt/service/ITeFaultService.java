@@ -16,7 +16,7 @@ public interface ITeFaultService {
 
     TeFault getFault(Long id);
 
-    List<Map<String, Object>> getFaultList(Long customId, Integer status);
+    List<Map<String, Object>> getFaultList(Long customId, Integer status, String code);
 
     List<TeFaultSolution> getFaultSolutionList(Integer type);
 }
