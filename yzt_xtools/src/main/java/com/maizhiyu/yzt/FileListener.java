@@ -68,6 +68,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
         }
         String patientName = strs[0];
         String patientPhone = strs[1];
+        String type = strs[2];
 
         // 处理业务逻辑
         try {
@@ -77,7 +78,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
 
             // 准备数据
             BuCheck check = new BuCheck();
-            check.setType(1);
+            check.setType(Integer.parseInt(type));
             check.setFname(fname);
             check.setPatientName(patientName);
             check.setPatientPhone(patientPhone);
