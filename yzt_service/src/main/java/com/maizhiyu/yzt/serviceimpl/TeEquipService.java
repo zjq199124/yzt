@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.maizhiyu.yzt.entity.TeEquip;
 import com.maizhiyu.yzt.entity.TxXzcData;
 import com.maizhiyu.yzt.entity.TxXzcRun;
+import com.maizhiyu.yzt.exception.BusinessException;
 import com.maizhiyu.yzt.mapper.TeEquipMapper;
 import com.maizhiyu.yzt.service.ITeEquipService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +36,17 @@ public class TeEquipService implements ITeEquipService {
     @Override
     public Integer setEquip(TeEquip equip) {
         UpdateWrapper<TeEquip> wrapper = new UpdateWrapper<>();
+        // id不空按id查询
         if (equip.getId() != null) {
             wrapper.eq("id", equip.getId());
         }
-        if (equip.getCode() != null) {
+        // id为空按code查询
+        else if (equip.getCode() != null) {
             wrapper.eq("code", equip.getCode());
+        }
+        // id和code都空则错误
+        else {
+            throw new BusinessException("id和code不能都为空");
         }
         return mapper.update(equip, wrapper);
     }

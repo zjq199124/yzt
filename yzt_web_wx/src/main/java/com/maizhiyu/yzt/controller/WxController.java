@@ -191,6 +191,7 @@ public class WxController {
                 "&scope=" + scope +
                 "&state=" + state +
                 "#wechat_redirect";
+        logger.info("redirect: " + url);
         response.sendRedirect(url);
     }
 
@@ -232,10 +233,8 @@ public class WxController {
     }
 
 
-    @ApiOperation(value = "创建菜单", notes = "创建菜单")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "body", value = "菜单信息", required = true),
-    })
+    @ApiOperation(value = "获取菜单列表", notes = "获取菜单列表")
+    @ApiImplicitParams({})
     @GetMapping("/getMenuList")
     public Result getMenuList() {
         String result = wxClient.getMenuList(accessToken);

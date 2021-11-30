@@ -30,9 +30,18 @@ public class HsUserController {
     @ApiOperation(value = "增加用户", notes = "增加用户")
     @PostMapping("/addUser")
     public Result addUser(@RequestBody HsUser user) {
-        user.setPassword("123456");
+        String password;
+        // 密码为空时使用默认密码123456
+        if (user.getPassword() == null || user.getPassword().trim().length() == 0) {
+            password = "123456";
+        } else {
+            password = user.getPassword();
+        }
+        // 密码加密处理
         BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();
-        String encoded = bcryptPasswordEncoder.encode(user.getPassword());
+        String encoded = bcryptPasswordEncoder.encode(password);
+        user.setPassword(encoded);
+        // 设置其他数据
         user.setStatus(1);
         user.setPassword(encoded);
         user.setCreateTime(new Date());
@@ -56,7 +65,7 @@ public class HsUserController {
     @ApiOperation(value = "修改用户信息", notes = "修改用户信息")
     @PostMapping("/setUser")
     public Result setUser(@RequestBody HsUser user) {
-        if (user.getPassword() != null) {
+        if (user.getPassword() != null && user.getPassword().trim().length()>0) {
             BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();
             String encoded = bcryptPasswordEncoder.encode(user.getPassword());
             user.setPassword(encoded);

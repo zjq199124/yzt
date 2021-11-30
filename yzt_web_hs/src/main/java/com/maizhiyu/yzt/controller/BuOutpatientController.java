@@ -68,7 +68,9 @@ public class BuOutpatientController {
 
     @ApiOperation(value = "获取门诊预约列表", notes = "获取门诊预约列表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "startDate", value = "开始日期", required = true),
+            @ApiImplicitParam(name = "createStartDate", value = "创建开始日期", required = false),
+            @ApiImplicitParam(name = "createEndDate", value = "创建结束日期", required = false),
+            @ApiImplicitParam(name = "startDate", value = "开始日期", required = false),
             @ApiImplicitParam(name = "endDate", value = "开始日期", required = false),
             @ApiImplicitParam(name = "customerId", value = "医院ID", required = true),
             @ApiImplicitParam(name = "departmentId", value = "科室ID", required = false),
@@ -81,14 +83,16 @@ public class BuOutpatientController {
             @ApiImplicitParam(name = "pageSize", value = "每页大小", required = false),
     })
     @GetMapping("/getOutpatientList")
-    public Result getOutpatientList(String startDate, String endDate,
+    public Result getOutpatientList(
+            String createStartDate, String createEndDate,
+            String startDate, String endDate,
             Long customerId, Long departmentId, Long doctorId, Long patientId,
             Integer type, Integer status, String term,
             @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
+            @RequestParam(defaultValue = "100") Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<Map<String, Object>> list = service.getOutpatientList(
-                startDate, endDate, customerId, departmentId, doctorId, patientId, type, status, term);
+                createStartDate, createEndDate, startDate, endDate, customerId, departmentId, doctorId, patientId, type, status, term);
         PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
         return Result.success(pageInfo);
     }

@@ -48,32 +48,34 @@ public class BuPatientScanController {
     }
 
 
+//    @ApiOperation(value = "获取患者扫码列表", notes = "获取患者扫码列表")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "customerId", value = "医院ID", required = true),
+//            @ApiImplicitParam(name = "term", value = "搜索词", required = true),
+//    })
+//    @GetMapping("/getPatientScanList")
+//    public Result getPatientScanList(Long customerId, String term) {
+//        PageHelper.startPage(pageNum, pageSize);
+//        List<Map<String, Object>> list = service.getPatientScanList(customerId, term);
+//        return Result.success(list);
+//    }
+
+
     @ApiOperation(value = "获取患者扫码列表", notes = "获取患者扫码列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "customerId", value = "医院ID", required = true),
             @ApiImplicitParam(name = "term", value = "搜索词", required = true),
+            @ApiImplicitParam(name = "pageNum", value = "开始页数", required = false),
+            @ApiImplicitParam(name = "pageSize", value = "每页大小", required = false),
     })
     @GetMapping("/getPatientScanList")
-    public Result getPatientScanList(Long customerId, String term) {
+    public Result getPatientScanList(Long customerId, String term,
+                                     @RequestParam(defaultValue = "1") Integer pageNum,
+                                     @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
         List<Map<String, Object>> list = service.getPatientScanList(customerId, term);
-        return Result.success(list);
+        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list);
+        return Result.success(pageInfo);
     }
-
-
-//    @ApiOperation(value = "获取患者扫码列表", notes = "获取患者扫码列表")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "customerId", value = "医院ID", required = true),
-//            @ApiImplicitParam(name = "pageNum", value = "开始页数", required = false),
-//            @ApiImplicitParam(name = "pageSize", value = "每页大小", required = false),
-//    })
-//    @GetMapping("/getPatientScanList")
-//    public Result getPatientScanList(Long customerId,
-//                                     @RequestParam(defaultValue = "1") Integer pageNum,
-//                                     @RequestParam(defaultValue = "10") Integer pageSize) {
-//        PageHelper.startPage(pageNum, pageSize);
-//        List<Map<String, Object>> list = service.getPatientScanList(customerId);
-//        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
-//        return Result.success(pageInfo);
-//    }
 
 }

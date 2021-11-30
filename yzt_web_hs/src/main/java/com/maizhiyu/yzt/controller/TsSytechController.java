@@ -35,9 +35,9 @@ public class TsSytechController {
     @GetMapping("/getSytechList")
     public Result getSytechList(Integer status, String term,
                                 @RequestParam(defaultValue = "1") Integer pageNum,
-                                @RequestParam(defaultValue = "10") Integer pageSize) {
+                                @RequestParam(defaultValue = "100") Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<TsSytech> list = service.getSytechList(status, term);
+        List<TsSytech> list = service.getSytechList(status, term, null);
         PageInfo<TsSytech> pageInfo = new PageInfo<>(list, pageSize);
         return Result.success(pageInfo);
     }

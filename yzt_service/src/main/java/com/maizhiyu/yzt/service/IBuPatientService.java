@@ -17,7 +17,7 @@ public interface IBuPatientService {
 
     BuPatient getPatient(Long id);
 
-    List<BuPatient> getPatientList(String term);
+    List<BuPatient> getPatientList(Long customerId, String term);
 
     List<BuPatient> getPatientListByPsuser(Long userId);
 

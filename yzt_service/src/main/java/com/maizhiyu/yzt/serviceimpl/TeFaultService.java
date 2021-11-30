@@ -26,8 +26,8 @@ public class TeFaultService implements ITeFaultService {
 
 
     @Override
-    public Integer addFault(TeFault maintain) {
-        return mapper.insert(maintain);
+    public Integer addFault(TeFault fault) {
+        return mapper.insert(fault);
     }
 
     @Override
@@ -36,8 +36,8 @@ public class TeFaultService implements ITeFaultService {
     }
 
     @Override
-    public Integer setFault(TeFault maintain) {
-        return mapper.updateById(maintain);
+    public Integer setFault(TeFault fault) {
+        return mapper.updateById(fault);
     }
 
     @Override

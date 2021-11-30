@@ -8,7 +8,13 @@ import java.util.Map;
 
 public interface ITeTroubleService {
 
-    public TeTrouble getTrouble(Long id);
+    Integer addTrouble(TeTrouble trouble);
 
-    public List<Map<String,Object>> getTroubleList(Integer etype, Integer status);
+    Integer delTrouble(Long id);
+
+    Integer setTrouble(TeTrouble trouble);
+
+    TeTrouble getTrouble(Long id);
+
+    List<Map<String,Object>> getTroubleList(Integer etype, Integer status);
 }

@@ -57,13 +57,12 @@ public class BuTreatmentController {
     @ApiOperation(value = "修改治疗评价", notes = "修改治疗评价")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "预约单id", required = true),
-            @ApiImplicitParam(name = "evaluation", value = "评价内容", required = true)
     })
-    @GetMapping("/setTreatmentEvaluation")
-    public Result setTreatmentStatus(Long id, String evaluation) {
+    @PostMapping("/setTreatmentEvaluation")
+    public Result setTreatmentStatus(@RequestParam Long id, @RequestBody String evaluation) {
         BuTreatment treatment = new BuTreatment();
         treatment.setId(id);
-        treatment.setStatus(1);
+        treatment.setStatus(6);
         treatment.setEvaluation(evaluation);
         treatment.setUpdateTime(new Date());
         service.setTreatment(treatment);

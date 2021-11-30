@@ -28,14 +28,11 @@ public class FileListener extends FileAlterationListenerAdaptor {
 
     private static Logger log = LoggerFactory.getLogger(FileListener.class);
 
-//    private static String baseurl = "https://ypt.yztyun.com/hs/api";
-    private static String baseurl = "http://localhost:8084/hs/api/";
-
     private Retrofit retrofit;
     private YztApi yztapi;
 
 
-    public FileListener() {
+    public FileListener(String baseurl) {
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseurl)
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
@@ -60,12 +57,17 @@ public class FileListener extends FileAlterationListenerAdaptor {
         String fileName = file.getName();
         String fullName = file.getAbsolutePath();
 
-        System.out.println("### " + fileName);
-        System.out.println("### " + fullName);
+        System.out.println("文件名称：" + fileName);
+        System.out.println("文件路径：" + fullName);
 
         // 获取字段信息
         String[] strs = fileName.split("_|\\.");
-        Long patientId = Long.parseLong(strs[0]);
+        if (strs.length < 4) {
+            System.out.println("文件名解析错误");
+            return;
+        }
+        String patientName = strs[0];
+        String patientPhone = strs[1];
 
         // 处理业务逻辑
         try {
@@ -77,7 +79,8 @@ public class FileListener extends FileAlterationListenerAdaptor {
             BuCheck check = new BuCheck();
             check.setType(1);
             check.setFname(fname);
-            check.setOutpatientId(patientId);
+            check.setPatientName(patientName);
+            check.setPatientPhone(patientPhone);
 
             // 上传信息
             doAddCheck(check);
@@ -115,6 +118,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
         Response<Result> response = call.execute();
         // 判断结果
         Result result = response.body();
+        System.out.println(result);
         if (result.getCode() == 0) {
             System.out.println("上传信息成功：" + result);
         } else {
@@ -125,88 +129,23 @@ public class FileListener extends FileAlterationListenerAdaptor {
     }
 
 
-//    private void doAddCheck1(BuCheck check) throws IOException {
-//
-//        RequestConfig config = RequestConfig.custom().setSocketTimeout(10000).setConnectTimeout(10000).build();
-//        StringEntity entity = new StringEntity(JSON.toJSONString(check), "UTF-8");
-//
-//        String url = baseurl + "/check/addCheck";
-//        HttpPost httpPost = new HttpPost(url);
-//
-//        httpPost.setConfig(config);
-//        httpPost.setEntity(entity);
-//        httpPost.addHeader("Content-Type", "application/json");
-//
-//        // 创建请求
-//        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-//
-//        // 发送请求
-//        HttpResponse httpResponse = httpClient.execute(httpPost);
-//
-//        // 接收响应
-//        HttpEntity httpEntity = httpResponse.getEntity();
-//
-//        // 解析响应
-//        String res = EntityUtils.toString(httpEntity, "UTF-8");
-//        System.out.println(res);
-//    }
-//
-//    private void doUpload2(String fname, String fileName) throws IOException {
-//        InputStream inputStream = new FileInputStream(fname);
-//
-//        MultipartEntityBuilder builder = MultipartEntityBuilder.create();// 新建builder对象
-//
-//        String name = "file";
-//        builder.addBinaryBody(name, inputStream, ContentType.create("multipart/form-data"), fileName);
-//
-//        String url = baseurl + "/file/upload";
-//        HttpPost httpPost = new HttpPost(url);
-//
-//        HttpEntity entity = builder.build();// 生成entity
-//        httpPost.setEntity(entity);         // 设置entity
-//
-//        // 创建请求
-//        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-//
-//        // 发送请求
-//        HttpResponse httpResponse = httpClient.execute(httpPost);
-//
-//        // 接收响应
-//        HttpEntity httpEntity = httpResponse.getEntity();
-//
-//        // 解析响应
-//        String res = EntityUtils.toString(httpEntity, "UTF-8");
-//        System.out.println(res);
-//
-////        Iterator<String> keys = params.keys();// 遍历 params 参数和值
-////        MultipartEntityBuilder builder = MultipartEntityBuilder.create();// 新建builder对象
-////        while (keys.hasNext()) {
-////            String key = keys.next();
-////            String value = params.getString(key);
-////            if (value.equals("file")) {
-////                builder.addBinaryBody(key, inputStream, ContentType.create("multipart/form-data"), fileName);// 设置流参数
-////            } else {
-////                StringBody body = new StringBody(value, ContentType.create("text/plain", Consts.UTF_8));// 设置普通参数
-////                builder.addPart(key, body);
-////            }
-////        }
-////        HttpEntity entity = builder.build();// 生成entity
-////        httpPost.setEntity(entity);// 设置 entity
-//    }
-
-
     public static void main(String[] args) throws Exception{
 
-//        if (args.length == 0) {
-//            System.out.println("请指定监听路径！");
-//            System.out.println("java -jar xxx.jar directory");
-//            return;
-//        }
-//
-//        String root = args[0];
-        String root = ".";
-        System.out.println("开始监听路径：" + root);
-        // String rootDir = "D:\\apache-tomcat-7.0.78";
+        // 参数判断
+        if (args.length != 2) {
+            System.out.println(">>> 请指定上传地址和监听路径！");
+            System.out.println(">>> 格式：java -jar xxx.jar url dir");
+            System.out.println(">>> 示例：java -jar xxx.jar https://ypt.yztyun.com/hs/api/ D:\\\\data");
+            System.out.println(">>> 注意：url最后必须有一个斜杠'/'");
+            return;
+        }
+
+        // 解析参数
+        String url = args[0];
+        String root = args[1];
+
+        System.out.println("上传地址：" + url);
+        System.out.println("监听路径：" + root);
 
         // 设置间隔时间
         long interval = TimeUnit.SECONDS.toMillis(1);
@@ -225,7 +164,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
         IOFileFilter filter = FileFilterUtils.or(directories, fileFilter);
 
         // 创建监听器
-        FileListener listener = new FileListener();
+        FileListener listener = new FileListener(url);
 
         // 创建观察者
         FileAlterationObserver observer = new FileAlterationObserver(new File(root), filter);
@@ -236,8 +175,5 @@ public class FileListener extends FileAlterationListenerAdaptor {
 
         // 开始监控
         monitor.start();
-
-
     }
-
 }

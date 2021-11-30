@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.maizhiyu.yzt.entity.HsUser;
 import com.maizhiyu.yzt.entity.HsUserDepartment;
 import com.maizhiyu.yzt.entity.HsUserRole;
+import com.maizhiyu.yzt.entity.MsUser;
 import com.maizhiyu.yzt.mapper.HsUserDepartmentMapper;
 import com.maizhiyu.yzt.mapper.HsUserMapper;
 import com.maizhiyu.yzt.mapper.HsUserRoleMapper;
 import com.maizhiyu.yzt.service.IHsUserService;
+import com.maizhiyu.yzt.utils.ExistCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +33,8 @@ public class HsUserService implements IHsUserService {
     @Autowired
     private HsUserDepartmentMapper userDepartmentMapper;
 
-    // TODO: 还需要增加密码的处理
     @Override
+    @ExistCheck(clazz = MsUser.class, fname = "username", message = "用户已存在")
     public Integer addUser(HsUser user) {
         // 添加用户信息
         user.setStatus(1);

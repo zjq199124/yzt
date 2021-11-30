@@ -27,6 +27,13 @@ public interface BuTreatmentMapper extends BaseMapper<BuTreatment> {
             @Param("status") Integer status,
             @Param("term") String term);
 
+    List<Map<String, Object>> selectTreatmentWaitingList(
+            @Param("startDate") String startDate,
+            @Param("endDate") String endDate,
+            @Param("customerId") Long customerId,
+            @Param("departmentId") Long departmentId,
+            @Param("therapistId") Long therapistId);
+
     List<Map<String, Object>> selectPsUserTreatmentList(
             @Param("userId") Long userId,
             @Param("patientId") Long patientId,
@@ -39,6 +46,6 @@ public interface BuTreatmentMapper extends BaseMapper<BuTreatment> {
             @Param("customerId") Long customerId,
             @Param("departmentId") Long departmentId,
             @Param("therapistId") Long therapistId,
-            @Param("projectId") Long projectId);
+            @Param("projects") List<Long> projects);
 
 }

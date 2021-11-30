@@ -1,10 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.maizhiyu.yzt.constants.DictConstant;
-import com.maizhiyu.yzt.entity.DictCommon;
 import com.maizhiyu.yzt.entity.TeTrouble;
-import com.maizhiyu.yzt.mapper.DictCommonMapper;
 import com.maizhiyu.yzt.mapper.TeTroubleMapper;
 import com.maizhiyu.yzt.service.ITeTroubleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +18,26 @@ import java.util.Map;
 public class TeTroubleService implements ITeTroubleService {
 
     @Autowired
-    private TeTroubleMapper troubleMapper;
+    private TeTroubleMapper mapper;
+
+    @Override
+    public Integer addTrouble(TeTrouble trouble) {
+        return mapper.insert(trouble);
+    }
+
+    @Override
+    public Integer delTrouble(Long id) {
+        return mapper.deleteById(id);
+    }
+
+    @Override
+    public Integer setTrouble(TeTrouble trouble) {
+        return mapper.updateById(trouble);
+    }
 
     @Override
     public TeTrouble getTrouble(Long id) {
-        return troubleMapper.selectById(id);
+        return mapper.selectById(id);
     }
 
     @Override
@@ -39,7 +51,7 @@ public class TeTroubleService implements ITeTroubleService {
         if (etype != null) {
             troubleWrapper.like("etype", etype);
         }
-        List<Map<String, Object>> all = troubleMapper.selectMaps(troubleWrapper);
+        List<Map<String, Object>> all = mapper.selectMaps(troubleWrapper);
 
         // 筛选出一级数据
         List<Map<String, Object>> levelOne = new ArrayList<>();

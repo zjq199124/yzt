@@ -48,6 +48,9 @@ public class TeFault {
     @ApiModelProperty(value = "解决人ID")
     private Long resolveUid;
 
+    @ApiModelProperty(value = "解决人(实际解决人)")
+    private String resolveUser;
+
     @ApiModelProperty(value = "解决时间")
     private Date resolveTime;
 

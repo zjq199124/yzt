@@ -26,6 +26,7 @@
         <module>yzt_web_ps</module>
         <module>yzt_web_es</module>
         <module>yzt_web_wx</module>
+        <module>yzt_xtools</module>
     </modules>
 
     <properties>

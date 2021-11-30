@@ -19,6 +19,8 @@ public interface ITxXzcService {
 
     Integer setRun(TxXzcRun run);
 
+    Integer setRunOnly(TxXzcRun run);
+
     Integer setRunWarn(TxXzcRun run);
 
     Integer addData(TxXzcData data);

@@ -90,15 +90,16 @@ public class TsSytechController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "status", value = "状态", required = false),
             @ApiImplicitParam(name = "term", value = "搜索词", required = false),
+            @ApiImplicitParam(name = "display", value = "是否展示(操作规范中)", required = false),
             @ApiImplicitParam(name = "pageNum", value = "开始页数", required = false),
             @ApiImplicitParam(name = "pageSize", value = "每页大小", required = false),
     })
     @GetMapping("/getSytechList")
-    public Result getSytechList(Integer status, String term,
+    public Result getSytechList(Integer status, String term, Integer display,
                                 @RequestParam(defaultValue = "1") Integer pageNum,
                                 @RequestParam(defaultValue = "10") Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<TsSytech> list = service.getSytechList(status, term);
+        List<TsSytech> list = service.getSytechList(status, term, display);
         PageInfo<TsSytech> pageInfo = new PageInfo<>(list, pageSize);
         return Result.success(pageInfo);
     }

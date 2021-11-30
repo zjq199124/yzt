@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.controller;
 
+import com.maizhiyu.yzt.entity.BuCheck;
 import com.maizhiyu.yzt.entity.BuDiagnose;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IBuDiagnoseService;

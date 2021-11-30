@@ -15,6 +15,8 @@ import java.util.Map;
 public interface BuOutpatientMapper extends BaseMapper<BuOutpatient> {
 
     List<Map<String,Object>> selectOutpatientList(
+            @Param("createStartDate") String createStartDate,
+            @Param("createEndDate") String createEndDate,
             @Param("startDate") String startDate,
             @Param("endDate") String endDate,
             @Param("customerId") Long customerId,
@@ -30,4 +32,10 @@ public interface BuOutpatientMapper extends BaseMapper<BuOutpatient> {
             @Param("patientId") Long patientId,
             @Param("type") Integer type,
             @Param("status") Integer status);
+
+    List<Map<String,Object>> selectOutpatientByPatientInfo(
+            @Param("name") String name,
+            @Param("phone") String phone,
+            @Param("timeStart") String timeStart,
+            @Param("timeEnd") String timeEnd);
 }

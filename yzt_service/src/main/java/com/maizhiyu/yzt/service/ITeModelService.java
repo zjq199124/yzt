@@ -3,6 +3,7 @@ package com.maizhiyu.yzt.service;
 import com.maizhiyu.yzt.entity.TeModel;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ITeModelService {
 
@@ -14,5 +15,7 @@ public interface ITeModelService {
 
     public TeModel getModel(Long id);
 
-    public List<TeModel> getModelList(Integer status, Integer type, String term);
+    public List<Map<String, Object>> getModelList(Integer status, Integer type, String term);
+
+//    public List<TeModel> getModelList(Integer status, Integer type, String term);
 }

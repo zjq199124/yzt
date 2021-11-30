@@ -9,6 +9,7 @@ import com.maizhiyu.yzt.mapper.MsResourceMapper;
 import com.maizhiyu.yzt.mapper.MsRoleMapper;
 import com.maizhiyu.yzt.mapper.MsRoleResourceMapper;
 import com.maizhiyu.yzt.service.IMsRoleService;
+import com.maizhiyu.yzt.utils.ExistCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,7 @@ public class MsRoleService implements IMsRoleService {
     private MsRoleResourceMapper roleResourceMapper;
 
     @Override
+    @ExistCheck(clazz = MsRole.class, fname = "rolename", message = "角色已存在")
     public Integer addRole(MsRole role) {
         // 添加角色信息
         role.setStatus(1);

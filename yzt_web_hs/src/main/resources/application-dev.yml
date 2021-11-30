@@ -22,14 +22,14 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     #     mysql驱动包
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/yizhentang?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
-    username: huhu
-    password: huhu
+    url: jdbc:mysql://121.196.199.219:3306/yizhentang_dev?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    username: work
+    password: DB1qaz@WSX
     druid:
       #      数据库连接池的最小维持连接数
-      min-idle: 10
+      min-idle: 3
       #      初始化连接数
-      initial-size: 20
+      initial-size: 5
       # 最大连接数
       max-active: 5000
       #      等待连接获取的最大超时时间
@@ -111,4 +111,4 @@ file:
 logging:
   level:
     com.maizhiyu.yzt: DEBUG
-    org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: trace
+#    org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: trace

@@ -58,6 +58,7 @@ public class TeXzcController {
                     break;
                 case "3":
                     JSONObject object = processHeart(jsonObject);
+                    System.out.println("@@@@@ heart return : " + jsonObject.toJSONString());
                     return Result.success(object);
                 case "4":
                     processData(jsonObject);
@@ -225,9 +226,9 @@ public class TeXzcController {
         Integer neckWaterTemp = jsonObject.getInteger("NWaterTemper");
         Integer neckSteamTemp = jsonObject.getInteger("NSteamTemper");
 
-        Integer waistSetTemp = jsonObject.getInteger("NSetTemper");
-        Integer waistWaterTemp = jsonObject.getInteger("NWaterTemper");
-        Integer waistSteamTemp = jsonObject.getInteger("NSteamTemper");
+        Integer waistSetTemp = jsonObject.getInteger("WSetTemper");
+        Integer waistWaterTemp = jsonObject.getInteger("WWaterTemper");
+        Integer waistSteamTemp = jsonObject.getInteger("WSteamTemper");
 
         // 处理运行数据
         TxXzcData data = new TxXzcData();
@@ -247,6 +248,14 @@ public class TeXzcController {
         String runId = jsonObject.getString("RunID");
         Integer state = jsonObject.getInteger("SysState");
 
+        // 更新运行数据
+        TxXzcRun run = new TxXzcRun();
+        run.setCode(code);
+        run.setRunid(runId);
+        run.setStatus(4);
+        run.setEndTime(new Date());
+        xzcService.setRunOnly(run);
+
         // 更新设备状态
         doUpdateState(code, state);
     }
@@ -254,7 +263,7 @@ public class TeXzcController {
     private void doUpdateState(String code, Integer state) {
         TeEquip equip = new TeEquip();
         equip.setCode(code);
-        equip.setState(1);
+        equip.setState(state);
         equip.setHeartTime(new Date());
         equipService.setEquip(equip);
     }

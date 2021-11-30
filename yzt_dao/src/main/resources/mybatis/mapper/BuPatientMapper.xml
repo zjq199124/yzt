@@ -55,8 +55,8 @@
             </if>
             <if test="term != null and term != ''">
                 and (P.name like concat(concat('%',#{term}),'%')
-                or U.phone like concat(concat('%',#{term}),'%')
-                or U.idcard like concat(concat('%',#{term}),'%'))
+                or P.phone like concat(concat('%',#{term}),'%')
+                or P.idcard like concat(concat('%',#{term}),'%'))
             </if>
         </where>
         group by

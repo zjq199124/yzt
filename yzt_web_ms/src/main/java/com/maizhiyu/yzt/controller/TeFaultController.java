@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +50,7 @@ public class TeFaultController {
     @PostMapping("/setFaultFollowup")
     public Result setFaultFollowup(@RequestBody TeFault fault) {
         fault.setStatus(3);
+        fault.setFollowupTime(new Date());
         Integer res = service.setFault(fault);
         return Result.success(fault);
     }

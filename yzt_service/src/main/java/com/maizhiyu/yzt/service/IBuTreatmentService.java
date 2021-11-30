@@ -17,8 +17,10 @@ public interface IBuTreatmentService {
             Long customerId, Long departmentId, Long therapistId, Long patientId, Long prescriptionId, Long projectId,
             Integer type, Integer status, String term);
 
+    List<Map<String, Object>> getTreatmentWaitingList(String startDate, String endDate, Long customerId, Long departmentId, Long therapistId);
+
     List<Map<String, Object>> getPsUserTreatmentList(Long userId, Long patientId, Integer type, Integer status);
 
-    List<Map<String, Object>> getTreatmentStatistics(String startDate, String endDate, Long customerId, Long departmentId, Long therapistId, Long projectId);
+    List<Map<String, Object>> getTreatmentStatistics(String startDate, String endDate, Long customerId, Long departmentId, Long therapistId, List<Long> projects);
 
 }

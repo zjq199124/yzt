@@ -36,8 +36,8 @@ public class TeWarnService implements ITeWarnService {
     }
 
     @Override
-    public List<Map<String, Object>> getWarnList(String date, Long agencyId, Long customId, Integer type, Long modelId) {
-        List<Map<String, Object>> list = mapper.selectWarnList(date, agencyId, customId, type, modelId);
+    public List<Map<String, Object>> getWarnList(String date, Long agencyId, Long customId, Integer type, Long modelId, Long equipId) {
+        List<Map<String, Object>> list = mapper.selectWarnList(date, agencyId, customId, type, modelId, equipId);
         return list;
     }
 

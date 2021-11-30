@@ -10,7 +10,7 @@ public interface ITeWarnService {
     Integer addWarn(TeWarn warn);
 
     List<Map<String,Object>> getWarnList(
-            String date, Long agencyId, Long customId, Integer type, Long modelId);
+            String date, Long agencyId, Long customId, Integer type, Long modelId, Long equipId);
 
     List<Map<String,Object>> getWarnListOfRun(
             String code, String runid);

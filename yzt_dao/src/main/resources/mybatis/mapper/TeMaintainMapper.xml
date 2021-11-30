@@ -11,16 +11,15 @@
 
     <select id="selectMaintainList" resultType="hashmap">
         select
-            X.id, X.eid, X.type, X.note,
-            DATE_FORMAT(X.time, '%Y-%m-%d %T') `time`,
+            X.id, X.eid, X.type, X.note, DATE_FORMAT(X.time, '%Y-%m-%d %T') `time`,
             A.code, A.identity,
+            C.content equipTypeName,
             D.content typeName
         from
             te_maintain X
             join te_equip A on X.eid = A.id
-            left join (
-                select * from dict_common where cate = "CATE_MAINTAIN_TYPE" and parent != 0
-            ) D on D.value = A.type
+            left join (select * from dict_common where cate = "CATE_EQUIP_TYPE" and parent != 0) C on C.value = A.type
+            left join (select * from dict_common where cate = "CATE_MAINTAIN_TYPE" and parent != 0) D on D.value = X.type
         <where>
             <if test="customerId != null">
                 and A.customer_id = #{customerId}
@@ -31,10 +30,10 @@
             <if test="type != null">
                 and X.type = #{type}
             </if>
-            <if test="startDate != null">
+            <if test="startDate != null and startDate != ''">
                 and X.time >= #{startDate}
             </if>
-            <if test="endDate != null">
+            <if test="endDate != null and endDate != ''">
                 and X.time &lt; #{endDate}
             </if>
         </where>

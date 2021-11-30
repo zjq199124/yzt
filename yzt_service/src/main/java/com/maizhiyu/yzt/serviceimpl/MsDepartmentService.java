@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.maizhiyu.yzt.entity.MsDepartment;
 import com.maizhiyu.yzt.mapper.MsDepartmentMapper;
 import com.maizhiyu.yzt.service.IMsDepartmentService;
+import com.maizhiyu.yzt.utils.ExistCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ public class MsDepartmentService implements IMsDepartmentService {
     private MsDepartmentMapper mapper;
 
     @Override
+    @ExistCheck(clazz = MsDepartment.class, fname = "dname", message = "部门已存在")
     public Integer addDepartment(MsDepartment department) {
         return mapper.insert(department);
     }

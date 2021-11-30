@@ -14,7 +14,7 @@ import retrofit2.http.Part;
 public interface YztApi {
 
     @Multipart
-    @POST("file/upload")
+    @POST("file/uploadCheck")
     Call<Result> upload(@Part MultipartBody.Part file);
 
     @POST("check/addCheck")

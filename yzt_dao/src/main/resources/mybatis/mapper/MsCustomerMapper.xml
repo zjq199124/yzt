@@ -5,7 +5,7 @@
     <select id="selectCustomer" resultType="hashmap">
         select
             X.id, X.agency_id, X.`status`, X.wxswitch, X.`name`,  X.address, X.contacts, X.descrip, X.avatar,
-            X.province, X.city, X.locationx, X.locationy, X.time_slots,
+            X.province, X.city, X.locationx, X.locationy, X.timeslot,
             DATE_FORMAT(X.update_time, '%Y-%m-%d %T') update_time,
             DATE_FORMAT(X.create_time, '%Y-%m-%d %T') create_time,
             A.name agency_name
@@ -52,7 +52,7 @@
                 and X.city like concat(concat('%',#{city}),'%')
             </if>
             <if test="term != null and term != ''">
-                and ( (X.name like concat(concat('%',#{term}),'%')) or (X.contacts like concat(concat('%',#{term}),'%')) )
+                and (X.name like concat(concat('%',#{term}),'%'))
             </if>
         </where>
     </select>

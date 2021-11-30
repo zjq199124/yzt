@@ -80,7 +80,7 @@ public class TeXzcDebugController {
     @ApiImplicitParams({})
     @GetMapping("/getWarnList")
     public Result getWarnList() {
-        List<Map<String, Object>> list = warnService.getWarnList(null, null, null, null, null);
+        List<Map<String, Object>> list = warnService.getWarnList(null, null, null, null, null, null);
         return Result.success(list);
     }
 

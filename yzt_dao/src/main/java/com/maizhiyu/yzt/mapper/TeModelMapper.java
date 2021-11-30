@@ -13,4 +13,9 @@ import java.util.Map;
 @Mapper
 @Repository
 public interface TeModelMapper extends BaseMapper<TeModel> {
+
+    List<Map<String,Object>> selectModelList(
+            @Param("status") Integer status,
+            @Param("type") Integer type,
+            @Param("term") String term);
 }

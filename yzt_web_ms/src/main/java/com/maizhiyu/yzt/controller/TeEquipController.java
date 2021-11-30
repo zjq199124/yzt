@@ -156,7 +156,7 @@ public class TeEquipController {
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = warnService.getWarnList(date, anencyId, customerId, type, modelId);
+        List<Map<String, Object>> list = warnService.getWarnList(date, anencyId, customerId, type, modelId, null);
         PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
         return Result.success(pageInfo);
     }

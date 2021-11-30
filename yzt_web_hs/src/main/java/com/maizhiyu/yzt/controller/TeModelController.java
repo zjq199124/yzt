@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Api(tags = "型号接口")
@@ -49,8 +50,8 @@ public class TeModelController {
                                 @RequestParam(defaultValue = "1") Integer pageNum,
                                 @RequestParam(defaultValue = "10") Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<TeModel> list = service.getModelList(status, type, term);
-        PageInfo<TeModel> pageInfo = new PageInfo<>(list, pageSize);
+        List<Map<String, Object>> list = service.getModelList(status, type, term);
+        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
         return Result.success(pageInfo);
     }
 

@@ -19,8 +19,9 @@ public interface TeWarnMapper extends BaseMapper<TeWarn> {
             @Param("date") String datetime,
             @Param("agencyId") Long agencyId,
             @Param("customerId") Long customerId,
-            @Param("status") Integer type,
-            @Param("modelId") Long modelId);
+            @Param("type") Integer type,
+            @Param("modelId") Long modelId,
+            @Param("equipId") Long equipId);
 
     List<Map<String,Object>> selectWarnListOfRun(
             @Param("code") String code,

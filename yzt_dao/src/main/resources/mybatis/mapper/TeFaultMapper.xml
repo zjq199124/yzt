@@ -21,14 +21,16 @@
     <select id="selectFaultList" resultType="hashmap">
         select
             X.id, X.eid, X.status,
-            X.report_uid, X.report_phone, X.report_content, DATE_FORMAT(X.report_time, '%Y-%m-%d %T') report_time,
-            X.resolve_uid, X.resolve_content, DATE_FORMAT(X.resolve_time, '%Y-%m-%d %T') resolve_time,
-            X.followup_uid, X.followup_content, DATE_FORMAT(X.followup_time, '%Y-%m-%d %T') followup_time,
+            X.report_uid, X.report_content, DATE_FORMAT(X.report_time, '%Y-%m-%d %H:%i') report_time,
+            X.resolve_uid, X.resolve_user, X.resolve_content, DATE_FORMAT(X.resolve_time, '%Y-%m-%d %H:%i') resolve_time,
+            X.followup_uid, X.followup_content, DATE_FORMAT(X.followup_time, '%Y-%m-%d %H:%i') followup_time,
+            X.evaluation_uid, X.evaluation_content, DATE_FORMAT(X.evaluation_time, '%Y-%m-%d %H:%i') evalueation_time,
             A.type, A.model_id, A.code, A.identity,
             B.name modelName,
-            U1.realname report_name,
+            U1.realname report_name, U1.phone report_phone,
             U2.realname resolve_name,
-            U3.realname followup_name
+            U3.realname followup_name,
+            D.content type_name
         from
             te_fault X
             join te_equip A on X.eid = A.id
@@ -36,6 +38,7 @@
             join hs_user U1 on X.report_uid = U1.id
             left join ms_user U2 on X.resolve_uid = U2.id
             left join ms_user U3 on X.followup_uid = U3.id
+            left join ( select * from dict_common where cate = "CATE_EQUIP_TYPE" and parent != 0 ) D on D.value = A.type
         <where>
             <if test="customerId != null">
                 and A.customer_id = #{customerId}
@@ -47,6 +50,7 @@
                 and (A.code like concat(concat('%',#{code}),'%'))
             </if>
         </where>
+        order by report_time desc
     </select>
 
 </mapper>

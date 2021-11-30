@@ -51,7 +51,8 @@
                 and X.status = #{status}
             </if>
             <if test="term != null and term != ''">
-                and (X.code like concat(concat('%',#{term}),'%'))
+                and ( X.code like concat(concat('%',#{term}),'%')
+                    or X.identity like concat(concat('%',#{term}),'%') )
             </if>
         </where>
     </select>

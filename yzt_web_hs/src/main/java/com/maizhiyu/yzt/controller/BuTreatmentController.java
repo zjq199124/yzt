@@ -7,6 +7,7 @@ import com.maizhiyu.yzt.entity.BuTreatment;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IBuTreatmentService;
 import com.maizhiyu.yzt.service.IMsCustomerService;
+import com.maizhiyu.yzt.utils.MyDate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -14,6 +15,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -124,14 +127,45 @@ public class BuTreatmentController {
             @ApiImplicitParam(name = "pageSize", value = "每页大小", required = false),
     })
     @GetMapping("/getTreatmentList")
-    public Result getTreatmentList(String startDate, String endDate,
+    public Result getTreatmentList(String startDate, String endDate, String date,
             Long customerId, Long departmentId, Long therapistId, Long patientId, Long prescriptionId, Long projectId,
             Integer type, Integer status, String term,
             @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
+            @RequestParam(defaultValue = "10") Integer pageSize) throws ParseException {
+        if (startDate == null && endDate == null && date != null) {
+            startDate = date;
+            endDate = MyDate.getNextDay(date);
+        }
         PageHelper.startPage(pageNum, pageSize);
         List<Map<String, Object>> list = service.getTreatmentList(startDate, endDate,
                 customerId, departmentId, therapistId, patientId, prescriptionId, projectId, type, status, term);
+        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
+        return Result.success(pageInfo);
+    }
+
+
+    @ApiOperation(value = "获取治疗等待列表", notes = "获取治疗等待列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startDate", value = "开始日期", required = true),
+            @ApiImplicitParam(name = "endDate", value = "开始日期", required = false),
+            @ApiImplicitParam(name = "date", value = "日期", required = false),
+            @ApiImplicitParam(name = "customerId", value = "医院ID", required = true),
+            @ApiImplicitParam(name = "departmentId", value = "科室ID", required = false),
+            @ApiImplicitParam(name = "therapistId", value = "治疗师ID", required = false),
+            @ApiImplicitParam(name = "pageNum", value = "开始页数", required = false),
+            @ApiImplicitParam(name = "pageSize", value = "每页大小", required = false),
+    })
+    @GetMapping("/getTreatmentWaitingList")
+    public Result getTreatmentWaitingList(String startDate, String endDate, String date,
+                                   Long customerId, Long departmentId, Long therapistId,
+                                   @RequestParam(defaultValue = "1") Integer pageNum,
+                                   @RequestParam(defaultValue = "10") Integer pageSize) throws ParseException {
+        if (startDate == null && endDate == null && date != null) {
+            startDate = date;
+            endDate = MyDate.getNextDay(date);
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<Map<String, Object>> list = service.getTreatmentWaitingList(startDate, endDate, customerId, departmentId, therapistId);
         PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
         return Result.success(pageInfo);
     }
@@ -144,16 +178,24 @@ public class BuTreatmentController {
             @ApiImplicitParam(name = "customerId", value = "客户ID", required = true),
             @ApiImplicitParam(name = "departmentId", value = "科室ID", required = false),
             @ApiImplicitParam(name = "therapistId", value = "治疗师ID", required = false),
-            @ApiImplicitParam(name = "projectId", value = "项目ID", required = false),
+            @ApiImplicitParam(name = "projects", value = "项目ID列表", required = false),
             @ApiImplicitParam(name = "pageNum", value = "开始页数", required = false),
             @ApiImplicitParam(name = "pageSize", value = "每页大小", required = false),
     })
     @GetMapping("/getTreatmentStatisticsOfTherapist")
-    public Result getTreatmentStatisticsOfTherapist(String startDate, String endDate, Long customerId, Long departmentId, Long therapistId, Long projectId,
+    public Result getTreatmentStatisticsOfTherapist(String startDate, String endDate, Long customerId, Long departmentId, Long therapistId, String projects,
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "100") Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = service.getTreatmentStatistics(startDate, endDate, customerId, departmentId, therapistId, projectId);
+        List<Long> projectList = new ArrayList<>();
+        if (projects != null) {
+            for (String pid : projects.split(",")) {
+                projectList.add(Long.parseLong(pid));
+            }
+        } else {
+            throw new RuntimeException("请选择项目");
+        }
+        List<Map<String, Object>> list = service.getTreatmentStatistics(startDate, endDate, customerId, departmentId, therapistId, projectList);
         PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
         return Result.success(pageInfo);
     }

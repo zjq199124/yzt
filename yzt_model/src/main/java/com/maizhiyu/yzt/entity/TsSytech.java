@@ -33,6 +33,9 @@ public class TsSytech {
     @ApiModelProperty(value="视频资源url")
     private String url;
 
+    @ApiModelProperty(value="是否展示")
+    private Integer display;
+
     @ApiModelProperty(value="更新时间")
     private Date updateTime;
 

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 
 @Service
@@ -26,19 +27,31 @@ public class BuPatientService implements IBuPatientService {
     @Autowired
     private PsUserPatientMapper userPatientMapper;
 
-    @Autowired
-    private BuPrescriptionItemMapper prescriptionItemMapper;
-
-
     @Override
     public Integer addPatient(BuPatient patient) {
+        if (patient.getCode() == null) {
+            String code = UUID.randomUUID().toString().replace("-", "").substring(0,20);
+            patient.setCode(code);
+        }
         return patientMapper.insert(patient);
     }
 
     @Override
     public Integer addPatientByPsUser(Long userId, BuPatient patient) {
-        // 添加患者信息
-        patientMapper.insert(patient);
+        // 查询患者
+        QueryWrapper<BuPatient> wrapper = new QueryWrapper<>();
+        List<BuPatient> list = patientMapper.selectList(wrapper);
+        // 患者不存在则新增
+        if (list == null || list.size() == 0) {
+            // 添加患者信息
+            String code = UUID.randomUUID().toString().replace("-", "").substring(0,20);
+            patient.setCode(code);
+            patientMapper.insert(patient);
+        }
+        // 患者存在
+        else {
+
+        }
         // 添加关系信息
         PsUserPatient psUserPatient = new PsUserPatient();
         psUserPatient.setUserId(userId);
@@ -62,13 +75,20 @@ public class BuPatientService implements IBuPatientService {
     }
 
     @Override
-    public List<BuPatient> getPatientList(String term) {
+    public List<BuPatient> getPatientList(Long customerId, String term) {
         QueryWrapper<BuPatient> wrapper = new QueryWrapper<>();
+        if (customerId == null) {
+            wrapper.and(q -> q.isNull("customer_id")
+                    .or().eq("customer_id", 0L));
+        } else {
+            wrapper.and(q -> q.eq("customer_id", customerId)
+                    .or().eq("customer_id", 0L));
+        }
         if (term != null && term.length() > 0) {
-            wrapper.like("code", term)
+            wrapper.and(q -> q.like("code", term)
                     .or().like("name", term)
                     .or().like("phone", term)
-                    .or().like("idcard", term);
+                    .or().like("idcard", term));
         }
         return patientMapper.selectList(wrapper);
     }

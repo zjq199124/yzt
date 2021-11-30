@@ -2,9 +2,11 @@ package com.maizhiyu.yzt.serviceimpl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.maizhiyu.yzt.entity.BuOutpatient;
 import com.maizhiyu.yzt.entity.BuPrescription;
 import com.maizhiyu.yzt.entity.BuPrescriptionItem;
 import com.maizhiyu.yzt.entity.HsUser;
+import com.maizhiyu.yzt.mapper.BuOutpatientMapper;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemMapper;
 import com.maizhiyu.yzt.mapper.BuPrescriptionMapper;
 import com.maizhiyu.yzt.mapper.HsUserMapper;
@@ -13,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Service
@@ -34,6 +33,11 @@ public class BuPrescriptionService implements IBuPrescriptionService {
 
     @Override
     public Integer addPrescription(BuPrescription prescription) {
+        // 生成编码
+        if (prescription.getCode() == null) {
+            String code = UUID.randomUUID().toString().replace("-", "").substring(0,20);
+            prescription.setCode(code);
+        }
         // 新增处方
         int res = mapper.insert(prescription);
         // 增加处方项
@@ -54,7 +58,12 @@ public class BuPrescriptionService implements IBuPrescriptionService {
 
     @Override
     public Integer setPrescription(BuPrescription prescription) {
+        // 获取原来处方数据
+        BuPrescription original = mapper.selectById(prescription.getId());
         // 更新处方
+        prescription.setOutpatientId(original.getOutpatientId());
+        prescription.setDoctorId(original.getDoctorId());
+        prescription.setPatientId(original.getPatientId());
         int res = mapper.updateById(prescription);
         // 删除处方项
         delItems(prescription.getId());
@@ -116,13 +125,17 @@ public class BuPrescriptionService implements IBuPrescriptionService {
 
 
     private void addItems(BuPrescription prescription) {
+        Date date = new Date();
         for (BuPrescriptionItem item : prescription.getItemList()) {
+            item.setType(prescription.getType());
             item.setCustomerId(prescription.getCustomerId());
             item.setDepartmentId(prescription.getDepartmentId());
             item.setDoctorId(prescription.getDoctorId());
             item.setPatientId(prescription.getPatientId());
             item.setOutpatientId(prescription.getOutpatientId());
             item.setPrescriptionId(prescription.getId());
+            item.setCreateTime(date);
+            item.setUpdateTime(date);
             itemMapper.insert(item);
         }
     }

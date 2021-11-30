@@ -4,24 +4,10 @@ import re
 import openpyxl
 
 from src.MysqlTool import MysqlTool
+from src.utils import process_symptoms
 
 
 sqltool = MysqlTool()
-
-
-def _process_symptoms(symptom_str):
-    symptom_list = []
-    symptom_str = symptom_str\
-        .replace(" ", "")\
-        .replace("或", "")\
-        .replace("伴有", "")\
-        .replace("等","")
-    arr = re.split("[,.;，。；、]", symptom_str)
-    for it in arr:
-        symptom = it.strip()
-        if len(symptom) > 1:
-            symptom_list.append(symptom)
-    return symptom_list
 
 
 def process_zhongyao(table):
@@ -35,7 +21,7 @@ def process_zhongyao(table):
         component = table[i][6].value.strip()
 
         # 添加症状
-        symptom_list = _process_symptoms(symptom_str)
+        symptom_list = process_symptoms(symptom_str)
         for symptom in symptom_list:
             status = 1
             cate = 1
@@ -146,7 +132,7 @@ def process_xunzheng(table):
         component = table[i][6].value.strip()
 
         # 添加症状
-        symptom_list = _process_symptoms(symptom_str)
+        symptom_list = process_symptoms(symptom_str)
         for symptom in symptom_list:
             status = 1
             cate = 1

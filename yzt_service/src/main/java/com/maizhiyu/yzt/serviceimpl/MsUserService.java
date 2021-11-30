@@ -9,6 +9,7 @@ import com.maizhiyu.yzt.mapper.MsUserDepartmentMapper;
 import com.maizhiyu.yzt.mapper.MsUserMapper;
 import com.maizhiyu.yzt.mapper.MsUserRoleMapper;
 import com.maizhiyu.yzt.service.IMsUserService;
+import com.maizhiyu.yzt.utils.ExistCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +32,8 @@ public class MsUserService implements IMsUserService {
     @Autowired
     private MsUserDepartmentMapper userDepartmentMapper;
 
-    // TODO: 还需要增加密码的处理
     @Override
+    @ExistCheck(clazz = MsUser.class, fname = "username", message = "用户已存在")
     public Integer addUser(MsUser user) {
         // 添加用户信息
         user.setStatus(1);

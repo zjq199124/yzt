@@ -29,7 +29,7 @@ public class BuTreatment implements Serializable {
     @ApiModelProperty(value="预约单编码")
     private String code;
 
-    @ApiModelProperty(value="治疗单编码")
+    @ApiModelProperty(value="治疗单编码(即处方单编码)")
     private String tcode;
 
     @ApiModelProperty(value="预约状态(0:已取消 1:待打印 2:待治疗 3:治疗中 4:已治疗 5:已反馈 6:已评价 7:已随访 8:异常)")
@@ -39,7 +39,7 @@ public class BuTreatment implements Serializable {
     private Integer type;
 
     @ApiModelProperty(value="预约时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Shanghai")
     private Date time;
 
     @ApiModelProperty(value="医院ID")

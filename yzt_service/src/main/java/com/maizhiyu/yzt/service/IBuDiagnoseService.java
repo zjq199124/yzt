@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.service;
 
+import com.maizhiyu.yzt.entity.BuCheck;
 import com.maizhiyu.yzt.entity.BuDiagnose;
 
 import java.util.List;
@@ -13,6 +14,6 @@ public interface IBuDiagnoseService {
 
     BuDiagnose getDiagnose(Long id);
 
-    BuDiagnose getDiagnoseOfOutpatient(Long patientId);
+    BuDiagnose getDiagnoseOfOutpatient(Long outpatientId);
 
 }

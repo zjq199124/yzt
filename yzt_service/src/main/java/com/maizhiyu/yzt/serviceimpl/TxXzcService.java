@@ -1,15 +1,14 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.Update;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.maizhiyu.yzt.entity.TeWarn;
-import com.maizhiyu.yzt.entity.TxXzcCmd;
-import com.maizhiyu.yzt.entity.TxXzcData;
-import com.maizhiyu.yzt.entity.TxXzcRun;
+import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.mapper.TxXzcCmdMapper;
 import com.maizhiyu.yzt.mapper.TxXzcDataMapper;
 import com.maizhiyu.yzt.mapper.TxXzcRunMapper;
 import com.maizhiyu.yzt.service.ITxXzcService;
+import com.maizhiyu.yzt.utils.ExistCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +59,7 @@ public class TxXzcService implements ITxXzcService {
     }
 
     @Override
+    @ExistCheck(clazz = TxXzcRun.class, fname = "code|runid", message = "runid已存在")
     public Integer addRun(TxXzcRun run) {
         return runMapper.insert(run);
     }
@@ -85,6 +85,14 @@ public class TxXzcService implements ITxXzcService {
     }
 
     @Override
+    public Integer setRunOnly(TxXzcRun run) {
+        UpdateWrapper<TxXzcRun> wrapper = new UpdateWrapper<>();
+        wrapper.eq("code", run.getCode())
+                .eq("runid", run.getRunid());
+        return runMapper.update(run, wrapper);
+    }
+
+    @Override
     public Integer setRunWarn(TxXzcRun run) {
         UpdateWrapper<TxXzcRun> wrapper = new UpdateWrapper<>();
         wrapper.eq("code", run.getCode())
@@ -103,10 +111,10 @@ public class TxXzcService implements ITxXzcService {
         QueryWrapper<TxXzcRun> wrapper = new QueryWrapper<>();
         wrapper.eq("code", code);
         wrapper.orderByDesc("start_time");
-        if (startDate != null) {
+        if (startDate != null && startDate.trim().length() > 0) {
             wrapper.ge("start_time", startDate);
         }
-        if (endDate != null) {
+        if (endDate != null && endDate.trim().length() > 0) {
             // 注意：这里就是start_time < endDate，不要改为 end_time < endDate
             // startDate/endDate表示的是，设备开始运行的时间，在startDate和endDate之间
             wrapper.le("start_time", endDate);

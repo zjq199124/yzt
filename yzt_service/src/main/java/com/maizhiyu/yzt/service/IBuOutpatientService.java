@@ -14,6 +14,7 @@ public interface IBuOutpatientService {
     BuOutpatient getOutpatient(Long id);
 
     List<Map<String, Object>> getOutpatientList(
+            String createStartDate, String createEndDate,
             String startDate, String endDate,
             Long customerId, Long departmentId, Long doctorId, Long patientId,
             Integer type, Integer status, String term);

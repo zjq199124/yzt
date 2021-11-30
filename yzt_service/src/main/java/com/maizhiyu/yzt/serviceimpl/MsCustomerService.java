@@ -6,6 +6,7 @@ import com.maizhiyu.yzt.entity.MsCustomer;
 import com.maizhiyu.yzt.mapper.HsUserMapper;
 import com.maizhiyu.yzt.mapper.MsCustomerMapper;
 import com.maizhiyu.yzt.service.IMsCustomerService;
+import com.maizhiyu.yzt.utils.ExistCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ public class MsCustomerService implements IMsCustomerService {
     private MsCustomerMapper mapper;
 
     @Override
+    @ExistCheck(clazz = MsCustomer.class, fname = "name", message = "客户已存在")
     public Integer addCustomer(MsCustomer customer) {
         customer.setStatus(1);
         customer.setCreateTime(new Date());

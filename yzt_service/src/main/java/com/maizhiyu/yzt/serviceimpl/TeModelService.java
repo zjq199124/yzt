@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -39,18 +40,19 @@ public class TeModelService implements ITeModelService {
     }
 
     @Override
-    public List<TeModel> getModelList(Integer status, Integer type, String term) {
-        QueryWrapper<TeModel> wrapper = new QueryWrapper<>();
-        if (status != null) {
-            wrapper.eq("status", status);
-        }
-        if (type != null) {
-            wrapper.eq("type", type);
-        }
-        if (term != null) {
-            wrapper.like("name", term);
-        }
-        List<TeModel> list = mapper.selectList(wrapper);
-        return list;
+    public List<Map<String, Object>> getModelList(Integer status, Integer type, String term) {
+        return mapper.selectModelList(status, type, term);
+//        QueryWrapper<TeModel> wrapper = new QueryWrapper<>();
+//        if (status != null) {
+//            wrapper.eq("status", status);
+//        }
+//        if (type != null) {
+//            wrapper.eq("type", type);
+//        }
+//        if (term != null) {
+//            wrapper.like("name", term);
+//        }
+//        List<TeModel> list = mapper.selectList(wrapper);
+//        return list;
     }
 }

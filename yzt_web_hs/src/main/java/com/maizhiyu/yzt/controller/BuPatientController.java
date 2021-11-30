@@ -72,11 +72,12 @@ public class BuPatientController {
 
     @ApiOperation(value = "获取患者列表", notes = "获取患者列表(搜索使用)")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "customerId", value = "客户ID", required = true),
             @ApiImplicitParam(name = "term", value = "搜索词", required = true),
     })
     @GetMapping("/getPatientList")
-    public Result getPatientList(String term) {
-        List<BuPatient> list = service.getPatientList(term);
+    public Result getPatientList(Long customerId, String term) {
+        List<BuPatient> list = service.getPatientList(customerId, term);
         return Result.success(list);
     }
 

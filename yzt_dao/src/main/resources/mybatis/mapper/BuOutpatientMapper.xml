@@ -19,6 +19,12 @@
             left join hs_user C on C.id = X.doctor_id
             left join bu_patient D on D.id = X.patient_id
         <where>
+            <if test="createStartDate != null">
+                and X.create_time >= #{createStartDate}
+            </if>
+            <if test="createEndDate != null">
+                and X.create_time &lt; #{createEndDate}
+            </if>
             <if test="startDate != null">
                 and X.time >= #{startDate}
             </if>
@@ -49,7 +55,7 @@
                 or X.code like concat(concat('%',#{term}),'%'))
             </if>
         </where>
-        order by X.create_time desc
+        order by time desc, X.create_time desc
     </select>
 
     <select id="selectPsUserOutpatientList" resultType="hashmap">
@@ -80,6 +86,28 @@
             </if>
             <if test="status != null">
                 and X.status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectOutpatientByPatientInfo" resultType="hashmap">
+        select
+            *
+        from
+            bu_outpatient X
+            join bu_patient P on P.id = X.patient_id
+        <where>
+            <if test="name != null">
+                and P.name = #{name}
+            </if>
+            <if test="phone != null">
+                and P.phone = #{phone}
+            </if>
+            <if test="timeStart != null">
+                and X.time &gt; #{timeStart}
+            </if>
+            <if test="timeEnd != null">
+                and X.time &lt; #{timeEnd}
             </if>
         </where>
     </select>

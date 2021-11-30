@@ -95,7 +95,7 @@ public class TeEquipController {
                                 @RequestParam(defaultValue = "10") Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<Map<String, Object>> list = equipService.getEquipList(null, customerId, type, modelId, status, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
+        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list);
         return Result.success(pageInfo);
     }
 
@@ -117,7 +117,7 @@ public class TeEquipController {
 
     @ApiOperation(value = "增加维护", notes = "增加维护")
     @PostMapping("/addMaintain")
-    public Result addUser(@RequestBody TeMaintain maintain) {
+    public Result addMaintain(@RequestBody TeMaintain maintain) {
         maintain.setTime(new Date());
         Integer res = maintainService.addMaintain(maintain);
         return Result.success(maintain);
@@ -173,15 +173,16 @@ public class TeEquipController {
             @ApiImplicitParam(name = "customerId", value = "客户ID", required = false),
             @ApiImplicitParam(name = "type", value = "设备类型", required = false),
             @ApiImplicitParam(name = "modelId", value = "型号ID", required = false),
+            @ApiImplicitParam(name = "equipId", value = "设备ID", required = false),
             @ApiImplicitParam(name = "pageNum", value = "开始页数", required = false),
             @ApiImplicitParam(name = "pageSize", value = "每页大小", required = false),
     })
     @GetMapping("/getWarnList")
-    public Result getWarnList(String date, Long anencyId, Long customerId, Integer type, Long modelId,
+    public Result getWarnList(String date, Long anencyId, Long customerId, Integer type, Long modelId, Long equipId,
                                  @RequestParam(defaultValue = "1") Integer pageNum,
                                  @RequestParam(defaultValue = "10") Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = warnService.getWarnList(date, null, customerId, type, modelId);
+        List<Map<String, Object>> list = warnService.getWarnList(date, null, customerId, type, modelId, equipId);
         PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
         return Result.success(pageInfo);
     }

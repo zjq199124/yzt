@@ -25,7 +25,7 @@
     <!-- type = 4、5 时表示协定方（熏蒸方）和治疗方-->
     <select id="selectPatientPrescriptionItemSummary" resultType="hashmap">
         select
-            P.doctor_id,
+            P.doctor_id, P.code,
             DATE_FORMAT(P.create_time, '%Y-%m-%d %T') create_time,
             A.prescription_id, A.id item_id, A.type, A.entity_id, A.name entity_name, A.detail, A.quantity,
             X.used
@@ -33,7 +33,7 @@
             (
                 select *
                 from bu_prescription
-                where type = 4 or type = 5
+                where type = 5
             ) P
             join
             (

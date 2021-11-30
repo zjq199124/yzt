@@ -4,10 +4,12 @@
 
     <select id="selectTreatmentList" resultType="hashmap">
         select
-            X.id, X.code, X.tcode, X.status, X.type, X.exception, X.feedback,
+            X.id, X.code, X.tcode, X.status, X.type, X.exception, X.feedback, X.evaluation,
+            X.followup, X.followup_uid,
             DATE_FORMAT(X.time, '%Y-%m-%d %T') time,
             DATE_FORMAT(X.update_time, '%Y-%m-%d %T') update_time,
             DATE_FORMAT(X.create_time, '%Y-%m-%d %T') create_time,
+            DATE_FORMAT(X.followup_time, '%Y-%m-%d %T') followup_time,
             A.id customer_id, A.name customer_name,
             B.id department_id, B.dname department_name,
             C.id therapist_id, C.realname therapist_name,
@@ -58,6 +60,47 @@
                   or X.tcode like concat(concat('%',#{term}),'%'))
             </if>
         </where>
+        order by time desc
+    </select>
+
+    <select id="selectTreatmentWaitingList" resultType="hashmap">
+        select
+            X.id, X.code, X.tcode, X.status, X.type, X.exception, X.feedback,
+            DATE_FORMAT(X.time, '%Y-%m-%d %T') time,
+            DATE_FORMAT(X.update_time, '%Y-%m-%d %T') update_time,
+            DATE_FORMAT(X.create_time, '%Y-%m-%d %T') create_time,
+            A.id customer_id, A.name customer_name,
+            B.id department_id, B.dname department_name,
+            C.id therapist_id, C.realname therapist_name,
+            D.id patient_id, D.code patient_code, D.name patient_name, D.sex patient_sex,
+            D.birthday patient_birthday, D.phone patient_phone, D.idcard patient_idcard,
+            T.id project_id, T.name project_name
+        from
+            bu_treatment X
+            left join ts_sytech T on T.id = X.project_id
+            left join ms_customer A on A.id = X.customer_id
+            left join hs_department B on B.id = X.department_id
+            left join hs_user C on C.id = X.therapist_id
+            left join bu_patient D on D.id = X.patient_id
+        <where>
+            X.status = 1 or X.status = 2
+            <if test="startDate != null">
+                and X.time >= #{startDate}
+            </if>
+            <if test="endDate != null">
+                and X.time &lt; #{endDate}
+            </if>
+            <if test="customerId != null">
+                and X.customer_id = #{customerId}
+            </if>
+            <if test="departmentId != null">
+                and X.department_id = #{departmentId}
+            </if>
+            <if test="therapistId != null">
+                and X.therapist_id = #{therapistId}
+            </if>
+        </where>
+        order by time desc
     </select>
 
     <select id="selectPsUserTreatmentList" resultType="hashmap">
@@ -94,16 +137,20 @@
                 and X.status = #{status}
             </if>
         </where>
+        order by time desc
     </select>
 
     <select id="selectTreatmentStatistics" resultType="hashmap">
         select
-            X.code, X.tcode, X.type, X.time,
             A.id customer_id, A.name customer_name,
             B.id department_id, B.dname department_name,
             C.id therapist_id, C.realname therapist_name,
-            D.id project_id, D.name project_name,
-            count(*) `count`
+            count(*) `count`,
+            <if test="projects != null">
+                <foreach collection="projects" index="index" item="item" separator=",">
+                    count(case D.id when #{item} then 1 end) count_${item}
+                </foreach>
+            </if>
         from
             bu_treatment X
             left join ms_customer A on A.id = X.customer_id
@@ -126,12 +173,8 @@
             <if test="therapistId != null">
                 and X.therapist_id = #{therapistId}
             </if>
-            <if test="projectId != null">
-                and X.project_id = #{projectId}
-            </if>
         </where>
-        group by
-            therapist_id, project_id
+        group by customer_id, therapist_id
     </select>
 
 </mapper>

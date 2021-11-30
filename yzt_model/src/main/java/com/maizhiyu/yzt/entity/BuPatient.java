@@ -23,6 +23,9 @@ public class BuPatient implements Serializable {
     @TableId(type = IdType.AUTO)
     private Long id;
 
+    @ApiModelProperty(value="客户ID")
+    private Integer customerId;
+
     @ApiModelProperty(value="患者编码")
     private String code;
 

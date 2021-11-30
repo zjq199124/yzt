@@ -49,7 +49,9 @@ public class TsStandardService implements ITsStandardService {
     @Override
     public List<Map<String,Object>> getStandardList() {
         // 查询技术列表
-        List<Map<String, Object>> sytechList = sytechMapper.selectMaps(null);
+        QueryWrapper<TsSytech> wrapper = new QueryWrapper<>();
+        wrapper.eq("display", 1);
+        List<Map<String, Object>> sytechList = sytechMapper.selectMaps(wrapper);
 
         // 查询标准列表
         List<TsStandard> standardList = standardMapper.selectList(null);
