@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="yzt_web_wx" />
+        <module name="yzt_web_ps" />
+        <module name="yzt_web_ms" />
+        <module name="yzt_dao" />
+        <module name="yzt_model" />
+        <module name="yzt_service" />
+        <module name="yzt_xtools" />
+        <module name="yzt_utils" />
+        <module name="yzt_web_hs" />
+        <module name="yzt_web_es" />
+        <module name="yzt_common" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="swagger_test" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="swagger_test" options="-parameters" />
+      <module name="yzt_common" options="-parameters" />
+      <module name="yzt_dao" options="-parameters" />
+      <module name="yzt_model" options="-parameters" />
+      <module name="yzt_service" options="-parameters" />
+      <module name="yzt_utils" options="-parameters" />
+      <module name="yzt_web_es" options="-parameters" />
+      <module name="yzt_web_hs" options="-parameters" />
+      <module name="yzt_web_ms" options="-parameters" />
+      <module name="yzt_web_ps" options="-parameters" />
+      <module name="yzt_web_wx" options="-parameters" />
+      <module name="yzt_xtools" options="-parameters" />
+    </option>
+  </component>
+</project>
