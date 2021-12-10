@@ -3,11 +3,13 @@ package com.maizhiyu.yzt.serviceimpl;
 import com.maizhiyu.yzt.entity.BuDiagnose;
 import com.maizhiyu.yzt.mapper.BuRecommendMapper;
 import com.maizhiyu.yzt.service.IBuRecommendService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -54,9 +56,19 @@ public class BuRecommendService implements IBuRecommendService {
         for (Map<String, Object> syndrome : syndromeList) {
             System.out.println(syndrome);
             String[] arr = ((String) syndrome.get("symptoms")).split(",|，");
-            int total = arr.length;
             long count = (long) syndrome.get("count");
-            double score = (double) count * count / total;
+            if(StringUtils.isNotBlank(diagnose.getSymptoms())) {
+                String[] arr2 = diagnose.getSymptoms().split(",|，");
+                List<String> list1= new ArrayList<>(Arrays.asList(arr));
+                List<String> list2= new ArrayList<>(Arrays.asList(arr2));
+                List<String> intersection = list1.stream().filter(item -> list2.contains(item)).collect(Collectors.toList());
+                count = intersection.size();
+            }
+            int total = arr.length;
+
+//            double score = (double) count * count / total;
+
+            double score = (double) count / total;
             syndrome.put("total", total);
             syndrome.put("score", score);
         }

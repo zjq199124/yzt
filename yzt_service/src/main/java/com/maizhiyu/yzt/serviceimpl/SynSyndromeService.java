@@ -1,6 +1,8 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.maizhiyu.yzt.entity.DictDisease;
 import com.maizhiyu.yzt.entity.SynSyndrome;
+import com.maizhiyu.yzt.mapper.DictDiseaseMapper;
 import com.maizhiyu.yzt.mapper.SynSyndromeMapper;
 import com.maizhiyu.yzt.service.ISynSyndromeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,9 @@ public class SynSyndromeService implements ISynSyndromeService {
     @Autowired
     private SynSyndromeMapper mapper;
 
+    @Autowired
+    private DictDiseaseMapper dictDiseaseMapper;
+
     @Override
     public Integer addSyndrome(SynSyndrome agency) {
         return mapper.insert(agency);
@@ -29,13 +34,31 @@ public class SynSyndromeService implements ISynSyndromeService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Integer setSyndrome(SynSyndrome syndrome) {
+        SynSyndrome synSyndrome = mapper.selectById(syndrome.getId());
+
+        if(synSyndrome.getDiseaseId() != null) {
+            DictDisease dictDisease = dictDiseaseMapper.selectById(synSyndrome.getDiseaseId());
+            if(dictDisease != null) {
+                dictDisease.setKeys(syndrome.getKeys());
+                dictDiseaseMapper.updateById(dictDisease);
+            }
+        }
         return mapper.updateById(syndrome);
     }
 
     @Override
     public SynSyndrome getSyndrome(Long id) {
-        return mapper.selectById(id);
+
+        SynSyndrome synSyndrome = mapper.selectById(id);
+        if(synSyndrome.getDiseaseId() != null) {
+            DictDisease dictDisease = dictDiseaseMapper.selectById(synSyndrome.getDiseaseId());
+            if(dictDisease != null) {
+                synSyndrome.setKeys(dictDisease.getKeys());
+            }
+        }
+        return synSyndrome;
     }
 
     @Override

@@ -31,4 +31,7 @@ public class DictDisease {
 
     @ApiModelProperty(value="备注说明")
     private String note;
+
+    @ApiModelProperty(value="关键词 添加时,分隔")
+    private String keys;
 }
