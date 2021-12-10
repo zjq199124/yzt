@@ -26,22 +26,24 @@
                 and X.name LIKE CONCAT('%',#{syndrome},'%')
             </if>
         </where>
-        limit 20
+        <!--         limit 20-->
     </select>
 
     <select id="selectSyndromeBySymptom" resultType="hashmap">
         select
-            *, count(*) `count`
+        *, count(*) `count`
         from
-            <foreach collection="symptoms" item="symptom" index="index" open="(" separator="union all" close=") X">
-                select
-                    X.*, D.content disease_name
-                from
-                    syn_syndrome X
-                    join dict_disease D on D.id = X.disease_id
-                where
-                    symptoms LIKE CONCAT('%',#{symptom},'%')
-            </foreach>
+        (
+            select
+            X.*, D.content disease_name
+            from
+            syn_syndrome X
+            join dict_disease D on D.id = X.disease_id
+            where
+        <foreach collection="symptoms" item="symptom" index="index" open="(" separator=" or " close=")">
+            symptoms LIKE CONCAT('%',#{symptom},'%')
+        </foreach>
+            ) X
         group by id
     </select>
 

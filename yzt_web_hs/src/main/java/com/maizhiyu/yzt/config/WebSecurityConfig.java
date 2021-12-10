@@ -52,10 +52,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/**/docs.html").permitAll()
 //                .antMatchers("/**/api-docs").permitAll()
 //                .antMatchers("/**/image/*.*").permitAll()
-//
 //                // 其他的请求都需要进行认证
 //                .anyRequest().authenticated()
-//
 //                // 登入设置
 //                .and()
 //                .formLogin()
@@ -65,7 +63,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .usernameParameter("username")
 //                .passwordParameter("password")
 //                .permitAll()
-//
 //                // 登出设置
 //                .and()
 //                .logout()

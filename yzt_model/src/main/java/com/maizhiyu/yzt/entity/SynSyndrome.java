@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.entity;
 
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
@@ -31,4 +32,8 @@ public class SynSyndrome {
 
     @ApiModelProperty(value="症状列表")
     private String symptoms;
+
+    @ApiModelProperty("关键词,号分隔")
+    @TableField(exist = false)
+    private String keys;
 }
