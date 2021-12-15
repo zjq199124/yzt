@@ -41,10 +41,12 @@ public class SynSyndromeService implements ISynSyndromeService {
         if(synSyndrome.getDiseaseId() != null) {
             DictDisease dictDisease = dictDiseaseMapper.selectById(synSyndrome.getDiseaseId());
             if(dictDisease != null) {
-                dictDisease.setKeys(syndrome.getKeys());
+                dictDisease.setKeyss(syndrome.getKeyss());
                 dictDiseaseMapper.updateById(dictDisease);
             }
         }
+
+        syndrome.setKeyss(null);
         return mapper.updateById(syndrome);
     }
 
@@ -55,7 +57,7 @@ public class SynSyndromeService implements ISynSyndromeService {
         if(synSyndrome.getDiseaseId() != null) {
             DictDisease dictDisease = dictDiseaseMapper.selectById(synSyndrome.getDiseaseId());
             if(dictDisease != null) {
-                synSyndrome.setKeys(dictDisease.getKeys());
+                synSyndrome.setKeyss(dictDisease.getKeyss());
             }
         }
         return synSyndrome;

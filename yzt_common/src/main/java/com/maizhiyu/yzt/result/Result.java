@@ -38,6 +38,15 @@ public class Result implements Serializable {
         return new Result(resultCode.code(), resultCode.msg(), null);
     }
 
+    public static Result failure() {
+        return new Result(ResultCode.FAILURE.code(), ResultCode.FAILURE.msg(), null);
+    }
+
+    public static Result failure(String msg) {
+        return new Result(ResultCode.FAILURE.code(), msg, null);
+    }
+
+
     public static Result failure(ResultCode resultCode, Object data) {
         return new Result(resultCode.code(), resultCode.msg(), data);
     }

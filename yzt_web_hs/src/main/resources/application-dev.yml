@@ -5,7 +5,8 @@ server:
   session:
     timeout: 7200
   servlet:
-    context-path: /hs/api
+#    context-path: /hs/api
+    context-path: /pd/api
 #env: stg
 
 
@@ -22,14 +23,14 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     #     mysql驱动包
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://121.196.199.219:3306/yizhentang_dev?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
-    username: work
-    password: DB1qaz@WSX
+    url: jdbc:mysql://rm-bp1xk4j7gsb2ylig3so.mysql.rds.aliyuncs.com:3306/yztdev?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    username: yztdev
+    password: workDB1gfd@WSX
     druid:
       #      数据库连接池的最小维持连接数
-      min-idle: 3
+      min-idle: 10
       #      初始化连接数
-      initial-size: 5
+      initial-size: 20
       # 最大连接数
       max-active: 5000
       #      等待连接获取的最大超时时间
@@ -70,16 +71,22 @@ spring:
 
   # redis 配置
   redis:
-    host: 127.0.0.1
+    host: 120.26.4.216
     port: 6379
+    password: 1qaz@WSX
     timeout: 86400
-    password: 123456
+
+  # session 配置
   session:
     store-type: redis
 
 
 ### mybatis ###
 mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
   type-aliases-package: com.maizhiyu.yzt.entity
   mapper-locations: classpath*:/mybatis/mapper/*.xml
   configuration:
@@ -96,6 +103,28 @@ pagehelper:
   params: count=countSql
 
 
+# 微信公众号配置
+weixin:
+  # token更新设置
+  enable: true
+  crontab: "0 0 */1 * * ?"
+  # 微信基础信息
+  token: maizhiyu
+  appid: wx33df32715638a40a
+  appsecret: c899dac94e7566ecd20fefb3e4905d58
+  # 授权相关信息
+  auth_scope: snsapi_userinfo   # scope: snsapi_base
+  api_domain: https://api.weixin.qq.com
+  authorize_url: https://open.weixin.qq.com/connect/oauth2/authorize
+  # 页面跳转信息
+  redirect_url: http://ypt.yztyun.com/wx/api/wx/onCallback
+  business_url: http://ypt.yztyun.com/ps/index.html#/home
+  # 腾讯位置服务
+  location_domain: https://apis.map.qq.com
+  location_path: /ws/geocoder/v1
+  location_key: UZIBZ-E3CWK-O7GJ5-AZ5QE-5CFP7-ORFNL
+
+
 ### swagger ###（生产环境时需要关闭）
 swagger:
   enable: true
@@ -103,12 +132,7 @@ swagger:
 
 ### 业务配置 ###
 file:
-  upload-folder: /Users/huhu/Temps/static/
+  upload-folder: /home/work/yptdev/backend/upload
   static-access-path: /files/**
 
 
-### logging ###
-logging:
-  level:
-    com.maizhiyu.yzt: DEBUG
-#    org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: trace

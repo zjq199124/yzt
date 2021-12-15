@@ -1,6 +1,10 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.maizhiyu.yzt.entity.MsExaminationPaper;
 import com.maizhiyu.yzt.entity.TsSytechItem;
 import com.maizhiyu.yzt.mapper.TsSytechItemMapper;
 import com.maizhiyu.yzt.service.ITsSytechItemService;
@@ -44,5 +48,17 @@ public class TsSytechItemService implements ITsSytechItemService {
         wrapper.eq("sytech_id", sytechId);
         List<TsSytechItem> list = mapper.selectList(wrapper);
         return list;
+    }
+
+    @Override
+    public PageInfo<TsSytechItem> getSytechItemList(Long examinationPaperId, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<TsSytechItem> list = mapper.selectList(
+//                Wrappers.<MsExaminationPaper>lambdaQuery()
+//                .eq(sytechId != null, MsExaminationPaper::getSytechId,sytechId);
+                new LambdaQueryWrapper<TsSytechItem>().eq(examinationPaperId != null, TsSytechItem::getExaminationPaperId, examinationPaperId));
+        PageInfo<TsSytechItem> pageInfo = new PageInfo<>(list, pageSize);
+
+        return pageInfo;
     }
 }

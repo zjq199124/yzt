@@ -14,8 +14,8 @@ import java.util.Map;
 @Repository
 public interface DictDiseaseMapper extends BaseMapper<DictDisease> {
 
-    List<Map<String,Object>> selectDiseaseList(
-            @Param("status") Integer status,
-            @Param("term") String term);
+//    List<Map<String,Object>> selectDiseaseList(
+//            @Param("status") Integer status,
+//            @Param("term") String term);
 
 }

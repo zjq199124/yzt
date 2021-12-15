@@ -21,9 +21,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     #     mysql驱动包
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/yizhentang?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
-    username: huhu
-    password: huhu
+    url: jdbc:mysql://rm-bp1xk4j7gsb2ylig3so.mysql.rds.aliyuncs.com:3306/yztpro?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    username: yztp
+    password: rootDB1sfdWSX
     druid:
       #      数据库连接池的最小维持连接数
       min-idle: 10

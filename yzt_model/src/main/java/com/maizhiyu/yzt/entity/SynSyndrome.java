@@ -35,5 +35,5 @@ public class SynSyndrome {
 
     @ApiModelProperty("关键词,号分隔")
     @TableField(exist = false)
-    private String keys;
+    private String keyss;
 }
