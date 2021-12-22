@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.maizhiyu.yzt.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -35,6 +36,10 @@ public class HsAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         response.setContentType("application/json;charset=UTF-8");
 
+        HsUserDetails hsUserDetails = (HsUserDetails) authentication.getPrincipal();
+
+        String token = JWTUtil.geneJsonWebToken(hsUserDetails);
+        hsUserDetails.setToken(token);
         response.getWriter().write(objectMapper.writeValueAsString(authentication));
 
 //        // logger.info("authenticationΩuthentication success, {} login successfully", request.getParameter("username"));

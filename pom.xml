@@ -50,6 +50,7 @@
         <fastjson.version>1.2.47</fastjson.version>
         <knife4j-version>3.0.3</knife4j-version>
         <commons-lang3.version>3.7</commons-lang3.version>
+        <jjwt>0.7.0</jjwt>
     </properties>
 
     <dependencyManagement>
@@ -109,6 +110,14 @@
                 <artifactId>knife4j-spring-boot-starter</artifactId>
                 <version>${knife4j-version}</version>
             </dependency>
+
+            <!-- JWT相关 -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jjwt}</version>
+            </dependency>
+
 
             <!--其他工具-->
             <dependency>

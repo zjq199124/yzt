@@ -3,18 +3,29 @@ package com.maizhiyu.yzt.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.maizhiyu.yzt.entity.MsHerbs;
+import com.maizhiyu.yzt.entity.MsZhongyaoHerbs;
 import com.maizhiyu.yzt.entity.SchZhongyao;
+import com.maizhiyu.yzt.request.SchZhongyaoHerbsRequest;
 import com.maizhiyu.yzt.result.Result;
+import com.maizhiyu.yzt.service.IMsHerbsService;
+import com.maizhiyu.yzt.service.IMsZhongyaoHerbsService;
 import com.maizhiyu.yzt.service.ISchZhongyaoService;
+import com.maizhiyu.yzt.serviceimpl.MsZhongyaoHerbsService;
+import com.maizhiyu.yzt.vo.SchZhongyaoHerbsVO;
+import com.maizhiyu.yzt.vo.SchZhongyaoVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Api(tags = "中药方案接口")
@@ -25,6 +36,11 @@ public class SchZhongyaoController {
     @Autowired
     private ISchZhongyaoService service;
 
+    @Autowired
+    private IMsHerbsService msHerbsService;
+
+    @Autowired
+    private IMsZhongyaoHerbsService msZhongyaoHerbsService;
 
     @ApiOperation(value = "增加中药方案", notes = "增加中药方案")
     @PostMapping("/addZhongyao")
@@ -53,6 +69,30 @@ public class SchZhongyaoController {
         return Result.success(zhongyao);
     }
 
+    @ApiOperation(value = "移除单个中药关联", notes = "移除单个中药关联")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "中药关联id", required = true)
+    })
+    @PostMapping("/removeSchZhongyaoHerbs")
+    public Result removeSchZhongyaoHerbs(@RequestParam Long id) {
+        Integer res = msZhongyaoHerbsService.removeSchZhongyaoHerbs(id);
+        return res > 0 ? Result.success() : Result.failure();
+    }
+
+    @ApiOperation(value = "绑定多个中药", notes = "绑定多个中药")
+    @PostMapping("/addsSchZhongyaoHerbs")
+    public Result addsSchZhongyaoHerbs(@RequestBody List<SchZhongyaoHerbsRequest> list) {
+        List<MsZhongyaoHerbs> list1 = new ArrayList<>();
+        list.stream().forEach(item -> {
+            MsZhongyaoHerbs msZhongyaoHerbs = new MsZhongyaoHerbs();
+            BeanUtils.copyProperties(item,msZhongyaoHerbs);
+            list1.add(msZhongyaoHerbs);
+        });
+        msZhongyaoHerbsService.adds(list1);
+        return Result.success();
+    }
+
+
 
     @ApiOperation(value = "修改中药方案状态", notes = "修改中药方案状态")
     @ApiImplicitParams({
@@ -65,7 +105,7 @@ public class SchZhongyaoController {
         zhongyao.setId(id);
         zhongyao.setStatus(status);
         Integer res = service.setZhongyao(zhongyao);
-        return Result.success(zhongyao);
+        return Result.success();
     }
 
 
@@ -76,7 +116,11 @@ public class SchZhongyaoController {
     @GetMapping("/getZhongyao")
     public Result getZhongyao(Long id) {
         SchZhongyao zhongyao = service.getZhongyao(id);
-        return Result.success(zhongyao);
+        SchZhongyaoVO schZhongyaoVO = new SchZhongyaoVO();
+        BeanUtils.copyProperties(zhongyao,schZhongyaoVO);
+        List<SchZhongyaoHerbsVO> list = msZhongyaoHerbsService.getMsZhongyaoHerbsListBySchZhongyaoId(id);
+        schZhongyaoVO.setList(list);
+        return Result.success(schZhongyaoVO);
     }
 
 
@@ -97,5 +141,25 @@ public class SchZhongyaoController {
         PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
         return Result.success(pageInfo);
     }
+
+
+
+
+    @ApiOperation(value = "获取药材列表", notes = "获取药材列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "zyId", value = "中药方案id", required = true),
+            @ApiImplicitParam(name = "herbsName", value = "药材名称", required = false),
+            @ApiImplicitParam(name = "pageNum", value = "开始页数", required = false),
+            @ApiImplicitParam(name = "pageSize", value = "每页大小", required = false)
+    })
+    @GetMapping("/getMsHerbsList")
+    public Result getMsHerbsList(@RequestParam  Long zyId,String herbsName,
+                                 @RequestParam(defaultValue = "1") Integer pageNum,
+                                 @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageInfo<MsHerbs> paperList = msHerbsService.getMsHerbsList(herbsName,pageNum,pageSize,zyId);
+        return Result.success(paperList);
+    }
+
+
 
 }

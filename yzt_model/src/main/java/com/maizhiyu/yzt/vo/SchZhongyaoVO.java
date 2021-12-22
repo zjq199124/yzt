@@ -1,26 +1,26 @@
-package com.maizhiyu.yzt.entity;
-
-
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+package com.maizhiyu.yzt.vo;
 import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
-
 import java.util.List;
 
+/**
+ * className:SchZhongyaoVO
+ * Package:com.maizhiyu.yzt.vo
+ * Description:
+ *
+ * @DATE:2021/12/17 2:51 下午
+ * @Author:2101825180@qq.com
+ */
 
 @Data
 @Accessors(chain = true)
-@TableName("sch_zhongyao")
-@ApiModel(description = "方案中药表")
-public class SchZhongyao {
+@ApiModel(description = "中药方案")
+public class SchZhongyaoVO {
 
     @ApiModelProperty(value="ID")
-    @TableId(type = IdType.AUTO)
     private Long id;
 
     @ApiModelProperty(value="状态(0:停用 1:启用)")
@@ -40,4 +40,8 @@ public class SchZhongyao {
 
     @TableLogic
     private Integer flag;
+
+    @ApiModelProperty(value="绑定的中药")
+    private List<SchZhongyaoHerbsVO> list;
+
 }
