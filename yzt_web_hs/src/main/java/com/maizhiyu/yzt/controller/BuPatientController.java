@@ -37,18 +37,18 @@ public class BuPatientController extends BaseController {
     @ApiImplicitParams({})
     @PostMapping("/addPatient")
     public Result addPatient (@RequestBody BuPatient patient) {
-        Integer i = service.selectByRbId(patient.getRbId());
-        if(i > 0) {
-            throw new BusinessException("已经有了这条数据");
+
+        if(patient.getRbId() != null) {
+            Integer i = service.selectByRbId(patient.getRbId());
+            if(i > 0) {
+                throw new BusinessException("已经有了这条数据");
+            }
         }
-        
+
         patient.setStatus(1);
         patient.setCreateTime(new Date());
         patient.setUpdateTime(patient.getCreateTime());
         Integer res = service.addPatient(patient);
-
-
-        patient.setRbId(1L);
         return Result.success(patient);
     }
 
@@ -87,12 +87,12 @@ public class BuPatientController extends BaseController {
 
     @ApiOperation(value = "获取患者信息-w", notes = "获取患者信息-w")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "q", value = "3134", required = true)
+            @ApiImplicitParam(name = "q", value = "3134", required = true),
+            @ApiImplicitParam(value = "鉴权token",name = "token",paramType  = "header", dataType = "String", required=true)
     })
-    @ApiImplicitParam(value = "鉴权token",name = "token",paramType  = "header", dataType = "String", required=true)
     @GetMapping("/getPatient-w")
-    public Result getPatient2(@RequestParam Long id) {
-        String content = id + "";
+    public Result getPatient2(@RequestParam Long q) {
+        String content = q + "";
         Long customerId = ((Number) getClaims().get("customerId")).longValue();
         if(customerId != 28) {
             throw new BusinessException("当前客户没有此权限");

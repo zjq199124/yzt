@@ -43,9 +43,9 @@ public class BuPatient implements Serializable {
     @ApiModelProperty(value="患者性别")
     private Integer sex;
 
-    @ApiModelProperty(value="出生日期")
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone="Asia/Shanghai")
-    private Date birthday;
+//    @ApiModelProperty(value="出生日期")
+//    @JsonFormat(pattern = "yyyy-MM-dd",timezone="Asia/Shanghai")
+//    private Date birthday;
 
     @ApiModelProperty(value="患者手机")
     private String phone;
