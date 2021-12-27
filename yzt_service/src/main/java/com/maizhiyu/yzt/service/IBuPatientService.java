@@ -26,4 +26,6 @@ public interface IBuPatientService {
     List<Map<String, Object>> getPatientListByTherapist(Long TherapistId, Integer type, String term);
 
     List<Map<String, Object>> getPatientPrescriptionList(Long patientId, Integer type);
+
+    Integer selectByRbId(Long rbId);
 }

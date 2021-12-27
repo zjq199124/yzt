@@ -1,8 +1,10 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.maizhiyu.yzt.entity.BuPatient;
 import com.maizhiyu.yzt.entity.BuPrescriptionItem;
+import com.maizhiyu.yzt.entity.HsCustomerHerbs;
 import com.maizhiyu.yzt.entity.PsUserPatient;
 import com.maizhiyu.yzt.mapper.BuPatientMapper;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemMapper;
@@ -111,6 +113,11 @@ public class BuPatientService implements IBuPatientService {
     @Override
     public List<Map<String, Object>> getPatientPrescriptionList(Long patientId, Integer type) {
         return patientMapper.selectPatientPrescriptionList(patientId, type);
+    }
+
+    @Override
+    public Integer selectByRbId(Long rbId) {
+        return patientMapper.selectCount(Wrappers.<BuPatient>lambdaQuery().eq(BuPatient::getRbId,rbId));
     }
 
 }

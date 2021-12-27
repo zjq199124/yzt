@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.models.auth.In;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -35,6 +36,10 @@ public class BuPatient implements Serializable {
     @ApiModelProperty(value="患者姓名")
     private String name;
 
+
+    @ApiModelProperty(value="年龄")
+    private Integer nl;
+
     @ApiModelProperty(value="患者性别")
     private Integer sex;
 
@@ -55,4 +60,6 @@ public class BuPatient implements Serializable {
     @ApiModelProperty(value="创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="Asia/Shanghai")
     private Date createTime;
+
+    private Long rbId;
 }

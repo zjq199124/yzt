@@ -80,7 +80,7 @@ public class HsCustomerHerbsService implements IHsCustomerHerbsService {
         if(list != null) {
             List<Long> collect = list.stream().map(MsHerbs::getId).collect(Collectors.toList());
             List<HsCustomerHerbs> hsCustomerHerbsList = hsCustomerHerbsMapper.selectList(
-                    Wrappers.<HsCustomerHerbs>lambdaQuery().ge(HsCustomerHerbs::getFlag,0).in(HsCustomerHerbs::getId, collect)
+                    Wrappers.<HsCustomerHerbs>lambdaQuery().eq(HsCustomerHerbs::getFlag,0).in(HsCustomerHerbs::getId, collect)
                             .eq(HsCustomerHerbs::getCustomerId, customerId));
 
             Map<Long, HsCustomerHerbs> maps = new HashMap<>();

@@ -1,11 +1,16 @@
 package com.maizhiyu.yzt.controller;
-
-
+import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
+import cn.hutool.crypto.symmetric.SymmetricCrypto;
+import cn.hutool.http.HttpUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.maizhiyu.yzt.base.BaseController;
 import com.maizhiyu.yzt.entity.BuPatient;
+import com.maizhiyu.yzt.exception.BusinessException;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IBuPatientService;
+import com.maizhiyu.yzt.vo.MzBrjbxxbVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -14,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +27,7 @@ import java.util.Map;
 @Api(tags = "患者接口")
 @RestController
 @RequestMapping("/patient")
-public class BuPatientController {
+public class BuPatientController extends BaseController {
 
     @Autowired
     private IBuPatientService service;
@@ -31,12 +37,22 @@ public class BuPatientController {
     @ApiImplicitParams({})
     @PostMapping("/addPatient")
     public Result addPatient (@RequestBody BuPatient patient) {
+        Integer i = service.selectByRbId(patient.getRbId());
+        if(i > 0) {
+            throw new BusinessException("已经有了这条数据");
+        }
+        
         patient.setStatus(1);
         patient.setCreateTime(new Date());
         patient.setUpdateTime(patient.getCreateTime());
         Integer res = service.addPatient(patient);
+
+
+        patient.setRbId(1L);
         return Result.success(patient);
     }
+
+
 
 
     @ApiOperation(value = "删除患者", notes = "删除患者")
@@ -68,6 +84,36 @@ public class BuPatientController {
         BuPatient patient = service.getPatient(id);
         return Result.success(patient);
     }
+
+    @ApiOperation(value = "获取患者信息-w", notes = "获取患者信息-w")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "q", value = "3134", required = true)
+    })
+    @ApiImplicitParam(value = "鉴权token",name = "token",paramType  = "header", dataType = "String", required=true)
+    @GetMapping("/getPatient-w")
+    public Result getPatient2(@RequestParam Long id) {
+        String content = id + "";
+        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+        if(customerId != 28) {
+            throw new BusinessException("当前客户没有此权限");
+        }
+        //随机生成密钥
+        byte[] key = "ohbtestohbtest11".getBytes();
+
+        //构建
+        SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, key);
+
+        //加密为16进制表示
+        String encryptHex = aes.encryptHex(content);
+
+        HashMap<String, Object> paramMap = new HashMap<>();
+        paramMap.put("token", encryptHex);
+        String result= HttpUtil.post("ebd6-36-27-126-199.ngrok.io/mzBrjbxxbDO/test", paramMap);
+        MzBrjbxxbVO mzBrjbxxbVO = JSONObject.parseObject(result, MzBrjbxxbVO.class);
+
+        return Result.success(mzBrjbxxbVO);
+    }
+
 
 
     @ApiOperation(value = "获取患者列表", notes = "获取患者列表(搜索使用)")
