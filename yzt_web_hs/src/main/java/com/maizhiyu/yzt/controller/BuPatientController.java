@@ -85,12 +85,12 @@ public class BuPatientController extends BaseController {
         return Result.success(patient);
     }
 
-    @ApiOperation(value = "获取患者信息-w", notes = "获取患者信息-w")
+    @ApiOperation(value = "获取患者信息-ohb", notes = "获取患者信息-ohb")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "q", value = "3134", required = true),
             @ApiImplicitParam(value = "鉴权token",name = "token",paramType  = "header", dataType = "String", required=true)
     })
-    @GetMapping("/getPatient-w")
+    @GetMapping("/getPatient-ohb")
     public Result getPatient2(@RequestParam Long q) {
         String content = q + "";
         Long customerId = ((Number) getClaims().get("customerId")).longValue();
