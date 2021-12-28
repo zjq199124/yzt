@@ -87,7 +87,7 @@ public class BuPatientController extends BaseController {
 
     @ApiOperation(value = "获取患者信息-ohb", notes = "获取患者信息-ohb")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "q", value = "410", required = true),
+            @ApiImplicitParam(name = "content", value = "410", required = true),
             @ApiImplicitParam(value = "鉴权token",name = "token",paramType  = "header", dataType = "String", required=true)
     })
     @GetMapping("/getPatient-ohb")
@@ -120,7 +120,6 @@ public class BuPatientController extends BaseController {
         patient.setName(mzBrjbxxbVO.getXm());
         patient.setIdcard(mzBrjbxxbVO.getSfzh());
         patient.setPhone(mzBrjbxxbVO.getLxdh());
-
 
         return Result.success(patient);
     }

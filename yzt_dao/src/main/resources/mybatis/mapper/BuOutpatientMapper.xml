@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.maizhiyu.yzt.mapper.BuOutpatientMapper">
-
+<!--    YEAR(NOW())-YEAR(D.birthday)  D.birthday patient_birthday,-->
     <select id="selectOutpatientList" resultType="hashmap">
         select
             X.id, X.code, X.status, X.type,
@@ -11,7 +11,7 @@
             A.id customer_id, A.name customer_name,
             B.id department_id, B.dname department_name,
             C.id doctor_id, C.realname doctor_name,
-            D.id patient_id, D.name patient_name, D.sex patient_sex, D.phone patient_phone, D.birthday patient_birthday, YEAR(NOW())-YEAR(D.birthday) age
+            D.id patient_id, D.name patient_name, D.sex patient_sex, D.phone patient_phone,  nl age
         from
             bu_outpatient X
             left join ms_customer A on A.id = X.customer_id
