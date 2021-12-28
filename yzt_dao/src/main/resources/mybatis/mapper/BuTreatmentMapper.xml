@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.maizhiyu.yzt.mapper.BuTreatmentMapper">
-
+<!--    D.birthday patient_birthday,-->
     <select id="selectTreatmentList" resultType="hashmap">
         select
             X.id, X.code, X.tcode, X.status, X.type, X.exception, X.feedback, X.evaluation,
@@ -14,7 +14,7 @@
             B.id department_id, B.dname department_name,
             C.id therapist_id, C.realname therapist_name,
             D.id patient_id, D.code patient_code, D.name patient_name, D.sex patient_sex,
-            D.birthday patient_birthday, D.phone patient_phone, D.idcard patient_idcard,
+             D.phone patient_phone, D.idcard patient_idcard,
             T.id project_id, T.name project_name
         from
             bu_treatment X
