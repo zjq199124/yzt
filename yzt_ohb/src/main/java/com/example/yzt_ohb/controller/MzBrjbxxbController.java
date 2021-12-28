@@ -26,7 +26,7 @@ public class MzBrjbxxbController {
     @Autowired
     private MzBrjbxxbService mzBrjbxxbService;
     @RequestMapping(value = "queryMzBrjbxxbDO")
-    public MzBrjbxxbDO test(@RequestParam String token) {
+    public MzBrjbxxbDO queryMzBrjbxxbDO(@RequestParam String token) {
         //构建
         SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, "ohbtestohbtest11".getBytes());
         //解密为字符串
