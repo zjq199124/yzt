@@ -25,6 +25,8 @@ public class MzBrjbxxbVO {
 
     @ApiModelProperty(value="身份证")
     private String sfzh;
+    @ApiModelProperty(value="联系方式")
+    private String lxdh;
 
     public String getXb() {
         return xb != null ? xb.equals("1") ?  "1" : "0"  : null;

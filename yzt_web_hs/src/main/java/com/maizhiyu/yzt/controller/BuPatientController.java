@@ -91,8 +91,7 @@ public class BuPatientController extends BaseController {
             @ApiImplicitParam(value = "鉴权token",name = "token",paramType  = "header", dataType = "String", required=true)
     })
     @GetMapping("/getPatient-ohb")
-    public Result getPatient2(@RequestParam Long q) {
-        String content = q + "";
+    public Result getPatient2(@RequestParam String content) {
         Long customerId = ((Number) getClaims().get("customerId")).longValue();
         if(customerId != 28) {
             throw new BusinessException("当前客户没有此权限");
@@ -108,10 +107,22 @@ public class BuPatientController extends BaseController {
 
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("token", encryptHex);
-        String result= HttpUtil.post("ebd6-36-27-126-199.ngrok.io/mzBrjbxxbDO/test", paramMap);
+        String result= HttpUtil.post("127.0.0.1:9001/mzBrjbxxbDO/queryMzBrjbxxbDO", paramMap);
         MzBrjbxxbVO mzBrjbxxbVO = JSONObject.parseObject(result, MzBrjbxxbVO.class);
 
-        return Result.success(mzBrjbxxbVO);
+        if(mzBrjbxxbVO == null) {
+            throw new BusinessException("未找到患者信息");
+        }
+        BuPatient patient = new BuPatient();
+        patient.setRbId(mzBrjbxxbVO.getBrId());
+        patient.setNl(mzBrjbxxbVO.getNl());
+        patient.setSex(mzBrjbxxbVO.getXb() != null ? Integer.getInteger(mzBrjbxxbVO.getXb()) : null);
+        patient.setName(mzBrjbxxbVO.getXm());
+        patient.setIdcard(mzBrjbxxbVO.getSfzh());
+        patient.setPhone(mzBrjbxxbVO.getLxdh());
+
+
+        return Result.success(patient);
     }
 
 
