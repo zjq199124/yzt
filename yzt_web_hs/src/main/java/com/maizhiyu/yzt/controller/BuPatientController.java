@@ -87,7 +87,7 @@ public class BuPatientController extends BaseController {
 
     @ApiOperation(value = "获取患者信息-ohb", notes = "获取患者信息-ohb")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "q", value = "3134", required = true),
+            @ApiImplicitParam(name = "q", value = "410", required = true),
             @ApiImplicitParam(value = "鉴权token",name = "token",paramType  = "header", dataType = "String", required=true)
     })
     @GetMapping("/getPatient-ohb")
