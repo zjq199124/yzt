@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -73,10 +74,10 @@ public class BuPrescriptionItem implements Serializable {
     private Integer days;
 
     @ApiModelProperty(value="总量")
-    private Float quantity;
+    private BigDecimal quantity;
 
     @ApiModelProperty(value="价格")
-    private Float price;
+    private BigDecimal price;
 
     @ApiModelProperty(value="备注")
     private String note;

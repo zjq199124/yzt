@@ -1,6 +1,5 @@
 package com.maizhiyu.yzt.controller;
 
-import com.maizhiyu.yzt.exception.BusinessException;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IFileService;
 import com.maizhiyu.yzt.utils.MyDate;
@@ -9,15 +8,10 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.UUID;
 

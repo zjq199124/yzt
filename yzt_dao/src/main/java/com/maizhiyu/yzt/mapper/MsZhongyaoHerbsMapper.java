@@ -27,4 +27,6 @@ public interface MsZhongyaoHerbsMapper extends BaseMapper<MsZhongyaoHerbs> {
 
     List<SchZhongyaoHerbsVO> getMsZhongyaoHerbsListBySchZhongyaoIds(@Param("ids") List<Long> ids);
 
+    List<SchZhongyaoHerbsVO> getMsZhongyaoHerbsListBySchZhongyaoIdsByCustomerId(@Param("ids") List<Long> ids,@Param("customerId") Long customerId);
+
 }

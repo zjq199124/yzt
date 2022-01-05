@@ -96,9 +96,8 @@ public class BuPatientController extends BaseController {
         if(customerId != 28) {
             throw new BusinessException("当前客户没有此权限");
         }
-        //随机生成密钥
-        byte[] key = "ohbtestohbtest11".getBytes();
 
+        byte[] key = "ohbtestohbtest11".getBytes();
         //构建
         SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, key);
 
@@ -109,6 +108,7 @@ public class BuPatientController extends BaseController {
         paramMap.put("token", encryptHex);
         String result= HttpUtil.post("127.0.0.1:9001/mzBrjbxxbDO/queryMzBrjbxxbDO", paramMap);
         MzBrjbxxbVO mzBrjbxxbVO = JSONObject.parseObject(result, MzBrjbxxbVO.class);
+        
 
         if(mzBrjbxxbVO == null) {
             throw new BusinessException("未找到患者信息");

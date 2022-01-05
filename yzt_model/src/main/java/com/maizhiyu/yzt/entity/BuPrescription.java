@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class BuPrescription implements Serializable {
     private String useTime;
 
     @ApiModelProperty(value="汇总价格")
-    private Float price;
+    private BigDecimal price;
 
     @ApiModelProperty(value="更新时间")
     private Date updateTime;

@@ -11,12 +11,13 @@
         <result column="herbsName" property="herbsName" jdbcType="VARCHAR" />
         <result column="num" property="num" />
         <result column="unit" property="unit" />
+        <result column="unit_price" property="unitPrice" />
         <result column="create_time" property="createTime" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        mzh.id, mzh.zy_id, mzh.herbs_id, mzh.create_time,mzh.num num, sz.name zyName,mh.herbs_name herbsName,mh.unit unit
+        mzh.id, mzh.zy_id, mzh.herbs_id, mzh.create_time,mzh.num num, sz.name zyName,mh.herbs_name herbsName,mh.unit unit,mh.unit
     </sql>
 
     <select id="getMsZhongyaoHerbsListBySchZhongyaoId" resultMap="BaseResultMap">
@@ -36,6 +37,21 @@
           ms_zhongyao_herbs  mzh
         inner join ms_herbs mh on mzh.herbs_id = mh.id
         inner join sch_zhongyao sz on mzh.zy_id = sz.id
+        where mh.flag = 0 and sz.flag = 0 and sz.id in
+        <foreach item="id" collection="ids" separator="," open="(" close=")" index="">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="getMsZhongyaoHerbsListBySchZhongyaoIdsByCustomerId" resultMap="BaseResultMap">
+        select
+        mzh.id, mzh.zy_id, mzh.herbs_id, mzh.create_time,mzh.num num, sz.name zyName,
+               mh.herbs_name herbsName,mh.unit unit,mh.unit , hch.unit_price  unitPrice
+        from
+          ms_zhongyao_herbs  mzh
+        inner join ms_herbs mh on mzh.herbs_id = mh.id
+        inner join sch_zhongyao sz on mzh.zy_id = sz.id
+        left join hs_customer_herbs hch on mh.id = hch.herbs_id
         where mh.flag = 0 and sz.flag = 0 and sz.id in
         <foreach item="id" collection="ids" separator="," open="(" close=")" index="">
             #{id}

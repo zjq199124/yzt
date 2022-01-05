@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.maizhiyu.yzt.base.BaseController;
 import com.maizhiyu.yzt.entity.BuPrescription;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.*;
@@ -20,7 +21,7 @@ import java.util.Map;
 @Api(tags = "方案接口")
 @RestController
 @RequestMapping("/scheme")
-public class BuSchemeController {
+public class BuSchemeController extends BaseController {
 
     @Autowired
     private ISchZhongyaoService zhongyaoService;
@@ -40,13 +41,16 @@ public class BuSchemeController {
             @ApiImplicitParam(name = "term", value = "搜索词", required = false),
             @ApiImplicitParam(name = "pageNum", value = "开始页数", required = false),
             @ApiImplicitParam(name = "pageSize", value = "每页大小", required = false),
+            @ApiImplicitParam(value = "鉴权token",name = "token",paramType  = "header", dataType = "String", required=true)
     })
     @GetMapping("/getZhongyaoSchemeList")
     public Result getZhongyaoSchemeList(String term,
                                         @RequestParam(defaultValue = "1") Integer pageNum,
                                         @RequestParam(defaultValue = "10") Integer pageSize) {
+
+        Long customerId = ((Number) getClaims().get("customerId")).longValue();
         PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = zhongyaoService.getZhongyaoList(null, null, term);
+        List<Map<String, Object>> list = zhongyaoService.getZhongyaoList2(null, null, term,customerId);
         PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
         return Result.success(pageInfo);
     }

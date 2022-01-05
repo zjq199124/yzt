@@ -15,4 +15,6 @@ public interface ISchZhongyaoService {
     public SchZhongyao getZhongyao(Long id);
 
     public List<Map<String,Object>> getZhongyaoList(Long diseaseId, Integer status, String term);
+
+    public List<Map<String,Object>> getZhongyaoList2(Long diseaseId, Integer status, String term,Long customerId);
 }
