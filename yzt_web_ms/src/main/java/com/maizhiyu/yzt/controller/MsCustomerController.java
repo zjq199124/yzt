@@ -55,6 +55,12 @@ public class MsCustomerController {
         return Result.success(res);
     }
 
+//    @ApiOperation(value = "test", notes = "test")
+//    @GetMapping("/test")
+//    public Result test() {
+//        service.test();
+//        return Result.success();
+//    }
 
     @ApiOperation(value = "修改客户信息", notes = "修改客户信息")
     @PostMapping("/setCustomer")

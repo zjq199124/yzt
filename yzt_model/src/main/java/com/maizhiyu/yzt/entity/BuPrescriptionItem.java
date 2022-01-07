@@ -65,7 +65,7 @@ public class BuPrescriptionItem implements Serializable {
     private String unit;
 
     @ApiModelProperty(value="剂量")
-    private String dosage;
+    private BigDecimal dosage;
 
     @ApiModelProperty(value="频度")
     private Integer frequency;
@@ -87,4 +87,8 @@ public class BuPrescriptionItem implements Serializable {
 
     @ApiModelProperty(value="创建时间")
     private Date createTime;
+
+    private Long customerHerbsId;
+
+    private Long herbsId;
 }

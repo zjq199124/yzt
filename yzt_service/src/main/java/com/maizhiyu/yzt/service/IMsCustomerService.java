@@ -25,4 +25,6 @@ public interface IMsCustomerService {
 
     List<Map<String, Object>> getCustomerCityList(String province);
 
+    void test();
+
 }

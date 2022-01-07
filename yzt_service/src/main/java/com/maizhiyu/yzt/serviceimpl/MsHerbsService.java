@@ -3,9 +3,13 @@ package com.maizhiyu.yzt.serviceimpl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.maizhiyu.yzt.entity.HsCustomerHerbs;
+import com.maizhiyu.yzt.entity.MsCustomer;
 import com.maizhiyu.yzt.entity.MsHerbs;
 import com.maizhiyu.yzt.entity.MsZhongyaoHerbs;
 import com.maizhiyu.yzt.exception.BusinessException;
+import com.maizhiyu.yzt.mapper.HsCustomerHerbsMapper;
+import com.maizhiyu.yzt.mapper.MsCustomerMapper;
 import com.maizhiyu.yzt.mapper.MsHerbsMapper;
 import com.maizhiyu.yzt.mapper.MsZhongyaoHerbsMapper;
 import com.maizhiyu.yzt.service.IMsHerbsService;
@@ -15,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,10 +42,32 @@ public class MsHerbsService implements IMsHerbsService {
     @Autowired
     private MsZhongyaoHerbsMapper msZhongyaoHerbsMapper;
 
+    @Autowired
+    private MsCustomerMapper mapper;
+
+    @Autowired
+    private HsCustomerHerbsMapper hsCustomerHerbsMapper;
 
     @Override
-    public Integer addMsHerbs(MsHerbs item) {
-        return msHerbsMapper.insert(item);
+    public Integer addMsHerbs(MsHerbs ite) {
+        int i = msHerbsMapper.insert(ite);
+        if(i <= 0) {
+            throw new BusinessException("创建失败，请重试");
+        }
+        List<MsCustomer> msCustomers = mapper.selectList(null);
+        for (MsCustomer msCustomer : msCustomers) {
+                HsCustomerHerbs item = new HsCustomerHerbs();
+                item.setCustomerId(msCustomer.getId());
+                item.setInventory(new BigDecimal(0));
+                item.setUnitPrice(new BigDecimal(0));
+                item.setHerbsId(ite.getId());
+                item.setCreateTime(new Date());
+                Integer res = hsCustomerHerbsMapper.insert(item);
+                if (res <= 0) {
+                    throw new BusinessException("创建失败，请重试");
+                }
+        }
+        return i;
     }
 
     @Override

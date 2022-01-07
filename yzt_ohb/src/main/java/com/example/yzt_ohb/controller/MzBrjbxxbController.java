@@ -27,12 +27,20 @@ public class MzBrjbxxbController {
     private MzBrjbxxbService mzBrjbxxbService;
     @RequestMapping(value = "queryMzBrjbxxbDO")
     public MzBrjbxxbDO queryMzBrjbxxbDO(@RequestParam String token) {
+
         //构建
         SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, "ohbtestohbtest11".getBytes());
         //解密为字符串
         String decryptStr = aes.decryptStr(token, CharsetUtil.CHARSET_UTF_8);
             MzBrjbxxbDO mzBrjbxxbDO = mzBrjbxxbService.getById(Long.parseLong(decryptStr));
             return mzBrjbxxbDO;
+    }
+
+
+    @RequestMapping(value = "test")
+    public MzBrjbxxbDO test(@RequestParam Long token) {
+        MzBrjbxxbDO mzBrjbxxbDO = mzBrjbxxbService.getById(token);
+        return mzBrjbxxbDO;
     }
 }
 

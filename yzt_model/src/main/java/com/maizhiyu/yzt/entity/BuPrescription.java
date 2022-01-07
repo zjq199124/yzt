@@ -33,6 +33,8 @@ public class BuPrescription implements Serializable {
 
     @ApiModelProperty(value="处方状态(1: 2:已打印)")
     private Integer status;
+    @ApiModelProperty(value="结算状态")
+    private Integer paymentStatus;
 
     @ApiModelProperty(value="医院ID")
     private Long customerId;

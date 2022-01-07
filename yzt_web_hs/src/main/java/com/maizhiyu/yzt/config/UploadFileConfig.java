@@ -11,21 +11,21 @@ import javax.servlet.MultipartConfigElement;
 @Configuration
 public class UploadFileConfig {
 
-    @Value("${file.upload-folder}")
-    private String uploadFolder;
-
-    @Bean
-    MultipartConfigElement multipartConfigElement() {
-
-        MultipartConfigFactory factory = new MultipartConfigFactory();
-        factory.setLocation(uploadFolder);
-
-        // 文件最大
-        factory.setMaxFileSize(DataSize.ofMegabytes(5));
-
-        // 设置总上传数据总大小
-        factory.setMaxRequestSize(DataSize.ofMegabytes(10));
-
-        return factory.createMultipartConfig();
-    }
+//    @Value("${file.upload-folder}")
+//    private String uploadFolder;
+//
+//    @Bean
+//    MultipartConfigElement multipartConfigElement() {
+//
+//        MultipartConfigFactory factory = new MultipartConfigFactory();
+//        factory.setLocation(uploadFolder);
+//
+//        // 文件最大
+//        factory.setMaxFileSize(DataSize.ofMegabytes(5));
+//
+//        // 设置总上传数据总大小
+//        factory.setMaxRequestSize(DataSize.ofMegabytes(10));
+//
+//        return factory.createMultipartConfig();
+//    }
 }

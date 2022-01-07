@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.maizhiyu.yzt.entity.HsCustomerHerbs;
 import com.maizhiyu.yzt.entity.MsHerbs;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.math.BigDecimal;
 
 /**
  * className:HsCustomerHerbsMapper
@@ -19,4 +22,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface HsCustomerHerbsMapper  extends BaseMapper<HsCustomerHerbs> {
 
+    int updateDeductionInventory(@Param("customerHerbsId") Long customerHerbsId,@Param("dosage") BigDecimal dosage);
 }

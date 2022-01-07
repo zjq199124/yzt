@@ -2,19 +2,16 @@ package com.maizhiyu.yzt.serviceimpl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.maizhiyu.yzt.entity.BuOutpatient;
-import com.maizhiyu.yzt.entity.BuPrescription;
-import com.maizhiyu.yzt.entity.BuPrescriptionItem;
-import com.maizhiyu.yzt.entity.HsUser;
-import com.maizhiyu.yzt.mapper.BuOutpatientMapper;
-import com.maizhiyu.yzt.mapper.BuPrescriptionItemMapper;
-import com.maizhiyu.yzt.mapper.BuPrescriptionMapper;
-import com.maizhiyu.yzt.mapper.HsUserMapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.maizhiyu.yzt.entity.*;
+import com.maizhiyu.yzt.exception.BusinessException;
+import com.maizhiyu.yzt.mapper.*;
 import com.maizhiyu.yzt.service.IBuPrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 
@@ -31,6 +28,9 @@ public class BuPrescriptionService implements IBuPrescriptionService {
     @Autowired
     private HsUserMapper hsUserMapper;
 
+    @Autowired
+    private HsCustomerHerbsMapper hsCustomerHerbsMapper;
+
     @Override
     public Integer addPrescription(BuPrescription prescription) {
         // 生成编码
@@ -38,6 +38,13 @@ public class BuPrescriptionService implements IBuPrescriptionService {
             String code = UUID.randomUUID().toString().replace("-", "").substring(0,20);
             prescription.setCode(code);
         }
+
+        BigDecimal pr = new BigDecimal(0);
+        for (BuPrescriptionItem item : prescription.getItemList()) {
+            BigDecimal multiply = item.getDosage().multiply(item.getPrice());
+            pr = pr.add(multiply);
+        }
+        prescription.setPrice(pr);
         // 新增处方
         int res = mapper.insert(prescription);
         // 增加处方项
@@ -64,6 +71,14 @@ public class BuPrescriptionService implements IBuPrescriptionService {
         prescription.setOutpatientId(original.getOutpatientId());
         prescription.setDoctorId(original.getDoctorId());
         prescription.setPatientId(original.getPatientId());
+
+        BigDecimal pr = new BigDecimal(0);
+        for (BuPrescriptionItem item : prescription.getItemList()) {
+            BigDecimal multiply = item.getDosage().multiply(item.getPrice());
+            pr = pr.add(multiply);
+        }
+        prescription.setPrice(pr);
+
         int res = mapper.updateById(prescription);
         // 删除处方项
         delItems(prescription.getId());
@@ -123,10 +138,47 @@ public class BuPrescriptionService implements IBuPrescriptionService {
         return mapper.selectPatientPrescriptionItemSummary(patientId);
     }
 
+    @Override
+    public void setPaymentStatus(Long id, Long userId) {
+        BuPrescription buPrescription = mapper.selectById(Wrappers.<BuPrescription>lambdaQuery().eq(BuPrescription::getId, id).eq(BuPrescription::getDoctorId,userId).eq(BuPrescription::getPaymentStatus,0).last("for update "));
+
+        if(buPrescription == null) {
+            throw new BusinessException("未找到这条数据");
+        }
+
+        if(buPrescription.getPaymentStatus() == 1) {
+            throw new BusinessException("当前处方以结算，请勿重复结算");
+        }
+
+
+        if(buPrescription.getStatus() == 2) {
+            List<BuPrescriptionItem> buPrescriptionItems = itemMapper.selectList(Wrappers.<BuPrescriptionItem>lambdaQuery().eq(BuPrescriptionItem::getPrescriptionId, id));
+            for (BuPrescriptionItem item : buPrescriptionItems) {
+                if(buPrescription.getType() == 2) {
+                    if(item.getHerbsId() == null || item.getCustomerHerbsId() == null) {
+                        throw new BusinessException("客户中药标示和中药标示不能为空");
+                    }
+                    int c = hsCustomerHerbsMapper.updateDeductionInventory(item.getCustomerHerbsId(),item.getDosage());
+                    if(c <= 0) {
+                        throw new BusinessException(item.getName() + "库存不足");
+                    }
+                }
+            }
+
+
+        }else {
+            throw new BusinessException("当前数据未打印，不能结算");
+        }
+
+
+    }
+
 
     private void addItems(BuPrescription prescription) {
         Date date = new Date();
+
         for (BuPrescriptionItem item : prescription.getItemList()) {
+
             item.setType(prescription.getType());
             item.setCustomerId(prescription.getCustomerId());
             item.setDepartmentId(prescription.getDepartmentId());

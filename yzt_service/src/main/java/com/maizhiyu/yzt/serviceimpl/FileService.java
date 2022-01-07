@@ -19,10 +19,10 @@ import java.util.UUID;
 @Transactional(rollbackFor=Exception.class)
 public class FileService implements IFileService {
 
-    @Value("${file.static-access-path}")
+//    @Value("${file.static-access-path}")
     private String staticAccessPath;
 
-    @Value("${file.upload-folder}")
+//    @Value("${file.upload-folder}")
     private String uploadFolder;
 
     @Override

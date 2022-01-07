@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.controller;
 
+import com.maizhiyu.yzt.base.BaseController;
 import com.maizhiyu.yzt.entity.BuPrescription;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IBuPrescriptionService;
@@ -18,7 +19,7 @@ import java.util.Map;
 @Api(tags = "处方接口")
 @RestController
 @RequestMapping("/prescription")
-public class BuPrescriptionController {
+public class BuPrescriptionController extends BaseController {
 
     @Autowired
     private IBuPrescriptionService service;
@@ -66,6 +67,18 @@ public class BuPrescriptionController {
         prescription.setUpdateTime(new Date());
         service.setPrescriptionStatus(prescription);
         return Result.success(prescription);
+    }
+
+    @ApiOperation(value = "结算处方", notes = "结算处方")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "处方单id", required = true),
+            @ApiImplicitParam(value = "鉴权token",name = "token",paramType  = "header", dataType = "String", required=true)
+    })
+    @GetMapping("/setPaymentStatus")
+    public Result setPaymentStatus(Long id) {
+        Long userId = ((Number) getClaims().get("id")).longValue();
+        service.setPaymentStatus(id,userId);
+        return Result.success();
     }
 
 

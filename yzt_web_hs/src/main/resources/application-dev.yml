@@ -6,7 +6,7 @@ server:
     timeout: 7200
   servlet:
 #    context-path: /hs/api
-    context-path: /pd/api
+    context-path: /hs/api
 #env: stg
 
 
@@ -130,9 +130,18 @@ swagger:
   enable: true
 
 
-### 业务配置 ###
-file:
-  upload-folder: /home/work/yptdev/backend/upload
-  static-access-path: /files/**
+#### 业务配置 ###
+#file:
+#  upload-folder: /home/work/yptdev/backend/upload
+#  static-access-path: /files/**
 
+
+oss.endpoint: https://oss-cn-hangzhou.aliyuncs.com
+oss.accessKeyId: LTAI5tE56JZeMtFwEFjx93MM
+oss.accessKeySecret: YLfoT7wlHQOINc1ZCAWWqwJebQnTWo
+oss.publicBucket: yzt-hs-dev
+oss.publicBucketUrl: https://yzt-hs-dev.oss-cn-hangzhou.aliyuncs.com
+oss.expiration: 1800
+oss.style_watermark: watermark
+oss.style_micro: micro
 

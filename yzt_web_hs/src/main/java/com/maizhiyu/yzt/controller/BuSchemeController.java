@@ -6,6 +6,7 @@ import com.maizhiyu.yzt.base.BaseController;
 import com.maizhiyu.yzt.entity.BuPrescription;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.*;
+import com.maizhiyu.yzt.vo.CustomerHerbsVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -13,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +36,21 @@ public class BuSchemeController extends BaseController {
 
     @Autowired
     private ISchSytechService sytechService;
+
+    @Autowired
+    private IHsCustomerHerbsService customerHerbsService;
+
+    @ApiOperation(value = "获取药材列表", notes = "获取药材列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "herbsName", value = "药材名称", required = false),
+            @ApiImplicitParam(value = "鉴权token",name = "token",paramType  = "header", dataType = "String", required=true)
+    })
+    @GetMapping("/getHsCustomerHerbsList")
+    public Result getMsHerbsList(String herbsName) {
+        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+        PageInfo<CustomerHerbsVO> paperList = customerHerbsService.getHsCustomerHerbsList(customerId,herbsName,1,999999);
+        return Result.success(paperList.getList());
+    }
 
 
     @ApiOperation(value = "获取中药方案列表", notes = "获取中药方案列表")
