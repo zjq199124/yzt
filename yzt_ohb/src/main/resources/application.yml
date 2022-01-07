@@ -2,7 +2,7 @@
 spring:
   datasource:
     driver-class-name: oracle.jdbc.driver.OracleDriver
-    url: jdbc:oracle:thin:@8.140.164.229:1521/orcl?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=UTC
+    url: jdbc:oracle:thin:@127.0.0.1:1521/his?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=UTC
     username: his
     password: his
 mybatis-plus:
@@ -10,3 +10,7 @@ mybatis-plus:
 server:
   port: 9001
 
+#8:
+#  140:
+#    164:
+#      229:
