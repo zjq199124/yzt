@@ -6,8 +6,12 @@
 @echo ">>> update config file..."
 @jar -uvf yzt_xdata-1.0-SNAPSHOT.jar BOOT-INF\classes\application.yml
 @jar -uvf yzt_xdata-1.0-SNAPSHOT.jar BOOT-INF\classes\application-prod.yml
+@jar -uvf yzt_xdata-1.0-SNAPSHOT.jar BOOT-INF\classes\druid.properties
 @jar -uvf yzt_xdata-1.0-SNAPSHOT.jar BOOT-INF\classes\data\ohb\department.txt
 @jar -uvf yzt_xdata-1.0-SNAPSHOT.jar BOOT-INF\classes\data\ohb\doctor.txt
+@jar -uvf yzt_xdata-1.0-SNAPSHOT.jar BOOT-INF\classes\data\ohb\disease.txt
+@jar -uvf yzt_xdata-1.0-SNAPSHOT.jar BOOT-INF\classes\data\ohb\zhiliao.txt
 
 @echo ">>> start yzt_xdata..."
 @java -jar yzt_xdata-1.0-SNAPSHOT.jar
+
