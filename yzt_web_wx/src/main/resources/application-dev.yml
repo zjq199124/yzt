@@ -3,7 +3,7 @@ server:
   session:
     timeout: 7200
   servlet:
-    context-path: /wx/api
+    context-path: //api
 env: stg
 # mybatis 配置
 mybatis:
