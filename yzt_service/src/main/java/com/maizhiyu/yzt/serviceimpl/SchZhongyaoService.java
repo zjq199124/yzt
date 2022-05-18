@@ -48,32 +48,33 @@ public class SchZhongyaoService implements ISchZhongyaoService {
     public List<Map<String, Object>> getZhongyaoList(Long diseaseId, Integer status, String term) {
         List<Map<String, Object>> list = mapper.selectZhongyaoList(status, diseaseId, term);
 
-        if(list != null && list.size() > 0) {
-            List<Long> ids = list.stream().map(item -> (Long)item.get("id")).collect(Collectors.toList());
-            List<SchZhongyaoHerbsVO> list1 = msZhongyaoHerbsMapper.getMsZhongyaoHerbsListBySchZhongyaoIds(ids);
-            if(list1 != null && list1.size() > 0) {
-                Map<Long, List<SchZhongyaoHerbsVO>> collect = list1.stream().collect(Collectors.groupingBy(SchZhongyaoHerbsVO::getZyId));
-                list.forEach(item -> {
-                    List<SchZhongyaoHerbsVO> list2 = collect.get((Long) item.get("id"));
-                    if(list2 != null) {
-                        StringBuffer stringBuffer = new StringBuffer("");
-                        for (int i = 0; i < list2.size(); i++) {
-                            SchZhongyaoHerbsVO schZhongyaoHerbsVOS = list2.get(i);
-                            stringBuffer.append(schZhongyaoHerbsVOS.getHerbsName());
-                            stringBuffer.append(":");
-                            stringBuffer.append(schZhongyaoHerbsVOS.getNum());
-                            stringBuffer.append(schZhongyaoHerbsVOS.getUnit());
-                            if(i < list2.size()-1) {
-                                stringBuffer.append("，");
-                            }
-                        }
-                        item.put("herbss",stringBuffer.toString());
-
-                    }
-                });
-            }
-
-        }
+//        某开发写的应该是对接藕湖浜的开发，没开发完，不能使用
+//        if(list != null && list.size() > 0) {
+//            List<Long> ids = list.stream().map(item -> (Long)item.get("id")).collect(Collectors.toList());
+//            List<SchZhongyaoHerbsVO> list1 = msZhongyaoHerbsMapper.getMsZhongyaoHerbsListBySchZhongyaoIds(ids);
+//            if(list1 != null && list1.size() > 0) {
+//                Map<Long, List<SchZhongyaoHerbsVO>> collect = list1.stream().collect(Collectors.groupingBy(SchZhongyaoHerbsVO::getZyId));
+//                list.forEach(item -> {
+//                    List<SchZhongyaoHerbsVO> list2 = collect.get((Long) item.get("id"));
+//                    if(list2 != null) {
+//                        StringBuffer stringBuffer = new StringBuffer("");
+//                        for (int i = 0; i < list2.size(); i++) {
+//                            SchZhongyaoHerbsVO schZhongyaoHerbsVOS = list2.get(i);
+//                            stringBuffer.append(schZhongyaoHerbsVOS.getHerbsName());
+//                            stringBuffer.append(":");
+//                            stringBuffer.append(schZhongyaoHerbsVOS.getNum());
+//                            stringBuffer.append(schZhongyaoHerbsVOS.getUnit());
+//                            if(i < list2.size()-1) {
+//                                stringBuffer.append("，");
+//                            }
+//                        }
+//                        item.put("herbss",stringBuffer.toString());
+//
+//                    }
+//                });
+//            }
+//
+//        }
 
         return list;
     }

@@ -9,6 +9,7 @@ import com.maizhiyu.yzt.mapper.TxXzcDataMapper;
 import com.maizhiyu.yzt.mapper.TxXzcRunMapper;
 import com.maizhiyu.yzt.service.ITxXzcService;
 import com.maizhiyu.yzt.utils.ExistCheck;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 
+@Slf4j
 @Service
 @Transactional(rollbackFor=Exception.class)
 public class TxXzcService implements ITxXzcService {
@@ -69,15 +71,17 @@ public class TxXzcService implements ITxXzcService {
         Integer res;
         // 更新运行数据
         res = runMapper.updateById(run);
+        // 查询运行数据(主要是为了获取runid，前端没有带过来)
+        TxXzcRun run2 = runMapper.selectById(run.getId());
         // 新增命令数据
         TxXzcCmd cmd = new TxXzcCmd();
         cmd.setCmd(6);
         cmd.setStatus(1);
-        cmd.setCode(run.getCode());
-        cmd.setRunid(run.getRunid());
-        cmd.setSysState(run.getStatus());
-        cmd.setNeckTemp(run.getNeckTemp());
-        cmd.setWaistTemp(run.getWaistTemp());
+        cmd.setCode(run2.getCode());
+        cmd.setRunid(run2.getRunid());
+        cmd.setSysState(run2.getStatus());
+        cmd.setNeckTemp(run2.getNeckTemp());
+        cmd.setWaistTemp(run2.getWaistTemp());
         cmd.setCreateTime(new Date());
         res = cmdMapper.insert(cmd);
         // 返回执行结果
@@ -129,6 +133,20 @@ public class TxXzcService implements ITxXzcService {
         wrapper.eq("code", code);
         wrapper.eq("runid", runId);
         List<TxXzcData> list = dataMapper.selectList(wrapper);
+        for (TxXzcData data : list) {
+            if (data.getNeckLiquidTemp() > 100) {
+                data.setNeckLiquidTemp(data.getNeckLiquidTemp() / 10);
+            }
+            if (data.getNeckSkinTemp() > 100) {
+                data.setNeckSkinTemp(data.getNeckSkinTemp() / 10);
+            }
+            if (data.getWaistLiquidTemp() > 100) {
+                data.setWaistLiquidTemp(data.getWaistLiquidTemp() / 10);
+            }
+            if (data.getWaistSkinTemp() > 100) {
+                data.setWaistSkinTemp(data.getWaistSkinTemp() / 10);
+            }
+        }
         return list;
     }
 

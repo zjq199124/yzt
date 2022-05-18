@@ -16,4 +16,6 @@ public interface IBuDiagnoseService {
 
     BuDiagnose getDiagnoseOfOutpatient(Long outpatientId);
 
+    List<Map<String, Object>> getDiagnoseList(Long customerId, String start, String end);
+
 }

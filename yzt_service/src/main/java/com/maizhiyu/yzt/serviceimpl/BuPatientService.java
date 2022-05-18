@@ -3,13 +3,11 @@ package com.maizhiyu.yzt.serviceimpl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.maizhiyu.yzt.entity.BuPatient;
-import com.maizhiyu.yzt.entity.BuPrescriptionItem;
-import com.maizhiyu.yzt.entity.HsCustomerHerbs;
 import com.maizhiyu.yzt.entity.PsUserPatient;
 import com.maizhiyu.yzt.mapper.BuPatientMapper;
-import com.maizhiyu.yzt.mapper.BuPrescriptionItemMapper;
 import com.maizhiyu.yzt.mapper.PsUserPatientMapper;
 import com.maizhiyu.yzt.service.IBuPatientService;
+import com.maizhiyu.yzt.utils.ExistCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +28,8 @@ public class BuPatientService implements IBuPatientService {
     private PsUserPatientMapper userPatientMapper;
 
     @Override
+    @ExistCheck(clazz = BuPatient.class, fname = "name|idcard", message = "患者已存在")
+    @ExistCheck(clazz = BuPatient.class, fname = "name|phone", message = "患者已存在")
     public Integer addPatient(BuPatient patient) {
         if (patient.getCode() == null) {
             String code = UUID.randomUUID().toString().replace("-", "").substring(0,20);
@@ -77,6 +77,15 @@ public class BuPatientService implements IBuPatientService {
     }
 
     @Override
+    public BuPatient getPatient(String name, String phone, String idcard) {
+        QueryWrapper<BuPatient> wrapper = new QueryWrapper<>();
+        wrapper.or(q -> q.eq("name", name).eq("idcard", idcard))
+                .or(q -> q.eq("name", name).eq("phone", phone));
+        return patientMapper.selectOne(wrapper);
+    }
+
+
+    @Override
     public List<BuPatient> getPatientList(Long customerId, String term) {
         QueryWrapper<BuPatient> wrapper = new QueryWrapper<>();
         if (customerId == null) {
@@ -92,6 +101,7 @@ public class BuPatientService implements IBuPatientService {
                     .or().like("phone", term)
                     .or().like("idcard", term));
         }
+        wrapper.orderByDesc("create_time");
         return patientMapper.selectList(wrapper);
     }
 
@@ -113,11 +123,6 @@ public class BuPatientService implements IBuPatientService {
     @Override
     public List<Map<String, Object>> getPatientPrescriptionList(Long patientId, Integer type) {
         return patientMapper.selectPatientPrescriptionList(patientId, type);
-    }
-
-    @Override
-    public Integer selectByRbId(Long rbId) {
-        return patientMapper.selectCount(Wrappers.<BuPatient>lambdaQuery().eq(BuPatient::getRbId,rbId));
     }
 
 }

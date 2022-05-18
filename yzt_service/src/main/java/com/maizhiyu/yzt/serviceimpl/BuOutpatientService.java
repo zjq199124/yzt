@@ -3,6 +3,7 @@ package com.maizhiyu.yzt.serviceimpl;
 import com.maizhiyu.yzt.entity.BuOutpatient;
 import com.maizhiyu.yzt.mapper.BuOutpatientMapper;
 import com.maizhiyu.yzt.service.IBuOutpatientService;
+import com.maizhiyu.yzt.utils.ExistCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ public class BuOutpatientService implements IBuOutpatientService {
 
 
     @Override
+    @ExistCheck(clazz = BuOutpatient.class, fname = "time|customer_id|patient_id", message = "挂号已存在")
     public Integer addOutpatient(BuOutpatient outpatient) {
         String code = UUID.randomUUID().toString().replace("-", "").substring(0,20);
         outpatient.setCode(code);

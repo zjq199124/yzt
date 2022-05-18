@@ -17,6 +17,8 @@ public interface IBuPatientService {
 
     BuPatient getPatient(Long id);
 
+    BuPatient getPatient(String name, String phone, String idcard);
+
     List<BuPatient> getPatientList(Long customerId, String term);
 
     List<BuPatient> getPatientListByPsuser(Long userId);
@@ -26,6 +28,4 @@ public interface IBuPatientService {
     List<Map<String, Object>> getPatientListByTherapist(Long TherapistId, Integer type, String term);
 
     List<Map<String, Object>> getPatientPrescriptionList(Long patientId, Integer type);
-
-    Integer selectByRbId(Long rbId);
 }

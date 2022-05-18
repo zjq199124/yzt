@@ -26,6 +26,12 @@ public class BuPrescriptionService implements IBuPrescriptionService {
     private BuPrescriptionItemMapper itemMapper;
 
     @Autowired
+    private BuPatientMapper patientMapper;
+
+    @Autowired
+    private BuOutpatientMapper outpatientMapper;
+
+    @Autowired
     private HsUserMapper hsUserMapper;
 
     @Autowired
@@ -39,12 +45,12 @@ public class BuPrescriptionService implements IBuPrescriptionService {
             prescription.setCode(code);
         }
 
-        BigDecimal pr = new BigDecimal(0);
-        for (BuPrescriptionItem item : prescription.getItemList()) {
-            BigDecimal multiply = item.getDosage().multiply(item.getPrice());
-            pr = pr.add(multiply);
-        }
-        prescription.setPrice(pr);
+//        BigDecimal pr = new BigDecimal(0);
+//        for (BuPrescriptionItem item : prescription.getItemList()) {
+//            BigDecimal multiply = item.getDosage().multiply(item.getPrice());
+//            pr = pr.add(multiply);
+//        }
+//        prescription.setPrice(pr);
         // 新增处方
         int res = mapper.insert(prescription);
         // 增加处方项
@@ -72,12 +78,12 @@ public class BuPrescriptionService implements IBuPrescriptionService {
         prescription.setDoctorId(original.getDoctorId());
         prescription.setPatientId(original.getPatientId());
 
-        BigDecimal pr = new BigDecimal(0);
-        for (BuPrescriptionItem item : prescription.getItemList()) {
-            BigDecimal multiply = item.getDosage().multiply(item.getPrice());
-            pr = pr.add(multiply);
-        }
-        prescription.setPrice(pr);
+//        BigDecimal pr = new BigDecimal(0);
+//        for (BuPrescriptionItem item : prescription.getItemList()) {
+//            BigDecimal multiply = item.getDosage().multiply(item.getPrice());
+//            pr = pr.add(multiply);
+//        }
+//        prescription.setPrice(pr);
 
         int res = mapper.updateById(prescription);
         // 删除处方项
@@ -121,6 +127,38 @@ public class BuPrescriptionService implements IBuPrescriptionService {
             // 整理数据结构
             JSONObject jsonObj = (JSONObject) JSONObject.toJSON(prescription);
             jsonObj.put("itemList", itemlist);
+            // 添加到结果集
+            list.add(jsonObj);
+        }
+        // 返回数据
+        return list;
+    }
+
+    @Override
+    public List<Map<String, Object>> getPrescriptionList(Long customerId, String start, String end) {
+        // 定义返回变量
+        List<Map<String, Object>> list = new ArrayList<>();
+        // 查询处方列表
+        QueryWrapper<BuPrescription> wrapper = new QueryWrapper<>();
+        wrapper.eq("customer_id", customerId)
+                .eq("status", 2)
+                .ge("update_time", start)
+                .lt("update_time", end)
+                .last("limit 100");
+        List<BuPrescription> prescriptions = mapper.selectList(wrapper);
+        // 查询每个处方的项目列表和患者信息
+        for (BuPrescription prescription : prescriptions) {
+            // 查询患者信息
+            BuPatient patient = patientMapper.selectById(prescription.getPatientId());
+            // 查询挂号信息
+            BuOutpatient outpatient = outpatientMapper.selectById(prescription.getOutpatientId());
+            // 查询处方项列表
+            List<BuPrescriptionItem> itemlist = getItems(prescription.getId());
+            // 整理数据结构
+            JSONObject jsonObj = (JSONObject) JSONObject.toJSON(prescription);
+            jsonObj.put("itemList", itemlist);
+            jsonObj.put("patient", patient);
+            jsonObj.put("outpatient", outpatient);
             // 添加到结果集
             list.add(jsonObj);
         }
