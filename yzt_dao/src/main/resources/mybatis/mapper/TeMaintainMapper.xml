@@ -17,7 +17,7 @@
             D.content typeName
         from
             te_maintain X
-            join te_equip A on X.eid = A.id
+            join te_equip A on X.code = A.code
             left join (select * from dict_common where cate = "CATE_EQUIP_TYPE" and parent != 0) C on C.value = A.type
             left join (select * from dict_common where cate = "CATE_MAINTAIN_TYPE" and parent != 0) D on D.value = X.type
         <where>
@@ -25,7 +25,7 @@
                 and A.customer_id = #{customerId}
             </if>
             <if test="equipId != null">
-                and X.eid = #{equipId}
+                and A.id = #{equipId}
             </if>
             <if test="type != null">
                 and X.type = #{type}

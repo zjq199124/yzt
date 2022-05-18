@@ -142,9 +142,12 @@
 
     <select id="selectTreatmentStatistics" resultType="hashmap">
         select
-            A.id customer_id, A.name customer_name,
-            B.id department_id, B.dname department_name,
-            C.id therapist_id, C.realname therapist_name,
+            A.id customer_id,
+            C.id therapist_id,
+            ANY_VALUE(A.name) customer_name,
+            ANY_VALUE(B.id) department_id,
+            ANY_VALUE(B.dname) department_name,
+            ANY_VALUE(C.realname) therapist_name,
             count(*) `count`,
             <if test="projects != null">
                 <foreach collection="projects" index="index" item="item" separator=",">

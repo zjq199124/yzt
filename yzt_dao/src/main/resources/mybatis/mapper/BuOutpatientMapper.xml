@@ -38,7 +38,7 @@
                 and X.department_id = #{departmentId}
             </if>
             <if test="doctorId != null">
-                and X.doctor_id = #{doctorId}
+                and ( X.doctor_id = #{doctorId} or X.doctor_id is null )
             </if>
             <if test="patientId != null">
                 and X.patient_id = #{patientId}
