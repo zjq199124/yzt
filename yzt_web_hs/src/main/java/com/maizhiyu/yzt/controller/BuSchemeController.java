@@ -43,7 +43,7 @@ public class BuSchemeController extends BaseController {
     @ApiOperation(value = "获取药材列表", notes = "获取药材列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "herbsName", value = "药材名称", required = false),
-            @ApiImplicitParam(value = "鉴权token",name = "token",paramType  = "header", dataType = "String", required=true)
+//            @ApiImplicitParam(value = "鉴权token",name = "token",paramType  = "header", dataType = "String", required=true)
     })
     @GetMapping("/getHsCustomerHerbsList")
     public Result getMsHerbsList(String herbsName) {
@@ -58,16 +58,16 @@ public class BuSchemeController extends BaseController {
             @ApiImplicitParam(name = "term", value = "搜索词", required = false),
             @ApiImplicitParam(name = "pageNum", value = "开始页数", required = false),
             @ApiImplicitParam(name = "pageSize", value = "每页大小", required = false),
-            @ApiImplicitParam(value = "鉴权token",name = "token",paramType  = "header", dataType = "String", required=true)
+//            @ApiImplicitParam(value = "鉴权token",name = "token",paramType  = "header", dataType = "String", required=true)
     })
     @GetMapping("/getZhongyaoSchemeList")
     public Result getZhongyaoSchemeList(String term,
                                         @RequestParam(defaultValue = "1") Integer pageNum,
                                         @RequestParam(defaultValue = "10") Integer pageSize) {
 
-        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+//        Long customerId = ((Number) getClaims().get("customerId")).longValue();
         PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = zhongyaoService.getZhongyaoList2(null, null, term,customerId);
+        List<Map<String, Object>> list = zhongyaoService.getZhongyaoList(null, null, term);
         PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
         return Result.success(pageInfo);
     }

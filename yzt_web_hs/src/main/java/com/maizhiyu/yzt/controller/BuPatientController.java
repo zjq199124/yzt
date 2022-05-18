@@ -37,22 +37,12 @@ public class BuPatientController extends BaseController {
     @ApiImplicitParams({})
     @PostMapping("/addPatient")
     public Result addPatient (@RequestBody BuPatient patient) {
-
-        if(patient.getRbId() != null) {
-            Integer i = service.selectByRbId(patient.getRbId());
-            if(i > 0) {
-                throw new BusinessException("已经有了这条数据");
-            }
-        }
-
         patient.setStatus(1);
         patient.setCreateTime(new Date());
         patient.setUpdateTime(patient.getCreateTime());
         Integer res = service.addPatient(patient);
         return Result.success(patient);
     }
-
-
 
 
     @ApiOperation(value = "删除患者", notes = "删除患者")
@@ -85,44 +75,44 @@ public class BuPatientController extends BaseController {
         return Result.success(patient);
     }
 
-    @ApiOperation(value = "获取患者信息-ohb", notes = "获取患者信息-ohb")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "content", value = "410", required = true),
-            @ApiImplicitParam(value = "鉴权token",name = "token",paramType  = "header", dataType = "String", required=true)
-    })
-    @GetMapping("/getPatient-ohb")
-    public Result getPatient2(@RequestParam String content) {
-        Long customerId = ((Number) getClaims().get("customerId")).longValue();
-        if(customerId != 28) {
-            throw new BusinessException("当前客户没有此权限");
-        }
-
-        byte[] key = "ohbtestohbtest11".getBytes();
-        //构建
-        SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, key);
-
-        //加密为16进制表示
-        String encryptHex = aes.encryptHex(content);
-
-        HashMap<String, Object> paramMap = new HashMap<>();
-        paramMap.put("token", encryptHex);
-        String result= HttpUtil.post("127.0.0.1:9001/mzBrjbxxbDO/queryMzBrjbxxbDO", paramMap);
-        MzBrjbxxbVO mzBrjbxxbVO = JSONObject.parseObject(result, MzBrjbxxbVO.class);
-        
-
-        if(mzBrjbxxbVO == null) {
-            throw new BusinessException("未找到患者信息");
-        }
-        BuPatient patient = new BuPatient();
-        patient.setRbId(mzBrjbxxbVO.getBrId());
-        patient.setNl(mzBrjbxxbVO.getNl());
-        patient.setSex(mzBrjbxxbVO.getXb() != null ? Integer.getInteger(mzBrjbxxbVO.getXb()) : null);
-        patient.setName(mzBrjbxxbVO.getXm());
-        patient.setIdcard(mzBrjbxxbVO.getSfzh());
-        patient.setPhone(mzBrjbxxbVO.getLxdh());
-
-        return Result.success(patient);
-    }
+//    @ApiOperation(value = "获取患者信息-ohb", notes = "获取患者信息-ohb")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "content", value = "410", required = true),
+//            @ApiImplicitParam(value = "鉴权token",name = "token",paramType  = "header", dataType = "String", required=true)
+//    })
+//    @GetMapping("/getPatient-ohb")
+//    public Result getPatient2(@RequestParam String content) {
+//        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+//        if(customerId != 28) {
+//            throw new BusinessException("当前客户没有此权限");
+//        }
+//
+//        byte[] key = "ohbtestohbtest11".getBytes();
+//        //构建
+//        SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, key);
+//
+//        //加密为16进制表示
+//        String encryptHex = aes.encryptHex(content);
+//
+//        HashMap<String, Object> paramMap = new HashMap<>();
+//        paramMap.put("token", encryptHex);
+//        String result= HttpUtil.post("127.0.0.1:9001/mzBrjbxxbDO/queryMzBrjbxxbDO", paramMap);
+//        MzBrjbxxbVO mzBrjbxxbVO = JSONObject.parseObject(result, MzBrjbxxbVO.class);
+//
+//
+//        if(mzBrjbxxbVO == null) {
+//            throw new BusinessException("未找到患者信息");
+//        }
+//        BuPatient patient = new BuPatient();
+//        patient.setRbId(mzBrjbxxbVO.getBrId());
+//        patient.setNl(mzBrjbxxbVO.getNl());
+//        patient.setSex(mzBrjbxxbVO.getXb() != null ? Integer.getInteger(mzBrjbxxbVO.getXb()) : null);
+//        patient.setName(mzBrjbxxbVO.getXm());
+//        patient.setIdcard(mzBrjbxxbVO.getSfzh());
+//        patient.setPhone(mzBrjbxxbVO.getLxdh());
+//
+//        return Result.success(patient);
+//    }
 
 
 
