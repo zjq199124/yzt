@@ -14,9 +14,14 @@ import com.maizhiyu.yzt.service.ITxXzcService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
 import java.util.Date;
 
 
@@ -45,9 +50,9 @@ public class TeXzcController {
         System.out.println("##### " + string);
         try {
             JSONObject jsonObject = JSON.parseObject(string);
-            String type = jsonObject.getString("Type");
+            String type = jsonObject.getString("T");
             if (type == null) {
-                throw new BusinessException("格式错误：缺少Type字段");
+                throw new BusinessException("格式错误：缺少T字段");
             }
             switch (type) {
                 case "1":
@@ -58,7 +63,7 @@ public class TeXzcController {
                     break;
                 case "3":
                     JSONObject object = processHeart(jsonObject);
-                    System.out.println("@@@@@ heart return : " + jsonObject.toJSONString());
+                    System.out.println("@@@@@ heart return : " + object);
                     return Result.success(object);
                 case "4":
                     processData(jsonObject);
@@ -80,14 +85,20 @@ public class TeXzcController {
 
     private void processOpen(JSONObject jsonObject) {
         // 解析数据字段
-        String code = jsonObject.getString("DeviceID");
-        Date date = jsonObject.getDate("Date");
-        Integer washTimes = jsonObject.getInteger("Wash");
-        Integer sprayTimes = jsonObject.getInteger("Spray");
-        Integer sysState = jsonObject.getInteger("SysState");
+        String code = jsonObject.getString("D");
+        Integer washTimes = jsonObject.getInteger("K");
+        Integer sprayTimes = jsonObject.getInteger("L");
 
-        // 更新设备状态
-        doUpdateState(code, sysState);
+        // 解析时间
+        Date date = null;
+        try {
+            date = DateUtils.parseDate(jsonObject.getString("H"), "yyMMdd");
+        } catch (Exception e) {
+            date = null;
+        }
+
+        // 更新设备状态(预热状态)
+        doUpdateState(code, 1);
 
         // 处理维护数据
         if (washTimes != null && washTimes > 0) {
@@ -110,20 +121,20 @@ public class TeXzcController {
 
     private void processStart(JSONObject jsonObject) {
         // 解析数据字段
-        String code = jsonObject.getString("DeviceID");
-        String runId = jsonObject.getString("RunID");
-        Integer state = jsonObject.getInteger("SysState");
+        String code = jsonObject.getString("D");
+        String runId = jsonObject.getString("R");
+        Integer state = jsonObject.getInteger("S");
 
-        Integer minute = jsonObject.getInteger("TimeMin");
-        Integer second = jsonObject.getInteger("TimeSec");
+        Integer minute = jsonObject.getInteger("M");
+        Integer second = jsonObject.getInteger("N");
 
-        Double neckSetTemp = jsonObject.getDouble("NSetTemper");
-        Double neckWaterTemp = jsonObject.getDouble("NWaterTemper");
-        Double neckSteamTemp = jsonObject.getDouble("NSteamTemper");
+        Double neckSetTemp = jsonObject.getDouble("O");
+        Double neckWaterTemp = jsonObject.getDouble("P");
+        Double neckSteamTemp = jsonObject.getDouble("Q");
 
-        Double waistSetTemp = jsonObject.getDouble("WSetTemper");
-        Double waistWaterTemp = jsonObject.getDouble("WWaterTemper");
-        Double waistSteamTemp = jsonObject.getDouble("WSteamTemper");
+        Double waistSetTemp = jsonObject.getDouble("X");
+        Double waistWaterTemp = jsonObject.getDouble("Y");
+        Double waistSteamTemp = jsonObject.getDouble("Z");
 
         // 更新设备状态
         doUpdateState(code, state);
@@ -138,21 +149,33 @@ public class TeXzcController {
         run.setRunid(runId);
         run.setStatus(state);
         run.setDuration(duration);
-        run.setNeckTemp(neckSetTemp);
-        run.setWaistTemp(waistSetTemp);
+        run.setNeckTemp(neckSetTemp / 10);
+        run.setWaistTemp(waistSetTemp / 10);
         run.setStartTime(new Date());
         Integer res = xzcService.addRun(run);
     }
 
     private JSONObject processHeart(JSONObject jsonObject) {
         // 解析数据字段
-        String code = jsonObject.getString("DeviceID");
-        String runId = jsonObject.getString("RunID");
-        String errorId = jsonObject.getString("ErrorID");
+        String code = jsonObject.getString("D");
+        String runId = jsonObject.getString("R");
+        String errorId = jsonObject.getString("E");
         Integer errorType = Integer.parseInt(errorId);
+        Integer neckSetTemp = jsonObject.getInteger("O");
+        Integer waistSetTemp = jsonObject.getInteger("X");
 
         // 更新设备状态
         doUpdateState(code, 2);
+
+        // 更新运行温度
+        if (neckSetTemp != null && waistSetTemp != null) {
+            TxXzcRun run = new TxXzcRun();
+            run.setCode(code);
+            run.setRunid(String.valueOf(Integer.parseInt(runId)));
+            run.setNeckTemp(neckSetTemp.doubleValue() / 10);
+            run.setWaistTemp(waistSetTemp.doubleValue() / 10);
+            xzcService.setRunOnly(run);
+        }
 
         // 处理报警信息
         if (errorType > 0) {
@@ -171,17 +194,21 @@ public class TeXzcController {
         }
 
         // 生成返回数据
-        JSONObject object = new JSONObject();
-        object.put("Type", 3);
-        object.put("DeviceId", code);
-        object.put("RunID", runId);
+        JSONObject object = null;
 
         // 查询回传命令
         Integer status = 1;
         TxXzcCmd cmd = xzcService.getCmd(null, code, runId, status);
+        System.out.println("$$$$$ " + cmd);
 
         // 处理回传命令
         if (cmd != null) {
+            // 设置基础数据
+            object = new JSONObject();
+            // 为了减少传输字节数暂时去掉这三项
+            // object.put("T", 3);
+            // object.put("D", code);
+            // object.put("R", runId);
             // 修改命令状态
             cmd.setStatus(2);
             cmd.setExecuteTime(new Date());
@@ -197,15 +224,15 @@ public class TeXzcController {
                 case 6: // 设置（所有的操作都用此命令来实现）
                     if (cmd.getSysState() != null) {
                         Integer sysState = cmd.getSysState();
-                        object.put("SysState", sysState);
+                        object.put("S", sysState);
                     }
                     if (cmd.getNeckTemp() != null) {
                         Integer nSetTemper = cmd.getNeckTemp().intValue() * 10;
-                        object.put("NSetTemper", nSetTemper);
+                        object.put("O", nSetTemper);
                     }
                     if (cmd.getWaistTemp() != null) {
                         Integer wSetTemper = cmd.getWaistTemp().intValue() * 10;
-                        object.put("WSetTemper", wSetTemper);
+                        object.put("X", wSetTemper);
                     }
                     break;
             }
@@ -215,20 +242,28 @@ public class TeXzcController {
 
     private void processData(JSONObject jsonObject) {
         // 解析数据字段
-        String code = jsonObject.getString("DeviceID");
-        String runId = jsonObject.getString("RunID");
-        String state = jsonObject.getString("SysState");
+        String code = jsonObject.getString("D");
+        String runId = jsonObject.getString("R");
+        String state = jsonObject.getString("S");
 
-        Integer minute = jsonObject.getInteger("TimeMin");
-        Integer second = jsonObject.getInteger("TimeSec");
+        Integer minute = jsonObject.getInteger("M");
+        Integer second = jsonObject.getInteger("N");
 
-        Integer neckSetTemp = jsonObject.getInteger("NSetTemper");
-        Integer neckWaterTemp = jsonObject.getInteger("NWaterTemper");
-        Integer neckSteamTemp = jsonObject.getInteger("NSteamTemper");
+        Integer neckSetTemp = jsonObject.getInteger("O");
+        Integer neckWaterTemp = jsonObject.getInteger("P");
+        Integer neckSteamTemp = jsonObject.getInteger("Q");
 
-        Integer waistSetTemp = jsonObject.getInteger("WSetTemper");
-        Integer waistWaterTemp = jsonObject.getInteger("WWaterTemper");
-        Integer waistSteamTemp = jsonObject.getInteger("WSteamTemper");
+        Integer waistSetTemp = jsonObject.getInteger("X");
+        Integer waistWaterTemp = jsonObject.getInteger("Y");
+        Integer waistSteamTemp = jsonObject.getInteger("Z");
+
+        // 更新运行状态
+        TxXzcRun run = new TxXzcRun();
+        run.setCode(code);
+        run.setRunid(String.valueOf(Integer.parseInt(runId)));
+        run.setNeckTemp(neckSetTemp.doubleValue() / 10);
+        run.setWaistTemp(waistSetTemp.doubleValue() / 10);
+        xzcService.setRunOnly(run);
 
         // 处理运行数据
         TxXzcData data = new TxXzcData();
@@ -244,9 +279,9 @@ public class TeXzcController {
 
     private void processClose(JSONObject jsonObject) {
         // 解析数据字段
-        String code = jsonObject.getString("DeviceID");
-        String runId = jsonObject.getString("RunID");
-        Integer state = jsonObject.getInteger("SysState");
+        String code = jsonObject.getString("D");
+        String runId = jsonObject.getString("R");
+        Integer state = jsonObject.getInteger("S");
 
         // 更新运行数据
         TxXzcRun run = new TxXzcRun();
@@ -266,6 +301,13 @@ public class TeXzcController {
         equip.setState(state);
         equip.setHeartTime(new Date());
         equipService.setEquip(equip);
+    }
+
+    public static void main(String[] args) throws ParseException {
+        JSONObject jsonObject = JSON.parseObject("{\"H\":\"220515\"}");
+        String datestr = jsonObject.getString("H");
+        Date date = DateUtils.parseDate(datestr, "yyMMdd");
+        System.out.println(date);
     }
 
 }
