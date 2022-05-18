@@ -32,7 +32,7 @@ public class BuPatientController {
     @PostMapping("/addPatient")
     public Result addPatient (@RequestParam Long userId, @RequestBody BuPatient patient) {
         patient.setStatus(1);
-        patient.setCustomerId(0);   // 从公众号增加的患者，customerId默认都是0，所有客户都可以查到这个用户
+        patient.setCustomerId(0L);   // 从公众号增加的患者，customerId默认都是0，所有客户都可以查到这个用户
         patient.setCreateTime(new Date());
         patient.setUpdateTime(patient.getCreateTime());
         Integer res = service.addPatientByPsUser(userId, patient);
