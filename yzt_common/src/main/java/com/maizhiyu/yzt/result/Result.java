@@ -3,13 +3,15 @@ package com.maizhiyu.yzt.result;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 
 @Data
+@NoArgsConstructor
 @ApiModel(description="响应数据")
-public class Result implements Serializable {
+public class Result<T> implements Serializable {
 
     @ApiModelProperty(value = "状态码")
     private Integer code;
@@ -18,9 +20,9 @@ public class Result implements Serializable {
     private String msg;
 
     @ApiModelProperty(value = "返回数据")
-    private Object data;
+    private T data;
 
-    public Result(Integer code, String msg, Object data) {
+    public Result(Integer code, String msg, T data) {
         this.code = code;
         this.msg = msg;
         this.data = data;
