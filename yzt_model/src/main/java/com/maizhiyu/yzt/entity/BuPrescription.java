@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -33,6 +34,7 @@ public class BuPrescription implements Serializable {
 
     @ApiModelProperty(value="处方状态(1: 2:已打印)")
     private Integer status;
+
     @ApiModelProperty(value="结算状态")
     private Integer paymentStatus;
 
@@ -66,13 +68,15 @@ public class BuPrescription implements Serializable {
     @ApiModelProperty(value="用药时间")
     private String useTime;
 
-    @ApiModelProperty(value="汇总价格")
-    private BigDecimal price;
+//    @ApiModelProperty(value="汇总价格")
+//    private BigDecimal price;
 
     @ApiModelProperty(value="更新时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="Asia/Shanghai")
     private Date updateTime;
 
     @ApiModelProperty(value="创建时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="Asia/Shanghai")
     private Date createTime;
 
     @ApiModelProperty(value="医生姓名")

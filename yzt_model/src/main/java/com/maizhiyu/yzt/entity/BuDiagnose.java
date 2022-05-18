@@ -23,7 +23,7 @@ public class BuDiagnose implements Serializable {
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty(value="处方状态(0:停用 1:启用 ……)")
+    @ApiModelProperty(value="诊断状态(0:停用 1:启用)")
     private Integer status;
 
     @ApiModelProperty(value="医院ID")

@@ -25,7 +25,7 @@ public class BuPatient implements Serializable {
     private Long id;
 
     @ApiModelProperty(value="客户ID")
-    private Integer customerId;
+    private Long customerId;
 
     @ApiModelProperty(value="患者编码")
     private String code;
@@ -36,16 +36,15 @@ public class BuPatient implements Serializable {
     @ApiModelProperty(value="患者姓名")
     private String name;
 
-
     @ApiModelProperty(value="年龄")
     private Integer nl;
 
     @ApiModelProperty(value="患者性别")
     private Integer sex;
 
-//    @ApiModelProperty(value="出生日期")
-//    @JsonFormat(pattern = "yyyy-MM-dd",timezone="Asia/Shanghai")
-//    private Date birthday;
+    @ApiModelProperty(value="出生日期")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="Asia/Shanghai")
+    private Date birthday;
 
     @ApiModelProperty(value="患者手机")
     private String phone;
@@ -61,5 +60,6 @@ public class BuPatient implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="Asia/Shanghai")
     private Date createTime;
 
-    private Long rbId;
+    @ApiModelProperty(value="其他系统的数据")
+    private String extra;
 }
