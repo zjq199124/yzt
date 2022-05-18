@@ -19,14 +19,34 @@ import java.lang.reflect.Method;
 public class ExistCheckAspect {
 
 
+    // 单个 ExistCheck
     @Pointcut(value = "@annotation(com.maizhiyu.yzt.utils.ExistCheck)")
-    public void access() {
+    public void access1() {
     }
 
 
-    @Before("access() && @annotation(existCheck)")
-    public void doBefore(JoinPoint joinPoint, ExistCheck existCheck) throws Throwable {
+    // 多个 ExistCheck
+    @Pointcut(value = "@annotation(com.maizhiyu.yzt.utils.ExistChecks)")
+    public void access2() {
+    }
 
+
+    @Before("access1() && @annotation(existCheck)")
+    public void doBefore(JoinPoint joinPoint, ExistCheck existCheck) throws Throwable {
+        processBefore(joinPoint, existCheck);
+    }
+
+
+    @Before("access2() && @annotation(existChecks)")
+    public void doBefore(JoinPoint joinPoint, ExistChecks existChecks) throws Throwable {
+        for (ExistCheck existCheck : existChecks.value()) {
+            processBefore(joinPoint, existCheck);
+        }
+    }
+
+
+    // 处理
+    private void processBefore(JoinPoint joinPoint, ExistCheck existCheck) throws Throwable {
         // 获取注解参数值
         Class<?> clazz = existCheck.clazz();
         String fname = existCheck.fname();
@@ -67,7 +87,12 @@ public class ExistCheckAspect {
                             }
                             Method method = arg.getClass().getMethod(mname);
                             Object val = method.invoke(arg);
-                            wrapper.eq(key, val);
+                            if (val == null) {
+                                wrapper.isNull(key);
+                            } else {
+                                wrapper.eq(key, val);
+                            }
+                            System.out.println(key + " : " + val);;
                         }
                     }
                 }
@@ -110,6 +135,7 @@ public class ExistCheckAspect {
         }
         return sb.toString();
     }
+
 
     //下划线转驼峰
     public static String underlineToCamel(String param) {
