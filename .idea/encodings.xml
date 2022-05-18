@@ -8,10 +8,12 @@
     <file url="file://$PROJECT_DIR$/yzt_dao/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/yzt_model" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/yzt_model/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/yzt_ohb" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/yzt_service" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/yzt_service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/yzt_utils" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/yzt_utils/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/yzt_web_api" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/yzt_web_es" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/yzt_web_es/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/yzt_web_hs" charset="UTF-8" />
@@ -22,6 +24,8 @@
     <file url="file://$PROJECT_DIR$/yzt_web_ps/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/yzt_web_wx" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/yzt_web_wx/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/yzt_xdapi" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/yzt_xdata" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/yzt_xtools" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/yzt_xtools/src/main/java" charset="UTF-8" />
   </component>

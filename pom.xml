@@ -28,6 +28,9 @@
         <module>yzt_web_wx</module>
         <module>yzt_xtools</module>
         <module>yzt_ohb</module>
+        <module>yzt_xdata</module>
+        <module>yzt_web_api</module>
+        <module>yzt_xdapi</module>
     </modules>
 
     <properties>
@@ -63,6 +66,12 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.hibernate.validator</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>6.2.0.Final</version>
+            </dependency>
+
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
