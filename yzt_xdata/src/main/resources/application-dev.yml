@@ -47,6 +47,9 @@ xdata:
     prescription-minute-start: -20
     prescription-minute-end: -1
 
+    department-his: 2
+    department-ypt: 49
+
 
 
 
