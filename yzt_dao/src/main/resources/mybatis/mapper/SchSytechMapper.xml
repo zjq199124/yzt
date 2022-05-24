@@ -30,6 +30,7 @@
                 or X.name like concat(concat('%',#{term}),'%') )
             </if>
         </where>
+        order by disease_name
     </select>
 
 </mapper>
