@@ -64,6 +64,12 @@ public class ScheduleTaskOhb {
     @Value("${xdata.ohb.prescription-minute-end}")
     private Integer prescriptionMinuteEnd = -1;
 
+    @Value("${xdata.ohb.department-his}")
+    private Long departmentHis;
+
+    @Value("${xdata.ohb.department-ypt}")
+    private Long departmentYpt;
+
     private HashMap<Long, Long> mapDepartmentHisToYpt = new HashMap<>();
 
     private HashMap<Long, Long> mapDepartmentYptToHis = new HashMap<>();
@@ -87,30 +93,30 @@ public class ScheduleTaskOhb {
             //获取数据库连接池对象
             dataSource = DruidDataSourceFactory.createDataSource(properties);
 
-            log.info("【初始化科室映射】");
-            InputStream inputStreamDepartment = this.getClass().getResourceAsStream("/data/ohb/department.txt");
-            BufferedReader bufferedReaderDepartment = new BufferedReader(new InputStreamReader(inputStreamDepartment));
-            String lineDepartment = null;
-            while ((lineDepartment = bufferedReaderDepartment.readLine()) != null) {
-                lineDepartment = lineDepartment.trim();
-                if (lineDepartment.length() < 3) continue;
-                if (lineDepartment.startsWith("#")) continue;
-                String[] arr = lineDepartment.split("-");
-                if (arr.length == 2) {
-                    try {
-                        if (arr[0].trim().length() > 0 && arr[1].trim().length() > 0) {
-                            Long departmentYpt = Long.valueOf(arr[0].trim());
-                            Long departmentHis = Long.valueOf(arr[1].trim());
-                            mapDepartmentYptToHis.put(departmentYpt, departmentHis);
-                            mapDepartmentHisToYpt.put(departmentHis, departmentYpt);
-                            log.info(departmentYpt + "-" + departmentHis);
-                        }
-                    } catch (Exception e) {
-                        log.warn("科室映射解析异常 " + lineDepartment);
-                        e.printStackTrace();
-                    }
-                }
-            }
+//            log.info("【初始化科室映射】");
+//            InputStream inputStreamDepartment = this.getClass().getResourceAsStream("/data/ohb/department.txt");
+//            BufferedReader bufferedReaderDepartment = new BufferedReader(new InputStreamReader(inputStreamDepartment));
+//            String lineDepartment = null;
+//            while ((lineDepartment = bufferedReaderDepartment.readLine()) != null) {
+//                lineDepartment = lineDepartment.trim();
+//                if (lineDepartment.length() < 3) continue;
+//                if (lineDepartment.startsWith("#")) continue;
+//                String[] arr = lineDepartment.split("-");
+//                if (arr.length == 2) {
+//                    try {
+//                        if (arr[0].trim().length() > 0 && arr[1].trim().length() > 0) {
+//                            Long departmentYpt = Long.valueOf(arr[0].trim());
+//                            Long departmentHis = Long.valueOf(arr[1].trim());
+//                            mapDepartmentYptToHis.put(departmentYpt, departmentHis);
+//                            mapDepartmentHisToYpt.put(departmentHis, departmentYpt);
+//                            log.info(departmentYpt + "-" + departmentHis);
+//                        }
+//                    } catch (Exception e) {
+//                        log.warn("科室映射解析异常 " + lineDepartment);
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
 
             log.info("【初始化医生映射】");
             InputStream inputStreamDoctor = this.getClass().getResourceAsStream("/data/ohb/doctor.txt");
@@ -319,7 +325,8 @@ public class ScheduleTaskOhb {
                 // 生成挂号信息
                 BuOutpatient outpatient = new BuOutpatient();
                 outpatient.setCustomerId((long)customerId);
-                outpatient.setDepartmentId(mapDepartmentHisToYpt.get(rsGhd.getLong("GHKS_ID")));
+//                outpatient.setDepartmentId(mapDepartmentHisToYpt.get(rsGhd.getLong("GHKS_ID")));
+                outpatient.setDepartmentId(departmentYpt);
                 outpatient.setPatientId(resultPatient.getData().getId());
                 outpatient.setTime(new java.util.Date(rsGhd.getTimestamp("GHRQ").getTime()));
 
@@ -380,13 +387,13 @@ public class ScheduleTaskOhb {
                     continue;
                 }
 
-                // 科室映射
-                Long departmentYpt = Long.valueOf((int) map.get("departmentId"));
-                Long departmentHis = mapDepartmentYptToHis.get(departmentYpt);
-                if (departmentHis == null) {
-                    log.warn("科室ID异常 " + departmentYpt);
-                    // continue;
-                }
+//                // 科室映射
+//                Long departmentYpt = Long.valueOf((int) map.get("departmentId"));
+//                Long departmentHis = mapDepartmentYptToHis.get(departmentYpt);
+//                if (departmentHis == null) {
+//                    log.warn("科室ID异常 " + departmentYpt);
+//                    // continue;
+//                }
 
                 // 医生映射
                 Long doctorYpt = Long.valueOf((int) map.get("doctorId"));
@@ -457,13 +464,13 @@ public class ScheduleTaskOhb {
                     continue;
                 }
 
-                // 科室映射
-                Long departmentYpt = Long.valueOf((int) outpatient.get("departmentId"));
-                Long departmentHis = mapDepartmentYptToHis.get(departmentYpt);
-                if (departmentHis == null) {
-                    log.warn("科室ID异常 " + departmentYpt);
-                    // continue;
-                }
+//                // 科室映射
+//                Long departmentYpt = Long.valueOf((int) outpatient.get("departmentId"));
+//                Long departmentHis = mapDepartmentYptToHis.get(departmentYpt);
+//                if (departmentHis == null) {
+//                    log.warn("科室ID异常 " + departmentYpt);
+//                    // continue;
+//                }
 
                 // 医生映射
                 Long doctorYpt = Long.valueOf((int) map.get("doctorId"));
@@ -689,8 +696,8 @@ public class ScheduleTaskOhb {
         // 处理处方
         log.info("新增处方 {}, {}, {}, {}, {}, {}, {}", yptId, ghdId, mzblId, ywdId, brId, ts, chrq);
         String sqlYwd = "INSERT INTO " +
-                "MZ_YWD (YPT_ID, GHD_ID, MZBL_ID, YWD_ID, BR_ID, CFTS, CFRQ, KDKS, KDYS, CFLX, ZT, DYSKSBH, ZXTBH_ID, ZDBM, ZDMC, BRJSFS_ID) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'A', 4, 6, ?, ?, 55)";
+                "MZ_YWD (YPT_ID, GHD_ID, MZBL_ID, YWD_ID, BR_ID, CFTS, CFRQ, KDKS, KDYS, CFLX, ZT, DYSKSBH, ZXTBH_ID, ZDBM, ZDMC, BRJSFS_ID, GDBZ) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'A', 4, 6, ?, ?, 55, 0)";
         PreparedStatement ptmtYwd = connection.prepareStatement(sqlYwd);
         ptmtYwd.setString(1, yptId);
         ptmtYwd.setString(2, "" + ghdId);
