@@ -68,26 +68,9 @@ spring:
       #      监控统计用的filter:stat日志用的filter:log4j防御sql注入的filter:wall
       filters: stat,wall,log4j
 
-  # redis 配置
-  redis:
-    host: localhost
-    port: 6379
-#    host: 120.26.4.216
-#    port: 6379
-#    password: 1qaz@WSX
-#    timeout: 86400
-
-  # session 配置
-  session:
-    store-type: redis
-
 
 ### mybatis ###
 mybatis-plus:
-  global-config:
-    db-config:
-      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
-      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
   type-aliases-package: com.maizhiyu.yzt.entity
   mapper-locations: classpath*:/mybatis/mapper/*.xml
   configuration:
@@ -109,3 +92,10 @@ swagger:
   enable: true
 
 
+### jwt ###
+jwt:
+  authkey: token
+  header: Authorization
+  prefix: Bearer
+  secret: 1qaz@WSX
+  expire: 3600000

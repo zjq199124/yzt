@@ -75,7 +75,10 @@ public class BuDiagnoseVO {
     @Data
     @ApiModel
     public static class ShiyiVO {
-        @ApiModelProperty(value="处方名称")
+        @ApiModelProperty(value="技术编码")
+        private String code;
+
+        @ApiModelProperty(value="技术名称")
         private String name;
 
         @ApiModelProperty(value="适用症状")
@@ -92,6 +95,9 @@ public class BuDiagnoseVO {
     @Data
     @ApiModel
     public static class ZhongyaoComponentVO {
+        @ApiModelProperty(value="编码")
+        private String code;
+
         @ApiModelProperty(value="名称")
         private String name;
 
@@ -109,6 +115,9 @@ public class BuDiagnoseVO {
     @Data
     @ApiModel
     public static class XiedingComponentVO {
+        @ApiModelProperty(value="编码")
+        private String code;
+
         @ApiModelProperty(value="名称")
         private String name;
 
