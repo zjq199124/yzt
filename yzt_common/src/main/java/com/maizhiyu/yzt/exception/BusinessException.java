@@ -1,7 +1,5 @@
 package com.maizhiyu.yzt.exception;
 
-import com.maizhiyu.yzt.result.ResultCode;
-
 public class BusinessException extends RuntimeException {
 
     public BusinessException() {
