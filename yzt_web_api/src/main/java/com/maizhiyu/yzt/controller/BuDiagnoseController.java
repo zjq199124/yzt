@@ -182,7 +182,7 @@ public class BuDiagnoseController {
             for (Map<String, Object> map : shiyiList) {
                 BuDiagnoseVO.ShiyiVO vo = new BuDiagnoseVO.ShiyiVO();
                 vo.setCode(("" + map.getOrDefault("sytechId", "")));
-                vo.setName(((String) map.getOrDefault("name", "")).trim());
+                vo.setName(((String) map.getOrDefault("sytechName", "")).trim());
                 vo.setSymptoms(((String) map.getOrDefault("symptoms", "")).trim());
                 vo.setDetail(((String) map.getOrDefault("detail", "")).trim());
                 vo.setOperation(((String) map.getOrDefault("operation", "")).trim());
