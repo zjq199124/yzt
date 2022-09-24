@@ -25,8 +25,8 @@ public class SchZhongyaoService implements ISchZhongyaoService {
     private MsZhongyaoHerbsMapper msZhongyaoHerbsMapper;
 
     @Override
-    public Integer addZhongyao(SchZhongyao chengyao) {
-        return mapper.insert(chengyao);
+    public Integer addZhongyao(SchZhongyao zhongyao) {
+        return mapper.insert(zhongyao);
     }
 
     @Override
@@ -35,8 +35,8 @@ public class SchZhongyaoService implements ISchZhongyaoService {
     }
 
     @Override
-    public Integer setZhongyao(SchZhongyao chengyao) {
-        return mapper.updateById(chengyao);
+    public Integer setZhongyao(SchZhongyao zhongyao) {
+        return mapper.updateById(zhongyao);
     }
 
     @Override
