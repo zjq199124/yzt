@@ -14,5 +14,7 @@ public interface ITsSytechService {
 
     public TsSytech getSytech(Integer id);
 
+    public TsSytech getSytechByName(String name);
+
     public List<TsSytech> getSytechList(Integer status, String term, Integer display);
 }

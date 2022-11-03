@@ -9,6 +9,7 @@ import com.maizhiyu.yzt.utils.JwtTokenUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.models.auth.In;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 
+@Slf4j
 @Api(tags = "处方接口")
 @RestController
 @RequestMapping("/prescription")
@@ -37,6 +39,9 @@ public class BuPrescriptionController {
 
     @Autowired
     private IBuOutpatientService buOutpatientService;
+
+    @Autowired
+    private ITsSytechService sytechService;
 
 
     @ApiOperation(value = "新增处方(中药)", notes = "新增处方(中药)")
@@ -77,7 +82,7 @@ public class BuPrescriptionController {
             item.setCustomerId(customerId);
             item.setDoctorId(hsUser.getId());
             item.setPatientId(buPatient.getId());
-            item.setOutpatientId(buOutpatient.getPatientId());
+            item.setOutpatientId(buOutpatient.getId());
             item.setName(it.getName());
             item.setUnit(it.getUnit());
             item.setDosage(it.getDosage());
@@ -101,7 +106,7 @@ public class BuPrescriptionController {
         HsUser hsUser = hsUserService.getUserByHisId(customerId, ro.getDoctorId());
         if (hsUser == null) return Result.failure(10002, "医生信息错误");
         // 获取患者信息
-        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, ro.getDoctorId());
+        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, ro.getPatientId());
         if (buPatient == null) return Result.failure(10003, "患者信息错误");
         // 获取预约信息
         BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getOutpatientId());
@@ -114,7 +119,7 @@ public class BuPrescriptionController {
         prescription.setCustomerId(customerId);
         prescription.setDoctorId(hsUser.getId());
         prescription.setPatientId(buPatient.getId());
-        prescription.setOutpatientId(buOutpatient.getPatientId());
+        prescription.setOutpatientId(buOutpatient.getId());
         prescription.setAttention(ro.getAttention());
         prescription.setCreateTime(new Date());
         prescription.setUpdateTime(prescription.getCreateTime());
@@ -126,7 +131,7 @@ public class BuPrescriptionController {
             item.setCustomerId(customerId);
             item.setDoctorId(hsUser.getId());
             item.setPatientId(buPatient.getId());
-            item.setOutpatientId(buOutpatient.getPatientId());
+            item.setOutpatientId(buOutpatient.getId());
             item.setName(it.getName());
             item.setDosage(it.getDosage());
             item.setFrequency(it.getFrequency());
@@ -152,7 +157,7 @@ public class BuPrescriptionController {
         HsUser hsUser = hsUserService.getUserByHisId(customerId, ro.getDoctorId());
         if (hsUser == null) return Result.failure(10002, "医生信息错误");
         // 获取患者信息
-        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, ro.getDoctorId());
+        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, ro.getPatientId());
         if (buPatient == null) return Result.failure(10003, "患者信息错误");
         // 获取预约信息
         BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getOutpatientId());
@@ -165,7 +170,7 @@ public class BuPrescriptionController {
         prescription.setCustomerId(customerId);
         prescription.setDoctorId(hsUser.getId());
         prescription.setPatientId(buPatient.getId());
-        prescription.setOutpatientId(buOutpatient.getPatientId());
+        prescription.setOutpatientId(buOutpatient.getId());
         prescription.setDayCount(ro.getCount());
         prescription.setAttention(ro.getAttention());
         prescription.setCreateTime(new Date());
@@ -178,7 +183,7 @@ public class BuPrescriptionController {
             item.setCustomerId(customerId);
             item.setDoctorId(hsUser.getId());
             item.setPatientId(buPatient.getId());
-            item.setOutpatientId(buOutpatient.getPatientId());
+            item.setOutpatientId(buOutpatient.getId());
             item.setName(it.getName());
             item.setUnit(it.getUnit());
             item.setDosage(it.getDosage());
@@ -202,7 +207,7 @@ public class BuPrescriptionController {
         HsUser hsUser = hsUserService.getUserByHisId(customerId, ro.getDoctorId());
         if (hsUser == null) return Result.failure(10002, "医生信息错误");
         // 获取患者信息
-        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, ro.getDoctorId());
+        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, ro.getPatientId());
         if (buPatient == null) return Result.failure(10003, "患者信息错误");
         // 获取预约信息
         BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getOutpatientId());
@@ -215,7 +220,7 @@ public class BuPrescriptionController {
         prescription.setCustomerId(customerId);
         prescription.setDoctorId(hsUser.getId());
         prescription.setPatientId(buPatient.getId());
-        prescription.setOutpatientId(buOutpatient.getPatientId());
+        prescription.setOutpatientId(buOutpatient.getId());
         prescription.setAttention(ro.getAttention());
         prescription.setCreateTime(new Date());
         prescription.setUpdateTime(prescription.getCreateTime());
@@ -227,12 +232,28 @@ public class BuPrescriptionController {
             item.setCustomerId(customerId);
             item.setDoctorId(hsUser.getId());
             item.setPatientId(buPatient.getId());
-            item.setOutpatientId(buOutpatient.getPatientId());
+            item.setOutpatientId(buOutpatient.getId());
             item.setName(it.getName());
             item.setDetail(it.getDetail());
             item.setOperation(it.getOperation());
             item.setQuantity(new BigDecimal(it.getQuantity()));
             item.setNote(it.getNote());
+//            // 实现一：传入参数中code就是适宜技术的id（string）数据库中存储是int格式，需要转格式
+//            try {
+//                Long entityId = Long.parseLong(it.getCode());
+//                item.setEntityId(entityId);
+//            } catch (Exception e) {
+//                log.warn("转化适宜技术ID异常 " + it);
+//            }
+            // 实现二：根据名称查询entityId
+            try {
+                TsSytech sytech = sytechService.getSytechByName(it.getName());
+                item.setEntityId(sytech.getId());
+                log.info("查询适宜技术成功 " + sytech);
+            } catch (Exception e) {
+                log.warn("查询适宜技术异常 " + it);
+            }
+            // 添加到列表
             itemList.add(item);
         }
         // 保存药材

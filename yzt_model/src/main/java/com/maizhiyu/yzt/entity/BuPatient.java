@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.entity;
 
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -37,6 +38,7 @@ public class BuPatient implements Serializable {
     private String name;
 
     @ApiModelProperty(value="年龄")
+    @TableField(exist = false)
     private Integer nl;
 
     @ApiModelProperty(value="患者性别")
@@ -59,6 +61,9 @@ public class BuPatient implements Serializable {
     @ApiModelProperty(value="创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="Asia/Shanghai")
     private Date createTime;
+
+    @ApiModelProperty(value="HIS中ID")
+    private String hisId;
 
     @ApiModelProperty(value="其他系统的数据")
     private String extra;

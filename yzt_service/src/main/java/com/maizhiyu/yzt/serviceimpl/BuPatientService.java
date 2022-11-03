@@ -84,6 +84,14 @@ public class BuPatientService implements IBuPatientService {
         return patientMapper.selectOne(wrapper);
     }
 
+    @Override
+    public BuPatient getPatientByHisId(Long customerId, String hidId) {
+        QueryWrapper<BuPatient> wrapper = new QueryWrapper<>();
+        wrapper.eq("customer_id", customerId)
+                .eq("his_id", hidId);
+        return patientMapper.selectOne(wrapper);
+    }
+
 
     @Override
     public List<BuPatient> getPatientList(Long customerId, String term) {

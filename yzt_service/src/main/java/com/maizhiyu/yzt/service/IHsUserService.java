@@ -19,6 +19,8 @@ public interface IHsUserService {
 
     Map<String, Object> getUser(Long id);
 
+    HsUser getUserByHisId(Long customerId, String hisId);
+
     HsUser getAdmin(Long customerId);
 
     Integer setAdmin(HsUser user);

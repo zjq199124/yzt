@@ -214,9 +214,7 @@ public class BuPrescriptionService implements IBuPrescriptionService {
 
     private void addItems(BuPrescription prescription) {
         Date date = new Date();
-
         for (BuPrescriptionItem item : prescription.getItemList()) {
-
             item.setType(prescription.getType());
             item.setCustomerId(prescription.getCustomerId());
             item.setDepartmentId(prescription.getDepartmentId());

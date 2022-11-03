@@ -3,6 +3,7 @@ package com.maizhiyu.yzt.serviceimpl;
 import com.maizhiyu.yzt.entity.BuDiagnose;
 import com.maizhiyu.yzt.mapper.BuRecommendMapper;
 import com.maizhiyu.yzt.service.IBuRecommendService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
+@Slf4j
 @Service
 @Transactional(rollbackFor=Exception.class)
 public class BuRecommendService implements IBuRecommendService {
@@ -54,7 +56,6 @@ public class BuRecommendService implements IBuRecommendService {
         }
         // 计算辨证得分
         for (Map<String, Object> syndrome : syndromeList) {
-            System.out.println(syndrome);
             String[] arr = ((String) syndrome.get("symptoms")).split(",|，");
             long count = (long) syndrome.get("count");
             if(StringUtils.isNotBlank(diagnose.getSymptoms())) {
@@ -65,9 +66,6 @@ public class BuRecommendService implements IBuRecommendService {
                 count = intersection.size();
             }
             int total = arr.length;
-
-//            double score = (double) count * count / total;
-
             double score = (double) count / total;
             syndrome.put("total", total);
             syndrome.put("score", score);
@@ -76,6 +74,11 @@ public class BuRecommendService implements IBuRecommendService {
         syndromeList.sort((a,b) -> Double.compare((double)b.get("score"), (double)a.get("score")));
         int limit = syndromeList.size() < 10 ? syndromeList.size() : 10;
         syndromeList = syndromeList.subList(0, limit);
+        // 输出辨证列表
+        System.out.println("------------------------------------");
+        for (Map<String, Object> s : syndromeList) {
+            System.out.println("" + s.get("diseaseName") + "-" + s.get("name") + " : " + s);
+        }
         // 补充推荐数据
         getRecommend(syndromeList, result);
         // 返回数据

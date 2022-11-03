@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.maizhiyu.yzt.entity.SchXieding;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.ISchXiedingService;
+import com.maizhiyu.yzt.service.ISynSyndromeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -24,13 +25,29 @@ public class SchXiedingController {
     @Autowired
     private ISchXiedingService service;
 
+    @Autowired
+    private ISynSyndromeService syndromeService;
+
 
     @ApiOperation(value = "增加协定方案", notes = "增加协定方案")
     @PostMapping("/addXieding")
     public Result addXieding(@RequestBody SchXieding xieding) {
-        xieding.setStatus(1);
-        Integer res = service.addXieding(xieding);
-        return Result.success(xieding);
+        // 如果有辨证ID则只增加一调记录
+        if (xieding.getSyndromeId() != null) {
+            xieding.setStatus(1);
+            Integer res = service.addXieding(xieding);
+            return Result.success(xieding);
+        }
+        // 如果无辨证ID则查询疾病对应的所有辨证ID，每个辨证增加一条记录
+        else {
+            List<Map<String, Object>> list = syndromeService.getSyndromeList(xieding.getDiseaseId(), null, null);
+            for (Map<String, Object> map : list) {
+                xieding.setStatus(1);
+                xieding.setSyndromeId((Long) map.get("id"));
+                Integer res = service.addXieding(xieding);
+            }
+            return Result.success();
+        }
     }
 
 

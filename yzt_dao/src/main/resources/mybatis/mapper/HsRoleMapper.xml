@@ -22,8 +22,11 @@
         from
             hs_role X
         <where>
+            <if test="customerId == null">
+                and X.customer_id = 0
+            </if>
             <if test="customerId != null">
-                and X.customer_id = #{customerId}
+                and X.customer_id in ( 0, #{customerId} )
             </if>
             <if test="status != null">
                 and X.status = #{status}

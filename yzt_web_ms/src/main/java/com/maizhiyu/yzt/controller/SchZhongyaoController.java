@@ -11,6 +11,7 @@ import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IMsHerbsService;
 import com.maizhiyu.yzt.service.IMsZhongyaoHerbsService;
 import com.maizhiyu.yzt.service.ISchZhongyaoService;
+import com.maizhiyu.yzt.service.ISynSyndromeService;
 import com.maizhiyu.yzt.serviceimpl.MsZhongyaoHerbsService;
 import com.maizhiyu.yzt.vo.SchZhongyaoHerbsVO;
 import com.maizhiyu.yzt.vo.SchZhongyaoVO;
@@ -37,6 +38,9 @@ public class SchZhongyaoController {
     private ISchZhongyaoService service;
 
     @Autowired
+    private ISynSyndromeService syndromeService;
+
+    @Autowired
     private IMsHerbsService msHerbsService;
 
     @Autowired
@@ -45,9 +49,22 @@ public class SchZhongyaoController {
     @ApiOperation(value = "增加中药方案", notes = "增加中药方案")
     @PostMapping("/addZhongyao")
     public Result addZhongyao(@RequestBody SchZhongyao zhongyao) {
-        zhongyao.setStatus(1);
-        Integer res = service.addZhongyao(zhongyao);
-        return Result.success(zhongyao);
+        // 如果有辨证ID则只增加一调记录
+        if (zhongyao.getSyndromeId() != null) {
+            zhongyao.setStatus(1);
+            Integer res = service.addZhongyao(zhongyao);
+            return Result.success(zhongyao);
+        }
+        // 如果无辨证ID则查询疾病对应的所有辨证ID，每个辨证增加一条记录
+        else {
+            List<Map<String, Object>> list = syndromeService.getSyndromeList(zhongyao.getDiseaseId(), null, null);
+            for (Map<String, Object> map : list) {
+                zhongyao.setStatus(1);
+                zhongyao.setSyndromeId((Long) map.get("id"));
+                Integer res = service.addZhongyao(zhongyao);
+            }
+            return Result.success();
+        }
     }
 
 

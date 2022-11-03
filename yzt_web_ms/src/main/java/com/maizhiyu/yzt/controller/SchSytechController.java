@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.maizhiyu.yzt.entity.SchSytech;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.ISchSytechService;
+import com.maizhiyu.yzt.service.ISynSyndromeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -25,13 +26,29 @@ public class SchSytechController {
     @Autowired
     private ISchSytechService service;
 
+    @Autowired
+    private ISynSyndromeService syndromeService;
+
 
     @ApiOperation(value = "增加适宜方案", notes = "增加适宜方案")
     @PostMapping("/addSytech")
     public Result addSytech(@RequestBody SchSytech sytech) {
-        sytech.setStatus(1);
-        Integer res = service.addSytech(sytech);
-        return Result.success(sytech);
+        // 如果有辨证ID则只增加一调记录
+        if (sytech.getSyndromeId() != null) {
+            sytech.setStatus(1);
+            Integer res = service.addSytech(sytech);
+            return Result.success(sytech);
+        }
+        // 如果无辨证ID则查询疾病对应的所有辨证ID，每个辨证增加一条记录
+        else {
+            List<Map<String, Object>> list = syndromeService.getSyndromeList(sytech.getDiseaseId(), null, null);
+            for (Map<String, Object> map : list) {
+                sytech.setStatus(1);
+                sytech.setSyndromeId((Long) map.get("id"));
+                Integer res = service.addSytech(sytech);
+            }
+            return Result.success();
+        }
     }
 
 

@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.maizhiyu.yzt.entity.SchChengyao;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.ISchChengyaoService;
+import com.maizhiyu.yzt.service.ISynSyndromeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -25,13 +26,29 @@ public class SchChengyaoController {
     @Autowired
     private ISchChengyaoService service;
 
+    @Autowired
+    private ISynSyndromeService syndromeService;
+
 
     @ApiOperation(value = "增加成药方案", notes = "增加成药方案")
     @PostMapping("/addChengyao")
     public Result addChengyao(@RequestBody SchChengyao chengyao) {
-        chengyao.setStatus(1);
-        Integer res = service.addChengyao(chengyao);
-        return Result.success(chengyao);
+        // 如果有辨证ID则只增加一调记录
+        if (chengyao.getSyndromeId() != null) {
+            chengyao.setStatus(1);
+            Integer res = service.addChengyao(chengyao);
+            return Result.success(chengyao);
+        }
+        // 如果无辨证ID则查询疾病对应的所有辨证ID，每个辨证增加一条记录
+        else {
+            List<Map<String, Object>> list = syndromeService.getSyndromeList(chengyao.getDiseaseId(), null, null);
+            for (Map<String, Object> map : list) {
+                chengyao.setStatus(1);
+                chengyao.setSyndromeId((Long) map.get("id"));
+                Integer res = service.addChengyao(chengyao);
+            }
+            return Result.success();
+        }
     }
 
 

@@ -14,6 +14,7 @@ import com.maizhiyu.yzt.service.ITxXzcService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,7 @@ import java.util.Date;
 
 
 @Api(tags = "熏蒸床接口")
+@Slf4j
 @RestController
 @RequestMapping("/xzc")
 public class TeXzcController {
@@ -47,7 +49,7 @@ public class TeXzcController {
     @ApiImplicitParams({})
     @PostMapping(value = "/data", consumes = "application/octet-stream")
     public Result data(@RequestBody String string) {
-        System.out.println("##### " + string);
+        log.info(" ##### " + string);
         try {
             JSONObject jsonObject = JSON.parseObject(string);
             String type = jsonObject.getString("T");
@@ -160,7 +162,6 @@ public class TeXzcController {
         String code = jsonObject.getString("D");
         String runId = jsonObject.getString("R");
         String errorId = jsonObject.getString("E");
-        Integer errorType = Integer.parseInt(errorId);
         Integer neckSetTemp = jsonObject.getInteger("O");
         Integer waistSetTemp = jsonObject.getInteger("X");
 
@@ -178,19 +179,22 @@ public class TeXzcController {
         }
 
         // 处理报警信息
-        if (errorType > 0) {
-            // 添加预警记录
-            TeWarn warn = new TeWarn();
-            warn.setCode(code);
-            warn.setRunid(runId);
-            warn.setType(errorType);
-            warn.setTime(new Date());
-            warnService.addWarn(warn);
-            // 更新运行预警
-            TxXzcRun run = new TxXzcRun();
-            run.setCode(code);
-            run.setRunid(runId);
-            xzcService.setRunWarn(run);
+        if (errorId != null) {
+            Integer errorType = Integer.parseInt(errorId);
+            if (errorType > 0) {
+                // 添加预警记录
+                TeWarn warn = new TeWarn();
+                warn.setCode(code);
+                warn.setRunid(runId);
+                warn.setType(errorType);
+                warn.setTime(new Date());
+                warnService.addWarn(warn);
+                // 更新运行预警
+                TxXzcRun run = new TxXzcRun();
+                run.setCode(code);
+                run.setRunid(runId);
+                xzcService.setRunWarn(run);
+            }
         }
 
         // 生成返回数据

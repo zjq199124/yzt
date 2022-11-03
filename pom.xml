@@ -31,6 +31,7 @@
         <module>yzt_xdata</module>
         <module>yzt_web_api</module>
         <module>yzt_xdapi</module>
+        <module>yzt_xdapi_jiaozuofuyou</module>
     </modules>
 
     <properties>

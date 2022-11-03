@@ -86,4 +86,7 @@ public class BuPrescription implements Serializable {
     @ApiModelProperty(value="子项列表")
     @TableField(exist = false)
     private List<BuPrescriptionItem> itemList;
+
+    @ApiModelProperty(value="HisId")
+    private String hisId;
 }

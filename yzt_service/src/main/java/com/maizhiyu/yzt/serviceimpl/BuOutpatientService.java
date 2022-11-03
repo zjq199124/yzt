@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.maizhiyu.yzt.entity.BuOutpatient;
 import com.maizhiyu.yzt.mapper.BuOutpatientMapper;
 import com.maizhiyu.yzt.service.IBuOutpatientService;
@@ -37,6 +38,14 @@ public class BuOutpatientService implements IBuOutpatientService {
     @Override
     public BuOutpatient getOutpatient(Long id) {
         return mapper.selectById(id);
+    }
+
+    @Override
+    public BuOutpatient getOutpatientByHisId(Long customerId, String hisId) {
+        QueryWrapper<BuOutpatient> wrapper = new QueryWrapper<>();
+        wrapper.eq("customer_id", customerId)
+                .eq("his_id", hisId);
+        return mapper.selectOne(wrapper);
     }
 
     @Override

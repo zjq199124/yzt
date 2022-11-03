@@ -81,7 +81,7 @@ public class BuDiagnoseController {
     }
 
 
-    @ApiOperation(value = "获取诊断方案推荐-通过疾病（不需要了）", notes = "获取诊断方案推荐-通过疾病")
+    @ApiOperation(value = "获取诊断方案推荐-通过疾病", notes = "获取诊断方案推荐-通过疾病")
     @ApiImplicitParams({})
     @PostMapping("/getRecommendByDisease")
     public Result getRecommendByDisease(@RequestBody BuDiagnose diagnose) {
@@ -90,7 +90,7 @@ public class BuDiagnoseController {
     }
 
 
-    @ApiOperation(value = "获取诊断方案推荐-通过症状（不需要了）", notes = "获取诊断方案推荐-通过症状")
+    @ApiOperation(value = "获取诊断方案推荐-通过症状", notes = "获取诊断方案推荐-通过症状")
     @ApiImplicitParams({})
     @PostMapping("/getRecommendBySymptom")
     public Result getRecommendBySymptom(@RequestBody BuDiagnose diagnose) {

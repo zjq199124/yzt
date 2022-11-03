@@ -138,7 +138,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     public static void main(String[] args) {
 
-        String password = "admin";
+        String password = "123456";
 
         BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();
 

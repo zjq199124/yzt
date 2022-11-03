@@ -64,6 +64,9 @@ public class HsUser implements Serializable {
     @ApiModelProperty(value="创建时间")
     private Date createTime;
 
+    @ApiModelProperty(value="HIS中ID")
+    private String hisId;
+
     @ApiModelProperty(value="角色列表")
     @TableField(exist = false)
     private List<Long> roleList;

@@ -39,6 +39,14 @@ public class TsSytechService implements ITsSytechService {
     }
 
     @Override
+    public TsSytech getSytechByName(String name) {
+        QueryWrapper<TsSytech> wrapper = new QueryWrapper<>();
+        wrapper.eq("name", name);
+        return mapper.selectOne(wrapper);
+    }
+
+
+    @Override
     public List<TsSytech> getSytechList(Integer status, String term, Integer display) {
         QueryWrapper<TsSytech> wrapper = new QueryWrapper<>();
         if (status != null) {

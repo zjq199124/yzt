@@ -7,11 +7,11 @@ import java.util.Map;
 
 public interface ISchSytechService {
 
-    public Integer addSytech(SchSytech agency);
+    public Integer addSytech(SchSytech sytech);
 
     public Integer delSytech(Long id);
 
-    public Integer setSytech(SchSytech agency);
+    public Integer setSytech(SchSytech sytech);
 
     public SchSytech getSytech(Long id);
 

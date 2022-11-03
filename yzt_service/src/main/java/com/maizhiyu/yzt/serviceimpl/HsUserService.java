@@ -1,7 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.maizhiyu.yzt.entity.HsUser;
 import com.maizhiyu.yzt.entity.HsUserDepartment;
 import com.maizhiyu.yzt.entity.HsUserRole;
@@ -34,7 +33,7 @@ public class HsUserService implements IHsUserService {
     private HsUserDepartmentMapper userDepartmentMapper;
 
     @Override
-    @ExistCheck(clazz = MsUser.class, fname = "username", message = "用户已存在")
+    @ExistCheck(clazz = HsUser.class, fname = "username", message = "用户已存在")
     public Integer addUser(HsUser user) {
         // 添加用户信息
         user.setStatus(1);
@@ -65,14 +64,20 @@ public class HsUserService implements IHsUserService {
     public Integer setUser(HsUser user) {
         // 更新用户信息
         Integer res = userMapper.updateById(user);
-        // 删除角色关系数据
-        deleteUserRoleData(user.getId());
-        // 删除部门关系数据
-        deleteUserDepartmentData(user.getId());
-        // 添加角色信息
-        insertUserRoleData(user.getId(), user.getRoleList());
-        // 添加部门信息
-        insertUserDepartmentData(user.getId(), user.getDepartmentList());
+        // 角色信息不空时才处理
+        if (user.getRoleList() != null && user.getRoleList().size() > 0) {
+            // 删除角色关系数据
+            deleteUserRoleData(user.getId());
+            // 添加角色信息
+            insertUserRoleData(user.getId(), user.getRoleList());
+        }
+        // 部门信息不空时才处理
+        if (user.getDepartmentList() != null && user.getDepartmentList().size() > 0) {
+            // 删除部门关系数据
+            deleteUserDepartmentData(user.getId());
+            // 添加部门信息
+            insertUserDepartmentData(user.getId(), user.getDepartmentList());
+        }
         // 返回结果
         return res;
     }
@@ -90,6 +95,13 @@ public class HsUserService implements IHsUserService {
     @Override
     public Map<String, Object> getUser(Long id) {
         return userMapper.selectUser(id);
+    }
+
+    public HsUser getUserByHisId(Long customerId, String hisId) {
+        QueryWrapper<HsUser> wrapper = new QueryWrapper<>();
+        wrapper.eq("customer_id", customerId)
+                .eq("his_id", hisId);
+        return userMapper.selectOne(wrapper);
     }
 
     @Override
@@ -126,6 +138,7 @@ public class HsUserService implements IHsUserService {
                 HsUserRole userRole = new HsUserRole();
                 userRole.setUserId(userId);
                 userRole.setRoleId(roleId);
+                System.out.println(userRole);
                 userRoleMapper.insert(userRole);
             }
         }
