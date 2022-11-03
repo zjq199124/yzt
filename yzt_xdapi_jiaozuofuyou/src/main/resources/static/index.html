@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>中医适宜技术云平台-前置机服务</title>
+    <script src="jquery/jquery-3.5.1.min.js"></script>
+    <script>
+        function handleNav(event) {
+            if ($(this).attr('id') == "navDisease") {
+                $("#workspace").attr('src', 'disease.html');
+            }
+            if ($(this).attr('id') == "navMedicant") {
+                $("#workspace").attr('src', 'medicant.html');
+            }
+            if ($(this).attr('id') == "navTreatment") {
+                $("#workspace").attr('src', 'treatment.html');
+            }
+        }
+    </script>
+    <script>
+        $(function () {
+            $("#navDisease").click(handleNav)
+            $("#navMedicant").click(handleNav)
+            $("#navTreatment").click(handleNav)
+        })
+    </script>
+    <style>
+        html,body{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<!--头部-->
+<div style="width: 100%; height: 60px; line-height: 60px; background: darkturquoise;">
+    <span style="font-size: 24px; padding-left: 15px; padding-right: 15px;">
+        中医适宜技术云平台-前置机服务
+    </span>
+    <span>
+        <button id="navDisease">疾病映射</button>
+        <button id="navMedicant">中药映射</button>
+        <button id="navTreatment">治疗映射</button>
+    </span>
+</div>
+
+<!--工作区-->
+<iframe id="workspace" width="100%" height="100%" frameborder="no" border="1">
+</iframe>
+
+</body>
+</html>

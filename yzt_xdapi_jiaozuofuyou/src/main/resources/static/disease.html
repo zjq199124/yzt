@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>疾病映射</title>
+    <style>
+        .ui-widget-header {
+            background: grey;
+        }
+        .ui-dialog-title {
+            margin-left: 5px;
+        }
+        .ui-dialog-titlebar-close {
+            float: right;
+        }
+    </style>
+    <script src="jquery/jquery-ui.min.css"></script>
+    <script src="jquery/jquery-3.5.1.min.js"></script>
+    <script src="jquery/jquery-ui.min.js"></script>
+    <script>
+        function onSearchClick(event) {
+            // 读取输入
+            let term = $("#inputSearch").val()
+            if (term == null || term.trim().length == 0) {
+                alert("请输入搜索词")
+                return
+            }
+            // 准备数据
+            let ro = {term: term}
+            // 调用接口
+            $.post("disease/getDiseaseList", JSON.stringify(ro), function (res, status, xhr) {
+                if (res && res.code == 0) {
+                    // 清空数据
+                    $("#tableHead").nextAll().remove()
+                    let table = $("#table");
+                    // 填充数据
+                    list = res.data.list
+                    for (let i = 0; i < list.length; i++) {
+                        // 数据行
+                        var tr = $("<tr></tr>");
+                        // 数据列
+                        tr.append(
+                            $("<td>" + (i + 1) + "</td>"),
+                            $("<td>" + (list[i].code || '') + "</td>"),
+                            $("<td>" + (list[i].name || '') + "</td>"),
+                            $("<td>" + (list[i].pinyin || '') + "</td>"),
+                            $("<td>" + (list[i].abbr || '') + "</td>"),
+                            $("<td>" + (list[i].hiscode || '') + "</td>"),
+                            $("<td>" + (list[i].hisname || '') + "</td>"),
+                            $("<td align='center'>" +
+                                "<button name='btnEdit' style='margin-inline:10px'>编辑</button>" +
+                                "<button name='btnDelete' style='margin-inline:10px'>删除</button>" +
+                                "</td>"),
+                        )
+                        // 数据
+                        tr.data('disease', list[i])
+                        // 将行添加到表格
+                        table.append(tr)
+                    }
+                    // 添加事件
+                    $("button[name='btnEdit']").click(onEditClick)
+                    $("button[name='btnDelete']").click(onDeleteClick)
+                }
+            }).done(() => {
+            }).fail(() => {
+            }).always(() => {
+            });
+        }
+
+        function onAddClick(event) {
+            $("#dialogAdd").dialog('open')
+        }
+
+        function onAddCancelClick(event) {
+            $("#dialogAdd").dialog('close')
+        }
+
+        function onAddSubmitClick(event) {
+            // 读取输入
+            let dialog = $("#dialogAdd")
+            // 准备数据
+            let ro = {
+                code: dialog.find("input[name=code]").val(),
+                name: dialog.find("input[name=name]").val(),
+                pinyin: dialog.find("input[name=pinyin]").val(),
+                abbr: dialog.find("input[name=abbr]").val(),
+                hiscode: dialog.find("input[name=hiscode]").val(),
+                hisname: dialog.find("input[name=hisname]").val(),
+            }
+            // 调用接口
+            $.post("disease/addDisease", JSON.stringify(ro), function (res, status, xhr) {
+                console.log(res)
+                if (res && res.code == 0) {
+                    alert("新增成功")
+                    dialog.dialog('close');
+                } else {
+                    alert("新增失败 " + res.msg)
+                }
+            }).done(() => {
+            }).fail(() => {
+                alert("新增异常")
+            }).always(() => {
+            });
+        }
+
+        function onEditClick(event) {
+            let data = $(this).closest("tr").data("disease")
+            let dialog = $("#dialogEdit")
+            dialog.find("input[name=id]").val(data.id)
+            dialog.find("input[name=code]").val(data.code)
+            dialog.find("input[name=name]").val(data.name)
+            dialog.find("input[name=pinyin]").val(data.pinyin)
+            dialog.find("input[name=abbr]").val(data.abbr)
+            dialog.find("input[name=hiscode]").val(data.hiscode)
+            dialog.find("input[name=hisname]").val(data.hisname)
+            dialog.dialog('open');
+        }
+
+        function onEditCancelClick(event) {
+            $("#dialogEdit").dialog('close')
+        }
+
+        function onEditSubmitClick(event) {
+            // 读取输入
+            let dialog = $("#dialogEdit")
+            // 准备数据
+            let ro = {
+                id: dialog.find("input[name=id]").val(),
+                code: dialog.find("input[name=code]").val(),
+                name: dialog.find("input[name=name]").val(),
+                pinyin: dialog.find("input[name=pinyin]").val(),
+                abbr: dialog.find("input[name=abbr]").val(),
+                hiscode: dialog.find("input[name=hiscode]").val(),
+                hisname: dialog.find("input[name=hisname]").val(),
+            }
+            // 调用接口
+            $.post("disease/setDisease", JSON.stringify(ro), function (res, status, xhr) {
+                if (res && res.code == 0) {
+                    alert("编辑成功")
+                    dialog.dialog('close');
+                    onSearchClick();
+                } else {
+                    alert("编辑失败 " + res.msg)
+                }
+            }).done(() => {
+            }).fail(() => {
+                alert("编辑异常")
+            }).always(() => {
+            });
+        }
+
+        function onDeleteClick(event) {
+            // 读取数据
+            let data = $(this).closest("tr").data("disease")
+            // 删除确认
+            if(confirm("确定删除治疗映射 " + data.name)) {
+                // 准备数据
+                let ro = {
+                    id: data.id
+                }
+                // 调用接口
+                $.post("disease/delDisease", JSON.stringify(ro), function (res, status, xhr) {
+                    if (res && res.code == 0) {
+                        alert("删除成功")
+                        onSearchClick();
+                    } else {
+                        alert("删除失败 " + res.msg)
+                    }
+                }).done(() => {
+                }).fail(() => {
+                    alert("删除异常")
+                }).always(() => {
+                });
+            }
+        }
+
+        function onImportClick(event) {
+        }
+    </script>
+    <script>
+        $(function () {
+            $.ajaxSetup({contentType: "application/json; charset=utf-8"});
+            $("#dialogAdd").dialog({
+                autoOpen: false,
+                closeText: "X",
+                modal: true,
+                width: "400",
+                height: "300"
+            });
+            $("#dialogEdit").dialog({
+                autoOpen: false,
+                closeText: "X",
+                modal: true,
+                width: "400",
+                height: "300"
+            });
+        })
+    </script>
+</head>
+<body>
+
+<!--标题栏-->
+<span style="font-size:18px; font-weight:bold;">疾病映射 》</span>
+
+<!--搜索栏-->
+<span style="margin-top: 10px;">
+    <input type="text" id="inputSearch" required minlength="1" maxlength="10" size="30" placeholder="编码/名称/拼音/简拼" style="height: 19px;">
+    <button id="btnSearch" onclick="onSearchClick()">查询</button>
+    <button id="btnAdd" onclick="onAddClick()">新增</button>
+    <button id="btnImport" onclick="onImportClick()">导入</button>
+    <input type="file" id="inputImport" name="inputImport" style="display: none;" />
+</span>
+
+<!--表格区-->
+<div style="margin-top: 10px;">
+    <table id="table" border="1" width="100%" bordercolor="red" frame="void">
+        <tr id="tableHead">
+            <th>序号</th>
+            <th>编码</th>
+            <th>名称</th>
+            <th>拼音</th>
+            <th>缩写</th>
+            <th>HIS内编码</th>
+            <th>HIS内名称</th>
+            <th>操作</th>
+        </tr>
+    </table>
+</div>
+
+<div id="dialogAdd" title="新增映射" style="width: 600px; background: #ededed; padding: 30px">
+    <table width="100%">
+        <tr>
+            <td align="right">编码：</td>
+            <td><input type="text" name="code" value=""/></td>
+        </tr>
+        <tr>
+            <td align="right">名称：</td>
+            <td><input type="text" name="name" value="" /></td>
+        </tr>
+        <tr>
+            <td align="right">拼音：</td>
+            <td><input type="text" name="pinyin" value=""/></td>
+        </tr>
+        <tr>
+            <td align="right">缩写：</td>
+            <td><input type="text" name="abbr" value=""/></td>
+        </tr>
+        <tr>
+            <td align="right">HIS内编码：</td>
+            <td><input type="text" name="hiscode" value=""></td>
+        </tr>
+        <tr>
+            <td align="right">HIS内名称：</td>
+            <td><input type="text" name="hisname" value=""/></td>
+        </tr>
+    </table>
+    <div style="width: 100%; margin-top: 30px; display:inline-block; text-align:center">
+        <button onclick="onAddCancelClick()">取消</button>
+        <button onclick="onAddSubmitClick()">确认</button>
+    </div>
+</div>
+
+<div id="dialogEdit" title="编辑映射" style="width: 600px; background: #ededed; padding: 30px">
+    <table width="100%">
+        <tr>
+            <td align="right">ID：</td>
+            <td><input type="text" name="id" value="" disabled="disabled"/></td>
+        </tr>
+        <tr>
+            <td align="right">编码：</td>
+            <td><input type="text" name="code" value=""/></td>
+        </tr>
+        <tr>
+            <td align="right">名称：</td>
+            <td><input type="text" name="name" value="" /></td>
+        </tr>
+        <tr>
+            <td align="right">拼音：</td>
+            <td><input type="text" name="pinyin" value=""/></td>
+        </tr>
+        <tr>
+            <td align="right">缩写：</td>
+            <td><input type="text" name="abbr" value=""/></td>
+        </tr>
+        <tr>
+            <td align="right">HIS内编码：</td>
+            <td><input type="text" name="hiscode" value=""></td>
+        </tr>
+        <tr>
+            <td align="right">HIS内名称：</td>
+            <td><input type="text" name="hisname" value=""/></td>
+        </tr>
+    </table>
+    <div style="width: 100%; margin-top: 30px; display:inline-block; text-align:center">
+        <button onclick="onEditCancelClick()">取消</button>
+        <button onclick="onEditSubmitClick()">确认</button>
+    </div>
+</div>
+
+</body>
+</html>

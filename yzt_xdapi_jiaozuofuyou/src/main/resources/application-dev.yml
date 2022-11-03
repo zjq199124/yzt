@@ -1,0 +1,93 @@
+
+### 服务配置 ###
+server:
+  port: 8084
+  session:
+    timeout: 7200
+  servlet:
+    context-path: /yzt
+
+
+### spring ###
+spring:
+  application:
+    name: yizhentang
+  http:
+    multipart:
+      max-file-size: 2000Mb      # Max file size，默认1M
+      max-request-size: 2500Mb   # Max request size，默认10M
+  datasource:
+    ypt:
+      type: com.alibaba.druid.pool.DruidDataSource
+      driver-class-name: org.sqlite.JDBC
+      url: jdbc:sqlite:./data/jzfy/jzfy.db
+      username:
+      password:
+    his:
+#      type: com.alibaba.druid.pool.DruidDataSource
+#      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#      url: jdbc:sqlserver://172.16.11.3:1433;DatabaseName=yzt
+#      username: sa2
+#      password:
+      type: com.alibaba.druid.pool.DruidDataSource
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/yzt_jzfy?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+      username: huhu
+      password: huhu
+  mvc:
+    resources:
+      static-locations: 'classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/'
+  freemarker:
+    #指定HttpServletRequest的属性是否可以覆盖controller的model的同名项
+    allow-request-override: false
+    #req访问request
+    request-context-attribute: req
+    #后缀名freemarker默认后缀为.ftl，当然你也可以改成自己习惯的.html
+    suffix: .ftl
+    #设置响应的内容类型
+    content-type: text/html;charset=utf-8
+    #是否允许mvc使用freemarker
+    enabled: true
+    #是否开启template caching
+    cache: false
+    #设定模板的加载路径，多个以逗号分隔，默认: [“classpath:/templates/”]
+    template-loader-path: classpath:/templates/
+    #设定Template的编码
+    charset: UTF-8
+    setting:
+      template_update_delay: 0
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/resources/templates
+
+
+### mybatis ###
+mybatis-plus:
+  type-aliases-package: com.maizhiyu.yzt.entity
+#  mapper-locations: classpath*:/mybatis/mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+### swagger ###（生产环境时需要关闭）
+swagger:
+  enable: true
+
+
+### feign ###
+api:
+  ypt:
+    domain: https://ypt.yztyun.com/open/api
+    customer: jiaozuofuyou
+    secretkey: jzfy123456
+    cronenable: true
+    cron: "0 0 0 * * ?"
+
+
+### cron ###
+task:
+  doctor:
+    enable: false
+    cron: "0 * * * * ?"
