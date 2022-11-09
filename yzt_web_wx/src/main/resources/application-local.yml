@@ -152,3 +152,8 @@ weixin:
 ### swagger ###（生产环境时需要关闭）
 swagger:
   enable: true
+
+### 业务配置 ###
+file:
+  upload-folder: /Users/huhu/Temps/static/
+  static-access-path: /files/**

@@ -23,6 +23,8 @@ spring:
       max-request-size: 2500Mb   # Max request size，默认10M
   datasource:
     # 当前数据源操作类型
+
+
     type: com.alibaba.druid.pool.DruidDataSource
     #     mysql驱动包
     driver-class-name: com.mysql.jdbc.Driver
