@@ -1,0 +1,16 @@
+# DataSource Config
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@127.0.0.1:1521/his?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=UTC
+    username: his
+    password: his
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**Mapper.xml
+server:
+  port: 9001
+
+#8:
+#  140:
+#    164:
+#      229:

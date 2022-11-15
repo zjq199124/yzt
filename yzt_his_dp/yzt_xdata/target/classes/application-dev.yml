@@ -1,0 +1,56 @@
+
+### 服务配置 ###
+server:
+  port: 8085
+  session:
+    timeout: 7200
+  servlet:
+    context-path: /xdata/api
+
+
+### spring ###
+spring:
+  application:
+    name: yizhentang
+  # session 配置
+  session:
+    store-type: redis
+
+
+### 分页插件 ###
+pagehelper:
+  auto-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  page-size-zero: true
+  params: count=countSql
+
+
+### 数据交换 ###
+xdata:
+  api:
+    url: https://yptdev.yztyun.com/open/api
+#    url: http://localhost:8084/api
+  ohb:
+    enable: true
+    cron: "*/10 * * * * ?"
+    outpatient-enable: false
+    diagnose-enable: true
+    prescription-enable: false
+    customerId: 28
+    sql-ghd: "SELECT *
+              FROM MZ_GHD
+              WHERE GHRQ >= TO_DATE(TO_CHAR(SYSDATE - interval '2' minute, 'yyyy-mm-dd hh24:mi'), 'yyyy-mm-dd hh24:mi')
+              AND   GHRQ <  TO_DATE(TO_CHAR(SYSDATE - interval '1' minute, 'yyyy-mm-dd hh24:mi'), 'yyyy-mm-dd hh24:mi') "
+    diagnose-minute-start: -300
+    diagnose-minute-end: -1
+    prescription-minute-start: -20
+    prescription-minute-end: -1
+
+    department-his: 2
+    department-ypt: 49
+
+
+
+
+

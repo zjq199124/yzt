@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.BuScheduleMapper">
+
+    <select id="selectScheduleList" resultType="hashmap">
+        select
+            X.*
+        from
+            bu_schedule X
+        <where>
+            <if test="startDate != null">
+                and X.date >= #{startDate}
+            </if>
+            <if test="endDate != null">
+                and X.date &lt; #{endDate}
+            </if>
+            <if test="doctorId != null">
+                and X.doctor_id = #{doctorId}
+            </if>
+        </where>
+        limit 200
+    </select>
+
+    <select id="selectScheduleAppointmentList" resultType="hashmap">
+        select
+            X.*, Y.total, U.realname
+        from
+            (
+                select *
+                from bu_schedule
+                <where>
+                    <if test="startDate != null">
+                        and `date` >= #{startDate}
+                    </if>
+                    <if test="endDate != null">
+                        and `date` &lt; #{endDate}
+                    </if>
+                    <if test="customerId != null">
+                        and customer_id = #{customerId}
+                    </if>
+                    <if test="departmentId != null">
+                        and department_id = #{departmentId}
+                    </if>
+                    <if test="doctorId != null">
+                        and doctor_id = #{doctorId}
+                    </if>
+                </where>
+            ) X
+            left join
+            (
+                select schedule_id, count(*) total
+                from bu_outpatient
+                <where>
+                    <if test="startDate != null">
+                        and `time` >= #{startDate}
+                    </if>
+                    <if test="endDate != null">
+                        and `time` &lt; #{endDate}
+                    </if>
+                    <if test="customerId != null">
+                        and customer_id = #{customerId}
+                    </if>
+                    <if test="departmentId != null">
+                        and department_id = #{departmentId}
+                    </if>
+                    <if test="doctorId != null">
+                        and doctor_id = #{doctorId}
+                    </if>
+                </where>
+                group by schedule_id
+            ) Y on X.id = Y.schedule_id
+
+            left join hs_user U on U.id = X.doctor_id
+    </select>
+
+</mapper>

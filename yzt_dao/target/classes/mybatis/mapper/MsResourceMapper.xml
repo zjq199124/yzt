@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.MsResourceMapper">
+
+    <resultMap id="MsResourceMap" type="com.maizhiyu.yzt.entity.MsResource">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="level" column="level" jdbcType="INTEGER"/>
+        <result property="parent" column="parent" jdbcType="BIGINT"/>
+        <result property="identity" column="identity" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="value" column="value" jdbcType="VARCHAR"/>
+        <result property="descrip" column="descrip" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+<!--    注意：这里可以不要上面的map，可以直接使用hashmap-->
+
+    <!--查询角色资源列表-->
+    <select id="selectRoleResourceList" resultMap="MsResourceMap">
+        select
+            R.*
+        from
+            ms_resource R
+            join ms_role_resource X on X.resource_id = R.id
+        where
+            X.role_id = #{roleId}
+    </select>
+
+    <!--查询用户资源列表-->
+    <select id="selectUserResourceList" resultMap="MsResourceMap">
+        select
+            R.*
+        from
+            ms_resource R
+            join ms_role_resource X on X.resource_id = R.id
+            join ms_user_role Y on X.role_id = Y.role_id
+        where
+            Y.user_id = #{userId}
+    </select>
+
+</mapper>

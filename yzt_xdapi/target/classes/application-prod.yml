@@ -1,0 +1,31 @@
+
+### 服务配置 ###
+server:
+  port: 8084
+  session:
+    timeout: 7200
+  servlet:
+    context-path: /xapi
+
+
+### spring ###
+spring:
+  application:
+    name: yizhentang
+  http:
+    multipart:
+      max-file-size: 2000Mb      # Max file size，默认1M
+      max-request-size: 2500Mb   # Max request size，默认10M
+
+
+### swagger ###（生产环境时需要关闭）
+swagger:
+  enable: true
+
+
+### feign ###
+api:
+  ypt:
+    domain: https://yptdev.yztyun.com/open/api
+    customer:
+    secretkey:

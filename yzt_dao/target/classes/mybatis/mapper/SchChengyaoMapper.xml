@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.SchChengyaoMapper">
+
+    <select id="selectChengyaoList" resultType="hashmap">
+        select
+            X.id, X.status, X.disease_id, X.syndrome_id, X.name, X.component, X.function, X.contrain, X.attention,
+            A.content disease_name,
+            B.name syndrome_name, B.symptoms
+        from
+            sch_chengyao X
+            join dict_disease A on X.disease_id = A.id
+            join syn_syndrome B on X.syndrome_id = B.id
+        <where>
+            <if test="diseaseId != null">
+                and X.disease_id = #{diseaseId}
+            </if>
+            <if test="status != null">
+                and X.status = #{status}
+            </if>
+            <if test="term != null and term != ''">
+                and X.name like concat(concat('%',#{term}),'%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.yzt_ohb.mapper.MzBrjbxxbMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.yzt_ohb.model.MzBrjbxxbDO">
+        <id column="BR_ID" property="brId" />
+        <result column="BRJSFS_ID" property="brjsfsId" />
+        <result column="XM" property="xm" />
+        <result column="CSRQ" property="csrq" />
+        <result column="NL" property="nl" />
+        <result column="HY" property="hy" />
+        <result column="XB" property="xb" />
+        <result column="SFZH" property="sfzh" />
+        <result column="YLBXZH" property="ylbxzh" />
+        <result column="MZ" property="mz" />
+        <result column="ZY" property="zy" />
+        <result column="JG" property="jg" />
+        <result column="GJ" property="gj" />
+        <result column="JTDZ" property="jtdz" />
+        <result column="GZDW" property="gzdw" />
+        <result column="LXR" property="lxr" />
+        <result column="LXRXXXX" property="lxrxxxx" />
+        <result column="YZBM" property="yzbm" />
+        <result column="GXRQ" property="gxrq" />
+        <result column="LXDH" property="lxdh" />
+        <result column="YLXRGX" property="ylxrgx" />
+        <result column="JTDH" property="jtdh" />
+        <result column="JTYM" property="jtym" />
+        <result column="XX" property="xx" />
+        <result column="GZDWMC" property="gzdwmc" />
+        <result column="GMYW" property="gmyw" />
+        <result column="SHENG_BM" property="shengBm" />
+        <result column="SHENG_MC" property="shengMc" />
+        <result column="SHI_BM" property="shiBm" />
+        <result column="SHI_MC" property="shiMc" />
+        <result column="QU_BM" property="quBm" />
+        <result column="QU_MC" property="quMc" />
+        <result column="JWH_BM" property="jwhBm" />
+        <result column="JWH_MC" property="jwhMc" />
+        <result column="ZHEN_BM" property="zhenBm" />
+        <result column="ZHEN_MC" property="zhenMc" />
+        <result column="WHCD" property="whcd" />
+        <result column="CDBH" property="cdbh" />
+        <result column="DWDH" property="dwdh" />
+        <result column="RH" property="rh" />
+        <result column="HKDZ" property="hkdz" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        BR_ID, BRJSFS_ID, XM, CSRQ, NL, HY, XB, SFZH, YLBXZH, MZ, ZY, JG, GJ, JTDZ, GZDW, LXR, LXRXXXX, YZBM, GXRQ, LXDH, YLXRGX, JTDH, JTYM, XX, GZDWMC, GMYW, SHENG_BM, SHENG_MC, SHI_BM, SHI_MC, QU_BM, QU_MC, JWH_BM, JWH_MC, ZHEN_BM, ZHEN_MC, WHCD, CDBH, DWDH, RH, HKDZ
+    </sql>
+
+</mapper>
