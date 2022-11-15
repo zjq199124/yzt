@@ -200,4 +200,14 @@ public class BuDiagnoseController {
         return Result.success(vo);
     }
 
+    @ApiOperation(value = "获取中医诊断方案", notes = "获取中医诊断方案")
+    @PostMapping("/getTCMDiagnosis")
+    public Result<BuDiagnoseVO.GetRecommendVO> getTCMDiagnosis(@RequestBody BuDiagnoseRO.GetRecommendRO ro) {
+        BuDiagnose diagnose = new BuDiagnose();
+        diagnose.setDisease(ro.getDisease());
+        Map<String, Object> mapRecommend = recommendService.getRecommend(diagnose);
+        return null;
+    }
+
+
 }

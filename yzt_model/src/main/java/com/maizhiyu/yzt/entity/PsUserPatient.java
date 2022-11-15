@@ -1,6 +1,8 @@
 package com.maizhiyu.yzt.entity;
 
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -13,6 +15,10 @@ import lombok.experimental.Accessors;
 @TableName("ps_user_patient")
 @ApiModel(description = "用户患者关系表")
 public class PsUserPatient {
+
+    @ApiModelProperty(value="ID")
+    @TableId(type = IdType.AUTO)
+    private Long id;
 
     @ApiModelProperty(value = "用户ID")
     private Long userId;
