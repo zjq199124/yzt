@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.BuRecommendMapper">
+
+<!--    <select id="selectSyndromeByDisease" resultType="hashmap">-->
+<!--        select-->
+<!--            X.*, D.content disease_name-->
+<!--        from-->
+<!--            dict_disease D-->
+<!--                join syn_syndrome X on X.disease_id = D.id-->
+<!--        where-->
+<!--            D.content LIKE CONCAT('%',#{symptom},'%')-->
+<!--    </select>-->
+
+    <select id="selectSyndromeByDisease" resultType="hashmap">
+        select
+            X.*, D.content disease_name, 0 `count`
+        from
+            dict_disease D
+            join syn_syndrome X on X.disease_id = D.id
+        <where>
+            <if test="disease != null">
+                and D.content LIKE CONCAT('%',#{disease},'%')
+            </if>
+            <if test="syndrome != null">
+                and X.name LIKE CONCAT('%',#{syndrome},'%')
+            </if>
+        </where>
+        <!--         limit 20-->
+    </select>
+
+    <select id="selectSyndromeBySymptom" resultType="hashmap">
+        select
+        *, count(*) `count`
+        from
+        (
+            select
+            X.*, D.content disease_name
+            from
+            syn_syndrome X
+            join dict_disease D on D.id = X.disease_id
+            where
+        <foreach collection="symptoms" item="symptom" index="index" open="(" separator=" or " close=")">
+            symptoms LIKE CONCAT('%',#{symptom},'%')
+        </foreach>
+            ) X
+        group by id
+    </select>
+
+    <select id="selectRecommendZhongyao" resultType="hashmap">
+        select
+            X.*,
+            A.content disease_name,
+            B.name syndrome_name, B.symptoms
+        from
+            (
+                select * from sch_zhongyao
+                <where>
+                    syndrome_id in
+                    <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+                        #{id}
+                    </foreach>
+                </where>
+            ) X
+
+            left join dict_disease A on A.id = X.disease_id
+            left join syn_syndrome B on B.id = X.syndrome_id
+    </select>
+
+    <select id="selectRecommendChengyao" resultType="hashmap">
+        select
+            X.*,
+            A.content disease_name,
+            B.name syndrome_name, B.symptoms
+        from
+            (
+                select * from sch_chengyao
+                <where>
+                    syndrome_id in
+                    <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+                        #{id}
+                    </foreach>
+                </where>
+            ) X
+            left join dict_disease A on A.id = X.disease_id
+            left join syn_syndrome B on B.id = X.syndrome_id
+    </select>
+
+    <select id="selectRecommendXieding" resultType="hashmap">
+        select
+            X.*,
+            A.content disease_name,
+            B.name syndrome_name, B.symptoms
+        from
+            (
+                select * from sch_xieding
+                <where>
+                    syndrome_id in
+                    <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+                        #{id}
+                    </foreach>
+                </where>
+            ) X
+            left join dict_disease A on A.id = X.disease_id
+            left join syn_syndrome B on B.id = X.syndrome_id
+    </select>
+
+    <select id="selectRecommendSytech" resultType="hashmap">
+        select
+            X.*,
+            A.content disease_name,
+            B.name syndrome_name, B.symptoms,
+            C.name sytech_name
+        from
+            (
+                select * from sch_sytech
+                <where>
+                    syndrome_id in
+                    <foreach
+                        collection="ids" item="id" index="index" open="(" close=")" separator=",">
+                        #{id}
+                    </foreach>
+                </where>
+            ) X
+            left join dict_disease A on A.id = X.disease_id
+            left join syn_syndrome B on B.id = X.syndrome_id
+            left join ts_sytech C on C.id = X.sytech_id
+    </select>
+
+</mapper>

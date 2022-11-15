@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.BuPatientMapper">
+
+    <resultMap id="BuPatientMap" type="com.maizhiyu.yzt.entity.BuPatient">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="code" column="code" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="INTEGER"/>
+        <result property="birthday" column="birthday" jdbcType="TIMESTAMP"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="idcard" column="idcard" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="selectPatientListByPsuser" resultMap="BuPatientMap">
+        select
+            P.*
+        from
+            bu_patient P
+            join ps_user_patient X on X.patient_id = P.id
+        where
+            X.user_id = #{userId}
+    </select>
+
+    <select id="selectPatientListByDoctor" resultType="hashmap">
+        select
+            distinct P.*
+        from
+            bu_patient P
+            join bu_outpatient X on X.patient_id = P.id
+        <where>
+            X.doctor_id = #{doctorId}
+            <if test="term != null and term != ''">
+                and (P.name like concat(concat('%',#{term}),'%')
+                or P.phone like concat(concat('%',#{term}),'%')
+                or P.idcard like concat(concat('%',#{term}),'%'))
+            </if>
+        </where>
+    </select>
+
+    <select id="selectPatientListByTherapist" resultType="hashmap">
+        select
+            distinct P.id, P.code, P.status, P.name, P.sex, P.birthday, P.phone, P.idcard,
+            MAX(DATE_FORMAT(P.create_time, '%Y-%m-%d %T')) last_time
+        from
+            bu_patient P
+            join bu_treatment X on X.patient_id = P.id
+        <where>
+            X.therapist_id = #{therapistId}
+            <if test="type != null">
+                and X.type = #{type}
+            </if>
+            <if test="term != null and term != ''">
+                and (P.name like concat(concat('%',#{term}),'%')
+                or P.phone like concat(concat('%',#{term}),'%')
+                or P.idcard like concat(concat('%',#{term}),'%'))
+            </if>
+        </where>
+        group by
+            P.id
+    </select>
+
+    <select id="selectPatientPrescriptionList" resultType="hashmap">
+        select
+            P.*, B.dname department_name
+        from
+            bu_prescription P
+            left join bu_patient A on A.id = P.patient_id
+            left join hs_department B on B.id = P.department_id
+        <where>
+            <if test="patientId != null">
+                and P.patient_id = #{patientId}
+            </if>
+            <if test="type != null">
+                and P.type = #{type}
+            </if>
+        </where>
+    </select>
+
+</mapper>

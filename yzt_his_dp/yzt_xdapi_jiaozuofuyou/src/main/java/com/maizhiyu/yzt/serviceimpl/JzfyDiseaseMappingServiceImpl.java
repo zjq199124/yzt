@@ -1,0 +1,37 @@
+package com.maizhiyu.yzt.serviceimpl;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.maizhiyu.yzt.entity.JzfyDiseaseMapping;
+import com.maizhiyu.yzt.mapperypt.JzfyDiseaseMappingMapper;
+import com.maizhiyu.yzt.service.JzfyDiseaseMappingService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+
+/**
+ * <p>
+ * 焦作妇幼his-云平台-疾病映射表 服务实现类
+ * </p>
+ *
+ * @author zhangxiansho
+ * @since 2022-11-14
+ */
+@Service
+@Transactional(rollbackFor=Exception.class)
+public class JzfyDiseaseMappingServiceImpl extends ServiceImpl<JzfyDiseaseMappingMapper, JzfyDiseaseMapping> implements JzfyDiseaseMappingService {
+
+    @Resource
+    private JzfyDiseaseMappingMapper jzfyDiseaseMappingMapper;
+
+    @Override
+    public JzfyDiseaseMapping selectByHisName(String hisDiseaseName) {
+        LambdaQueryWrapper<JzfyDiseaseMapping> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(JzfyDiseaseMapping::getHisName, hisDiseaseName)
+                .eq(JzfyDiseaseMapping::getIsDel, 0)
+                .last("limit 1");
+        JzfyDiseaseMapping jzfyDiseaseMapping = jzfyDiseaseMappingMapper.selectOne(queryWrapper);
+        return jzfyDiseaseMapping;
+    }
+}

@@ -18,4 +18,5 @@ public interface DictSymptomMapper extends BaseMapper<DictSymptom> {
             @Param("status") Integer status,
             @Param("term") String term);
 
+    List<DictSymptom> selectByDiseaseId(@Param("diseaseId") Long diseaseId);
 }

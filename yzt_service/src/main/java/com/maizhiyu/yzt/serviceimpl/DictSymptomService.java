@@ -6,12 +6,17 @@ import com.maizhiyu.yzt.entity.DictSymptom;
 import com.maizhiyu.yzt.mapper.DictSymptomMapper;
 import com.maizhiyu.yzt.service.IDictSymptomService;
 import com.maizhiyu.yzt.utils.ExistCheck;
+import com.maizhiyu.yzt.vo.DictSymptomVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -54,5 +59,19 @@ public class DictSymptomService implements IDictSymptomService {
         }
         List<Map<String, Object>> list = mapper.selectMaps(wrapper);
         return list;
+    }
+
+    @Override
+    public List<DictSymptomVo> selectByDiseaseId(Long diseaseId) {
+        List<DictSymptom> list = mapper.selectByDiseaseId(diseaseId);
+        if(CollectionUtils.isEmpty(list))
+            return Collections.emptyList();
+
+        List<DictSymptomVo> collect = list.stream().map(item -> {
+            DictSymptomVo dictSymptomVo = new DictSymptomVo();
+            BeanUtils.copyProperties(item, dictSymptomVo);
+            return dictSymptomVo;
+        }).collect(Collectors.toList());
+        return collect;
     }
 }

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration>
+    <!-- 控制台输出日志 -->
+    <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>
+                %d -【%level】%logger{56}.【%method】%L -%msg%n
+            </pattern>
+        </layout>
+    </appender>
+    <!-- 文件输出info日志 -->
+    <appender name="fileInfoLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 过滤器，过滤掉不是指定日志水平的日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <!-- 如果跟该日志水平相匹配，则接受 -->
+            <onMatch>ACCEPT</onMatch>
+            <!-- 如果跟该日志水平不匹配，则过滤掉 -->
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <pattern>
+                %d -【%level】%logger{56}.【%method】%L -%msg%n
+            </pattern>
+        </encoder>
+        <!--滚动策略，每天创建一个文件-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--路径-->
+            <fileNamePattern>./logs/hs/info_logs/%d-%i.log</fileNamePattern>
+            <!--日志文件保留天数 -->
+            <MaxHistory>5</MaxHistory>
+            <!--日志文件最大的大小 -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 文件输出error日志 -->
+    <appender name="fileErrorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <!--只输出ERROR日志-->
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <pattern>
+                %d -【%level】%logger{56}.【%method】%L -%msg%n
+            </pattern>
+        </encoder>
+        <!--滚动策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--路径-->
+            <fileNamePattern>./logs/hs/error_logs/%d-%i.log</fileNamePattern>
+            <!--日志文件保留天数 -->
+            <MaxHistory>5</MaxHistory>
+            <!--日志文件最大的大小 -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 文件输出打点日志 -->
+    <!--<appender name="dataLog" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+    <!--<filter class="ch.qos.logback.classic.filter.LevelFilter">-->
+    <!--<level>INFO</level>-->
+    <!--<onMatch>ACCEPT</onMatch>-->
+    <!--<onMismatch>DENY</onMismatch>-->
+    <!--</filter>-->
+    <!--<encoder>-->
+    <!--<pattern>-->
+    <!--%d - %msg%n-->
+    <!--</pattern>-->
+    <!--</encoder>-->
+    <!--&lt;!&ndash; 滚动策略 &ndash;&gt;-->
+    <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+    <!--&lt;!&ndash; 路径 &ndash;&gt;-->
+    <!--<fileNamePattern>log/%d.log</fileNamePattern>-->
+    <!--<MaxHistory>1</MaxHistory>-->
+    <!--</rollingPolicy>-->
+    <!--</appender>-->
+    <!-- 日志输出级别 -->
+    <root level="info">
+        <appender-ref ref="consoleLog" />
+        <appender-ref ref="fileInfoLog" />
+        <appender-ref ref="fileErrorLog" />
+    </root>
+    <!--用于统计数据-->
+    <!--<logger name="dataLogger">-->
+        <!--<level value="INFO" />-->
+        <!--<appender-ref ref="dataLog" />-->
+    <!--</logger>-->
+</configuration>
