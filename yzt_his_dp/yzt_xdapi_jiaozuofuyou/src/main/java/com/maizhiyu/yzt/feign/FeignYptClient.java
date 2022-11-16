@@ -49,10 +49,10 @@ public interface FeignYptClient {
     Result<Integer> addPrescriptionShiyi(@RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro);
 
     @GetMapping(value = "/dictSymptom/list")
-    Result<List<DictSymptomVo>> selectDictSymptomList(Long diseaseId);
+    Result<List<DictSymptomVo>> selectDictSymptomList(@RequestParam Long diseaseId);
 
     @GetMapping(value = "/dictSyndrome/list")
-    Result<List<DictSyndromeVo>> selectDictSyndromeListByDiseaseId(Long diseaseId);
+    Result<List<DictSyndromeVo>> selectDictSyndromeListByDiseaseId(@RequestParam Long diseaseId);
 
     @PostMapping(value = "/dictSyndrome/selectBySymptom")
     Result<List<DictSyndromeVo>> selectDictSyndromeBySymptomIdList(@RequestBody List<Long> symptomIdList);

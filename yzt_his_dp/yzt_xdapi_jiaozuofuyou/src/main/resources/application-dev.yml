@@ -91,9 +91,15 @@ swagger:
 ### feign ###
 api:
   ypt:
-    domain: https://ypt.yztyun.com/open/api
-    customer: jiaozuofuyou
-    secretkey: jzfy123456
+    #domain: https://ypt.yztyun.com/open/api
+    #customer: jiaozuofuyou
+    #secretkey: jzfy123456
+    #cronenable: true
+    #cron: "0 0 0 * * ?"
+
+    domain: http://localhost:8085/open/api
+    customer: ouhubang
+    secretkey: 123456
     cronenable: true
     cron: "0 0 0 * * ?"
 
@@ -103,3 +109,4 @@ task:
   doctor:
     enable: false
     cron: "0 * * * * ?"
+

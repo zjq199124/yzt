@@ -11,10 +11,12 @@ import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.JzfyDiseaseMappingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -53,20 +55,20 @@ public class DictSymptomController {
                 //1.对his传过来的疾病名称和云平台疾病名称进行翻译
                 JzfyDiseaseMapping jzfyDiseaseMapping = jzfyDiseaseMappingService.selectByHisName(hisDiseaseName);
                 boolean status = Objects.nonNull(jzfyDiseaseMapping) ? true : false;
-                Map<String, Object> resultMap = new HashMap<>();
-                //status为TRUE表示可以跳转到ypt页面
-                resultMap.put("status", status);
-                resultMap.put("yptDiseaseId", jzfyDiseaseMapping.getDiseaseId());
-                return Result.success(resultMap);
+                return Result.success(status);
         }
 
         @ApiOperation(value = "获取疾病的所有症状和分型列表",notes = "获取疾病的所有症状和分型列表")
-        @ApiImplicitParam(name = "hisDiseaseName", value = "his方疾病名称", required = true)
+        @ApiImplicitParams({
+                @ApiImplicitParam(name = "westDiagnose", value = "his西医诊断名称"),
+                @ApiImplicitParam(name = "tcmDiagnose", value = "his中医诊断名称")
+        })
         @GetMapping("/list")
-        public Result DictSymptomList(String hisDiseaseName) {
-                Assert.notNull(hisDiseaseName, "疾病名称hisName不能为空!");
+        public Result DictSymptomList(@RequestParam(required = false) String westDiagnose, @RequestParam(required = false) String tcmDiagnose) {
+                Preconditions.checkArgument(Objects.nonNull(westDiagnose) || Objects.nonNull(tcmDiagnose), "西医诊断和中医诊断不能同时为空!");
 
-                //1.对his传过来的疾病名称和云平台疾病名称进行映射
+                //1.对his传过来的疾病名称和云平台疾病名称进行映射(有西医诊断优先匹配西医诊断)
+                String hisDiseaseName = Objects.nonNull(westDiagnose) ? westDiagnose : tcmDiagnose;
                 JzfyDiseaseMapping jzfyDiseaseMapping = jzfyDiseaseMappingService.selectByHisName(hisDiseaseName);
                 Preconditions.checkArgument(Objects.nonNull(jzfyDiseaseMapping), "his中的诊断：" + hisDiseaseName + " 在云平台中没有与之相匹配的中医诊断!");
 

@@ -6,7 +6,7 @@ import javax.annotation.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-11-15T09:58:12+0800",
+    date = "2022-11-15T17:10:27+0800",
     comments = "version: 1.4.1.Final, compiler: javac, environment: Java 1.8.0_341 (Oracle Corporation)"
 )
 public class BuOutpatientCIImpl implements BuOutpatientCI {
