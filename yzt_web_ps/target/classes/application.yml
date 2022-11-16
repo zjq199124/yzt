@@ -1,4 +1,0 @@
-spring:
-  profiles:
-    active: local,utils-prod
-#    active: prod,utils-prod
