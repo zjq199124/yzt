@@ -315,7 +315,7 @@
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.17589577" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
@@ -350,7 +350,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.YztXdapiJiaozuofuyou">
+  <component name="RunManager" selected="Spring Boot.YztWebApiApplication">
     <configuration name="CodeGenerator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.maizhiyu.yzt.generator.CodeGenerator" />
       <module name="yzt_xdapi_jiaozuofuyou" />
@@ -685,7 +685,7 @@
       <workItem from="1668152840126" duration="14726000" />
       <workItem from="1668385222371" duration="22225000" />
       <workItem from="1668472521713" duration="22413000" />
-      <workItem from="1668595192352" duration="750000" />
+      <workItem from="1668595192352" duration="1020000" />
     </task>
     <task id="LOCAL-00001" summary="commit first">
       <created>1631100529658</created>
@@ -876,7 +876,14 @@
       <option name="project" value="LOCAL" />
       <updated>1668594976324</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="修改通过疾病查询出所有的症状和分型的接口,以及通过症状定位出具体分型的接口">
+      <created>1668596015915</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1668596015915</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
