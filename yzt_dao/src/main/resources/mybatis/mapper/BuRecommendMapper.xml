@@ -2,16 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.maizhiyu.yzt.mapper.BuRecommendMapper">
 
-<!--    <select id="selectSyndromeByDisease" resultType="hashmap">-->
-<!--        select-->
-<!--            X.*, D.content disease_name-->
-<!--        from-->
-<!--            dict_disease D-->
-<!--                join syn_syndrome X on X.disease_id = D.id-->
-<!--        where-->
-<!--            D.content LIKE CONCAT('%',#{symptom},'%')-->
-<!--    </select>-->
-
     <select id="selectSyndromeByDisease" resultType="hashmap">
         select
             X.*, D.content disease_name, 0 `count`
