@@ -5,47 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1ebc5664-f55a-4c52-a3b1-b23c3982db92" name="Default Changelist" comment="yzt">
-      <change afterPath="$PROJECT_DIR$/yzt_dao/src/main/java/com/maizhiyu/yzt/mapper/DictSyndromeMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/bean/avo/DictSymptomVo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/bean/avo/DictSyndromeVo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/controller/DictSymptomController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/controller/DictSyndromeController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/controller/JzfyDiseaseMappingController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/controller/YptRecommendController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/entity/JzfyDiseaseMapping.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/generator/CodeGenerator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/mapperypt/JzfyDiseaseMappingMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/service/IYptRecommendService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/service/JzfyDiseaseMappingService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/serviceimpl/JzfyDiseaseMappingServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/serviceimpl/YptRecommendServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/target/generated-sources/annotations/com/maizhiyu/yzt/bean/aci/HisDoctorCIImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/target/generated-sources/annotations/com/maizhiyu/yzt/bean/aci/HisOutpatientCIImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/target/generated-sources/annotations/com/maizhiyu/yzt/bean/aci/HisPatientCIImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/target/generated-sources/annotations/com/maizhiyu/yzt/bean/aci/YptDiseaseCIImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/target/generated-sources/annotations/com/maizhiyu/yzt/bean/aci/YptMedicantCIImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/target/generated-sources/annotations/com/maizhiyu/yzt/bean/aci/YptTreatmentCIImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_model/src/main/java/com/maizhiyu/yzt/entity/DictSyndrome.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_model/src/main/java/com/maizhiyu/yzt/vo/DictSymptomVo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_model/src/main/java/com/maizhiyu/yzt/vo/DictSyndromeVo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_service/src/main/java/com/maizhiyu/yzt/service/IDictSyndromeService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_service/src/main/java/com/maizhiyu/yzt/serviceimpl/DictSyndromeServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_web_api/src/main/java/com/maizhiyu/yzt/controller/DictSymptomController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_web_api/src/main/java/com/maizhiyu/yzt/controller/DictSyndromeController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_web_api/target/generated-sources/annotations/com/maizhiyu/yzt/aci/BuOutpatientCIImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_web_api/target/generated-sources/annotations/com/maizhiyu/yzt/aci/BuPatientCIImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yzt_web_api/target/generated-sources/annotations/com/maizhiyu/yzt/aci/HsUserCIImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yzt_dao/src/main/java/com/maizhiyu/yzt/mapper/DictSymptomMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/yzt_dao/src/main/java/com/maizhiyu/yzt/mapper/DictSymptomMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yzt_dao/src/main/resources/mybatis/mapper/DictSymptomMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/yzt_dao/src/main/resources/mybatis/mapper/DictSymptomMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yzt_dao/target/classes/mybatis/mapper/DictSymptomMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/yzt_dao/target/classes/mybatis/mapper/DictSymptomMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/YztXdapiJiaozuofuyou.java" beforeDir="false" afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/YztXdapiJiaozuofuyou.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/controller/DictSymptomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/controller/DictSymptomController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/feign/FeignInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/feign/FeignInterceptor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/feign/FeignYptClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/feign/FeignYptClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/tasks/AuthorizationTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/java/com/maizhiyu/yzt/tasks/AuthorizationTask.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/resources/application-dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/resources/application-dev.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yzt_service/src/main/java/com/maizhiyu/yzt/service/IDictSymptomService.java" beforeDir="false" afterPath="$PROJECT_DIR$/yzt_service/src/main/java/com/maizhiyu/yzt/service/IDictSymptomService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yzt_service/src/main/java/com/maizhiyu/yzt/serviceimpl/DictSymptomService.java" beforeDir="false" afterPath="$PROJECT_DIR$/yzt_service/src/main/java/com/maizhiyu/yzt/serviceimpl/DictSymptomService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yzt_web_api/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/yzt_web_api/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yzt_web_api/src/main/java/com/maizhiyu/yzt/controller/DictSyndromeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/yzt_web_api/src/main/java/com/maizhiyu/yzt/controller/DictSyndromeController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yzt_web_api/src/main/resources/application-dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/yzt_web_api/src/main/resources/application-dev.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yzt_web_api/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/yzt_web_api/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yzt_web_api/target/generated-sources/annotations/com/maizhiyu/yzt/aci/BuOutpatientCIImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/yzt_web_api/target/generated-sources/annotations/com/maizhiyu/yzt/aci/BuOutpatientCIImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yzt_web_api/target/generated-sources/annotations/com/maizhiyu/yzt/aci/BuPatientCIImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/yzt_web_api/target/generated-sources/annotations/com/maizhiyu/yzt/aci/BuPatientCIImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
