@@ -2,6 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.maizhiyu.yzt.mapper.BuRecommendMapper">
 
+<!--    <select id="selectSyndromeByDisease" resultType="hashmap">-->
+<!--        select-->
+<!--            X.*, D.content disease_name-->
+<!--        from-->
+<!--            dict_disease D-->
+<!--                join syn_syndrome X on X.disease_id = D.id-->
+<!--        where-->
+<!--            D.content LIKE CONCAT('%',#{symptom},'%')-->
+<!--    </select>-->
+
     <select id="selectSyndromeByDisease" resultType="hashmap">
         select
             X.*, D.content disease_name, 0 `count`
@@ -115,6 +125,97 @@
             left join dict_disease A on A.id = X.disease_id
             left join syn_syndrome B on B.id = X.syndrome_id
             left join ts_sytech C on C.id = X.sytech_id
+    </select>
+
+    <select id="getRecommendZhongyao" resultType="java.util.Map">
+        SELECT
+        sz.*,
+        ds.NAME AS syndrome_name,
+        dd.content AS disease_name
+        FROM
+        sch_zhongyao sz
+        INNER JOIN dict_syndrome ds ON sz.syndrome_id = ds.id
+        AND ds.is_del = 0
+        INNER JOIN dict_disease dd ON sz.disease_id = dd.id
+        AND dd.STATUS = 1
+        WHERE
+        sz.disease_id = #{diseaseId}
+        AND sz.STATUS = 1
+        AND sz.syndrome_id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY
+        sz.syndrome_id
+    </select>
+
+    <select id="getRecommendChengyao" resultType="java.util.Map">
+        SELECT
+        sc.*,
+        ds.NAME AS syndrome_name,
+        dd.content AS disease_name
+        FROM
+        sch_chengyao sc
+        INNER JOIN dict_syndrome ds ON sc.syndrome_id = ds.id
+        AND ds.is_del = 0
+        INNER JOIN dict_disease dd ON sc.disease_id = dd.id
+        AND dd.STATUS = 1
+        WHERE
+        sc.disease_id = #{diseaseId}
+        AND sc.STATUS = 1
+        AND sz.syndrome_id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY
+        sc.syndrome_id
+    </select>
+
+    <select id="getRecommendXieding" resultType="java.util.Map">
+        SELECT
+        sx.*,
+        ds.NAME AS syndrome_name,
+        dd.content AS disease_name
+        FROM
+        sch_xieding sx
+        INNER JOIN dict_syndrome ds ON sx.syndrome_id = ds.id
+        AND ds.is_del = 0
+        INNER JOIN dict_disease dd ON sx.disease_id = dd.id
+        AND dd.STATUS = 1
+        WHERE
+        sx.disease_id = #{disease}
+        AND sx.STATUS = 1
+        AND sx.syndrome_id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY
+        sx.syndrome_id
+    </select>
+
+    <select id="getRecommendSytech" resultType="java.util.Map">
+
+        SELECT
+        ss.*,
+        ds.NAME AS syndrome_name,
+        dd.content AS disease_name,
+        ts.name sytech_name
+        FROM
+        sch_sytech ss
+        INNER JOIN dict_syndrome ds ON ss.syndrome_id = ds.id
+        AND ds.is_del = 0
+        INNER JOIN dict_disease dd ON ss.disease_id = dd.id
+        AND dd.STATUS = 1
+        LEFT JOIN ts_sytech ts ON ts.id = ss.sytech_id
+        WHERE
+        ss.disease_id = #{diseaseId}
+        AND ss.STATUS = 1
+        AND ss.syndrome_id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY
+        ss.syndrome_id
     </select>
 
 </mapper>

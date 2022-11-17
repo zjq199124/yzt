@@ -1,7 +1,11 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.maizhiyu.yzt.entity.BuDiagnose;
+import com.maizhiyu.yzt.entity.DictSyndrome;
 import com.maizhiyu.yzt.mapper.BuRecommendMapper;
+import com.maizhiyu.yzt.mapper.DictSyndromeMapper;
+import com.maizhiyu.yzt.ro.BuDiagnoseRO;
 import com.maizhiyu.yzt.service.IBuRecommendService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -9,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -20,6 +25,9 @@ public class BuRecommendService implements IBuRecommendService {
 
     @Autowired
     private BuRecommendMapper mapper;
+
+    @Resource
+    private DictSyndromeMapper dictSyndromeMapper;
 
     @Override
     public Map<String, Object> getRecommend(BuDiagnose diagnose) {
@@ -122,6 +130,41 @@ public class BuRecommendService implements IBuRecommendService {
         getRecommend(syndromeList, result);
         // 返回数据
         return result;
+    }
+
+    @Override
+    public Map<String, Object> selectRecommend(BuDiagnoseRO.GetRecommendRO ro) {
+        Map<String, Object> result = new HashMap<>();
+        List<Map<String, Object>> syndromeListA = null;
+        List<Map<String, Object>> syndromeListB = null;
+        List<Map<String, Object>> syndromeList = null;
+
+        // 没有传疾病的分型，通过疾病获取所有的辨证列表
+        if (CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
+            List<DictSyndrome> dictSyndromes = dictSyndromeMapper.selectByDiseaseId(ro.getDiseaseId());
+            if(CollectionUtils.isEmpty(dictSyndromes))
+                return result;
+            ro.setSyndromeIdList(dictSyndromes.stream().map(DictSyndrome::getId).collect(Collectors.toList()));
+        }
+
+        selectRecommend(ro, result);
+        // 返回数据
+        return result;
+    }
+
+    private void selectRecommend(BuDiagnoseRO.GetRecommendRO ro, Map<String, Object> result) {
+
+        // 获取推荐方案
+        List<Map<String, Object>> zhongyaoList = mapper.getRecommendZhongyao(ro.getSyndromeIdList(),ro.getDiseaseId());
+        List<Map<String, Object>> chengyaoList = mapper.getRecommendChengyao(ro.getSyndromeIdList(),ro.getDiseaseId());
+        List<Map<String, Object>> xiedingList = mapper.getRecommendXieding(ro.getSyndromeIdList(),ro.getDiseaseId());
+        List<Map<String, Object>> sytechList = mapper.getRecommendSytech(ro.getSyndromeIdList(),ro.getDiseaseId());
+        // 整理返回数据
+        result.put("syndromeList", ro.getSyndromeIdList());
+        result.put("zhongyaoList", zhongyaoList);
+        result.put("chengyaoList", chengyaoList);
+        result.put("xiedingList", xiedingList);
+        result.put("sytechList", sytechList);
     }
 
     // 根据辨证分型获取推荐方案

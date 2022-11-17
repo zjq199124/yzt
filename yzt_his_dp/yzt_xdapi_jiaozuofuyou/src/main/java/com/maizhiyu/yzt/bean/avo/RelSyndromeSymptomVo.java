@@ -1,4 +1,4 @@
-package com.maizhiyu.yzt.vo;
+package com.maizhiyu.yzt.bean.avo;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -6,16 +6,13 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class DictSymptomVo implements Serializable {
+public class RelSyndromeSymptomVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("云平台症状主键id")
-    private Long id;
+    private Long symptomId;
 
-    @ApiModelProperty("云平台症状名称")
-    private String content;
-
-    @ApiModelProperty("该症状所属的分型的id")
+    @ApiModelProperty("云平台分型主键id")
     private Long syndromeId;
 }
