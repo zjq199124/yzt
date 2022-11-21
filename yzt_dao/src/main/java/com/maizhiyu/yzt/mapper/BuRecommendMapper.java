@@ -38,5 +38,6 @@ public interface BuRecommendMapper {
 
     List<Map<String,Object>> getRecommendXieding(@Param("ids") List<Long> ids,@Param("diseaseId") Long diseaseId);
 
-    List<Map<String,Object>> getRecommendSytech(@Param("ids") List<Long> ids,@Param("diseaseId") Long diseaseId);
+    List<Map<String,Object>> getRecommendSytech(@Param("ids") List<Long> ids, @Param("diseaseId") Long diseaseId,
+                                                @Param("sytechId") Long sytechId, @Param("customerName") String customerName);
 }

@@ -97,7 +97,7 @@ public class HsUserService implements IHsUserService {
         return userMapper.selectUser(id);
     }
 
-    public HsUser getUserByHisId(Long customerId, String hisId) {
+    public HsUser getUserByHisId(Long customerId, Long hisId) {
         QueryWrapper<HsUser> wrapper = new QueryWrapper<>();
         wrapper.eq("customer_id", customerId)
                 .eq("his_id", hisId);

@@ -3,6 +3,7 @@ package com.maizhiyu.yzt.controller;
 import com.maizhiyu.yzt.entity.JzfyDiseaseMapping;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.JzfyDiseaseMappingService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import java.util.Objects;
  * @author zhangxiansho
  * @since 2022-11-14
  */
+@Api(tags = "焦作妇幼疾病翻译接口")
 @RestController
 @RequestMapping("/jzfyDiseaseMapping")
 public class JzfyDiseaseMappingController {

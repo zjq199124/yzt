@@ -75,8 +75,11 @@ public class BuDiagnoseVO {
     @Data
     @ApiModel
     public static class ShiyiVO {
-        @ApiModelProperty(value="编码")
-        private String code;
+       /* @ApiModelProperty(value="编码")
+        private String code;*/
+
+        @ApiModelProperty(value="所属适宜技术id")
+        private Long sytechId;
 
         @ApiModelProperty(value="技术名称")
         private String name;
@@ -89,6 +92,12 @@ public class BuDiagnoseVO {
 
         @ApiModelProperty(value="操作")
         private String operation;
+
+        @ApiModelProperty(value="客户id")
+        private Long customerId;
+
+        @ApiModelProperty("是否推荐：1是；0否")
+        private Integer recommend;
     }
 
 

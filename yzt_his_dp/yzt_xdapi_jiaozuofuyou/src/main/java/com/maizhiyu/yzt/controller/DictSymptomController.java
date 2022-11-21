@@ -83,6 +83,10 @@ public class DictSymptomController {
                 resultMap.put("dictSymptomList", dictSymptomResult.getData());
                 //疾病分型数据集合
                 resultMap.put("dictSyndromeList", dictSyndromeResult.getData());
+                //云平台中医诊断名称
+                resultMap.put("yptDiseaseName", jzfyDiseaseMapping.getName());
+                //云平台中医诊断Id
+                resultMap.put("yptDiseaseId", jzfyDiseaseMapping.getDiseaseId());
                 return Result.success(resultMap);
         }
 }

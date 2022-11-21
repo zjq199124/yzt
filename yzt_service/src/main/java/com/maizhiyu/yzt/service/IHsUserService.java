@@ -19,7 +19,7 @@ public interface IHsUserService {
 
     Map<String, Object> getUser(Long id);
 
-    HsUser getUserByHisId(Long customerId, String hisId);
+    HsUser getUserByHisId(Long customerId, Long hisId);
 
     HsUser getAdmin(Long customerId);
 

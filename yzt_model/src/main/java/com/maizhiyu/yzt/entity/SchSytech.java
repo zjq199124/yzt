@@ -32,9 +32,15 @@ public class SchSytech {
     @ApiModelProperty(value="所属技术")
     private Long sytechId;
 
+    @ApiModelProperty(value="客户id")
+    private Long customerId;
+
     @ApiModelProperty(value="技术详情")
     private String detail;
 
     @ApiModelProperty(value="操作方法")
     private String operation;
+
+    @ApiModelProperty(value="是否推荐 1是；0否")
+    private Integer recommend;
 }

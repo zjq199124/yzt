@@ -51,13 +51,13 @@ public class BuPrescriptionController {
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
         // 获取医生信息
-        HsUser hsUser = hsUserService.getUserByHisId(customerId, ro.getDoctorId());
+        HsUser hsUser = hsUserService.getUserByHisId(customerId, Long.valueOf(ro.getDoctorId()));
         if (hsUser == null) return Result.failure(10002, "医生信息错误");
         // 获取患者信息
-        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, ro.getPatientId());
+        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, Long.valueOf(ro.getPatientId()));
         if (buPatient == null) return Result.failure(10003, "患者信息错误");
         // 获取预约信息
-        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getOutpatientId());
+        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId,Long.valueOf(ro.getOutpatientId()));
         if (buOutpatient == null) return Result.failure(10004, "预约信息错误");
         // 整理处方数据
         List<BuPrescriptionItem> itemList = new ArrayList<>();
@@ -103,13 +103,13 @@ public class BuPrescriptionController {
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
         // 获取医生信息
-        HsUser hsUser = hsUserService.getUserByHisId(customerId, ro.getDoctorId());
+        HsUser hsUser = hsUserService.getUserByHisId(customerId, Long.valueOf(ro.getDoctorId()));
         if (hsUser == null) return Result.failure(10002, "医生信息错误");
         // 获取患者信息
-        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, ro.getPatientId());
+        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, Long.valueOf(ro.getPatientId()));
         if (buPatient == null) return Result.failure(10003, "患者信息错误");
         // 获取预约信息
-        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getOutpatientId());
+        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, Long.valueOf(ro.getOutpatientId()));
         if (buOutpatient == null) return Result.failure(10004, "预约信息错误");
         // 整理处方数据
         List<BuPrescriptionItem> itemList = new ArrayList<>();
@@ -154,13 +154,13 @@ public class BuPrescriptionController {
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
         // 获取医生信息
-        HsUser hsUser = hsUserService.getUserByHisId(customerId, ro.getDoctorId());
+        HsUser hsUser = hsUserService.getUserByHisId(customerId, Long.valueOf(ro.getDoctorId()));
         if (hsUser == null) return Result.failure(10002, "医生信息错误");
         // 获取患者信息
-        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, ro.getPatientId());
+        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, Long.valueOf(ro.getPatientId()));
         if (buPatient == null) return Result.failure(10003, "患者信息错误");
         // 获取预约信息
-        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getOutpatientId());
+        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, Long.valueOf(ro.getOutpatientId()));
         if (buOutpatient == null) return Result.failure(10004, "预约信息错误");
         // 整理处方数据
         List<BuPrescriptionItem> itemList = new ArrayList<>();
@@ -204,13 +204,13 @@ public class BuPrescriptionController {
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
         // 获取医生信息
-        HsUser hsUser = hsUserService.getUserByHisId(customerId, ro.getDoctorId());
+        HsUser hsUser = hsUserService.getUserByHisId(customerId, ro.getBaseInfo().getDoctorId());
         if (hsUser == null) return Result.failure(10002, "医生信息错误");
         // 获取患者信息
-        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, ro.getPatientId());
+        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, ro.getBaseInfo().getPatientId());
         if (buPatient == null) return Result.failure(10003, "患者信息错误");
         // 获取预约信息
-        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getOutpatientId());
+        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getBaseInfo().getOutpatientId());
         if (buOutpatient == null) return Result.failure(10004, "预约信息错误");
         // 整理处方数据
         List<BuPrescriptionItem> itemList = new ArrayList<>();

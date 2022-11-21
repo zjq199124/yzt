@@ -125,26 +125,33 @@ public class BuPrescriptionRO {
         @ApiModelProperty(value="HIS中处方ID")
         private String id;
 
-        @NotBlank
-        @ApiModelProperty(value="HIS中医生ID")
-        private String doctorId;
-
-        @NotBlank
-        @ApiModelProperty(value="HIS中患者ID")
-        private String patientId;
-
-        @NotBlank
-        @ApiModelProperty(value="HIS中门诊ID")
-        private String outpatientId;
-
         @ApiModelProperty(value="注意事项")
         private String attention;
+
+        @ApiModelProperty(value = "基础信息")
+        private BaseInfo baseInfo;
 
         @NotEmpty
         @ApiModelProperty(value="子项列表")
         private List<BuPrescriptionItemShiyi> itemList;
-    }
 
+        @Data
+        @ApiModel
+        @Validated
+        public static class BaseInfo{
+            @NotBlank
+            @ApiModelProperty(value="HIS中医生ID")
+            private Long doctorId;
+
+            @NotBlank
+            @ApiModelProperty(value="HIS中患者ID")
+            private Long patientId;
+
+            @NotBlank
+            @ApiModelProperty(value="HIS中门诊ID")
+            private Long outpatientId;
+        }
+    }
 
     @Data
     @ApiModel

@@ -27,13 +27,6 @@ public class YptRecommendServiceImpl implements IYptCommonService {
     private FeignYptClient feignYptClient;
 
     @Override
-    public Result getRecommend(Long diseaseId,Long syndromeId,String term) {
-        // 调用开放接口获取诊断推荐
-        Result result = feignYptClient.getSytechRecommend(diseaseId,syndromeId,term);
-        return result;
-    }
-
-    @Override
     public Result<List<DictSyndromeVo>> selectDictSyndromeBySymptomIdList(List<Long> symptomIdList) {
         //1:通过Feign远程调用云平台中根据症状获取疾病所有分型的接口
         Result<List<DictSyndromeVo>> dictSyndromeResult = feignYptClient.selectDictSyndromeBySymptomIdList(symptomIdList);

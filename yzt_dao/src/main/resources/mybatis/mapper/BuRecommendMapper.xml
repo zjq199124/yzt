@@ -141,12 +141,16 @@
         WHERE
         sz.disease_id = #{diseaseId}
         AND sz.STATUS = 1
-        AND sz.syndrome_id IN
-        <foreach collection="ids" item="item" open="(" separator="," close=")">
-            #{item}
-        </foreach>
+
+        <if test="ids != null and ids.size > 0">
+            AND sz.syndrome_id IN
+            <foreach collection="ids" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         ORDER BY
         sz.syndrome_id
+
     </select>
 
     <select id="getRecommendChengyao" resultType="java.util.Map">
@@ -163,10 +167,12 @@
         WHERE
         sc.disease_id = #{diseaseId}
         AND sc.STATUS = 1
-        AND sz.syndrome_id IN
+        <if test="ids != null and ids.size > 0">
+        AND sc.syndrome_id IN
         <foreach collection="ids" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
+        </if>
         ORDER BY
         sc.syndrome_id
     </select>
@@ -183,12 +189,14 @@
         INNER JOIN dict_disease dd ON sx.disease_id = dd.id
         AND dd.STATUS = 1
         WHERE
-        sx.disease_id = #{disease}
+        sx.disease_id = #{diseaseId}
         AND sx.STATUS = 1
+        <if test="ids != null and ids.size > 0">
         AND sx.syndrome_id IN
         <foreach collection="ids" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
+        </if>
         ORDER BY
         sx.syndrome_id
     </select>
@@ -207,13 +215,25 @@
         INNER JOIN dict_disease dd ON ss.disease_id = dd.id
         AND dd.STATUS = 1
         LEFT JOIN ts_sytech ts ON ts.id = ss.sytech_id
+        <if test="customerName != null and customerName != ''">
+            LEFT JOIN ms_customer mc ON ss.customer_id = mc.id AND mc.status = 1 AND  mc.name = #{customerName}
+        </if>
         WHERE
         ss.disease_id = #{diseaseId}
         AND ss.STATUS = 1
+        <if test="sytechId != null">
+        AND ss.sytech_id = #{sytechId}
+        </if>
+        <if test="ids != null and ids.size > 0">
         AND ss.syndrome_id IN
         <foreach collection="ids" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
+        </if>
+        AND (
+            ss.customer_id IS NOT NULL
+            OR ( ss.customer_id IS NULL AND ss.recommend = 1 )
+        )
         ORDER BY
         ss.syndrome_id
     </select>

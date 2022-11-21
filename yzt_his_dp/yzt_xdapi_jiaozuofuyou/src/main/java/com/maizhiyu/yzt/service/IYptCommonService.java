@@ -6,7 +6,5 @@ import com.maizhiyu.yzt.result.Result;
 import java.util.List;
 
 public interface IYptCommonService {
-    Result getRecommend(Long diseaseId,Long syndromeId,String term);
-
     Result<List<DictSyndromeVo>> selectDictSyndromeBySymptomIdList(List<Long> symptomIdList);
 }

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
+import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -126,17 +127,8 @@ public class BuPrescriptionRO {
         @ApiModelProperty(value="HIS中处方ID")
         private String id;
 
-        @NotBlank
-        @ApiModelProperty(value="HIS中医生ID")
-        private String doctorId;
-
-        @NotBlank
-        @ApiModelProperty(value="HIS中患者ID")
-        private String patientId;
-
-        @NotBlank
-        @ApiModelProperty(value="HIS中门诊ID")
-        private String outpatientId;
+        @ApiModelProperty(value = "基础信息")
+        private BaseInfo baseInfo;
 
         @ApiModelProperty(value="注意事项")
         private String attention;
@@ -144,6 +136,23 @@ public class BuPrescriptionRO {
         @NotEmpty
         @ApiModelProperty(value="子项列表")
         private List<BuPrescriptionItemShiyi> itemList;
+
+        @Data
+        @ApiModel
+        @Validated
+        public static class BaseInfo{
+            @NotBlank
+            @ApiModelProperty(value="HIS中医生ID")
+            private Long doctorId;
+
+            @NotBlank
+            @ApiModelProperty(value="HIS中患者ID")
+            private Long patientId;
+
+            @NotBlank
+            @ApiModelProperty(value="HIS中门诊ID")
+            private Long outpatientId;
+        }
     }
 
 

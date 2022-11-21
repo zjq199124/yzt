@@ -47,10 +47,10 @@ public class BuOutpatientController {
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
         // 获取医生信息
-        HsUser hsUser = hsUserService.getUserByHisId(customerId, ro.getDoctorId());
+        HsUser hsUser = hsUserService.getUserByHisId(customerId, Long.valueOf(ro.getDoctorId()));
         if (hsUser == null) return Result.failure(10002, "医生信息错误");
         // 获取患者信息
-        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, ro.getPatientId());
+        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, Long.valueOf(ro.getPatientId()));
         if (buPatient == null) return Result.failure(10003, "患者信息错误");
         // 数据转换
         BuOutpatient outpatient = new BuOutpatient();
@@ -62,7 +62,7 @@ public class BuOutpatientController {
         outpatient.setHisId(ro.getHisId());
         outpatient.setExtra(ro.getExtra());
         // 查询预约是否存储
-        BuOutpatient oldOutpatient = service.getOutpatientByHisId(customerId, ro.getHisId());
+        BuOutpatient oldOutpatient = service.getOutpatientByHisId(customerId, Long.valueOf(ro.getHisId()));
         // 不存在则插入
         if (oldOutpatient == null) {
             outpatient.setCreateTime(new Date());
@@ -76,7 +76,7 @@ public class BuOutpatientController {
             service.setOutpatient(outpatient);
         }
         // 获取最新数据
-        BuOutpatient newOutpatient = service.getOutpatientByHisId(customerId, ro.getHisId());
+        BuOutpatient newOutpatient = service.getOutpatientByHisId(customerId, Long.valueOf(ro.getHisId()));
         BuOutpatientVO.AddOutpatientVO vo = BuOutpatientCI.INSTANCE.invertAddOutpatientVO(newOutpatient);
         // 返回结果
         return Result.success(vo);
