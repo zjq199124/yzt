@@ -11,8 +11,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -42,6 +44,9 @@ public class BuPrescriptionController {
 
     @Autowired
     private ITsSytechService sytechService;
+
+    @Resource
+    private IBuDiagnoseService diagnoseService;
 
 
     @ApiOperation(value = "新增处方(中药)", notes = "新增处方(中药)")
@@ -199,7 +204,7 @@ public class BuPrescriptionController {
 
     @ApiOperation(value = "新增处方(适宜技术)", notes = "新增处方(适宜技术)")
     @PostMapping("/addPrescriptionShiyi")
-    public Result<Integer> addPrescriptionShiyi(HttpServletRequest request, @RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro) {
+    public Result<Long> addPrescriptionShiyi(HttpServletRequest request, @RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro) {
         // 获取token字段
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
@@ -212,6 +217,7 @@ public class BuPrescriptionController {
         // 获取预约信息
         BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getBaseInfo().getOutpatientId());
         if (buOutpatient == null) return Result.failure(10004, "预约信息错误");
+
         // 整理处方数据
         List<BuPrescriptionItem> itemList = new ArrayList<>();
         BuPrescription prescription = new BuPrescription();
@@ -259,7 +265,7 @@ public class BuPrescriptionController {
         // 保存药材
         Integer res = service.addPrescription(prescription);
         // 返回结果
-        return Result.success(res);
+        return Result.success(prescription.getId());
     }
 
 }

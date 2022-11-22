@@ -23,6 +23,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,6 +58,9 @@ public class BuPrescriptionController {
 
     @Autowired
     private YptTreatmentService treatmentService;
+
+    @Value("${customer.name}")
+    private String customerName;
 
     @Resource
     private JzfyTreatmentMappingService jzfyTreatmentMappingService;
@@ -98,40 +103,33 @@ public class BuPrescriptionController {
 
     @ApiOperation(value = "新增处方(适宜)", notes = "新增处方(适宜)")
     @PostMapping("/addPrescriptionShiyi")
-    public Result addPrescriptionShiyi(@RequestBody @Valid List<BuPrescriptionRO.AddPrescriptionShiyi> roList) {
+    public Result addPrescriptionShiyi(@RequestBody @Valid BuPrescriptionRO.AddPrescriptionShiyi ro) {
 
         //TODO 先要调用his那边的接口然后拿到prescriptionId等信息
 
-        Assert.notEmpty(roList, "处方数据不能为空!");
-        Assert.notNull(roList.get(0).getBaseInfo(), "基础信息不能为空!");
-        BuPrescriptionRO.AddPrescriptionShiyi.BaseInfo baseInfo = roList.get(0).getBaseInfo();
+        Assert.notNull(ro, "处方数据不能为空!");
+        Assert.notNull(ro.getBaseInfo(), "基础信息不能为空!");
+        BuPrescriptionRO.AddPrescriptionShiyi.BaseInfo baseInfo = ro.getBaseInfo();
 
        /* baseInfo.setPatientId(baseInfo.getOutpatientId());  // 使用outpatientId作为患者ID（HIS就这么给的，每次挂号都会新增患者）
         processDoctor(baseInfo.getDoctorId().toString());
         processPatient(baseInfo.getPatientId().toString());
         processOutpatient(baseInfo.getOutpatientId().toString());*/
 
-        List<Future<Boolean>> futures = new ArrayList<>();
-        roList.forEach(ro -> {
-           Future submit = threadPool.submit(new Callable<Boolean>() {
+        ro.getDiagnoseInfo().setCustomerName(customerName);
+
+        yptClient.addDiagnose(ro.getDiagnoseInfo());
+
+        if(CollectionUtils.isEmpty(ro.getItemList()))
+            return Result.success();
+
+        List<Future<Integer>> futures = new ArrayList<>();
+        ro.getItemList().forEach(item -> {
+            Future<Integer> submit = threadPool.submit(new Callable<Integer>() {
                 @Override
-                public Boolean call() throws Exception {
-                    ro.getItemList().forEach(item -> {
-                        JzfyTreatmentMapping jzfyTreatmentMapping = null;
-                        // 先按code映射
-                        if (item.getCode() != null && item.getCode().length() > 0) {
-                            jzfyTreatmentMapping = jzfyTreatmentMappingService.getTreatmentByHisCode(item.getCode());
-                        }
-                        // 再按name映射
-                        if (jzfyTreatmentMapping == null) {
-                            jzfyTreatmentMapping = jzfyTreatmentMappingService.getTreatmentByHisName(item.getName());
-                        }
-                        // 修改为映射后的数据
-                        item.setCode(jzfyTreatmentMapping.getCode());
-                        item.setName(jzfyTreatmentMapping.getName());
-                    });
-                    yptClient.addPrescriptionShiyi(ro);
-                    return true;
+                public Integer call() throws Exception {
+                    Result<Integer> result = yptClient.addPrescriptionShiyi(ro);
+                    return result.getData();
                 }
             });
             futures.add(submit);

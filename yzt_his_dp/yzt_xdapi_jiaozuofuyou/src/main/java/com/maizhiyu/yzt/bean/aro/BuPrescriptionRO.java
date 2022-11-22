@@ -131,6 +131,9 @@ public class BuPrescriptionRO {
         @ApiModelProperty(value = "基础信息")
         private BaseInfo baseInfo;
 
+        @ApiModelProperty(value = "诊断相关信息")
+        private DiagnoseInfo diagnoseInfo;
+
         @NotEmpty
         @ApiModelProperty(value="子项列表")
         private List<BuPrescriptionItemShiyi> itemList;
@@ -150,6 +153,35 @@ public class BuPrescriptionRO {
             @NotBlank
             @ApiModelProperty(value="HIS中门诊ID")
             private Long outpatientId;
+        }
+
+        @Data
+        @ApiModel
+        @Validated
+        public static class DiagnoseInfo{
+            @ApiModelProperty("客户名称")
+            private String customerName;
+
+            @ApiModelProperty("科室id")
+            private Long departmentId;
+
+            @ApiModelProperty(value = "云平台疾病id")
+            private Long diseaseId;
+
+            @ApiModelProperty(value = "云平台疾病名称")
+            private String disease;
+
+            @ApiModelProperty("分型id")
+            private Long syndromeId;
+
+            @ApiModelProperty("分型名称")
+            private String syndrome;
+
+            @ApiModelProperty("症状id列表,多个使用','分割")
+            private String symptomIds;
+
+            @ApiModelProperty("症状名称列表,多个使用','分割")
+            private String symptoms;
         }
     }
 

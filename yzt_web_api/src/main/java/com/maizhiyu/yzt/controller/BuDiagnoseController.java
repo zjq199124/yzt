@@ -1,12 +1,19 @@
 package com.maizhiyu.yzt.controller;
 
+import com.maizhiyu.yzt.aro.BuPrescriptionRO;
 import com.maizhiyu.yzt.avo.BuDiagnoseVO;
+import com.maizhiyu.yzt.entity.BuDiagnose;
 import com.maizhiyu.yzt.entity.BuMedicant;
+import com.maizhiyu.yzt.entity.MsCustomer;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.BuDiagnoseRO;
+import com.maizhiyu.yzt.service.IBuDiagnoseService;
 import com.maizhiyu.yzt.service.IBuMedicantService;
 import com.maizhiyu.yzt.service.IBuRecommendService;
+import com.maizhiyu.yzt.service.IMsCustomerService;
+import com.maizhiyu.yzt.serviceimpl.MsCustomerService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,6 +40,11 @@ public class BuDiagnoseController {
     @Autowired
     private IBuRecommendService recommendService;
 
+    @Resource
+    private IMsCustomerService msCustomerService;
+
+    @Resource
+    private IBuDiagnoseService diagnoseService;
 
     @ApiOperation(value = "获取诊断方案推荐", notes = "获取诊断方案推荐")
     @PostMapping("/getRecommend")
@@ -222,4 +235,61 @@ public class BuDiagnoseController {
 
         return Result.success(vo);
     }
+
+    @ApiOperation(value = "保存诊断信息接口")
+    @PostMapping(value = "/addDiagnoseInfo")
+    public Result addDiagnose(BuPrescriptionRO.AddPrescriptionShiyi ro) throws Exception {
+       MsCustomer msCustomer = msCustomerService.getCustomerByName(ro.getDiagnoseInfo().getCustomerName());
+        if(Objects.isNull(msCustomer))
+            throw new Exception("不存在名称为：" + ro.getDiagnoseInfo().getCustomerName() + " 的客户!");
+
+        ro.getDiagnoseInfo().setCustomerId(msCustomer.getId());
+
+        BuDiagnose buDiagnose = new BuDiagnose();
+        buDiagnose.setDoctorId(ro.getBaseInfo().getDoctorId());
+        buDiagnose.setPatientId(ro.getBaseInfo().getPatientId());
+        buDiagnose.setOutpatientId(ro.getBaseInfo().getOutpatientId());
+        buDiagnose.setDisease(ro.getDiagnoseInfo().getDisease());
+        buDiagnose.setDiseaseId(ro.getDiagnoseInfo().getDiseaseId());
+        buDiagnose.setSymptoms(ro.getDiagnoseInfo().getSymptoms());
+        buDiagnose.setSymptomIds(ro.getDiagnoseInfo().getSymptomIds());
+        buDiagnose.setSyndrome(ro.getDiagnoseInfo().getSyndrome());
+        buDiagnose.setSyndromeId(ro.getDiagnoseInfo().getSyndromeId());
+        buDiagnose.setCustomerId(ro.getDiagnoseInfo().getCustomerId());
+        buDiagnose.setDepartmentId(ro.getDiagnoseInfo().getDepartmentId());
+        buDiagnose.setStatus(1);
+        buDiagnose.setCreateTime(new Date());
+        buDiagnose.setUpdateTime(new Date());
+        diagnoseService.setDiagnose(buDiagnose);
+
+        Integer integer = diagnoseService.addDiagnose(buDiagnose);
+
+        return Result.success(integer);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
