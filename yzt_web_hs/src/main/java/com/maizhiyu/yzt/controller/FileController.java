@@ -4,7 +4,6 @@ import com.maizhiyu.yzt.exception.BusinessException;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IFileService;
 import com.maizhiyu.yzt.utils.MyDate;
-import com.maizhiyu.yzt.utis.OSSKit;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

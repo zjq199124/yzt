@@ -47,7 +47,7 @@ public class BuPrescriptionController extends BaseController {
 
     @ApiOperation(value = "修改处方信息", notes = "修改处方信息")
     @PostMapping("/setPrescription")
-    public Result setPrescription (@RequestBody BuPrescription prescription) {
+    public Result setPrescription(@RequestBody BuPrescription prescription) {
         prescription.setUpdateTime(new Date());
         Integer res = service.setPrescription(prescription);
         return Result.success(prescription);
@@ -72,19 +72,19 @@ public class BuPrescriptionController extends BaseController {
     @ApiOperation(value = "结算处方", notes = "结算处方")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "处方单id", required = true),
-            @ApiImplicitParam(value = "鉴权token",name = "token",paramType  = "header", dataType = "String", required=true)
+            @ApiImplicitParam(value = "鉴权token", name = "token", paramType = "header", dataType = "String", required = true)
     })
     @GetMapping("/setPaymentStatus")
     public Result setPaymentStatus(Long id) {
         Long userId = ((Number) getClaims().get("id")).longValue();
-        service.setPaymentStatus(id,userId);
+        service.setPaymentStatus(id, userId);
         return Result.success();
     }
 
 
     @ApiOperation(value = "获取处方信息", notes = "获取处方信息")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "处方单ID", required = true),
+            @ApiImplicitParam(name = "id", value = "处方单ID", required = true, dataTypeClass = Long.class),
     })
     @GetMapping("/getPrescription")
     public Result getPrescription(Long id) {
@@ -95,7 +95,7 @@ public class BuPrescriptionController extends BaseController {
 
     @ApiOperation(value = "获取处方单列表", notes = "获取处方单列表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "outpatientId", value = "挂号ID", required = false),
+            @ApiImplicitParam(name = "outpatientId", value = "挂号ID", required = false, dataTypeClass = Long.class),
     })
     @GetMapping("/getPrescriptionList")
     public Result getPrescriptionList(Long outpatientId) {
@@ -109,7 +109,7 @@ public class BuPrescriptionController extends BaseController {
 
     @ApiOperation(value = "获取处方单预约计数", notes = "获取处方单预约计数")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "prescriptionId", value = "处方单ID", required = true),
+            @ApiImplicitParam(name = "prescriptionId", value = "处方单ID", required = true, dataTypeClass = Long.class),
     })
     @GetMapping("/getPrescriptionTreatmentSummary")
     public Result getPrescriptionTreatmentSummary(Long prescriptionId) {
@@ -120,7 +120,7 @@ public class BuPrescriptionController extends BaseController {
 
     @ApiOperation(value = "获取患者处方单预约计数", notes = "获取患者处方单预约计数")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "patientId", value = "患者ID", required = true),
+            @ApiImplicitParam(name = "patientId", value = "患者ID", required = true, dataTypeClass = Long.class),
     })
     @GetMapping("/getPatientTreatmentSummary")
     public Result getPatientTreatmentSummary(Long patientId) {

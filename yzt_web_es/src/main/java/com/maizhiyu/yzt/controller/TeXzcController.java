@@ -307,11 +307,11 @@ public class TeXzcController {
         equipService.setEquip(equip);
     }
 
-    public static void main(String[] args) throws ParseException {
-        JSONObject jsonObject = JSON.parseObject("{\"H\":\"220515\"}");
-        String datestr = jsonObject.getString("H");
-        Date date = DateUtils.parseDate(datestr, "yyMMdd");
-        System.out.println(date);
-    }
+//    public static void main(String[] args) throws ParseException {
+//        JSONObject jsonObject = JSON.parseObject("{\"H\":\"220515\"}");
+//        String datestr = jsonObject.getString("H");
+//        Date date = DateUtils.parseDate(datestr, "yyMMdd");
+//        System.out.println(date);
+//    }
 
 }

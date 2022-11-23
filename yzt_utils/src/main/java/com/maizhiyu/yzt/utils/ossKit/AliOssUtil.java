@@ -1,25 +1,23 @@
-package com.maizhiyu.yzt.utis;
+package com.maizhiyu.yzt.utils.ossKit;
 
-import com.aliyun.oss.ClientConfiguration;
-import com.aliyun.oss.HttpMethod;
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.*;
 import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import java.io.IOException;
-import java.io.InputStream;
+
+import javax.annotation.Resource;
+import java.io.*;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Calendar;
 import java.util.Date;
 
 @Component
-public class OSSKit {
+public class AliOssUtil {
 
-    @Autowired
+    @Resource
     private OSSConfig ossConfig;
 
     /**
@@ -29,23 +27,36 @@ public class OSSKit {
      * @param fileName
      * @return
      */
-    public String uploadInputStream(InputStream inputStream, String fileName, boolean isPrivate) {
-        ClientConfiguration clientConfiguration = new ClientConfiguration();
-        OSSClient ossClient = new OSSClient(ossConfig.getEndpoint(), getCredentialProvider(), clientConfiguration);
-
-        String bucketName = getBucket(isPrivate);
-
+    public String uploadInputStream(InputStream inputStream, String path, String fileName, boolean isPrivate) {
+        // 创建OSSClient实例。
+        OSS ossClient = new OSSClientBuilder().build(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
         try {
-            ossClient.putObject(bucketName, fileName, inputStream);
-
+            ossClient.putObject(getBucket(isPrivate), path + fileName, inputStream);
             if (isPrivate) {
-                return generatePresignedUrl(ossClient, fileName, 1800);
+                return generatePresignedUrl(ossClient, path + fileName, 1800);
             } else {
-                return getPublicUrl(fileName);
+                return getPublicUrl(path + fileName);
             }
         } finally {
             ossClient.shutdown();
         }
+    }
+
+    /**
+     * 上传文件
+     *
+     * @param path
+     * @param file
+     * @param isPrivate
+     * @throws Exception
+     */
+    public String uploadFile(String path, File file, boolean isPrivate) {
+        try {
+            uploadInputStream(new FileInputStream(file), path, file.getName(), isPrivate);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return getPublicUrl(path+file.getName());
     }
 
     /**
@@ -59,7 +70,6 @@ public class OSSKit {
         if (!filename.startsWith("/")) {
             filename = "/" + filename;
         }
-
         return ossConfig.getPublicBucketUrl() + filename;
     }
 
@@ -187,17 +197,14 @@ public class OSSKit {
      * @param expiration
      * @return
      */
-    private String generatePresignedUrl(OSSClient ossClient, String objectName, int expiration) {
+    private String generatePresignedUrl(OSS ossClient, String objectName, int expiration) {
         // 过期时间
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.SECOND, expiration);
         String bucketName = getBucket(true);
-
         objectName = getPath(objectName);
-
         URL url = ossClient.generatePresignedUrl(bucketName, objectName, calendar.getTime());
-
         return ossConfig.getPrivateBucketUrl() + url.getFile();
     }
 
@@ -207,6 +214,7 @@ public class OSSKit {
 
     /**
      * 兼容腾讯云图片地址
+     *
      * @param url
      * @return
      */

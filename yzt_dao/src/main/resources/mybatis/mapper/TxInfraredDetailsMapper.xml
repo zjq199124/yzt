@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.TxInfraredDetailsMapper">
+
+    <resultMap type="com.maizhiyu.yzt.entity.TxInfraredDetails" id="TxInfraredDetailsMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="infraredDataId" column="infrared_data_id" jdbcType="INTEGER"/>
+        <result property="leibie" column="leibie" jdbcType="VARCHAR"/>
+        <result property="face" column="face" jdbcType="VARCHAR"/>
+        <result property="zuigao" column="zuigao" jdbcType="NUMERIC"/>
+        <result property="zuidi" column="zuidi" jdbcType="NUMERIC"/>
+        <result property="jicha" column="jicha" jdbcType="NUMERIC"/>
+        <result property="biaozhuncha" column="biaozhuncha" jdbcType="NUMERIC"/>
+        <result property="biaochuncha2" column="biaochuncha2" jdbcType="NUMERIC"/>
+        <result property="zhengtaicha" column="zhengtaicha" jdbcType="NUMERIC"/>
+        <result property="zhengtai" column="zhengtai" jdbcType="VARCHAR"/>
+    </resultMap>
+
+</mapper>
+

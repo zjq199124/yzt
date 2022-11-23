@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.TxInfraredDataMapper">
+
+    <resultMap type="com.maizhiyu.yzt.entity.TxInfraredData" id="TxInfraredDataMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="idCard" column="id_card" jdbcType="VARCHAR"/>
+        <result property="testDate" column="test_date" jdbcType="TIMESTAMP"/>
+        <result property="watch" column="watch" jdbcType="VARCHAR"/>
+        <result property="listen" column="listen" jdbcType="VARCHAR"/>
+        <result property="ask" column="ask" jdbcType="VARCHAR"/>
+        <result property="feel" column="feel" jdbcType="VARCHAR"/>
+        <result property="duichenxing" column="duichenxing" jdbcType="VARCHAR"/>
+        <result property="guilvxing" column="guilvxing" jdbcType="VARCHAR"/>
+        <result property="bianhanre" column="bianhanre" jdbcType="VARCHAR"/>
+        <result property="tuxiangtezheng" column="tuxiangtezheng" jdbcType="VARCHAR"/>
+        <result property="tizhiliangbiao" column="tizhiliangbiao" jdbcType="VARCHAR"/>
+        <result property="retaifenbu" column="retaifenbu" jdbcType="VARCHAR"/>
+        <result property="zhongyitizhi" column="zhongyitizhi" jdbcType="VARCHAR"/>
+        <result property="zangfu" column="zangfu" jdbcType="VARCHAR"/>
+        <result property="sanjiao" column="sanjiao" jdbcType="VARCHAR"/>
+        <result property="jingluo" column="jingluo" jdbcType="VARCHAR"/>
+        <result property="jiepoufenqu" column="jiepoufenqu" jdbcType="VARCHAR"/>
+        <result property="liujingpibu" column="liujingpibu" jdbcType="VARCHAR"/>
+        <result property="kaiqiaoqihua" column="kaiqiaoqihua" jdbcType="VARCHAR"/>
+        <result property="wuzangsebu" column="wuzangsebu" jdbcType="VARCHAR"/>
+        <result property="toubuduichen" column="toubuduichen" jdbcType="VARCHAR"/>
+        <result property="zhuzheng" column="zhuzheng" jdbcType="VARCHAR"/>
+        <result property="jianzheng" column="jianzheng" jdbcType="VARCHAR"/>
+        <result property="tiaoliyuanze" column="tiaoliyuanze" jdbcType="VARCHAR"/>
+        <result property="chenyao" column="chenyao" jdbcType="VARCHAR"/>
+        <result property="xuewei" column="xuewei" jdbcType="VARCHAR"/>
+        <result property="yinshi" column="yinshi" jdbcType="VARCHAR"/>
+        <result property="yingyangbaojianpin" column="yingyangbaojianpin" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="INTEGER"/>
+        <result property="multimediaId" column="multimedia_id" jdbcType="INTEGER"/>
+        <result property="isDel" column="is_del" jdbcType="INTEGER"/>
+    </resultMap>
+
+</mapper>
+

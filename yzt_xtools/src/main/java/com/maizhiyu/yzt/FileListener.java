@@ -27,8 +27,11 @@ import java.util.concurrent.TimeUnit;
 public class FileListener extends FileAlterationListenerAdaptor {
 
     private static Logger log = LoggerFactory.getLogger(FileListener.class);
-
+    /**
+     *HTTP 网络请求框架的封装
+     */
     private Retrofit retrofit;
+
     private YztApi yztapi;
 
 
@@ -42,11 +45,13 @@ public class FileListener extends FileAlterationListenerAdaptor {
 
 
     public void onStart(FileAlterationObserver observer) {
+        log.info("文件监听开始............");
         super.onStart(observer);
     }
 
 
     public void onStop(FileAlterationObserver observer) {
+        log.info("文件监听结束............");
         super.onStop(observer);
     }
 
@@ -130,7 +135,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
     }
 
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
 
         // 参数判断
         if (args.length != 2) {

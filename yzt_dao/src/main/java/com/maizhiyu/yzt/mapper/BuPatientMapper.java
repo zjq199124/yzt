@@ -17,16 +17,16 @@ public interface BuPatientMapper extends BaseMapper<BuPatient> {
     List<BuPatient> selectPatientListByPsuser(
             @Param("userId") Long userId);
 
-    List<Map<String,Object>> selectPatientListByDoctor(
+    List<Map<String, Object>> selectPatientListByDoctor(
             @Param("doctorId") Long doctorId,
             @Param("term") String term);
 
-    List<Map<String,Object>> selectPatientListByTherapist(
+    List<Map<String, Object>> selectPatientListByTherapist(
             @Param("therapistId") Long therapistId,
             @Param("type") Integer type,
             @Param("term") String term);
 
-    List<Map<String,Object>> selectPatientPrescriptionList(
+    List<Map<String, Object>> selectPatientPrescriptionList(
             @Param("patientId") Long patientId,
             @Param("type") Integer type);
 
