@@ -1,13 +1,20 @@
 package com.maizhiyu.yzt.controller;
 
-import com.maizhiyu.yzt.aro.BuDiagnoseRO;
+import cn.hutool.core.lang.Assert;
+import com.maizhiyu.yzt.aro.BuPrescriptionRO;
 import com.maizhiyu.yzt.avo.BuDiagnoseVO;
 import com.maizhiyu.yzt.entity.BuDiagnose;
 import com.maizhiyu.yzt.entity.BuMedicant;
+import com.maizhiyu.yzt.entity.MsCustomer;
 import com.maizhiyu.yzt.result.Result;
+import com.maizhiyu.yzt.ro.BuDiagnoseRO;
+import com.maizhiyu.yzt.service.IBuDiagnoseService;
 import com.maizhiyu.yzt.service.IBuMedicantService;
 import com.maizhiyu.yzt.service.IBuRecommendService;
+import com.maizhiyu.yzt.service.IMsCustomerService;
+import com.maizhiyu.yzt.serviceimpl.MsCustomerService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +23,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Resource;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,14 +41,17 @@ public class BuDiagnoseController {
     @Autowired
     private IBuRecommendService recommendService;
 
+    @Resource
+    private IMsCustomerService msCustomerService;
+
+    @Resource
+    private IBuDiagnoseService diagnoseService;
 
     @ApiOperation(value = "获取诊断方案推荐", notes = "获取诊断方案推荐")
     @PostMapping("/getRecommend")
     public Result<BuDiagnoseVO.GetRecommendVO> getRecommend(@RequestBody BuDiagnoseRO.GetRecommendRO ro) {
 
-        BuDiagnose diagnose = new BuDiagnose();
-        diagnose.setDisease(ro.getDisease());
-        Map<String, Object> mapRecommend = recommendService.getRecommend(diagnose);
+/*        Map<String, Object> mapRecommend = recommendService.selectRecommend(ro);
 
         // 整理中药数据
         List<Map<String, Object>> zhongyaoList = (List<Map<String, Object>>) mapRecommend.get("zhongyaoList");
@@ -109,11 +118,11 @@ public class BuDiagnoseController {
         if (chengyaoList != null) {
             for (Map<String, Object> map : chengyaoList) {
                 BuDiagnoseVO.ChengyaoVO vo = new BuDiagnoseVO.ChengyaoVO();
-                vo.setName(((String) map.getOrDefault("name", "")).trim());
-                vo.setSymptoms(((String) map.getOrDefault("symptoms", "")).trim());
-                vo.setComponent(((String) map.getOrDefault("component", "")).trim());
-                vo.setContrain(((String) map.getOrDefault("contrain", "")).trim());
-                vo.setAttention(((String) map.getOrDefault("attention", "")).trim());
+                vo.setName(((String) map.getOrDefault("name", "")));
+                vo.setSymptoms(((String) map.getOrDefault("symptoms", "")));
+                vo.setComponent(((String) map.getOrDefault("component", "")));
+                vo.setContrain(((String) map.getOrDefault("contrain", "")));
+                vo.setAttention(((String) map.getOrDefault("attention", "")));
                 chengyaoVOList.add(vo);
             }
         }
@@ -182,10 +191,10 @@ public class BuDiagnoseController {
             for (Map<String, Object> map : shiyiList) {
                 BuDiagnoseVO.ShiyiVO vo = new BuDiagnoseVO.ShiyiVO();
                 vo.setCode(("" + map.getOrDefault("sytechId", "")));
-                vo.setName(((String) map.getOrDefault("sytechName", "")).trim());
-                vo.setSymptoms(((String) map.getOrDefault("symptoms", "")).trim());
-                vo.setDetail(((String) map.getOrDefault("detail", "")).trim());
-                vo.setOperation(((String) map.getOrDefault("operation", "")).trim());
+                vo.setName(((String) map.getOrDefault("sytech_name", "")));
+                vo.setSymptoms(((String) map.getOrDefault("symptoms", "")));
+                vo.setDetail(((String) map.getOrDefault("detail", "")));
+                vo.setOperation(((String) map.getOrDefault("operation", "")));
                 shiyiVOList.add(vo);
             }
         }
@@ -197,17 +206,103 @@ public class BuDiagnoseController {
         vo.setXiedingList(xiedingVOList);
         vo.setShiyiList(shiyiVOList);
 
+        return Result.success(vo);*/
+
+        Map<String, Object> mapRecommend = recommendService.selectRecommend(ro);
+
+        // 整理适宜数据
+        List<Map<String, Object>> shiyiList = (List<Map<String, Object>>) mapRecommend.get("sytechList");
+        List<BuDiagnoseVO.ShiyiVO> shiyiVOList = new ArrayList<>();
+        if (shiyiList != null) {
+            for (Map<String, Object> map : shiyiList) {
+                BuDiagnoseVO.ShiyiVO vo = new BuDiagnoseVO.ShiyiVO();
+                vo.setSytechId(Objects.isNull(map.get("sytech_id")) ? null : Long.valueOf(map.get("sytech_id").toString()));
+                vo.setName(((String) map.getOrDefault("sytech_name", "")));
+                vo.setSymptoms(((String) map.getOrDefault("symptoms", "")));
+                vo.setDetail(((String) map.getOrDefault("detail", "")));
+                vo.setOperation(((String) map.getOrDefault("operation", "")));
+                vo.setCustomerId(Objects.isNull(map.get("customer_id")) ? null : Long.valueOf(map.get("customer_id").toString()));
+                vo.setRecommend(Objects.isNull(map.get("recommend")) ? null : Integer.valueOf(map.get("recommend").toString()));
+                shiyiVOList.add(vo);
+            }
+        }
+
+        // 整合数据
+        BuDiagnoseVO.GetRecommendVO vo = new BuDiagnoseVO.GetRecommendVO();
+        vo.setZhongyaoList(Collections.emptyList());
+        vo.setChengyaoList(Collections.emptyList());
+        vo.setXiedingList(Collections.emptyList());
+        vo.setShiyiList(shiyiVOList);
+
         return Result.success(vo);
     }
 
-    @ApiOperation(value = "获取中医诊断方案", notes = "获取中医诊断方案")
-    @PostMapping("/getTCMDiagnosis")
-    public Result<BuDiagnoseVO.GetRecommendVO> getTCMDiagnosis(@RequestBody BuDiagnoseRO.GetRecommendRO ro) {
-        BuDiagnose diagnose = new BuDiagnose();
-        diagnose.setDisease(ro.getDisease());
-        Map<String, Object> mapRecommend = recommendService.getRecommend(diagnose);
-        return null;
+    @ApiOperation(value = "保存诊断信息接口")
+    @PostMapping(value = "/addDiagnoseInfo")
+    public Result addDiagnose(@RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro) throws Exception {
+       MsCustomer msCustomer = msCustomerService.getCustomerByName(ro.getDiagnoseInfo().getCustomerName());
+        if(Objects.isNull(msCustomer))
+            throw new Exception("不存在名称为：" + ro.getDiagnoseInfo().getCustomerName() + " 的客户!");
+
+        ro.getDiagnoseInfo().setCustomerId(msCustomer.getId());
+
+        BuDiagnose buDiagnose = new BuDiagnose();
+        buDiagnose.setId(ro.getDiagnoseInfo().getId());
+        buDiagnose.setDoctorId(ro.getBaseInfo().getDoctorId());
+        buDiagnose.setPatientId(ro.getBaseInfo().getPatientId());
+        buDiagnose.setOutpatientId(ro.getBaseInfo().getOutpatientId());
+        buDiagnose.setId(ro.getDiagnoseInfo().getId());
+        buDiagnose.setCustomerId(ro.getDiagnoseInfo().getCustomerId());
+        buDiagnose.setDepartmentId(ro.getDiagnoseInfo().getDepartmentId());
+        buDiagnose.setDisease(ro.getDiagnoseInfo().getDisease());
+        buDiagnose.setDiseaseId(ro.getDiagnoseInfo().getDiseaseId());
+        buDiagnose.setSymptoms(ro.getDiagnoseInfo().getSymptoms());
+        buDiagnose.setSymptomIds(ro.getDiagnoseInfo().getSymptomIds());
+        buDiagnose.setSyndrome(ro.getDiagnoseInfo().getSyndrome());
+        buDiagnose.setSyndromeId(ro.getDiagnoseInfo().getSyndromeId());
+        buDiagnose.setStatus(1);
+        buDiagnose.setUpdateTime(new Date());
+        if (Objects.isNull(buDiagnose.getId())) {
+            buDiagnose.setCreateTime(new Date());
+        }
+
+        Integer integer = diagnoseService.saveOrUpdate(buDiagnose);
+        return Result.success(integer);
     }
 
 
+    @ApiOperation(value = "获取诊断详情")
+    @PostMapping(value = "/getDetail")
+    Result getDetail(@RequestBody BuDiagnoseRO.GetRecommendRO ro) throws Exception {
+        Assert.notNull(ro.getPatientId(), "his端患者id不能为空!");
+        Assert.notNull(ro.getOutpatientId(), "his端患者门诊预约id不能为空!");
+        Result result = diagnoseService.getDetails(ro);
+        return result;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

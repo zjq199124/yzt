@@ -43,7 +43,7 @@ public class HsUserController {
         user.setStatus(1);
         user.setIsdoctor(1);
         // 查询医生是否存在
-        HsUser oldUser = service.getUserByHisId(customerId, ro.getHisId());
+        HsUser oldUser = service.getUserByHisId(customerId, Long.valueOf(ro.getHisId()));
         // 不存在则插入
         if (oldUser == null) {
             // 密码为空时使用默认密码123456
@@ -84,7 +84,7 @@ public class HsUserController {
             service.setUser(user);
         }
         // 获取最新数据
-        HsUser newUser = service.getUserByHisId(customerId, ro.getHisId());
+        HsUser newUser = service.getUserByHisId(customerId, Long.valueOf(ro.getHisId()));
         HsUserVO.AddUserVO vo = HsUserCI.INSTANCE.invertAddUserVO(newUser);
         // 返回结果
         return Result.success(vo);

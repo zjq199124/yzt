@@ -5,6 +5,7 @@ import com.maizhiyu.yzt.bean.aro.BuPrescriptionRO;
 import com.maizhiyu.yzt.bean.avo.BuDiagnoseVO;
 import com.maizhiyu.yzt.bean.avo.DictSymptomVo;
 import com.maizhiyu.yzt.bean.avo.DictSyndromeVo;
+import com.maizhiyu.yzt.bean.avo.RelSyndromeSymptomVo;
 import com.maizhiyu.yzt.bean.axo.BuOutpatientXO;
 import com.maizhiyu.yzt.bean.axo.BuPatientXO;
 import com.maizhiyu.yzt.bean.axo.HsUserXO;
@@ -59,6 +60,15 @@ public interface FeignYptClient {
 
     @PostMapping(value = "/sytech/getRecommend")
     Result getSytechRecommend(@RequestParam Long diseaseId,@RequestParam Long syndromeId,@RequestParam String term);
+
+    @PostMapping(value = "/relSyndromeSymptom/selectBySyndromeIds")
+    Result<List<RelSyndromeSymptomVo>> selectDictSymptomBySyndromeIdList(@RequestBody List<Long> syndromeIds);
+
+    @PostMapping(value = "/diagnose/addDiagnoseInfo")
+    Result addDiagnose(@RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro);
+
+    @PostMapping(value = "/diagnose/getDetail")
+    Result getDetail(@RequestBody BuDiagnoseRO.GetRecommendRO ro);
 }
 
 

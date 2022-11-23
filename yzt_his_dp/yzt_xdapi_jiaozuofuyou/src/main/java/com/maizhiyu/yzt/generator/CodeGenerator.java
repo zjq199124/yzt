@@ -65,7 +65,7 @@ public class CodeGenerator {
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:mysql://120.26.4.216:3306/henanmapping?useUnicode=true&useSSL=false&characterEncoding=utf-8");
+        dsc.setUrl("jdbc:mysql://120.26.4.216:3306/histest?useUnicode=true&useSSL=false&characterEncoding=utf-8");
         dsc.setDriverName("com.mysql.jdbc.Driver");
         dsc.setUsername("root");
         dsc.setPassword("yzt123456");
@@ -77,7 +77,7 @@ public class CodeGenerator {
         pc.setEntity("entity");
         pc.setService("service");
         pc.setServiceImpl("serviceimpl");
-        pc.setMapper("mapperypt");
+        pc.setMapper("mapperhis");
         mpg.setPackageInfo(pc);
 
         // 自定义配置
@@ -100,7 +100,7 @@ public class CodeGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
-                return projectPath + "/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/resources/mybatis/mapper-ypt/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
+                return projectPath + "/yzt_his_dp/yzt_xdapi_jiaozuofuyou/src/main/resources/mybatis/mapper-his/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
             }
         });
 

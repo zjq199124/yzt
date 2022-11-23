@@ -11,8 +11,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -43,6 +45,9 @@ public class BuPrescriptionController {
     @Autowired
     private ITsSytechService sytechService;
 
+    @Resource
+    private IBuDiagnoseService diagnoseService;
+
 
     @ApiOperation(value = "新增处方(中药)", notes = "新增处方(中药)")
     @PostMapping("/addPrescriptionZhongyao")
@@ -51,17 +56,18 @@ public class BuPrescriptionController {
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
         // 获取医生信息
-        HsUser hsUser = hsUserService.getUserByHisId(customerId, ro.getDoctorId());
+        HsUser hsUser = hsUserService.getUserByHisId(customerId, Long.valueOf(ro.getDoctorId()));
         if (hsUser == null) return Result.failure(10002, "医生信息错误");
         // 获取患者信息
-        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, ro.getPatientId());
+        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, Long.valueOf(ro.getPatientId()));
         if (buPatient == null) return Result.failure(10003, "患者信息错误");
         // 获取预约信息
-        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getOutpatientId());
+        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId,Long.valueOf(ro.getOutpatientId()));
         if (buOutpatient == null) return Result.failure(10004, "预约信息错误");
         // 整理处方数据
         List<BuPrescriptionItem> itemList = new ArrayList<>();
         BuPrescription prescription = new BuPrescription();
+        prescription.setId(ro.getId());
         prescription.setType(2);
         prescription.setStatus(1);
         prescription.setCustomerId(customerId);
@@ -74,7 +80,7 @@ public class BuPrescriptionController {
         prescription.setDoseTimes(ro.getDoseTimes());
         prescription.setCreateTime(new Date());
         prescription.setUpdateTime(prescription.getCreateTime());
-        prescription.setHisId(ro.getId());
+        prescription.setHisId(ro.getHisId());
         prescription.setItemList(itemList);
         for (BuPrescriptionRO.BuPrescriptionItemZhongyao it : ro.getItemList()) {
             BuPrescriptionItem item = new BuPrescriptionItem();
@@ -91,7 +97,8 @@ public class BuPrescriptionController {
             itemList.add(item);
         }
         // 保存药材
-        Integer res = service.addPrescription(prescription);
+        //Integer res = service.addPrescription(prescription);
+        Integer res = service.saveOrUpdate(prescription);
         // 返回结果
         return Result.success(res);
     }
@@ -103,13 +110,13 @@ public class BuPrescriptionController {
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
         // 获取医生信息
-        HsUser hsUser = hsUserService.getUserByHisId(customerId, ro.getDoctorId());
+        HsUser hsUser = hsUserService.getUserByHisId(customerId, Long.valueOf(ro.getDoctorId()));
         if (hsUser == null) return Result.failure(10002, "医生信息错误");
         // 获取患者信息
-        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, ro.getPatientId());
+        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, Long.valueOf(ro.getPatientId()));
         if (buPatient == null) return Result.failure(10003, "患者信息错误");
         // 获取预约信息
-        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getOutpatientId());
+        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, Long.valueOf(ro.getOutpatientId()));
         if (buOutpatient == null) return Result.failure(10004, "预约信息错误");
         // 整理处方数据
         List<BuPrescriptionItem> itemList = new ArrayList<>();
@@ -154,13 +161,13 @@ public class BuPrescriptionController {
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
         // 获取医生信息
-        HsUser hsUser = hsUserService.getUserByHisId(customerId, ro.getDoctorId());
+        HsUser hsUser = hsUserService.getUserByHisId(customerId, Long.valueOf(ro.getDoctorId()));
         if (hsUser == null) return Result.failure(10002, "医生信息错误");
         // 获取患者信息
-        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, ro.getPatientId());
+        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, Long.valueOf(ro.getPatientId()));
         if (buPatient == null) return Result.failure(10003, "患者信息错误");
         // 获取预约信息
-        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getOutpatientId());
+        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, Long.valueOf(ro.getOutpatientId()));
         if (buOutpatient == null) return Result.failure(10004, "预约信息错误");
         // 整理处方数据
         List<BuPrescriptionItem> itemList = new ArrayList<>();
@@ -199,22 +206,24 @@ public class BuPrescriptionController {
 
     @ApiOperation(value = "新增处方(适宜技术)", notes = "新增处方(适宜技术)")
     @PostMapping("/addPrescriptionShiyi")
-    public Result<Integer> addPrescriptionShiyi(HttpServletRequest request, @RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro) {
+    public Result<Long> addPrescriptionShiyi(HttpServletRequest request, @RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro) {
         // 获取token字段
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
         // 获取医生信息
-        HsUser hsUser = hsUserService.getUserByHisId(customerId, ro.getDoctorId());
+        HsUser hsUser = hsUserService.getUserByHisId(customerId, ro.getBaseInfo().getDoctorId());
         if (hsUser == null) return Result.failure(10002, "医生信息错误");
         // 获取患者信息
-        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, ro.getPatientId());
+        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, ro.getBaseInfo().getPatientId());
         if (buPatient == null) return Result.failure(10003, "患者信息错误");
         // 获取预约信息
-        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getOutpatientId());
+        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getBaseInfo().getOutpatientId());
         if (buOutpatient == null) return Result.failure(10004, "预约信息错误");
+
         // 整理处方数据
         List<BuPrescriptionItem> itemList = new ArrayList<>();
         BuPrescription prescription = new BuPrescription();
+        prescription.setId(ro.getId());
         prescription.setType(5);
         prescription.setStatus(1);
         prescription.setCustomerId(customerId);
@@ -224,7 +233,7 @@ public class BuPrescriptionController {
         prescription.setAttention(ro.getAttention());
         prescription.setCreateTime(new Date());
         prescription.setUpdateTime(prescription.getCreateTime());
-        prescription.setHisId(ro.getId());
+        prescription.setHisId(ro.getHisId());
         prescription.setItemList(itemList);
         for (BuPrescriptionRO.BuPrescriptionItemShiyi it : ro.getItemList()) {
             BuPrescriptionItem item = new BuPrescriptionItem();
@@ -233,6 +242,7 @@ public class BuPrescriptionController {
             item.setDoctorId(hsUser.getId());
             item.setPatientId(buPatient.getId());
             item.setOutpatientId(buOutpatient.getId());
+            item.setId(it.getId());
             item.setName(it.getName());
             item.setDetail(it.getDetail());
             item.setOperation(it.getOperation());
@@ -257,7 +267,7 @@ public class BuPrescriptionController {
             itemList.add(item);
         }
         // 保存药材
-        Integer res = service.addPrescription(prescription);
+        Integer res = service.saveOrUpdate(prescription);
         // 返回结果
         return Result.success(res);
     }

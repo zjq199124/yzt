@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.serviceimpl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.exception.BusinessException;
@@ -54,7 +55,7 @@ public class BuPrescriptionService implements IBuPrescriptionService {
         // 新增处方
         int res = mapper.insert(prescription);
         // 增加处方项
-        addItems(prescription);
+        saveOrUpdateItems(prescription);
         // 返回结果
         return res;
     }
@@ -89,7 +90,7 @@ public class BuPrescriptionService implements IBuPrescriptionService {
         // 删除处方项
         delItems(prescription.getId());
         // 增加处方项
-        addItems(prescription);
+        saveOrUpdateItems(prescription);
         // 返回结果
         return res;
     }
@@ -211,8 +212,36 @@ public class BuPrescriptionService implements IBuPrescriptionService {
 
     }
 
+    @Override
+    public Integer saveOrUpdate(BuPrescription prescription) {
+        if (Objects.isNull(prescription.getId())) {
+            // 生成编码
+            if (prescription.getCode() == null) {
+                String code = UUID.randomUUID().toString().replace("-", "").substring(0, 20);
+                prescription.setCode(code);
+            }
 
-    private void addItems(BuPrescription prescription) {
+            // 新增处方
+            int res = mapper.insert(prescription);
+            // 增加处方项
+            saveOrUpdateItems(prescription);
+            // 返回结果
+            return res;
+        } else {
+            // 编辑处方
+            int res = mapper.updateById(prescription);
+            // 增加处方项
+            saveOrUpdateItems(prescription);
+            // 返回结果
+            return res;
+        }
+    }
+
+
+    private void saveOrUpdateItems(BuPrescription prescription) {
+        if(CollectionUtils.isEmpty(prescription.getItemList()))
+            return;
+
         Date date = new Date();
         for (BuPrescriptionItem item : prescription.getItemList()) {
             item.setType(prescription.getType());
@@ -224,7 +253,11 @@ public class BuPrescriptionService implements IBuPrescriptionService {
             item.setPrescriptionId(prescription.getId());
             item.setCreateTime(date);
             item.setUpdateTime(date);
-            itemMapper.insert(item);
+            if (Objects.isNull(item.getId())) {
+                itemMapper.insert(item);
+            } else {
+                itemMapper.updateById(item);
+            }
         }
     }
 

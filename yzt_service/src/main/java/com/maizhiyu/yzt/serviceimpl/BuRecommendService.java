@@ -1,7 +1,11 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.maizhiyu.yzt.entity.BuDiagnose;
+import com.maizhiyu.yzt.entity.DictSyndrome;
 import com.maizhiyu.yzt.mapper.BuRecommendMapper;
+import com.maizhiyu.yzt.mapper.DictSyndromeMapper;
+import com.maizhiyu.yzt.ro.BuDiagnoseRO;
 import com.maizhiyu.yzt.service.IBuRecommendService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -9,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -20,6 +25,9 @@ public class BuRecommendService implements IBuRecommendService {
 
     @Autowired
     private BuRecommendMapper mapper;
+
+    @Resource
+    private DictSyndromeMapper dictSyndromeMapper;
 
     @Override
     public Map<String, Object> getRecommend(BuDiagnose diagnose) {
@@ -120,6 +128,19 @@ public class BuRecommendService implements IBuRecommendService {
         syndromeList = syndromeList.subList(0, limit);
         // 获取推荐方案
         getRecommend(syndromeList, result);
+        // 返回数据
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> selectRecommend(BuDiagnoseRO.GetRecommendRO ro) {
+        Map<String, Object> result = new HashMap<>();
+
+        List<Map<String, Object>> sytechList = mapper.getRecommendSytech(ro.getSyndromeIdList(),ro.getDiseaseId(),ro.getSytechId(),ro.getCustomerName());
+
+        // 整理返回数据
+        result.put("sytechList", sytechList);
+
         // 返回数据
         return result;
     }

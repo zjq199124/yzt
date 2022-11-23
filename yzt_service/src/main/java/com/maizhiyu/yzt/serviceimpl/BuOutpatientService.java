@@ -41,7 +41,7 @@ public class BuOutpatientService implements IBuOutpatientService {
     }
 
     @Override
-    public BuOutpatient getOutpatientByHisId(Long customerId, String hisId) {
+    public BuOutpatient getOutpatientByHisId(Long customerId, Long hisId) {
         QueryWrapper<BuOutpatient> wrapper = new QueryWrapper<>();
         wrapper.eq("customer_id", customerId)
                 .eq("his_id", hisId);

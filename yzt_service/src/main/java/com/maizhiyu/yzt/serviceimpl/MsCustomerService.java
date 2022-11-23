@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.maizhiyu.yzt.entity.HsCustomerHerbs;
 import com.maizhiyu.yzt.entity.HsUser;
@@ -130,4 +131,14 @@ public class MsCustomerService implements IMsCustomerService {
 
     }
 
+    @Override
+    public MsCustomer getCustomerByName(String customerName) {
+        LambdaQueryWrapper<MsCustomer> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(MsCustomer::getName, customerName)
+                .eq(MsCustomer::getStatus, 1)
+                .orderByDesc(MsCustomer::getUpdateTime)
+                .last("limit 1");
+        MsCustomer msCustomer = mapper.selectOne(queryWrapper);
+        return msCustomer;
+    }
 }

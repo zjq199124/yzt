@@ -27,4 +27,5 @@ public interface IMsCustomerService {
 
     void test();
 
+    MsCustomer getCustomerByName(String customerName);
 }

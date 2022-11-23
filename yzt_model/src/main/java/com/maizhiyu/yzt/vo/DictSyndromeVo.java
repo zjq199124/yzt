@@ -15,4 +15,10 @@ public class DictSyndromeVo implements Serializable {
 
     @ApiModelProperty("云平台分型名称")
     private String name;
+
+    @ApiModelProperty("分型得分")
+    private double score;
+
+    @ApiModelProperty("是否选中: 1:是；0：否")
+    private Integer isCheck = 0;
 }

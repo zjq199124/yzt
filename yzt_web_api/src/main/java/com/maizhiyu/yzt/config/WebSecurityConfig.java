@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.config;
 
 import com.maizhiyu.yzt.security.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -127,13 +128,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     public static void main(String[] args) {
-        BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();
+        /*BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();
 
         String password = "admin";
         String encoded = bcryptPasswordEncoder.encode(password);
 
         System.out.println("password: " + password);
-        System.out.println("encoded: " + encoded);
+        System.out.println("encoded: " + encoded);*/
+
+        String ABC = null;
+
+        System.out.println(StringUtils.isNotBlank(ABC));
+
     }
 }
 

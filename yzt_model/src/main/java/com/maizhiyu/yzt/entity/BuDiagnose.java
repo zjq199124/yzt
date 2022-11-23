@@ -41,14 +41,23 @@ public class BuDiagnose implements Serializable {
     @ApiModelProperty(value="门诊ID")
     private Long outpatientId;
 
+    @ApiModelProperty(value="疾病id")
+    private Long diseaseId;
+
     @ApiModelProperty(value="疾病名称")
     private String disease;
 
     @ApiModelProperty(value="辨证分型")
     private String syndrome;
 
+    @ApiModelProperty(value="辨证分型id")
+    private Long syndromeId;
+
     @ApiModelProperty(value="症状列表")
     private String symptoms;
+
+    @ApiModelProperty(value="症状列表")
+    private String symptomIds;
 
     @ApiModelProperty(value="既病史")
     private String medicalHistory;

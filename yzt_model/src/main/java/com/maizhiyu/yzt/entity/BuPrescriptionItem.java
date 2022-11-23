@@ -79,6 +79,9 @@ public class BuPrescriptionItem implements Serializable {
     @ApiModelProperty(value="价格")
     private BigDecimal price;
 
+    @ApiModelProperty(value="是否删除 1：是；0：否")
+    private Integer isDel;
+
     @ApiModelProperty(value="备注")
     private String note;
 

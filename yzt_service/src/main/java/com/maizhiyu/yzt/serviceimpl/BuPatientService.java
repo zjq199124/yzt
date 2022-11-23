@@ -85,7 +85,7 @@ public class BuPatientService implements IBuPatientService {
     }
 
     @Override
-    public BuPatient getPatientByHisId(Long customerId, String hidId) {
+    public BuPatient getPatientByHisId(Long customerId, Long hidId) {
         QueryWrapper<BuPatient> wrapper = new QueryWrapper<>();
         wrapper.eq("customer_id", customerId)
                 .eq("his_id", hidId);

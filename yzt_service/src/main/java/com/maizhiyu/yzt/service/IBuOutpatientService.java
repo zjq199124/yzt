@@ -13,7 +13,7 @@ public interface IBuOutpatientService {
 
     BuOutpatient getOutpatient(Long id);
 
-    BuOutpatient getOutpatientByHisId(Long customerId, String hisId);
+    BuOutpatient getOutpatientByHisId(Long customerId, Long hisId);
 
     List<Map<String, Object>> getOutpatientList(
             String createStartDate, String createEndDate,

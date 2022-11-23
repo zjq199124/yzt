@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.maizhiyu.yzt.mapperypt.YptMedicantMapper">
+<mapper namespace="com.maizhiyu.yzt.mapperhis.HisPatientMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.maizhiyu.yzt.entity.HisPatient">
+        <id column="code" property="code" />
+        <result column="name" property="name" />
+        <result column="sex" property="sex" />
+        <result column="birthday" property="birthday" />
+        <result column="phone" property="phone" />
+        <result column="id_card" property="idCard" />
+    </resultMap>
 
 </mapper>

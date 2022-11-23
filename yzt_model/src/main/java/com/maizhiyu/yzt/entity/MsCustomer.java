@@ -36,6 +36,9 @@ public class MsCustomer {
     @ApiModelProperty(value="客户名称")
     private String name;
 
+    @ApiModelProperty(value="客户编码")
+    private String username;
+
     @ApiModelProperty(value="客户地址")
     private String address;
 

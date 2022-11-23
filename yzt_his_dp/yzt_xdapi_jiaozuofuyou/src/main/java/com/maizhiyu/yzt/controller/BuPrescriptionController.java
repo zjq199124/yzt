@@ -1,5 +1,7 @@
 package com.maizhiyu.yzt.controller;
 
+import cn.hutool.core.lang.Assert;
+import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.maizhiyu.yzt.bean.aci.HisDoctorCI;
 import com.maizhiyu.yzt.bean.aci.HisOutpatientCI;
 import com.maizhiyu.yzt.bean.aci.HisPatientCI;
@@ -7,27 +9,33 @@ import com.maizhiyu.yzt.bean.aro.BuPrescriptionRO;
 import com.maizhiyu.yzt.bean.axo.BuOutpatientXO;
 import com.maizhiyu.yzt.bean.axo.BuPatientXO;
 import com.maizhiyu.yzt.bean.axo.HsUserXO;
-import com.maizhiyu.yzt.entity.HisDoctor;
-import com.maizhiyu.yzt.entity.HisOutpatient;
-import com.maizhiyu.yzt.entity.HisPatient;
-import com.maizhiyu.yzt.entity.YptTreatment;
+import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.exception.HisException;
 import com.maizhiyu.yzt.feign.FeignYptClient;
 import com.maizhiyu.yzt.mapperhis.HisDoctorMapper;
 import com.maizhiyu.yzt.mapperhis.HisOutpatientMapper;
 import com.maizhiyu.yzt.mapperhis.HisPatientMapper;
 import com.maizhiyu.yzt.result.Result;
+import com.maizhiyu.yzt.service.JzfyTreatmentMappingService;
 import com.maizhiyu.yzt.serviceimpl.YptTreatmentService;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.*;
 
 
 @Slf4j
@@ -51,14 +59,22 @@ public class BuPrescriptionController {
     @Autowired
     private YptTreatmentService treatmentService;
 
+    @Value("${customer.name}")
+    private String customerName;
+
+    @Resource
+    private JzfyTreatmentMappingService jzfyTreatmentMappingService;
+
+    private ExecutorService threadPool = new ThreadPoolExecutor(5, 10, 100L, TimeUnit.SECONDS, new LinkedBlockingDeque<>(Integer.MAX_VALUE), new ThreadPoolExecutor.AbortPolicy());
+
 
     @ApiOperation(value = "新增处方(中药)", notes = "新增处方(中药)")
     @PostMapping("/addPrescriptionZhongyao")
     public Result addPrescriptionZhongyao(@RequestBody @Valid BuPrescriptionRO.AddPrescriptionZhongyao ro) {
         ro.setPatientId(ro.getOutpatientId());  // 使用outpatientId作为患者ID（HIS就这么给的，每次挂号都会新增患者）
-        processDoctor(ro.getDoctorId());
+       /* processDoctor(ro.getDoctorId());
         processPatient(ro.getPatientId());
-        processOutpatient(ro.getOutpatientId());
+        processOutpatient(ro.getOutpatientId());*/
         Result result = yptClient.addPrescriptionZhongyao(ro);
         return result;
     }
@@ -67,9 +83,9 @@ public class BuPrescriptionController {
     @PostMapping("/addPrescriptionChengyao")
     public Result addPrescriptionChengyao(@RequestBody @Valid BuPrescriptionRO.AddPrescriptionChengyao ro) {
         ro.setPatientId(ro.getOutpatientId());  // 使用outpatientId作为患者ID（HIS就这么给的，每次挂号都会新增患者）
-        processDoctor(ro.getDoctorId());
+       /* processDoctor(ro.getDoctorId());
         processPatient(ro.getPatientId());
-        processOutpatient(ro.getOutpatientId());
+        processOutpatient(ro.getOutpatientId());*/
         Result<Integer> result = yptClient.addPrescriptionChengyao(ro);
         return result;
     }
@@ -78,9 +94,9 @@ public class BuPrescriptionController {
     @PostMapping("/addPrescriptionXieding")
     public Result addPrescriptionXieding(@RequestBody @Valid BuPrescriptionRO.AddPrescriptionXieding ro) {
         ro.setPatientId(ro.getOutpatientId());  // 使用outpatientId作为患者ID（HIS就这么给的，每次挂号都会新增患者）
-        processDoctor(ro.getDoctorId());
+       /* processDoctor(ro.getDoctorId());
         processPatient(ro.getPatientId());
-        processOutpatient(ro.getOutpatientId());
+        processOutpatient(ro.getOutpatientId());*/
         Result<Integer> result = yptClient.addPrescriptionXieding(ro);
         return result;
     }
@@ -88,32 +104,28 @@ public class BuPrescriptionController {
     @ApiOperation(value = "新增处方(适宜)", notes = "新增处方(适宜)")
     @PostMapping("/addPrescriptionShiyi")
     public Result addPrescriptionShiyi(@RequestBody @Valid BuPrescriptionRO.AddPrescriptionShiyi ro) {
-        ro.setPatientId(ro.getOutpatientId());  // 使用outpatientId作为患者ID（HIS就这么给的，每次挂号都会新增患者）
-        processDoctor(ro.getDoctorId());
-        processPatient(ro.getPatientId());
-        processOutpatient(ro.getOutpatientId());
-        // 适宜技术映射(name code 修改前是his内数据，修改后是ypt内数据)
-        for (BuPrescriptionRO.BuPrescriptionItemShiyi item : ro.getItemList()) {
-            try {
-                YptTreatment treatment = null;
-                // 先按code映射
-                if (item.getCode() != null && item.getCode().length() > 0) {
-                    treatment = treatmentService.getTreatmentByHisCode(item.getCode());
-                }
-                // 再按name映射
-                if (treatment == null) {
-                    treatment = treatmentService.getTreatmentByHisName(item.getName());
-                }
-                // 修改为映射后的数据
-                item.setCode(treatment.getCode());
-                item.setName(treatment.getName());
-                log.info("映射后适宜技术信息: " + item);
-            } catch (Exception e) {
-                log.warn("获取适宜技术映射异常 " + item + " - " + e.getMessage());
-            }
+
+        //TODO 先要调用his那边的接口然后拿到prescriptionId等信息
+
+        Assert.notNull(ro, "处方数据不能为空!");
+        Assert.notNull(ro.getBaseInfo(), "基础信息不能为空!");
+        BuPrescriptionRO.AddPrescriptionShiyi.BaseInfo baseInfo = ro.getBaseInfo();
+
+     /*   baseInfo.setPatientId(baseInfo.getOutpatientId());  // 使用outpatientId作为患者ID（HIS就这么给的，每次挂号都会新增患者）
+        processDoctor(baseInfo.getDoctorId().toString());
+        processPatient(baseInfo.getPatientId().toString());
+        processOutpatient(baseInfo.getOutpatientId().toString());*/
+
+        if (Objects.nonNull(ro.getBaseInfo())) {
+            ro.getDiagnoseInfo().setCustomerName(customerName);
+            yptClient.addDiagnose(ro);
         }
+
+        if(CollectionUtils.isEmpty(ro.getItemList()))
+            return Result.success();
+
         Result<Integer> result = yptClient.addPrescriptionShiyi(ro);
-        return result;
+        return Result.success(result.getData());
     }
 
     private void processDoctor(String doctorId) {

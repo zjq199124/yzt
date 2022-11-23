@@ -26,4 +26,6 @@ public interface IBuPrescriptionService {
     List<Map<String, Object>> getPatientPrescriptionItemSummary(Long prescriptionId);
 
     void setPaymentStatus(Long id, Long userId);
+
+    Integer saveOrUpdate(BuPrescription prescription);
 }
