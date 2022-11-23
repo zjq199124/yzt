@@ -22,7 +22,10 @@ public class BuPrescriptionRO {
     public static class AddPrescriptionZhongyao {
         @NotBlank
         @ApiModelProperty(value="HIS中处方ID")
-        private String id;
+        private String hisId;
+
+        @ApiModelProperty(value="云平台中处方ID")
+        private Long id;
 
         @NotBlank
         @ApiModelProperty(value="HIS中医生ID")
@@ -123,9 +126,12 @@ public class BuPrescriptionRO {
     @ApiModel
     @Validated
     public static class AddPrescriptionShiyi {
-        @NotBlank
+
         @ApiModelProperty(value="HIS中处方ID")
-        private String id;
+        private String hisId;
+
+        @ApiModelProperty(value="云平台处方ID")
+        private Long id;
 
         @ApiModelProperty(value = "基础信息")
         private BaseInfo baseInfo;
@@ -136,7 +142,6 @@ public class BuPrescriptionRO {
         @ApiModelProperty(value="注意事项")
         private String attention;
 
-        @NotEmpty
         @ApiModelProperty(value="子项列表")
         private List<BuPrescriptionItemShiyi> itemList;
 
@@ -144,6 +149,10 @@ public class BuPrescriptionRO {
         @ApiModel
         @Validated
         public static class DiagnoseInfo{
+
+            @ApiModelProperty("诊断主键id")
+            private Long id;
+
             @ApiModelProperty("客户名称")
             private String customerName;
 
@@ -279,6 +288,10 @@ public class BuPrescriptionRO {
     @ApiModel
     @Validated
     public static class BuPrescriptionItemShiyi {
+
+        @ApiModelProperty("主键id")
+        private Long id;
+
         @NotBlank
         @ApiModelProperty(value="编码")
         private String code;

@@ -121,9 +121,12 @@ public class BuPrescriptionRO {
     @ApiModel
     @Validated
     public static class AddPrescriptionShiyi {
-        @NotBlank
-        @ApiModelProperty(value="HIS中处方ID")
+
+        @ApiModelProperty(value="云平台中处方ID")
         private String id;
+
+        @ApiModelProperty(value="HIS中处方ID")
+        private String hisId;
 
         @ApiModelProperty(value="注意事项")
         private String attention;
@@ -134,7 +137,6 @@ public class BuPrescriptionRO {
         @ApiModelProperty(value = "诊断相关信息")
         private DiagnoseInfo diagnoseInfo;
 
-        @NotEmpty
         @ApiModelProperty(value="子项列表")
         private List<BuPrescriptionItemShiyi> itemList;
 
@@ -159,6 +161,10 @@ public class BuPrescriptionRO {
         @ApiModel
         @Validated
         public static class DiagnoseInfo{
+
+            @ApiModelProperty("诊断主键id")
+            private Long id;
+
             @ApiModelProperty("客户名称")
             private String customerName;
 
@@ -171,8 +177,8 @@ public class BuPrescriptionRO {
             @ApiModelProperty(value = "云平台疾病名称")
             private String disease;
 
-            @ApiModelProperty("分型id")
-            private Long syndromeId;
+            @ApiModelProperty("分型id,多个使用‘，’分割")
+            private String syndromeIds;
 
             @ApiModelProperty("分型名称")
             private String syndrome;
@@ -278,6 +284,9 @@ public class BuPrescriptionRO {
     @ApiModel
     @Validated
     public static class BuPrescriptionItemShiyi {
+        @ApiModelProperty("主键id")
+        private Long id;
+
         @NotBlank
         @ApiModelProperty(value="编码")
         private String code;

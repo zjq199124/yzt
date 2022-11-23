@@ -111,38 +111,21 @@ public class BuPrescriptionController {
         Assert.notNull(ro.getBaseInfo(), "基础信息不能为空!");
         BuPrescriptionRO.AddPrescriptionShiyi.BaseInfo baseInfo = ro.getBaseInfo();
 
-       /* baseInfo.setPatientId(baseInfo.getOutpatientId());  // 使用outpatientId作为患者ID（HIS就这么给的，每次挂号都会新增患者）
+     /*   baseInfo.setPatientId(baseInfo.getOutpatientId());  // 使用outpatientId作为患者ID（HIS就这么给的，每次挂号都会新增患者）
         processDoctor(baseInfo.getDoctorId().toString());
         processPatient(baseInfo.getPatientId().toString());
         processOutpatient(baseInfo.getOutpatientId().toString());*/
 
-        ro.getDiagnoseInfo().setCustomerName(customerName);
-
-        yptClient.addDiagnose(ro.getDiagnoseInfo());
+        if (Objects.nonNull(ro.getBaseInfo())) {
+            ro.getDiagnoseInfo().setCustomerName(customerName);
+            yptClient.addDiagnose(ro);
+        }
 
         if(CollectionUtils.isEmpty(ro.getItemList()))
             return Result.success();
 
-        List<Future<Integer>> futures = new ArrayList<>();
-        ro.getItemList().forEach(item -> {
-            Future<Integer> submit = threadPool.submit(new Callable<Integer>() {
-                @Override
-                public Integer call() throws Exception {
-                    Result<Integer> result = yptClient.addPrescriptionShiyi(ro);
-                    return result.getData();
-                }
-            });
-            futures.add(submit);
-        });
-
-        futures.forEach(future ->{
-            try {
-                future.get();
-            } catch (Exception e) {
-                log.error("适宜技术保存失败：" + e.getStackTrace());
-            }
-        });
-        return Result.success();
+        Result<Integer> result = yptClient.addPrescriptionShiyi(ro);
+        return Result.success(result.getData());
     }
 
     private void processDoctor(String doctorId) {

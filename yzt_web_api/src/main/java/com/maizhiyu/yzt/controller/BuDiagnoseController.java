@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.controller;
 
+import cn.hutool.core.lang.Assert;
 import com.maizhiyu.yzt.aro.BuPrescriptionRO;
 import com.maizhiyu.yzt.avo.BuDiagnoseVO;
 import com.maizhiyu.yzt.entity.BuDiagnose;
@@ -238,7 +239,7 @@ public class BuDiagnoseController {
 
     @ApiOperation(value = "保存诊断信息接口")
     @PostMapping(value = "/addDiagnoseInfo")
-    public Result addDiagnose(BuPrescriptionRO.AddPrescriptionShiyi ro) throws Exception {
+    public Result addDiagnose(@RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro) throws Exception {
        MsCustomer msCustomer = msCustomerService.getCustomerByName(ro.getDiagnoseInfo().getCustomerName());
         if(Objects.isNull(msCustomer))
             throw new Exception("不存在名称为：" + ro.getDiagnoseInfo().getCustomerName() + " 的客户!");
@@ -246,25 +247,37 @@ public class BuDiagnoseController {
         ro.getDiagnoseInfo().setCustomerId(msCustomer.getId());
 
         BuDiagnose buDiagnose = new BuDiagnose();
+        buDiagnose.setId(ro.getDiagnoseInfo().getId());
         buDiagnose.setDoctorId(ro.getBaseInfo().getDoctorId());
         buDiagnose.setPatientId(ro.getBaseInfo().getPatientId());
         buDiagnose.setOutpatientId(ro.getBaseInfo().getOutpatientId());
+        buDiagnose.setId(ro.getDiagnoseInfo().getId());
+        buDiagnose.setCustomerId(ro.getDiagnoseInfo().getCustomerId());
+        buDiagnose.setDepartmentId(ro.getDiagnoseInfo().getDepartmentId());
         buDiagnose.setDisease(ro.getDiagnoseInfo().getDisease());
         buDiagnose.setDiseaseId(ro.getDiagnoseInfo().getDiseaseId());
         buDiagnose.setSymptoms(ro.getDiagnoseInfo().getSymptoms());
         buDiagnose.setSymptomIds(ro.getDiagnoseInfo().getSymptomIds());
         buDiagnose.setSyndrome(ro.getDiagnoseInfo().getSyndrome());
         buDiagnose.setSyndromeId(ro.getDiagnoseInfo().getSyndromeId());
-        buDiagnose.setCustomerId(ro.getDiagnoseInfo().getCustomerId());
-        buDiagnose.setDepartmentId(ro.getDiagnoseInfo().getDepartmentId());
         buDiagnose.setStatus(1);
-        buDiagnose.setCreateTime(new Date());
         buDiagnose.setUpdateTime(new Date());
-        diagnoseService.setDiagnose(buDiagnose);
+        if (Objects.isNull(buDiagnose.getId())) {
+            buDiagnose.setCreateTime(new Date());
+        }
 
-        Integer integer = diagnoseService.addDiagnose(buDiagnose);
-
+        Integer integer = diagnoseService.saveOrUpdate(buDiagnose);
         return Result.success(integer);
+    }
+
+
+    @ApiOperation(value = "获取诊断详情")
+    @PostMapping(value = "/getDetail")
+    Result getDetail(@RequestBody BuDiagnoseRO.GetRecommendRO ro) throws Exception {
+        Assert.notNull(ro.getPatientId(), "his端患者id不能为空!");
+        Assert.notNull(ro.getOutpatientId(), "his端患者门诊预约id不能为空!");
+        Result result = diagnoseService.getDetails(ro);
+        return result;
     }
 }
 

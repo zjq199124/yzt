@@ -67,6 +67,7 @@ public class BuPrescriptionController {
         // 整理处方数据
         List<BuPrescriptionItem> itemList = new ArrayList<>();
         BuPrescription prescription = new BuPrescription();
+        prescription.setId(ro.getId());
         prescription.setType(2);
         prescription.setStatus(1);
         prescription.setCustomerId(customerId);
@@ -79,7 +80,7 @@ public class BuPrescriptionController {
         prescription.setDoseTimes(ro.getDoseTimes());
         prescription.setCreateTime(new Date());
         prescription.setUpdateTime(prescription.getCreateTime());
-        prescription.setHisId(ro.getId());
+        prescription.setHisId(ro.getHisId());
         prescription.setItemList(itemList);
         for (BuPrescriptionRO.BuPrescriptionItemZhongyao it : ro.getItemList()) {
             BuPrescriptionItem item = new BuPrescriptionItem();
@@ -96,7 +97,8 @@ public class BuPrescriptionController {
             itemList.add(item);
         }
         // 保存药材
-        Integer res = service.addPrescription(prescription);
+        //Integer res = service.addPrescription(prescription);
+        Integer res = service.saveOrUpdate(prescription);
         // 返回结果
         return Result.success(res);
     }
@@ -221,6 +223,7 @@ public class BuPrescriptionController {
         // 整理处方数据
         List<BuPrescriptionItem> itemList = new ArrayList<>();
         BuPrescription prescription = new BuPrescription();
+        prescription.setId(ro.getId());
         prescription.setType(5);
         prescription.setStatus(1);
         prescription.setCustomerId(customerId);
@@ -230,7 +233,7 @@ public class BuPrescriptionController {
         prescription.setAttention(ro.getAttention());
         prescription.setCreateTime(new Date());
         prescription.setUpdateTime(prescription.getCreateTime());
-        prescription.setHisId(ro.getId());
+        prescription.setHisId(ro.getHisId());
         prescription.setItemList(itemList);
         for (BuPrescriptionRO.BuPrescriptionItemShiyi it : ro.getItemList()) {
             BuPrescriptionItem item = new BuPrescriptionItem();
@@ -239,6 +242,7 @@ public class BuPrescriptionController {
             item.setDoctorId(hsUser.getId());
             item.setPatientId(buPatient.getId());
             item.setOutpatientId(buOutpatient.getId());
+            item.setId(it.getId());
             item.setName(it.getName());
             item.setDetail(it.getDetail());
             item.setOperation(it.getOperation());
@@ -263,9 +267,9 @@ public class BuPrescriptionController {
             itemList.add(item);
         }
         // 保存药材
-        Integer res = service.addPrescription(prescription);
+        Integer res = service.saveOrUpdate(prescription);
         // 返回结果
-        return Result.success(prescription.getId());
+        return Result.success(res);
     }
 
 }

@@ -9,7 +9,6 @@ import com.maizhiyu.yzt.bean.avo.DictSyndromeVo;
 import com.maizhiyu.yzt.entity.JzfyDiseaseMapping;
 import com.maizhiyu.yzt.feign.FeignYptClient;
 import com.maizhiyu.yzt.result.Result;
-import com.maizhiyu.yzt.service.IYptCommonService;
 import com.maizhiyu.yzt.service.JzfyDiseaseMappingService;
 import com.maizhiyu.yzt.service.JzfyMedicantMappingService;
 import com.maizhiyu.yzt.service.JzfyTreatmentMappingService;
@@ -62,9 +61,6 @@ public class BuDiagnoseController {
 
     @Resource
     private JzfyDiseaseMappingService jzfyDiseaseMappingService;
-
-    @Resource
-    private IYptCommonService yptCommonService;
 
     @Value("${customer.name}")
     private String customerName;
@@ -324,6 +320,11 @@ public class BuDiagnoseController {
             ro.setDiseaseId(jzfyDiseaseMapping.getDiseaseId());
         }
 
+        //先查询下这次挂号看病是否已经有保存诊断信息和治疗处方
+        Result result = yptClient.getDetail(ro);
+        if(Objects.nonNull(result.getData()))
+            return result;
+
         //2.没有syndromeIdList的情况下，判断是否有传症状集合symptomIdList，没有的话通过Feign远程调用云平台中获取疾病所有症状的接口
         if (CollectionUtils.isEmpty(ro.getSyndromeIdList()) && CollectionUtils.isEmpty(ro.getSymptomIdList())) {
             Result<List<DictSymptomVo>> dictSymptomResult = yptClient.selectDictSymptomList(ro.getDiseaseId());
@@ -339,7 +340,7 @@ public class BuDiagnoseController {
 
         //3.判断是否有传分型集合syndromeIdList，没有的话使用symptomIdList通过Feign远程调用云平台中获取疾病所有分型的接口
         if (CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
-            Result<List<DictSyndromeVo>> dictSyndromeResult = yptCommonService.selectDictSyndromeBySymptomIdList(ro.getSymptomIdList());
+            Result<List<DictSyndromeVo>> dictSyndromeResult = yptClient.selectDictSyndromeBySymptomIdList(ro.getSymptomIdList());
             List<DictSyndromeVo> dictSyndromeVoList = dictSyndromeResult.getData();
             //疾病分型数据集合
             resultMap.put("dictSyndromeList", dictSyndromeVoList);
@@ -350,8 +351,8 @@ public class BuDiagnoseController {
         }
 
         // 调用开放接口获取诊断推荐
-        Result<BuDiagnoseVO.GetRecommendVO> result = yptClient.getRecommend(ro);
-        resultMap.put("shiyiList", result.getData().getShiyiList());
+        Result<BuDiagnoseVO.GetRecommendVO> recommendResult = yptClient.getRecommend(ro);
+        resultMap.put("shiyiList", recommendResult.getData().getShiyiList());
 
         return Result.success(resultMap);
     }

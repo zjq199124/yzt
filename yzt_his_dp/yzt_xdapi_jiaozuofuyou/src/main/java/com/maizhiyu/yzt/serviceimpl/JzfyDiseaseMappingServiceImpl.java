@@ -30,6 +30,7 @@ public class JzfyDiseaseMappingServiceImpl extends ServiceImpl<JzfyDiseaseMappin
         LambdaQueryWrapper<JzfyDiseaseMapping> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(JzfyDiseaseMapping::getHisName, hisDiseaseName)
                 .eq(JzfyDiseaseMapping::getIsDel, 0)
+                .orderByDesc(JzfyDiseaseMapping::getUpdateTime)
                 .last("limit 1");
         JzfyDiseaseMapping jzfyDiseaseMapping = jzfyDiseaseMappingMapper.selectOne(queryWrapper);
         return jzfyDiseaseMapping;

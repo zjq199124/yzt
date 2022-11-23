@@ -71,6 +71,9 @@ public class BuPrescription implements Serializable {
 //    @ApiModelProperty(value="汇总价格")
 //    private BigDecimal price;
 
+    @ApiModelProperty("是否删除；1是；0否")
+    private Integer isDel;
+
     @ApiModelProperty(value="更新时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="Asia/Shanghai")
     private Date updateTime;

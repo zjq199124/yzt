@@ -65,7 +65,10 @@ public interface FeignYptClient {
     Result<List<RelSyndromeSymptomVo>> selectDictSymptomBySyndromeIdList(@RequestBody List<Long> syndromeIds);
 
     @PostMapping(value = "/diagnose/addDiagnoseInfo")
-    void addDiagnose(BuPrescriptionRO.AddPrescriptionShiyi.DiagnoseInfo diagnoseInfo);
+    Result addDiagnose(@RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro);
+
+    @PostMapping(value = "/diagnose/getDetail")
+    Result getDetail(@RequestBody BuDiagnoseRO.GetRecommendRO ro);
 }
 
 

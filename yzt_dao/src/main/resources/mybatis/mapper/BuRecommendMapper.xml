@@ -216,7 +216,7 @@
         AND dd.STATUS = 1
         LEFT JOIN ts_sytech ts ON ts.id = ss.sytech_id
         <if test="customerName != null and customerName != ''">
-            LEFT JOIN ms_customer mc ON ss.customer_id = mc.id AND mc.status = 1 AND  mc.name = #{customerName}
+            LEFT JOIN ms_customer mc ON ss.customer_id = mc.id AND mc.status = 1 AND  mc.username = #{customerName}
         </if>
         WHERE
         ss.disease_id = #{diseaseId}

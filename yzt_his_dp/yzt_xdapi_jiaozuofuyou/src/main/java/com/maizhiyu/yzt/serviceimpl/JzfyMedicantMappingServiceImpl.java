@@ -31,6 +31,7 @@ public class JzfyMedicantMappingServiceImpl extends ServiceImpl<JzfyMedicantMapp
         LambdaQueryWrapper<JzfyMedicantMapping> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(JzfyMedicantMapping::getCode, code)
                 .eq(JzfyMedicantMapping::getIsDel, 0)
+                .orderByDesc(JzfyMedicantMapping::getUpdateTime)
                 .last("limit 1");
         JzfyMedicantMapping jzfyMedicantMapping = jzfyMedicantMappingMapper.selectOne(queryWrapper);
         return jzfyMedicantMapping;
@@ -41,6 +42,7 @@ public class JzfyMedicantMappingServiceImpl extends ServiceImpl<JzfyMedicantMapp
         LambdaQueryWrapper<JzfyMedicantMapping> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(JzfyMedicantMapping::getName, name)
                 .eq(JzfyMedicantMapping::getIsDel, 0)
+                .orderByDesc(JzfyMedicantMapping::getUpdateTime)
                 .last("limit 1");
         JzfyMedicantMapping jzfyMedicantMapping = jzfyMedicantMappingMapper.selectOne(queryWrapper);
         return jzfyMedicantMapping;

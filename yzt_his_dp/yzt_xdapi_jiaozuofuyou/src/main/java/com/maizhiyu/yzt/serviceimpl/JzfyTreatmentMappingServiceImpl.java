@@ -30,6 +30,7 @@ public class JzfyTreatmentMappingServiceImpl extends ServiceImpl<JzfyTreatmentMa
         LambdaQueryWrapper<JzfyTreatmentMapping> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(JzfyTreatmentMapping::getCode, code)
                 .eq(JzfyTreatmentMapping::getIsDel, 0)
+                .orderByDesc(JzfyTreatmentMapping::getUpdateTime)
                 .last("limit 1");
         JzfyTreatmentMapping jzfyTreatmentMapping = jzfyTreatmentMappingMapper.selectOne(queryWrapper);
         return jzfyTreatmentMapping;
@@ -40,6 +41,7 @@ public class JzfyTreatmentMappingServiceImpl extends ServiceImpl<JzfyTreatmentMa
         LambdaQueryWrapper<JzfyTreatmentMapping> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(JzfyTreatmentMapping::getName, name)
                 .eq(JzfyTreatmentMapping::getIsDel, 0)
+                .orderByDesc(JzfyTreatmentMapping::getUpdateTime)
                 .last("limit 1");
         JzfyTreatmentMapping jzfyTreatmentMapping = jzfyTreatmentMappingMapper.selectOne(queryWrapper);
         return jzfyTreatmentMapping;
@@ -50,6 +52,7 @@ public class JzfyTreatmentMappingServiceImpl extends ServiceImpl<JzfyTreatmentMa
         LambdaQueryWrapper<JzfyTreatmentMapping> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(JzfyTreatmentMapping::getHisCode, hisCode)
                 .eq(JzfyTreatmentMapping::getIsDel, 0)
+                .orderByDesc(JzfyTreatmentMapping::getUpdateTime)
                 .last("limit 1");
         JzfyTreatmentMapping jzfyTreatmentMapping = jzfyTreatmentMappingMapper.selectOne(queryWrapper);
         return jzfyTreatmentMapping;
@@ -60,6 +63,7 @@ public class JzfyTreatmentMappingServiceImpl extends ServiceImpl<JzfyTreatmentMa
         LambdaQueryWrapper<JzfyTreatmentMapping> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(JzfyTreatmentMapping::getHisName, hisName)
                 .eq(JzfyTreatmentMapping::getIsDel, 0)
+                .orderByDesc(JzfyTreatmentMapping::getUpdateTime)
                 .last("limit 1");
         JzfyTreatmentMapping jzfyTreatmentMapping = jzfyTreatmentMappingMapper.selectOne(queryWrapper);
         return jzfyTreatmentMapping;
