@@ -225,7 +225,7 @@ public class BuDiagnoseService implements IBuDiagnoseService {
 
         //3.1:查询这个疾病下的所有的分型列表
         List<Long> syndromeIdList = Collections.emptyList();//保存最终用来查询推荐方案所有用的分型数据
-        List<DictSyndromeVo> dictSyndromeVoList = Collections.emptyList();
+        List<DictSyndromeVo> dictSyndromeVoList = Collections.emptyList();//保存所有的分型
 
         List<DictSyndrome> dictSyndromeList = dictSyndromeMapper.selectByDiseaseId(ro.getDiseaseId());
         if (CollectionUtils.isEmpty(dictSyndromeList)) {
@@ -251,9 +251,9 @@ public class BuDiagnoseService implements IBuDiagnoseService {
                 if (!CollectionUtils.isEmpty(symptomIdList)) {
                     List<DictSyndromeVo> checkDictSyndromeVoList = dictSyndromeService.selectDictSyndromeBySymptomIdList(symptomIdList);
                     if (!CollectionUtils.isEmpty(checkDictSyndromeVoList)) {
-                        List<Long> dictSyndromeVoIdList = checkDictSyndromeVoList.stream().map(DictSyndromeVo::getId).collect(Collectors.toList());
+                        List<Long> checkDictSyndromeVoIdList = checkDictSyndromeVoList.stream().map(DictSyndromeVo::getId).collect(Collectors.toList());
                         dictSyndromeVoList.forEach(item -> {
-                            if (dictSyndromeVoIdList.contains(buDiagnose.getSyndromeId())) {
+                            if (checkDictSyndromeVoIdList.contains(item.getId())) {
                                 item.setIsShow(1);
                             }
                         });
