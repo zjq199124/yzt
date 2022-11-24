@@ -204,10 +204,16 @@
     <select id="getRecommendSytech" resultType="java.util.Map">
 
         SELECT
-        ss.*,
+        ss.customer_id,
+        ss.detail,
+        ss.disease_id,
+        ss.operation,
+        ss.recommend,
+        ss.syndrome_id,
+        ss.sytech_id,
         ds.NAME AS syndrome_name,
         dd.content AS disease_name,
-        ts.name sytech_name
+        ts.name name
         FROM
         sch_sytech ss
         INNER JOIN dict_syndrome ds ON ss.syndrome_id = ds.id

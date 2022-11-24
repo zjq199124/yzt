@@ -254,7 +254,7 @@ public class BuDiagnoseService implements IBuDiagnoseService {
                         List<Long> dictSyndromeVoIdList = checkDictSyndromeVoList.stream().map(DictSyndromeVo::getId).collect(Collectors.toList());
                         dictSyndromeVoList.forEach(item -> {
                             if (dictSyndromeVoIdList.contains(buDiagnose.getSyndromeId())) {
-                                item.setIsCheck(1);
+                                item.setIsShow(1);
                             }
                         });
                     }
@@ -313,7 +313,7 @@ public class BuDiagnoseService implements IBuDiagnoseService {
     }
 
     private List<Long> getSymptomIdList(BuDiagnose buDiagnose) {
-        if (StringUtils.isNotBlank(buDiagnose.getSymptomIds()))
+        if (StringUtils.isBlank(buDiagnose.getSymptomIds()))
             return Collections.emptyList();
 
         return Splitter.on(',').trimResults().splitToList(buDiagnose.getSymptomIds()).stream().map(str -> Long.valueOf(str)).collect(Collectors.toList());

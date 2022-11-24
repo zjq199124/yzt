@@ -14,17 +14,18 @@ import java.util.Date;
 
 @Data
 @Accessors(chain=true)
-@TableName("ypt_Staff")
+//TableName("ypt_Staff")
+@TableName("his_doctor")
 @ApiModel(description="HIS医生表")
 public class HisDoctor implements Serializable {
     @TableId
-    @ApiModelProperty(value="医生账号")
+    @ApiModelProperty(value="his端医生账号(hisDoctorId)")
     private String username;
 
-    @ApiModelProperty(value="医生昵称")
+    @ApiModelProperty(value="his端医生昵称")
     private String nickname;
 
-    @ApiModelProperty(value="医生姓名")
+    @ApiModelProperty(value="his端医生姓名")
     private String realname;
 
 //    @ApiModelProperty(value="医生性别")

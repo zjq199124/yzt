@@ -69,6 +69,9 @@ public interface FeignYptClient {
 
     @PostMapping(value = "/diagnose/getDetail")
     Result getDetail(@RequestBody BuDiagnoseRO.GetRecommendRO ro);
+
+    @GetMapping(value = "/diagnose/getDiagnoseOfOutpatient")
+    Result getDiagnoseOfOutpatient(Long outpatientId);
 }
 
 
