@@ -16,35 +16,35 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-@Accessors(chain=true)
+@Accessors(chain = true)
 @TableName("bu_check")
-@ApiModel(description="检查报告表")
+@ApiModel(description = "检查报告表")
 public class BuCheck implements Serializable {
 
-    @ApiModelProperty(value="检查ID")
+    @ApiModelProperty(value = "检查ID")
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty(value="门诊ID")
+    @ApiModelProperty(value = "门诊ID")
     private Long outpatientId;
 
-    @ApiModelProperty(value="检查类型")
+    @ApiModelProperty(value = "检查类型")
     private Integer type;
 
-    @ApiModelProperty(value="报告名称")
-    private String fname;
+    @ApiModelProperty(value = "多媒体数据id")
+    private Long multimediaId;
 
-    @ApiModelProperty(value="创建时间")
+    @ApiModelProperty(value = "创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
     private Date createTime;
 
-    @TableField(exist = false)
-    @ApiModelProperty(value="报告路径")
-    private String url;
+//    @TableField(exist = false)
+//    @ApiModelProperty(value = "报告路径")
+//    private String url;
 
     @TableField(exist = false)
-    @ApiModelProperty(value = "患者姓名")
-    private String patientName;
+    @ApiModelProperty(value = "患者身份证号")
+    private String patientIdCard;
 
     @TableField(exist = false)
     @ApiModelProperty(value = "患者手机")

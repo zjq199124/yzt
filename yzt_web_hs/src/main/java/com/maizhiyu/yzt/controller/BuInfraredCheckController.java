@@ -38,10 +38,11 @@ public class BuInfraredCheckController {
     @ApiOperation(value = "获取红外检测数据内容", notes = "获取红外检测数据内容")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "part", value = "检测部位", required = true, dataTypeClass = String.class),
-            @ApiImplicitParam(name = "date", value = "查询日期", required = true, dataTypeClass = String.class),
+            @ApiImplicitParam(name = "firstDate", value = "第一个查询日期", required = true, dataTypeClass = String.class),
+            @ApiImplicitParam(name = "secondDate", value = "第二个查询日期", required = true, dataTypeClass = String.class),
     })
     @GetMapping("/getInfrareDateCheck")
-    public Result<InfraredCheckVO> getInfrareDateCheck(String part, String date) {
-        return Result.success(txInfraredDataService.getInfrareDateCheck(part, date));
+    public Result<InfraredCheckVO> getInfrareDateCheck(String part, String firstDate,String secondDate) {
+        return Result.success(txInfraredDataService.getInfrareDateCheck(part, firstDate,secondDate));
     }
 }

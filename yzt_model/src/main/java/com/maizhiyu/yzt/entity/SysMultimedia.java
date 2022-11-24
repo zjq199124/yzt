@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
@@ -93,6 +94,10 @@ public class SysMultimedia {
      */
     @ApiModelProperty(value = "更改人的id")
     private Long updateId;
+
+    @ApiModelProperty(value = "访问路径")
+    @TableField(exist = false)
+    private String url;
 
 }
 
