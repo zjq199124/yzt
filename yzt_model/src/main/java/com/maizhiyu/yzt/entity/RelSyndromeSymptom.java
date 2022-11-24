@@ -2,13 +2,19 @@ package com.maizhiyu.yzt.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 
 @Data
+@Accessors(chain = true)
+@TableName("rel_syndrome_symptom")
+@ApiModel(description = "辩证分型中间表")
 public class RelSyndromeSymptom extends Model<RelSyndromeSymptom> {
 
     private static final long serialVersionUID = 1L;

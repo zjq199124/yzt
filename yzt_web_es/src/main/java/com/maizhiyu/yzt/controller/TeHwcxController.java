@@ -2,15 +2,19 @@ package com.maizhiyu.yzt.controller;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Assert;
+import com.maizhiyu.yzt.entity.BuCheck;
 import com.maizhiyu.yzt.entity.SysMultimedia;
 import com.maizhiyu.yzt.entity.TxInfraredData;
 import com.maizhiyu.yzt.entity.TxInfraredDetails;
+import com.maizhiyu.yzt.enums.CheckTypeEnum;
 import com.maizhiyu.yzt.enums.OSSCatalogEnum;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.SysMultimediaService;
 import com.maizhiyu.yzt.service.TxInfraredDataService;
 import com.maizhiyu.yzt.service.TxInfraredDetailsService;
 import com.maizhiyu.yzt.service.TxInfraredImageService;
+import com.maizhiyu.yzt.serviceimpl.BuCheckService;
+import com.maizhiyu.yzt.serviceimpl.BuOutpatientService;
 import com.maizhiyu.yzt.utils.infrared.InfraredPdfAnalysis;
 import com.maizhiyu.yzt.utils.infrared.InfraredResult;
 import io.swagger.annotations.Api;
@@ -54,6 +58,12 @@ public class TeHwcxController {
 
     @Resource
     TxInfraredImageService txInfraredImageService;
+
+    @Resource
+    BuCheckService buCheckService;
+
+    @Resource
+    BuOutpatientService buOutpatientService;
 
     @ApiOperation(value = "检测文件接收上传", notes = "检测文件接收上传")
     @ApiImplicitParams({})
@@ -122,6 +132,15 @@ public class TeHwcxController {
                 txInfraredImageService.saveTxInfraredImage(file, e.get("type").toString(),
                         OSSCatalogEnum.INFRARED_IMG.getRemark(), txInfraredData.getId());
             });
+
+            //保存患者检查数据
+            BuCheck buCheck=new BuCheck();
+            buCheck.setPatientIdCard(infraredResult.getIDCard());
+            buCheck.setType(CheckTypeEnum.INFRARED.getCode());
+            buCheck.setMultimediaId(txInfraredData.getMultimediaId());
+            buCheck.setCreateTime(txInfraredData.getTestDate());
+            buCheckService.addCheck(buCheck);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

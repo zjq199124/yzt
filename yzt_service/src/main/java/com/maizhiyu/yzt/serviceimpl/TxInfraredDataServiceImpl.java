@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.maizhiyu.yzt.entity.BuCheck;
 import com.maizhiyu.yzt.entity.SysMultimedia;
 import com.maizhiyu.yzt.entity.TxInfraredData;
 import com.maizhiyu.yzt.entity.TxInfraredImage;
@@ -20,10 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,6 +40,8 @@ public class TxInfraredDataServiceImpl extends ServiceImpl<TxInfraredDataMapper,
     @Resource
     TxInfraredImageService txInfraredImageService;
 
+
+
     @Override
     public TxInfraredData saveTxInfrareData(TxInfraredData txInfraredData, InputStream inputStream, String fileName) {
         SysMultimedia sysMultimedia = sysMultimediaService.saveMultimedia(inputStream, fileName, OSSCatalogEnum.INFRARED.getPath(), true, OSSCatalogEnum.INFRARED.getRemark());
@@ -53,15 +53,15 @@ public class TxInfraredDataServiceImpl extends ServiceImpl<TxInfraredDataMapper,
     @Override
     public Map<String, Object> getCheckAndDate(String mobile, String idCard) {
         LambdaQueryWrapper<TxInfraredData> wrapper = Wrappers.lambdaQuery();
-        if (!idCard.isEmpty()) {
+        if (!StrUtil.isEmptyIfStr(idCard)) {
             wrapper.eq(TxInfraredData::getIdCard, idCard);
         }
         if (!StrUtil.isEmptyIfStr(mobile)) {
-            wrapper.eq(TxInfraredData::getIdCard, idCard);
+            wrapper.eq(TxInfraredData::getPhone, mobile);
         }
         List<TxInfraredData> txInfraredDataList = list(wrapper);
         HashMap<String, Object> result = new HashMap<>();
-        List<String> dateList = txInfraredDataList.stream().map(item -> (DateUtil.format(item.getTestDate(), "yyyy-MM-dd"))).collect(Collectors.toList());
+        List<String> dateList = txInfraredDataList.stream().map(item -> (DateUtil.format(item.getTestDate(), "yyyy-MM-dd HH:mm:ss"))).collect(Collectors.toList());
         List<String> typeList = Arrays.stream(InfraredImageEnum.values()).map(item -> (item.getName())).collect(Collectors.toList());
         result.put("dateList", dateList);
         result.put("typeList", typeList);
@@ -69,23 +69,29 @@ public class TxInfraredDataServiceImpl extends ServiceImpl<TxInfraredDataMapper,
     }
 
     @Override
-    public InfraredCheckVO getInfrareDateCheck(String part, String date) {
+    public List<InfraredCheckVO> getInfrareDateCheck(String part, String firstDate, String secondDate) {
         //查询红外检测数据
         LambdaQueryWrapper<TxInfraredData> wrapper = Wrappers.lambdaQuery();
-        wrapper.like(TxInfraredData::getTestDate, date);
-        TxInfraredData txInfraredData = getOne(wrapper);
+        wrapper.like(TxInfraredData::getTestDate, firstDate);
+        wrapper.or(w->w.like(TxInfraredData::getTestDate, secondDate));
+        List<TxInfraredData> txInfraredDataList = list(wrapper);
         //查询部位图片
-        LambdaQueryWrapper<TxInfraredImage> wrapper1 = Wrappers.lambdaQuery();
-        wrapper1.like(TxInfraredImage::getLeibie, part);
-        wrapper1.eq(TxInfraredImage::getInfraredDataId, txInfraredData.getId());
-        TxInfraredImage txInfraredImage = txInfraredImageService.getOne(wrapper1);
-        String imageUlr = sysMultimediaService.getFileUrlByid(txInfraredImage.getMultimediaId());
-        InfraredCheckVO infraredCheckVO = new InfraredCheckVO();
-        infraredCheckVO.setBianhanre(txInfraredData.getBianhanre());
-        infraredCheckVO.setDuichenxing(txInfraredData.getDuichenxing());
-        infraredCheckVO.setGuilvxing(txInfraredData.getGuilvxing());
-        infraredCheckVO.setImageUrl(imageUlr);
-        return infraredCheckVO;
+        List<InfraredCheckVO> result = new ArrayList<>();
+        for (TxInfraredData txInfraredData : txInfraredDataList) {
+            LambdaQueryWrapper<TxInfraredImage> wrapper1 = Wrappers.lambdaQuery();
+            wrapper1.eq(TxInfraredImage::getLeibie, part);
+            wrapper1.eq(TxInfraredImage::getInfraredDataId, txInfraredData.getId());
+            TxInfraredImage txInfraredImage = txInfraredImageService.getOne(wrapper1);
+            String imageUlr = sysMultimediaService.getFileUrlByid(txInfraredImage.getMultimediaId());
+            InfraredCheckVO infraredCheckVO = new InfraredCheckVO();
+            infraredCheckVO.setBianhanre(txInfraredData.getBianhanre());
+            infraredCheckVO.setDuichenxing(txInfraredData.getDuichenxing());
+            infraredCheckVO.setGuilvxing(txInfraredData.getGuilvxing());
+            infraredCheckVO.setImageUrl(imageUlr);
+            infraredCheckVO.setCreateDate(DateUtil.format(txInfraredData.getTestDate(), "yyyy-MM-dd HH:mm:ss"));
+            result.add(infraredCheckVO);
+        }
+        return result;
     }
 }
 

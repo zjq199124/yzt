@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.maizhiyu.yzt.mapper.BuOutpatientMapper">
-<!--    YEAR(NOW())-YEAR(D.birthday)  D.birthday patient_birthday,-->
+    <!--    YEAR(NOW())-YEAR(D.birthday)  D.birthday patient_birthday,-->
     <select id="selectOutpatientList" resultType="hashmap">
         select
-            X.id, X.code, X.status, X.type,
-            DATE_FORMAT(X.time, '%Y-%m-%d %T') time,
-            DATE_FORMAT(X.update_time, '%Y-%m-%d %T') update_time,
-            DATE_FORMAT(X.create_time, '%Y-%m-%d %T') create_time,
-            A.id customer_id, A.name customer_name,
-            B.id department_id, B.dname department_name,
-            C.id doctor_id, C.realname doctor_name,
-            D.id patient_id, D.name patient_name, D.sex patient_sex, D.phone patient_phone,  nl age
+        X.id, X.code, X.status, X.type,
+        DATE_FORMAT(X.time, '%Y-%m-%d %T') time,
+        DATE_FORMAT(X.update_time, '%Y-%m-%d %T') update_time,
+        DATE_FORMAT(X.create_time, '%Y-%m-%d %T') create_time,
+        A.id customer_id, A.name customer_name,
+        B.id department_id, B.dname department_name,
+        C.id doctor_id, C.realname doctor_name,
+        D.id patient_id, D.name patient_name, D.sex patient_sex, D.phone patient_phone, nl age
         from
-            bu_outpatient X
-            left join ms_customer A on A.id = X.customer_id
-            left join hs_department B on B.id = X.department_id
-            left join hs_user C on C.id = X.doctor_id
-            left join bu_patient D on D.id = X.patient_id
+        bu_outpatient X
+        left join ms_customer A on A.id = X.customer_id
+        left join hs_department B on B.id = X.department_id
+        left join hs_user C on C.id = X.doctor_id
+        left join bu_patient D on D.id = X.patient_id
         <where>
             <if test="createStartDate != null">
                 and X.create_time >= #{createStartDate}
@@ -60,20 +60,20 @@
 
     <select id="selectPsUserOutpatientList" resultType="hashmap">
         select
-            X.id, X.code, X.status, X.type,
-            DATE_FORMAT(X.update_time, '%Y-%m-%d %T') time,
-            DATE_FORMAT(X.update_time, '%Y-%m-%d %T') update_time,
-            DATE_FORMAT(X.create_time, '%Y-%m-%d %T') create_time,
-            B.id department_id, B.dname department_name,
-            C.id doctor_id, C.realname doctor_name,
-            D.id patient_id, D.name patient_name,
-            Y.user_id
+        X.id, X.code, X.status, X.type,
+        DATE_FORMAT(X.update_time, '%Y-%m-%d %T') time,
+        DATE_FORMAT(X.update_time, '%Y-%m-%d %T') update_time,
+        DATE_FORMAT(X.create_time, '%Y-%m-%d %T') create_time,
+        B.id department_id, B.dname department_name,
+        C.id doctor_id, C.realname doctor_name,
+        D.id patient_id, D.name patient_name,
+        Y.user_id
         from
-            bu_outpatient X
-            join ps_user_patient Y on X.patient_id = Y.patient_id
-            left join hs_department B on B.id = X.department_id
-            left join hs_user C on C.id = X.doctor_id
-            left join bu_patient D on D.id = X.patient_id
+        bu_outpatient X
+        join ps_user_patient Y on X.patient_id = Y.patient_id
+        left join hs_department B on B.id = X.department_id
+        left join hs_user C on C.id = X.doctor_id
+        left join bu_patient D on D.id = X.patient_id
         <where>
             <if test="userId != null">
                 and Y.user_id = #{userId}
@@ -92,17 +92,22 @@
 
     <select id="selectOutpatientByPatientInfo" resultType="hashmap">
         select
-            *
+        *
         from
-            bu_outpatient X
-            join bu_patient P on P.id = X.patient_id
+        bu_outpatient X
+        join bu_patient P on P.id = X.patient_id
         <where>
-            <if test="name != null">
-                and P.name = #{name}
-            </if>
-            <if test="phone != null">
-                and P.phone = #{phone}
-            </if>
+            <choose>
+                <when test="idCard != null and idCard != ''">
+                    and P.idcard = #{idCard}
+                </when>
+                <otherwise>
+                    <if test="phone != null">
+                        and P.phone = #{phone}
+                    </if>
+                </otherwise>
+            </choose>
+
             <if test="timeStart != null">
                 and X.time &gt; #{timeStart}
             </if>

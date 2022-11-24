@@ -91,6 +91,21 @@ public class SysMultimediaServiceImpl extends ServiceImpl<SysMultimediaMapper, S
         return null;
     }
 
+    @Override
+    public SysMultimedia getMultimedia(Serializable id) {
+        SysMultimedia sysMultimedia = getById(id);
+        String url=null;
+        if (sysMultimedia != null) {
+            if (sysMultimedia.getServicePath().equals(FileSaveTypeEnum.ALI_PUBLIC.getCode())) {
+                 url=aliOssUtil.getPublicUrl(sysMultimedia.getFilePath());
+            } else {
+                 url=aliOssUtil.generatePresignedUrl(sysMultimedia.getFilePath());
+            }
+        }
+        sysMultimedia.setUrl(url);
+        return sysMultimedia;
+    }
+
 
 }
 
