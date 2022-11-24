@@ -28,10 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -353,6 +350,9 @@ public class BuDiagnoseController {
         // 调用开放接口获取诊断推荐
         Result<BuDiagnoseVO.GetRecommendVO> recommendResult = yptClient.getRecommend(ro);
         resultMap.put("shiyiList", recommendResult.getData().getShiyiList());
+        resultMap.put("yptDiagnoseId", null);
+        resultMap.put("yptPrescriptionId", null);
+        resultMap.put("prescriptionItemList", Collections.emptyList());
 
         return Result.success(resultMap);
     }
