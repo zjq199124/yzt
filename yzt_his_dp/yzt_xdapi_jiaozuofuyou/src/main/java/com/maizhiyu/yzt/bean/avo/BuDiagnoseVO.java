@@ -87,6 +87,9 @@ public class BuDiagnoseVO {
         @ApiModelProperty(value="适用症状")
         private String symptoms;
 
+        @ApiModelProperty(value="适用分型名称")
+        private String syndromeName;
+
         @ApiModelProperty(value="详情")
         private String detail;
 

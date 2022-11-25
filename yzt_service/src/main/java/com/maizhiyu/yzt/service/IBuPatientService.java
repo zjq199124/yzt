@@ -19,7 +19,7 @@ public interface IBuPatientService {
 
     BuPatient getPatient(String name, String phone, String idcard);
 
-    BuPatient getPatientByHisId(Long customerId, Long hidId);
+    BuPatient getPatientByHisId(Long customerId, Long hisId);
 
     List<BuPatient> getPatientList(Long customerId, String term);
 

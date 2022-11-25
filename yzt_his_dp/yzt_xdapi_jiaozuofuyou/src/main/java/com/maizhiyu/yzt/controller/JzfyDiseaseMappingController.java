@@ -6,6 +6,7 @@ import com.maizhiyu.yzt.service.JzfyDiseaseMappingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.cloud.openfeign.support.FallbackCommand;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,7 +35,8 @@ public class JzfyDiseaseMappingController {
     @GetMapping("/jzfy")
     public Result<Long> selectDiseaseMappingByHisDiseaseName(String hisDiseaseName) {
         JzfyDiseaseMapping jzfyDiseaseMapping = jzfyDiseaseMappingService.selectByHisName(hisDiseaseName);
-        return Result.success(jzfyDiseaseMapping);
+        boolean result = Objects.nonNull(jzfyDiseaseMapping) ? true : false;
+        return Result.success(result);
     }
 
 }

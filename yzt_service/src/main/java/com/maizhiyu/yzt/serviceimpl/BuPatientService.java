@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -85,10 +86,14 @@ public class BuPatientService implements IBuPatientService {
     }
 
     @Override
-    public BuPatient getPatientByHisId(Long customerId, Long hidId) {
+    public BuPatient getPatientByHisId(Long customerId, Long hisId) {
         QueryWrapper<BuPatient> wrapper = new QueryWrapper<>();
-        wrapper.eq("customer_id", customerId)
-                .eq("his_id", hidId);
+        if (Objects.nonNull(customerId)) {
+            wrapper.eq("customer_id", customerId);
+        }
+        wrapper.eq("his_id", hisId)
+                .orderByDesc("update_time")
+                .last("limit 1");
         return patientMapper.selectOne(wrapper);
     }
 

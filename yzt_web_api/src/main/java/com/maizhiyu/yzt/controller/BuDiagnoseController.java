@@ -210,8 +210,9 @@ public class BuDiagnoseController {
             for (Map<String, Object> map : shiyiList) {
                 BuDiagnoseVO.ShiyiVO vo = new BuDiagnoseVO.ShiyiVO();
                 vo.setSytechId(Objects.isNull(map.get("sytech_id")) ? null : Long.valueOf(map.get("sytech_id").toString()));
-                vo.setName(((String) map.getOrDefault("sytech_name", "")));
+                vo.setName(((String) map.getOrDefault("name", "")));
                 vo.setSymptoms(((String) map.getOrDefault("symptoms", "")));
+                vo.setSyndromeName(((String) map.getOrDefault("syndrome_name", "")));
                 vo.setDetail(((String) map.getOrDefault("detail", "")));
                 vo.setOperation(((String) map.getOrDefault("operation", "")));
                 vo.setCustomerId(Objects.isNull(map.get("customer_id")) ? null : Long.valueOf(map.get("customer_id").toString()));
@@ -249,6 +250,7 @@ public class BuDiagnoseController {
         buDiagnose.setDepartmentId(ro.getDiagnoseInfo().getDepartmentId());
         buDiagnose.setDisease(ro.getDiagnoseInfo().getDisease());
         buDiagnose.setDiseaseId(ro.getDiagnoseInfo().getDiseaseId());
+        buDiagnose.setDisease(ro.getDiagnoseInfo().getDisease());
         buDiagnose.setSymptoms(ro.getDiagnoseInfo().getSymptoms());
         buDiagnose.setSymptomIds(ro.getDiagnoseInfo().getSymptomIds());
         buDiagnose.setSyndrome(ro.getDiagnoseInfo().getSyndrome());
