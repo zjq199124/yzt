@@ -42,7 +42,8 @@ spring:
       #username: huhu
       #password: huhu
 
-      url: jdbc:mysql://120.26.4.216:3306/histest?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+      #url: jdbc:mysql://120.26.4.216:3306/histest?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+      url: jdbc:mysql://192.168.0.90:3306/graduation_hosoneu?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
       username: root
       password: yzt123456
 
@@ -110,3 +111,19 @@ task:
     enable: false
     cron: "0 * * * * ?"
 
+
+customer:
+  name: ouhubang
+
+
+oss:
+  endpoint: "oss-cn-hangzhou.aliyuncs.com"
+  accessKeyId: "LTAI5tEozMaZFLJXmjtv2y1L"
+  accessKeySecret: "DQtx7CwSvvrV3trwdaYEQRhhVAHCiw"
+  publicBucket: "yzt-hs-dev"
+  publicBucketUrl: "yzt-hs-dev.oss-cn-hangzhou.aliyuncs.com"
+  privateBucket: "yzt-equipment"
+  privateBucketUrl: "yzt-equipment.oss-cn-hangzhou.aliyuncs.com"
+  expiration: "30"
+  styleWatermark: "一真"
+  styleMicro: "一真"
