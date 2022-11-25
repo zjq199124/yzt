@@ -177,8 +177,8 @@ public class BuPrescriptionRO {
             @ApiModelProperty(value = "云平台疾病名称")
             private String disease;
 
-            @ApiModelProperty("分型id,多个使用‘，’分割")
-            private String syndromeIds;
+            @ApiModelProperty("分型id")
+            private String syndromeId;
 
             @ApiModelProperty("分型名称")
             private String syndrome;
