@@ -4,17 +4,12 @@ import cn.hutool.core.lang.Assert;
 import com.maizhiyu.yzt.aro.BuPrescriptionRO;
 import com.maizhiyu.yzt.avo.BuDiagnoseVO;
 import com.maizhiyu.yzt.entity.BuDiagnose;
-import com.maizhiyu.yzt.entity.BuMedicant;
+import com.maizhiyu.yzt.entity.BuOutpatient;
 import com.maizhiyu.yzt.entity.MsCustomer;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.BuDiagnoseRO;
-import com.maizhiyu.yzt.service.IBuDiagnoseService;
-import com.maizhiyu.yzt.service.IBuMedicantService;
-import com.maizhiyu.yzt.service.IBuRecommendService;
-import com.maizhiyu.yzt.service.IMsCustomerService;
-import com.maizhiyu.yzt.serviceimpl.MsCustomerService;
+import com.maizhiyu.yzt.service.*;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 @Slf4j
@@ -43,6 +36,9 @@ public class BuDiagnoseController {
 
     @Resource
     private IBuDiagnoseService diagnoseService;
+
+    @Resource
+    private IBuOutpatientService buOutpatientService;
 
     @ApiOperation(value = "获取诊断方案推荐", notes = "获取诊断方案推荐")
     @PostMapping("/getRecommend")
@@ -275,6 +271,14 @@ public class BuDiagnoseController {
         Assert.notNull(ro.getOutpatientId(), "his端患者门诊预约id不能为空!");
         Result result = diagnoseService.getDetails(ro);
         return result;
+    }
+
+    @ApiOperation(value = "获取云平台对应的outpatientID")
+    @GetMapping(value = "/getYptOutpatient")
+    Result getYptOutpatientByHisId(Long outpatientId) {
+      BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(null,outpatientId);
+        Long id = Optional.ofNullable(buOutpatient).orElse(new BuOutpatient()).getId();
+        return Result.success(id);
     }
 }
 

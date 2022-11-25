@@ -16,8 +16,8 @@ import java.util.Date;
 
 @Data
 @Accessors(chain=true)
-//@TableName("ypt_Registration")
-@TableName("his_outpatient")
+@TableName("ypt_Registration")
+//@TableName("his_outpatient")
 @ApiModel(description="门诊预约表")
 public class HisOutpatient implements Serializable {
 

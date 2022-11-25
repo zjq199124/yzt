@@ -8,6 +8,7 @@ import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.mapper.*;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.BuDiagnoseRO;
+import com.maizhiyu.yzt.service.IBuCheckService;
 import com.maizhiyu.yzt.service.IBuDiagnoseService;
 import com.maizhiyu.yzt.service.IBuRecommendService;
 import com.maizhiyu.yzt.service.IDictSyndromeService;
@@ -55,6 +56,9 @@ public class BuDiagnoseService implements IBuDiagnoseService {
 
     @Resource
     private HsUserMapper hsUserMapper;
+
+    @Resource
+    private IBuCheckService buCheckService;
 
     @Resource
     private IDictSyndromeService dictSyndromeService;
@@ -172,9 +176,8 @@ public class BuDiagnoseService implements IBuDiagnoseService {
                 .last("limit 1");
         BuOutpatient buOutpatient = outpatientMapper.selectOne(buOutpatientQueryWrapper);
 
-        if (Objects.isNull(buOutpatient)) {
+        if (Objects.isNull(buOutpatient))
             throw new Exception("云平台中不存在his方outpatientId为： " + ro.getOutpatientId() + " 患者预约信息!");
-        }
 
         //1：查询是否有诊断信息
         LambdaQueryWrapper<BuDiagnose> queryWrapper = new LambdaQueryWrapper<>();
@@ -294,8 +297,10 @@ public class BuDiagnoseService implements IBuDiagnoseService {
         }
 
         //6：查询需要推荐的适宜技术
-        List<Long> syndromeIdList = dictSyndromeVoList.stream().filter(item -> item.getIsCheck() == 1).map(DictSyndromeVo::getId).collect(Collectors.toList());
+        List<Long> syndromeIdList = ro.getSyndromeIdList();
         if (CollectionUtils.isEmpty(syndromeIdList)) {
+            syndromeIdList = dictSyndromeVoList.stream().filter(item -> item.getIsCheck() == 1).map(DictSyndromeVo::getId).collect(Collectors.toList());
+        }else if (CollectionUtils.isEmpty(syndromeIdList)) {
             syndromeIdList  = dictSyndromeVoList.stream().filter(item -> item.getIsShow() == 1).map(DictSyndromeVo::getId).collect(Collectors.toList());
 
         }else if (CollectionUtils.isEmpty(syndromeIdList)) {

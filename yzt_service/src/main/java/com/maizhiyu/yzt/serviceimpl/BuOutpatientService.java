@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -43,8 +44,11 @@ public class BuOutpatientService implements IBuOutpatientService {
     @Override
     public BuOutpatient getOutpatientByHisId(Long customerId, Long hisId) {
         QueryWrapper<BuOutpatient> wrapper = new QueryWrapper<>();
-        wrapper.eq("customer_id", customerId)
-                .eq("his_id", hisId);
+        if (Objects.nonNull(customerId)) {
+            wrapper.eq("customer_id", customerId);
+        }
+
+        wrapper.eq("his_id", hisId);
         return mapper.selectOne(wrapper);
     }
 

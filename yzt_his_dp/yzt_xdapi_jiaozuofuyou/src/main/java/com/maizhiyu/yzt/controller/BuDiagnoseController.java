@@ -385,10 +385,14 @@ public class BuDiagnoseController {
         if(Objects.isNull(hisDoctor))
             throw new Exception("不存在outpatientId为: " + outpatientId + " 的此次门诊对应的医生信息!");
 
+        Result idResult = yptClient.getYptOutpatientByHisId(outpatientId);
+
+
         Map<String, Object> result = new HashMap<>();
         result.put("hisOutpatient", hisOutpatient);
         result.put("hisPatient", hisPatient);
         result.put("hisDoctor", hisDoctor);
+        result.put("yptOutpatientId", idResult.getData());
 
         return Result.success(result);
     }

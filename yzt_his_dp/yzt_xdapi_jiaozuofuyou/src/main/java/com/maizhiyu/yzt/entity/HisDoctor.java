@@ -14,8 +14,8 @@ import java.util.Date;
 
 @Data
 @Accessors(chain=true)
-//TableName("ypt_Staff")
-@TableName("his_doctor")
+@TableName("ypt_Staff")
+//@TableName("his_doctor")
 @ApiModel(description="HIS医生表")
 public class HisDoctor implements Serializable {
     @TableId

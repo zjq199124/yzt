@@ -111,10 +111,9 @@ public class BuPrescriptionController {
         Assert.notNull(ro.getBaseInfo(), "基础信息不能为空!");
         BuPrescriptionRO.AddPrescriptionShiyi.BaseInfo baseInfo = ro.getBaseInfo();
 
-        /*baseInfo.setPatientId(baseInfo.getOutpatientId());  // 使用outpatientId作为患者ID（HIS就这么给的，每次挂号都会新增患者）
         processDoctor(baseInfo.getDoctorId().toString());
         processPatient(baseInfo.getPatientId().toString());
-        processOutpatient(baseInfo.getOutpatientId().toString());*/
+        processOutpatient(baseInfo.getOutpatientId().toString());
 
         if (Objects.nonNull(ro.getBaseInfo())) {
             ro.getDiagnoseInfo().setCustomerName(customerName);
