@@ -224,7 +224,6 @@ public class BuDiagnoseService implements IBuDiagnoseService {
         }
 
         //3.1:查询这个疾病下的所有的分型列表
-        List<Long> syndromeIdList = Collections.emptyList();//保存最终用来查询推荐方案所有用的分型数据
         List<DictSyndromeVo> dictSyndromeVoList = Collections.emptyList();//保存所有的分型
 
         List<DictSyndrome> dictSyndromeList = dictSyndromeMapper.selectByDiseaseId(ro.getDiseaseId());
@@ -244,7 +243,6 @@ public class BuDiagnoseService implements IBuDiagnoseService {
                         item.setIsCheck(1);
                     }
                 });
-                syndromeIdList.add(buDiagnose.getSyndromeId());
             } else {
                 //3.2通过上面选中的症状推出选中的分型有哪些 标记出之前的诊断保存时所选的分型
                 List<Long> symptomIdList = getSymptomIdList(buDiagnose);
@@ -258,17 +256,11 @@ public class BuDiagnoseService implements IBuDiagnoseService {
                             }
                         });
                     }
-                    syndromeIdList = checkDictSyndromeVoList.stream().map(DictSyndromeVo::getId).collect(Collectors.toList());
                 }
             }
             //疾病分型数据集合
             resultMap.put("dictSyndromeList", dictSyndromeVoList);
         }
-
-        if (CollectionUtils.isEmpty(syndromeIdList)) {
-            syndromeIdList = dictSyndromeVoList.stream().map(DictSyndromeVo::getId).collect(Collectors.toList());
-        }
-
 
         //4：查询出已经保存的处方
         LambdaQueryWrapper<BuPrescription> prescriptionQueryWrapper = new LambdaQueryWrapper<>();
@@ -302,6 +294,14 @@ public class BuDiagnoseService implements IBuDiagnoseService {
         }
 
         //6：查询需要推荐的适宜技术
+        List<Long> syndromeIdList = dictSyndromeVoList.stream().filter(item -> item.getIsCheck() == 1).map(DictSyndromeVo::getId).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(syndromeIdList)) {
+            syndromeIdList  = dictSyndromeVoList.stream().filter(item -> item.getIsShow() == 1).map(DictSyndromeVo::getId).collect(Collectors.toList());
+
+        }else if (CollectionUtils.isEmpty(syndromeIdList)) {
+            syndromeIdList = dictSyndromeVoList.stream().map(DictSyndromeVo::getId).collect(Collectors.toList());
+        }
+
         BuDiagnoseRO.GetRecommendRO recommendRo = new BuDiagnoseRO.GetRecommendRO();
         recommendRo.setDiseaseId(buDiagnose.getDiseaseId());
         recommendRo.setCustomerName(ro.getCustomerName());
