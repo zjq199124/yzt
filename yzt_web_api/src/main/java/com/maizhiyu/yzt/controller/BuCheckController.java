@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.controller;
 
 import com.maizhiyu.yzt.entity.BuCheck;
+import com.maizhiyu.yzt.enums.CheckTypeEnum;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IBuCheckService;
 import io.swagger.annotations.Api;
@@ -30,6 +31,7 @@ public class BuCheckController {
     @GetMapping("/getCheck")
     public Result getCheck(Long id) {
         BuCheck check = checkService.getCheck(id);
+
         return Result.success(check);
     }
 
