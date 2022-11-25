@@ -1,7 +1,11 @@
 
 ### 服务配置 ###
 server:
+<<<<<<< HEAD
   port: 8085
+=======
+  port: 8087
+>>>>>>> 8d6d1a14e75ab7fb26343af8ebbd2dd47e09c58c
   session:
     timeout: 7200
   servlet:
@@ -22,6 +26,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     #     mysql驱动包
     driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+
     #url: jdbc:p6spy:mysql://120.26.4.216:3306/yztdev?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
     url: jdbc:p6spy:mysql://192.168.0.90:3306/yztdev?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
     username: root

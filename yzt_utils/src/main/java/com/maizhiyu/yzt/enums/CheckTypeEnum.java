@@ -30,4 +30,13 @@ public enum CheckTypeEnum {
     public void setName(String name) {
         this.name = name;
     }
+
+    public static String getNameByCode(int code) {
+        for (CheckTypeEnum value : CheckTypeEnum.values()) {
+            if (value.getCode() == code) {
+                return value.getName();
+            }
+        }
+        return null;
+    }
 }

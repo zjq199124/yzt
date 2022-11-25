@@ -89,7 +89,7 @@
             </if>
         </where>
     </select>
-
+    <!-- 以身份证或手机号查询患者 当天 门诊信息  -->
     <select id="selectOutpatientByPatientInfo" resultType="hashmap">
         select
         *
@@ -107,13 +107,7 @@
                     </if>
                 </otherwise>
             </choose>
-
-            <if test="timeStart != null">
-                and X.time &gt; #{timeStart}
-            </if>
-            <if test="timeEnd != null">
-                and X.time &lt; #{timeEnd}
-            </if>
+            and TO_DAYS(X.time) = TO_DAYS(NOW())
         </where>
     </select>
 

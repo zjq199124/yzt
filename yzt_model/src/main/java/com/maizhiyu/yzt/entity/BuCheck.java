@@ -38,16 +38,14 @@ public class BuCheck implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
     private Date createTime;
 
-//    @TableField(exist = false)
-//    @ApiModelProperty(value = "报告路径")
-//    private String url;
-
-    @TableField(exist = false)
     @ApiModelProperty(value = "患者身份证号")
-    private String patientIdCard;
+    private String idCard;
 
-    @TableField(exist = false)
     @ApiModelProperty(value = "患者手机")
-    private String patientPhone;
+    private String mobile;
+
+    @ApiModelProperty(value = "检查名称")
+    @TableField(exist = false)
+    private String name;
 
 }

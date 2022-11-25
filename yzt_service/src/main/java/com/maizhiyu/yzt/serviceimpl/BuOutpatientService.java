@@ -1,8 +1,11 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.BuOutpatient;
+import com.maizhiyu.yzt.entity.SysMultimedia;
 import com.maizhiyu.yzt.mapper.BuOutpatientMapper;
+import com.maizhiyu.yzt.mapper.SysMultimediaMapper;
 import com.maizhiyu.yzt.service.IBuOutpatientService;
 import com.maizhiyu.yzt.utils.ExistCheck;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +19,8 @@ import java.util.UUID;
 
 
 @Service
-@Transactional(rollbackFor=Exception.class)
-public class BuOutpatientService implements IBuOutpatientService {
+@Transactional(rollbackFor = Exception.class)
+public class BuOutpatientService extends ServiceImpl<BuOutpatientMapper, BuOutpatient> implements IBuOutpatientService {
 
     @Autowired
     private BuOutpatientMapper mapper;
@@ -26,7 +29,7 @@ public class BuOutpatientService implements IBuOutpatientService {
     @Override
     @ExistCheck(clazz = BuOutpatient.class, fname = "time|customer_id|patient_id", message = "挂号已存在")
     public Integer addOutpatient(BuOutpatient outpatient) {
-        String code = UUID.randomUUID().toString().replace("-", "").substring(0,20);
+        String code = UUID.randomUUID().toString().replace("-", "").substring(0, 20);
         outpatient.setCode(code);
         return mapper.insert(outpatient);
     }

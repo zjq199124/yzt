@@ -1,7 +1,6 @@
 package com.maizhiyu.yzt;
 
 import com.google.gson.Gson;
-import com.maizhiyu.yzt.entity.BuCheck;
 import com.maizhiyu.yzt.result.Result;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -28,7 +27,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
 
     private static Logger log = LoggerFactory.getLogger(FileListener.class);
     /**
-     *HTTP 网络请求框架的封装
+     * HTTP 网络请求框架的封装
      */
     private Retrofit retrofit;
 
@@ -78,31 +77,19 @@ public class FileListener extends FileAlterationListenerAdaptor {
         // 处理业务逻辑
         try {
             // 上传文件
-            Result result = doUpload(file);
-            String fname = result.getData().toString();
-
-            // 准备数据
-            BuCheck check = new BuCheck();
-            check.setType(Integer.parseInt(type));
-            check.setFname(fname);
-            check.setPatientName(patientName);
-            check.setPatientPhone(patientPhone);
-
-            // 上传信息
-            doAddCheck(check);
-
+            doUpload(file, patientPhone);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-    private Result doUpload(File file) throws IOException {
+    private Result doUpload(File file, String patientPhone) throws IOException {
         // 准备数据
         RequestBody body = RequestBody.create(MediaType.parse("application/pdf"), file);
         MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), body);
         // 准备接口
-        Call<Result> call = yztapi.upload(part);
+        Call<Result> call = yztapi.upload(part, patientPhone);
         // 执行接口
         Response<Result> response = call.execute();
         // 判断结果
@@ -111,24 +98,6 @@ public class FileListener extends FileAlterationListenerAdaptor {
             System.out.println("上传文件成功：" + result);
         } else {
             throw new RuntimeException("上传文件失败：" + result);
-        }
-        // 返回结果
-        return result;
-    }
-
-
-    private Result doAddCheck(BuCheck check) throws IOException {
-        // 准备接口
-        Call<Result> call = yztapi.addCheck(check);
-        // 执行接口
-        Response<Result> response = call.execute();
-        // 判断结果
-        Result result = response.body();
-        System.out.println(result);
-        if (result.getCode() == 0) {
-            System.out.println("上传信息成功：" + result);
-        } else {
-            throw new RuntimeException("上传信息失败：" + result);
         }
         // 返回结果
         return result;

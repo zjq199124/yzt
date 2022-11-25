@@ -48,9 +48,6 @@ import java.util.stream.Stream;
 public class TeHwcxController {
 
     @Resource
-    SysMultimediaService sysMultimediaService;
-
-    @Resource
     TxInfraredDataService txInfraredDataService;
 
     @Resource
@@ -62,19 +59,6 @@ public class TeHwcxController {
     @Resource
     BuCheckService buCheckService;
 
-    @Resource
-    BuOutpatientService buOutpatientService;
-
-    @ApiOperation(value = "检测文件接收上传", notes = "检测文件接收上传")
-    @ApiImplicitParams({})
-    @PostMapping(value = "/receiveFile")
-    public Result<String> receiveFile(@RequestParam MultipartFile file) {
-        try {
-            return Result.success(sysMultimediaService.saveMultimedia(file, OSSCatalogEnum.INFRARED.getPath(), true, "红外检查报告"));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     //TODO 文件分析数据保存
     @ApiOperation(value = "接收红外检测报告", notes = "接收红外检测报告")
@@ -134,8 +118,9 @@ public class TeHwcxController {
             });
 
             //保存患者检查数据
-            BuCheck buCheck=new BuCheck();
-            buCheck.setPatientIdCard(infraredResult.getIDCard());
+            BuCheck buCheck = new BuCheck();
+            buCheck.setIdCard(infraredResult.getIDCard());
+            buCheck.setMobile(infraredResult.getMobile());
             buCheck.setType(CheckTypeEnum.INFRARED.getCode());
             buCheck.setMultimediaId(txInfraredData.getMultimediaId());
             buCheck.setCreateTime(txInfraredData.getTestDate());

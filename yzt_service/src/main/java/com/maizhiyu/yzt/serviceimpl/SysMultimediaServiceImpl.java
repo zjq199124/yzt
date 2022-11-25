@@ -36,7 +36,6 @@ public class SysMultimediaServiceImpl extends ServiceImpl<SysMultimediaMapper, S
     public SysMultimedia saveMultimedia(MultipartFile file, String path, boolean isPrivate, String remark) {
         // 获取文件名称
         String fileName = file.getOriginalFilename();                               // 获取文件名
-        String suffixName = fileName.substring(fileName.lastIndexOf("."));      // 截取后缀名
         try {
             return saveMultimedia(file.getInputStream(), fileName, path, isPrivate, remark);
         } catch (IOException e) {

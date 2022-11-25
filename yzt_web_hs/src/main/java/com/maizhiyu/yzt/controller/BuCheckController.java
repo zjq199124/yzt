@@ -31,7 +31,6 @@ public class BuCheckController {
     @ApiImplicitParams({})
     @PostMapping("/addCheck")
     public Result addCheck(@RequestBody BuCheck check) {
-        check.setCreateTime(new Date());
         Integer res = checkService.addCheck(check);
         return Result.success(check);
     }
