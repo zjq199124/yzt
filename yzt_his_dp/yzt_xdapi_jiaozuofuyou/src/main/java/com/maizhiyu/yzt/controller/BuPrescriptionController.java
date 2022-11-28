@@ -1,7 +1,7 @@
 package com.maizhiyu.yzt.controller;
 
 import cn.hutool.core.lang.Assert;
-import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
+import cn.hutool.core.util.ObjectUtil;
 import com.maizhiyu.yzt.bean.aci.HisDoctorCI;
 import com.maizhiyu.yzt.bean.aci.HisOutpatientCI;
 import com.maizhiyu.yzt.bean.aci.HisPatientCI;
@@ -18,10 +18,10 @@ import com.maizhiyu.yzt.mapperhis.HisPatientMapper;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.JzfyTreatmentMappingService;
 import com.maizhiyu.yzt.serviceimpl.YptTreatmentService;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
@@ -32,10 +32,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 
 @Slf4j
@@ -59,11 +60,11 @@ public class BuPrescriptionController {
     @Autowired
     private YptTreatmentService treatmentService;
 
-    @Value("${customer.name}")
-    private String customerName;
-
     @Resource
     private JzfyTreatmentMappingService jzfyTreatmentMappingService;
+
+    @Value("${customer.name}")
+    private String customerName;
 
     private ExecutorService threadPool = new ThreadPoolExecutor(5, 10, 100L, TimeUnit.SECONDS, new LinkedBlockingDeque<>(Integer.MAX_VALUE), new ThreadPoolExecutor.AbortPolicy());
 
@@ -106,6 +107,33 @@ public class BuPrescriptionController {
     public Result addPrescriptionShiyi(@RequestBody @Valid BuPrescriptionRO.AddPrescriptionShiyi ro) {
 
         //TODO 先要调用his那边的接口然后拿到prescriptionId等信息
+        //克隆出一个对象用来进行翻译操作
+       /* BuPrescriptionRO.AddPrescriptionShiyi clone = ObjectUtil.cloneIfPossible(ro);
+        for (BuPrescriptionRO.BuPrescriptionItemShiyi vo : clone.getItemList()) {
+            try {
+                // 按code映射
+                if (StringUtils.isNotBlank(vo.getCode())) {
+                    JzfyTreatmentMapping jzfyTreatmentMapping = jzfyTreatmentMappingService.getTreatmentByCode(vo.getCode());
+                    if (Objects.nonNull(jzfyTreatmentMapping)) {
+                        vo.setCode(jzfyTreatmentMapping.getHiscode());
+                        vo.setName(jzfyTreatmentMapping.getHisname());
+                        continue;
+                    }
+                }else if (StringUtils.isNotBlank(vo.getName())) {
+                    // 按名称映射
+                    JzfyTreatmentMapping treatmentByName = jzfyTreatmentMappingService.getTreatmentByName(vo.getName());
+                    if (Objects.nonNull(treatmentByName)) {
+                        vo.setCode(treatmentByName.getHiscode());
+                        vo.setName(treatmentByName.getHisname());
+                        continue;
+                    }
+                }
+            } catch (Exception e) {
+                log.warn("适宜处方ID映射异常：" + e.getMessage());
+            }
+        }*/
+
+        /**********************接下来调用his方保存处方的接口*****************/
 
         Assert.notNull(ro, "处方数据不能为空!");
         Assert.notNull(ro.getBaseInfo(), "基础信息不能为空!");

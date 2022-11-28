@@ -81,7 +81,9 @@ public class BuPatientService implements IBuPatientService {
     public BuPatient getPatient(String name, String phone, String idcard) {
         QueryWrapper<BuPatient> wrapper = new QueryWrapper<>();
         wrapper.or(q -> q.eq("name", name).eq("idcard", idcard))
-                .or(q -> q.eq("name", name).eq("phone", phone));
+                .or(q -> q.eq("name", name).eq("phone", phone))
+                .orderByDesc("update_time")
+                .last("limit 1");
         return patientMapper.selectOne(wrapper);
     }
 

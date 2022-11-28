@@ -51,7 +51,9 @@ public class BuOutpatientService extends ServiceImpl<BuOutpatientMapper, BuOutpa
             wrapper.eq("customer_id", customerId);
         }
 
-        wrapper.eq("his_id", hisId);
+        wrapper.eq("his_id", hisId)
+                .orderByDesc("update_time")
+                .last("limit 1");
         return mapper.selectOne(wrapper);
     }
 

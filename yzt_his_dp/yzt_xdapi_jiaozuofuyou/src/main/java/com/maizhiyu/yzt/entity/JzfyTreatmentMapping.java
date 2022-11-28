@@ -53,12 +53,12 @@ public class JzfyTreatmentMapping extends Model<JzfyTreatmentMapping> {
     /**
      * his内部编码
      */
-    private String hisCode;
+    private String hiscode;
 
     /**
      * his内名称
      */
-    private String hisName;
+    private String hisname;
 
     /**
      * 状态：0：未删除；1：已删除

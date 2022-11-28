@@ -100,7 +100,9 @@ public class HsUserService implements IHsUserService {
     public HsUser getUserByHisId(Long customerId, Long hisId) {
         QueryWrapper<HsUser> wrapper = new QueryWrapper<>();
         wrapper.eq("customer_id", customerId)
-                .eq("his_id", hisId);
+                .eq("his_id", hisId)
+                .orderByDesc("update_time")
+                .last("limit 1");
         return userMapper.selectOne(wrapper);
     }
 

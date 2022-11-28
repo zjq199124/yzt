@@ -9,10 +9,13 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class BuPrescriptionRO {
+public class BuPrescriptionRO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Data
     @ApiModel
@@ -120,7 +123,9 @@ public class BuPrescriptionRO {
     @Data
     @ApiModel
     @Validated
-    public static class AddPrescriptionShiyi {
+    public static class AddPrescriptionShiyi implements Serializable{
+
+        private static final long serialVersionUID = 1L;
 
         @ApiModelProperty(value="云平台中处方ID")
         private String id;
