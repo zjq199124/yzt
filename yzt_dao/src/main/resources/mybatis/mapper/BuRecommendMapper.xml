@@ -211,7 +211,7 @@
         ss.recommend,
         ss.syndrome_id,
         ss.sytech_id,
-        ds.NAME AS syndrome_name,
+        ds.NAME AS syndromeName,
         dd.content AS disease_name,
         ts.name name
         FROM

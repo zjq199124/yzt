@@ -212,7 +212,7 @@ public class BuDiagnoseController {
                 vo.setSytechId(Objects.isNull(map.get("sytech_id")) ? null : Long.valueOf(map.get("sytech_id").toString()));
                 vo.setName(((String) map.getOrDefault("name", "")));
                 vo.setSymptoms(((String) map.getOrDefault("symptoms", "")));
-                vo.setSyndromeName(((String) map.getOrDefault("syndrome_name", "")));
+                vo.setSyndromeName(((String) map.getOrDefault("syndromeName", "")));
                 vo.setDetail(((String) map.getOrDefault("detail", "")));
                 vo.setOperation(((String) map.getOrDefault("operation", "")));
                 vo.setCustomerId(Objects.isNull(map.get("customer_id")) ? null : Long.valueOf(map.get("customer_id").toString()));

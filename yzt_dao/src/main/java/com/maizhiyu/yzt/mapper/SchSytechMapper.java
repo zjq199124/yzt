@@ -20,4 +20,5 @@ public interface SchSytechMapper extends BaseMapper<SchSytech> {
             @Param("status") Integer status,
             @Param("term") String term);
 
+    List<Map<String, Object>> getSytechBySytechId(@Param("sytechId") Long sytechId, @Param("diseaseId") Long diseaseId, @Param("syndromeId") Long syndromeId);
 }

@@ -30,8 +30,8 @@ public class DictSyndromeServiceImpl implements IDictSyndromeService {
     private IRelSyndromeSymptomService relSyndromeSymptomService;
 
     @Override
-    public List<DictSyndromeVo> selectByDiseaseId(Long diseaseId) {
-        List<DictSyndrome> list = dictSyndromeMapper.selectByDiseaseId(diseaseId);
+    public List<DictSyndromeVo> selectByDiseaseId(Long diseaseId,String search) {
+        List<DictSyndrome> list = dictSyndromeMapper.selectByDiseaseId(diseaseId,search);
         if(CollectionUtils.isEmpty(list))
             return Collections.emptyList();
         List<DictSyndromeVo> collect = getDictSyndromeVos(list);

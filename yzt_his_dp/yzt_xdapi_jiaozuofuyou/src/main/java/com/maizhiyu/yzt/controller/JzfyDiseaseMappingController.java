@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -33,10 +34,19 @@ public class JzfyDiseaseMappingController {
     @ApiOperation(value = "焦作妇幼疾病映射接口")
     @ApiImplicitParam(name = "hisDiseaseName",value = "his疾病名称",required = true)
     @GetMapping("/jzfy")
-    public Result<Long> selectDiseaseMappingByHisDiseaseName(String hisDiseaseName) {
+    public Result selectDiseaseMappingByHisDiseaseName(String hisDiseaseName) {
         JzfyDiseaseMapping jzfyDiseaseMapping = jzfyDiseaseMappingService.selectByHisName(hisDiseaseName);
         boolean result = Objects.nonNull(jzfyDiseaseMapping) ? true : false;
         return Result.success(result);
+    }
+
+
+    @ApiOperation(value = "获取所有疾病列表")
+    @ApiImplicitParam(name = "search",value = "搜索字段")
+    @GetMapping("/list")
+    public Result diseaseList(String search) {
+        List<JzfyDiseaseMapping> jzfyDiseaseMappingList = jzfyDiseaseMappingService.diseaseList(search);
+        return Result.success(jzfyDiseaseMappingList);
     }
 
 }

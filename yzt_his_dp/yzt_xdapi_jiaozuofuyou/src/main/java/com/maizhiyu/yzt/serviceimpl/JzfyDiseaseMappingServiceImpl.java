@@ -5,10 +5,12 @@ import com.maizhiyu.yzt.entity.JzfyDiseaseMapping;
 import com.maizhiyu.yzt.mapperypt.JzfyDiseaseMappingMapper;
 import com.maizhiyu.yzt.service.JzfyDiseaseMappingService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * <p>
@@ -34,5 +36,16 @@ public class JzfyDiseaseMappingServiceImpl extends ServiceImpl<JzfyDiseaseMappin
                 .last("limit 1");
         JzfyDiseaseMapping jzfyDiseaseMapping = jzfyDiseaseMappingMapper.selectOne(queryWrapper);
         return jzfyDiseaseMapping;
+    }
+
+    @Override
+    public List<JzfyDiseaseMapping> diseaseList(String search) {
+        LambdaQueryWrapper<JzfyDiseaseMapping> queryWrapper = new LambdaQueryWrapper<>();
+        if (StringUtils.isNotBlank(search)) {
+            queryWrapper.like(JzfyDiseaseMapping::getHisName, search);
+        }
+        queryWrapper.eq(JzfyDiseaseMapping::getIsDel, 0);
+        List<JzfyDiseaseMapping> jzfyDiseaseMappingList = jzfyDiseaseMappingMapper.selectList(queryWrapper);
+        return jzfyDiseaseMappingList;
     }
 }

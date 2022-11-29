@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.TsSytechMapper">
+
+    <resultMap id="TsSytechMap" type="com.maizhiyu.yzt.entity.TsSytech">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="descrip" column="descrip" jdbcType="VARCHAR"/>
+        <result property="url" column="url" jdbcType="VARCHAR"/>
+        <result property="display" column="display" jdbcType="BIGINT"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <select id="selectSytechList" resultType="com.maizhiyu.yzt.entity.TsSytech">
+        select * from ts_sytech ts
+        inner join sch_sytech ss on ts.id = ss.sytech_id and ss.status = 1
+        <if test="customerName != null and customerName != ''">
+            inner join ms_customer mc on ss.customer_id = mc.id and mc.status = 1 and mc.username = #{customerName}
+        </if>
+        where ss.disease_id = #{diseaseId} and ss.syndrome_id = #{syndromeId}
+        <if test="search != null and search != ''">
+            and ts.name like concat('%',#{search},'%')
+        </if>
+    </select>
+
+</mapper>

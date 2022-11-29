@@ -229,7 +229,7 @@ public class BuDiagnoseService implements IBuDiagnoseService {
         //3.1:查询这个疾病下的所有的分型列表
         List<DictSyndromeVo> dictSyndromeVoList = Collections.emptyList();//保存所有的分型
 
-        List<DictSyndrome> dictSyndromeList = dictSyndromeMapper.selectByDiseaseId(ro.getDiseaseId());
+        List<DictSyndrome> dictSyndromeList = dictSyndromeMapper.selectByDiseaseId(ro.getDiseaseId(),null);
         if (CollectionUtils.isEmpty(dictSyndromeList)) {
             //疾病分型数据集合
             resultMap.put("dictSyndromeList", Collections.emptyList());

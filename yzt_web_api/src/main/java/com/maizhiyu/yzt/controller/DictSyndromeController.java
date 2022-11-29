@@ -8,6 +8,7 @@ import com.maizhiyu.yzt.vo.DictSymptomVo;
 import com.maizhiyu.yzt.vo.DictSyndromeVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -34,11 +35,14 @@ public class DictSyndromeController {
     }
 
     @ApiOperation(value = "获取疾病所有分型的接口")
-    @ApiImplicitParam(name = "diseaseId", value = "疾病id", required = true)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "diseaseId", value = "疾病id", required = true),
+            @ApiImplicitParam(name = "search", value = "分型搜索字段")
+    })
     @GetMapping("/list")
-    public Result<List<DictSyndromeVo>> selectDictSyndromeListByDiseaseId(Long diseaseId) {
+    public Result<List<DictSyndromeVo>> selectDictSyndromeListByDiseaseId(@RequestParam(value = "diseaseId") Long diseaseId,@RequestParam(value = "search",required = false) String search) {
         Assert.notNull(diseaseId, "疾病id不能为空!");
-        List<DictSyndromeVo> dictSyndromeVoList = dictSyndromeService.selectByDiseaseId(diseaseId);
+        List<DictSyndromeVo> dictSyndromeVoList = dictSyndromeService.selectByDiseaseId(diseaseId,search);
         return Result.success(dictSyndromeVoList);
     }
 }
