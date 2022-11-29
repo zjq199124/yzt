@@ -1,6 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
-import com.aliyuncs.utils.MapUtils;
+
 import com.maizhiyu.yzt.entity.DictSyndrome;
 import com.maizhiyu.yzt.mapper.DictSyndromeMapper;
 import com.maizhiyu.yzt.service.IDictSyndromeService;

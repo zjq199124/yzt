@@ -11,7 +11,5 @@ import com.maizhiyu.yzt.entity.JzfyDiseaseMapping;
  * @author zhangxiansho
  * @since 2022-11-14
  */
-public interface JzfyDiseaseMappingService extends IService<JzfyDiseaseMapping> {
-
-    JzfyDiseaseMapping selectByHisName(String hisDiseaseName);
+public interface JzfyDiseaseMappingService extends IService<JzfyDiseaseMapping> { JzfyDiseaseMapping selectByHisName(String hisDiseaseName);
 }
