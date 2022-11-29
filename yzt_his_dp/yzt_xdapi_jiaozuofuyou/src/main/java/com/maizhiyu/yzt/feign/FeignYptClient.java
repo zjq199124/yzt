@@ -23,7 +23,7 @@ import java.util.List;
 public interface FeignYptClient {
 
     @PostMapping(value = "/login")
-    feign.Response login(@RequestParam("username") String username, @RequestParam("password") String password);
+    feign.Response login(@RequestParam(value = "username") String username, @RequestParam(value = "password") String password);
 
     @PostMapping(value = "/diagnose/getRecommend")
     Result<BuDiagnoseVO.GetRecommendVO> getRecommend(@RequestBody BuDiagnoseRO.GetRecommendRO ro);
@@ -50,16 +50,16 @@ public interface FeignYptClient {
     Result<Integer> addPrescriptionShiyi(@RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro);
 
     @GetMapping(value = "/dictSymptom/list")
-    Result<List<DictSymptomVo>> selectDictSymptomList(@RequestParam Long diseaseId);
+    Result<List<DictSymptomVo>> selectDictSymptomList(@RequestParam(value = "diseaseId") Long diseaseId);
 
     @GetMapping(value = "/dictSyndrome/list")
-    Result<List<DictSyndromeVo>> selectDictSyndromeListByDiseaseId(@RequestParam Long diseaseId);
+    Result<List<DictSyndromeVo>> selectDictSyndromeListByDiseaseId(@RequestParam(value = "diseaseId") Long diseaseId);
 
     @PostMapping(value = "/dictSyndrome/selectBySymptom")
     Result<List<DictSyndromeVo>> selectDictSyndromeBySymptomIdList(@RequestBody List<Long> symptomIdList);
 
     @PostMapping(value = "/sytech/getRecommend")
-    Result getSytechRecommend(@RequestParam Long diseaseId,@RequestParam Long syndromeId,@RequestParam String term);
+    Result getSytechRecommend(@RequestParam(value = "diseaseId") Long diseaseId,@RequestParam(value = "syndromeId",required = false) Long syndromeId,@RequestParam(value = "term",required = false) String term);
 
     @PostMapping(value = "/relSyndromeSymptom/selectBySyndromeIds")
     Result<List<RelSyndromeSymptomVo>> selectDictSymptomBySyndromeIdList(@RequestBody List<Long> syndromeIds);
@@ -71,7 +71,7 @@ public interface FeignYptClient {
     Result getDetail(@RequestBody BuDiagnoseRO.GetRecommendRO ro);
 
     @GetMapping(value = "/diagnose/getYptOutpatient")
-    Result getYptOutpatientByHisId(@RequestParam Long outpatientId);
+    Result getYptOutpatientByHisId(@RequestParam(value = "outpatientId") Long outpatientId);
 }
 
 

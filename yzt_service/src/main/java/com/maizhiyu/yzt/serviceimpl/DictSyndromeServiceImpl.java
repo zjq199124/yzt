@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -65,7 +66,7 @@ public class DictSyndromeServiceImpl implements IDictSyndromeService {
                 return;
             }
 
-            //获取每一个分型对应的所以症状的id列表
+            //获取每一个分型对应的所有症状的id列表
             List<Long> resultSymptomIdList = relSyndromeSymptomVos.stream().map(RelSyndromeSymptomVo::getSymptomId).collect(Collectors.toList());
             if (CollectionUtils.isEmpty(resultSymptomIdList)) {
                 item.setScore(0);
@@ -80,7 +81,7 @@ public class DictSyndromeServiceImpl implements IDictSyndromeService {
             }
 
             //交集个数 / 所有症状数量 = 辩证分型的具体得分
-            item.setScore(intersectionIdList.size() / resultSymptomIdList.size());
+            item.setScore(new BigDecimal(intersectionIdList.size()).divide(new BigDecimal(resultSymptomIdList.size()),3,BigDecimal.ROUND_HALF_UP).doubleValue());
         });
 
         //根据辩证分型得分倒序排列

@@ -328,10 +328,12 @@ public class BuDiagnoseController {
             ro.setDiseaseId(jzfyDiseaseMapping.getDiseaseId());
         }
 
-        //先查询下这次挂号看病是否已经有保存诊断信息和治疗处方
-        Result result = yptClient.getDetail(ro);
-        if(Objects.nonNull(result.getData()))
-            return result;
+        //在没有分型syndromeIdList以及没有症状集合symptomIdList先查询下这次挂号看病是否已经有保存诊断信息和治疗处方
+        if (CollectionUtils.isEmpty(ro.getSymptomIdList()) && CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
+            Result result = yptClient.getDetail(ro);
+            if(Objects.nonNull(result.getData()))
+                return result;
+        }
 
         //2.没有syndromeIdList的情况下，判断是否有传症状集合symptomIdList，没有的话通过Feign远程调用云平台中获取疾病所有症状的接口
         if (CollectionUtils.isEmpty(ro.getSyndromeIdList()) && CollectionUtils.isEmpty(ro.getSymptomIdList())) {
