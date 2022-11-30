@@ -204,7 +204,7 @@
     <select id="getRecommendSytech" resultType="java.util.Map">
 
         SELECT
-        ss.customer_id,
+        ss.customer_id as customerId,
         ss.detail,
         ss.disease_id,
         ss.operation,

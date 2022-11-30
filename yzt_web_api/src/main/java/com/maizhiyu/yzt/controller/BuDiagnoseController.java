@@ -215,7 +215,7 @@ public class BuDiagnoseController {
                 vo.setSyndromeName(((String) map.getOrDefault("syndromeName", "")));
                 vo.setDetail(((String) map.getOrDefault("detail", "")));
                 vo.setOperation(((String) map.getOrDefault("operation", "")));
-                vo.setCustomerId(Objects.isNull(map.get("customer_id")) ? null : Long.valueOf(map.get("customer_id").toString()));
+                vo.setCustomerId(Objects.isNull(map.get("customerId")) ? null : Long.valueOf(map.get("customerId").toString()));
                 vo.setRecommend(Objects.isNull(map.get("recommend")) ? null : Integer.valueOf(map.get("recommend").toString()));
                 shiyiVOList.add(vo);
             }

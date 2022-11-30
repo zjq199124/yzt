@@ -238,7 +238,7 @@ public class BuPrescriptionController {
         for (BuPrescriptionRO.BuPrescriptionItemShiyi it : ro.getItemList()) {
             BuPrescriptionItem item = new BuPrescriptionItem();
             item.setType(1);
-            item.setCustomerId(customerId);
+            item.setCustomerId(it.getCustomerId());
             item.setDoctorId(hsUser.getId());
             item.setPatientId(buPatient.getId());
             item.setOutpatientId(buOutpatient.getId());
