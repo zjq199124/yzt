@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.controller;
 
+import com.google.common.base.Preconditions;
 import com.maizhiyu.yzt.feign.FeignYptClient;
 import com.maizhiyu.yzt.result.Result;
 import io.swagger.annotations.Api;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.Objects;
 
 
 @Slf4j
@@ -30,8 +32,7 @@ public class SchSytechController {
     @GetMapping("/getSytechList")
     public Result getSytechList(@RequestParam Long diseaseId,
                                 @RequestParam Long syndromeId,
-                               @RequestParam(required = false) String search) {
-
+                               @RequestParam String search) {
         // 调用开放接口获取诊断推荐
         Result recommendResult = yptClient.getSytechList(diseaseId,syndromeId,search,customerName);
         return Result.success(recommendResult.getData());

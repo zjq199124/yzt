@@ -300,6 +300,9 @@ public class BuPrescriptionRO implements Serializable {
         @ApiModelProperty(value="名称")
         private String name;
 
+        @ApiModelProperty(value = "所属适宜技术id")
+        private Long entityId;
+
         @ApiModelProperty(value="详情")
         private String detail;
 

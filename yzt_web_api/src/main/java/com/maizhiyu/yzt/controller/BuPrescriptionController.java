@@ -248,6 +248,7 @@ public class BuPrescriptionController {
             item.setOperation(it.getOperation());
             item.setQuantity(new BigDecimal(it.getQuantity()));
             item.setNote(it.getNote());
+            item.setEntityId(it.getEntityId());
 //            // 实现一：传入参数中code就是适宜技术的id（string）数据库中存储是int格式，需要转格式
 //            try {
 //                Long entityId = Long.parseLong(it.getCode());
@@ -256,13 +257,13 @@ public class BuPrescriptionController {
 //                log.warn("转化适宜技术ID异常 " + it);
 //            }
             // 实现二：根据名称查询entityId
-            try {
+            /*try {
                 TsSytech sytech = sytechService.getSytechByName(it.getName());
                 item.setEntityId(sytech.getId());
                 log.info("查询适宜技术成功 " + sytech);
             } catch (Exception e) {
                 log.warn("查询适宜技术异常 " + it);
-            }
+            }*/
             // 添加到列表
             itemList.add(item);
         }

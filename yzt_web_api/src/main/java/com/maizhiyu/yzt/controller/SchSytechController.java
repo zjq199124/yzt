@@ -32,7 +32,7 @@ public class SchSytechController {
     @GetMapping("/getSytechList")
     public Result getSytechList(@RequestParam(value = "diseaseId") Long diseaseId,
                          @RequestParam(value = "syndromeId") Long syndromeId,
-                         @RequestParam(value = "search",required = false) String search,
+                         @RequestParam(value = "search") String search,
                          @RequestParam(value = "customerName") String customerName) {
         List<TsSytech> tsSytechList = tsSytechService.selectSytechList(diseaseId, syndromeId, search, customerName);
         return Result.success(tsSytechList);
