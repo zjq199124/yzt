@@ -12,6 +12,6 @@ import java.util.List;
 @Mapper
 @Repository
 public interface TsSytechMapper extends BaseMapper<TsSytech> {
-    List<TsSytech> selectSytechList(@Param("diseaseId") Long diseaseId, @Param("syndromeId") Long syndromeId, @Param("search") String search, @Param("customerName") String customerName);
+    List<TsSytech> selectSytechList(@Param("diseaseId") Long diseaseId, @Param("syndromeId") Long syndromeId, @Param("search") String search);
 
 }

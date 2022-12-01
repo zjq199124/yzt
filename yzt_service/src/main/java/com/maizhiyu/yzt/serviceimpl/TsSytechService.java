@@ -63,7 +63,8 @@ public class TsSytechService implements ITsSytechService {
     }
 
     @Override
-    public List<TsSytech> selectSytechList(Long diseaseId, Long syndromeId, String search, String customerName) {
-        return mapper.selectSytechList(diseaseId,syndromeId,search,customerName);
+    public List<TsSytech> selectSytechList(Long diseaseId, Long syndromeId, String search) {
+        List<TsSytech> tsSytechList = mapper.selectSytechList(diseaseId, syndromeId, search);
+        return tsSytechList;
     }
 }

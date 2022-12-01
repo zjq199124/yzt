@@ -15,13 +15,13 @@
     <select id="selectSytechList" resultType="com.maizhiyu.yzt.entity.TsSytech">
         select distinct ts.* from ts_sytech ts
         inner join sch_sytech ss on ts.id = ss.sytech_id and ss.status = 1
-        <if test="customerName != null and customerName != ''">
-            inner join ms_customer mc on ss.customer_id = mc.id and mc.status = 1 and mc.username = #{customerName}
-        </if>
         where ts.status = 1
+        and ss.customer_id is null
         and ss.disease_id = #{diseaseId}
         and ss.syndrome_id = #{syndromeId}
-        and ts.name like concat('%',#{search},'%')
+        <if test="search != null and search != ''">
+            and ts.name like concat('%',#{search},'%')
+        </if>
     </select>
 
 </mapper>

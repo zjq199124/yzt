@@ -25,16 +25,13 @@ public class SchSytechController {
     @Resource
     private FeignYptClient yptClient;
 
-    @Value("${customer.name}")
-    private String customerName;
-
     @ApiOperation(value = "获取符合适宜技术列表", notes = "获取适宜技术列表")
     @GetMapping("/getSytechList")
     public Result getSytechList(@RequestParam Long diseaseId,
                                 @RequestParam Long syndromeId,
-                               @RequestParam String search) {
+                               @RequestParam(required = false) String search) {
         // 调用开放接口获取诊断推荐
-        Result recommendResult = yptClient.getSytechList(diseaseId,syndromeId,search,customerName);
+        Result recommendResult = yptClient.getSytechList(diseaseId,syndromeId,search);
         return Result.success(recommendResult.getData());
     }
 

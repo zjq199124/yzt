@@ -10,6 +10,7 @@ import com.maizhiyu.yzt.bean.axo.BuOutpatientXO;
 import com.maizhiyu.yzt.bean.axo.BuPatientXO;
 import com.maizhiyu.yzt.bean.axo.HsUserXO;
 import com.maizhiyu.yzt.result.Result;
+import jdk.internal.org.objectweb.asm.tree.analysis.Value;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -77,8 +78,7 @@ public interface FeignYptClient {
     @GetMapping("/schtech/getSytechList")
     Result getSytechList(@RequestParam(value = "diseaseId") Long diseaseId,
                          @RequestParam(value = "syndromeId") Long syndromeId,
-                         @RequestParam(value = "search") String search,
-                         @RequestParam(value = "customerName") String customerName);
+                         @RequestParam(value = "search") String search);
 
     @GetMapping("/schtech/getSytechBySytechId")
     Result getSytechBySytechId(@RequestParam(value = "diseaseId") Long diseaseId,

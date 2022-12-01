@@ -18,5 +18,5 @@ public interface ITsSytechService {
 
     public List<TsSytech> getSytechList(Integer status, String term, Integer display);
 
-    List<TsSytech> selectSytechList(Long diseaseId, Long syndromeId, String search, String customerName);
+    List<TsSytech> selectSytechList(Long diseaseId, Long syndromeId, String search);
 }
