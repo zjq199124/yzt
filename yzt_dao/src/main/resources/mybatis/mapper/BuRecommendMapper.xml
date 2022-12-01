@@ -210,7 +210,7 @@
         ss.operation,
         ss.recommend,
         ss.syndrome_id,
-        ss.sytech_id,
+        ss.sytech_id as sytechId,
         ds.NAME AS syndromeName,
         dd.content AS disease_name,
         ts.name name

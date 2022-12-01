@@ -46,8 +46,8 @@ public class SchSytechService implements ISchSytechService {
     }
 
     @Override
-    public List<Map<String, Object>> getSytechBySytechId(Long diseaseId, Long syndromeId, Long sytechId) {
-        List<Map<String, Object>> list = mapper.getSytechBySytechId(sytechId, diseaseId, syndromeId);
-        return list;
+    public Map<String, Object> getSytechBySytechId(Long diseaseId, Long syndromeId, Long sytechId) {
+        Map<String, Object> map = mapper.getSytechBySytechId(sytechId, diseaseId, syndromeId);
+        return map;
     }
 }

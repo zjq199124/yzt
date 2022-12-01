@@ -17,5 +17,5 @@ public interface ISchSytechService {
 
     public List<Map<String,Object>> getSytechList(Long sytechId, Long diseaseId, Integer status, String term);
 
-    public List<Map<String, Object>> getSytechBySytechId(Long diseaseId, Long syndromeId, Long sytechId);
+    public Map<String, Object> getSytechBySytechId(Long diseaseId, Long syndromeId, Long sytechId);
 }

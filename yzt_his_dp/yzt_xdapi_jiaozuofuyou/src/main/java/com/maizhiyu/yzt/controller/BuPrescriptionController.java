@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 
 
 @Slf4j
-@Api(tags = "HIS处方接口")
+@Api(tags = "云平台处方接口")
 @RestController
 @RequestMapping("/prescription")
 public class BuPrescriptionController {

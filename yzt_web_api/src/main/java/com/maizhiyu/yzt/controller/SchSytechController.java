@@ -43,7 +43,7 @@ public class SchSytechController {
                                @RequestParam(value = "syndromeId") Long syndromeId,
                                @RequestParam(value = "sytechId") Long sytechId) {
 
-        List<Map<String, Object>> resultMap = schSytechService.getSytechBySytechId(diseaseId, syndromeId, sytechId);
+        Map<String, Object> resultMap = schSytechService.getSytechBySytechId(diseaseId, syndromeId, sytechId);
         return Result.success(resultMap);
     }
 }

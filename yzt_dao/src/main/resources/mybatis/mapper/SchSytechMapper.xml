@@ -47,6 +47,7 @@
         </where>
         order by disease_name
     </select>
+
     <select id="getSytechBySytechId" resultType="java.util.Map">
         SELECT
             ss.id,
@@ -68,9 +69,11 @@
                 LEFT JOIN dict_disease dd ON ss.disease_id = dd.id
                 AND dd.STATUS = 1
         WHERE
-              ss.sytech_id = #{sytechId}
-            AND ss.disease_id = #{diseaseId}
-            AND ss.syndrome_id = #{syndromeId}
+            ss.sytech_id = #{sytechId}
+          AND ss.disease_id = #{diseaseId}
+          AND ss.syndrome_id = #{syndromeId}
+        limit 1
     </select>
+
 
 </mapper>

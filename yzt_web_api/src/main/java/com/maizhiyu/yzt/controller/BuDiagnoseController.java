@@ -209,7 +209,7 @@ public class BuDiagnoseController {
         if (shiyiList != null) {
             for (Map<String, Object> map : shiyiList) {
                 BuDiagnoseVO.ShiyiVO vo = new BuDiagnoseVO.ShiyiVO();
-                vo.setSytechId(Objects.isNull(map.get("sytech_id")) ? null : Long.valueOf(map.get("sytech_id").toString()));
+                vo.setSytechId(Objects.isNull(map.get("sytechId")) ? null : Long.valueOf(map.get("sytechId").toString()));
                 vo.setName(((String) map.getOrDefault("name", "")));
                 vo.setSymptoms(((String) map.getOrDefault("symptoms", "")));
                 vo.setSyndromeName(((String) map.getOrDefault("syndromeName", "")));
