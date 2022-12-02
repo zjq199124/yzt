@@ -10,7 +10,6 @@ import com.maizhiyu.yzt.bean.axo.BuOutpatientXO;
 import com.maizhiyu.yzt.bean.axo.BuPatientXO;
 import com.maizhiyu.yzt.bean.axo.HsUserXO;
 import com.maizhiyu.yzt.result.Result;
-import jdk.internal.org.objectweb.asm.tree.analysis.Value;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

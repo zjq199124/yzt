@@ -1,6 +1,8 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.maizhiyu.yzt.entity.BuPrescriptionItem;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemMapper;
 import com.maizhiyu.yzt.service.IBuPrescriptionItemService;
@@ -40,5 +42,13 @@ public class BuPrescriptionItemService implements IBuPrescriptionItemService {
         QueryWrapper<BuPrescriptionItem> wrapper = new QueryWrapper<>();
         wrapper.eq("prescription_id", prescriptionId);
         return mapper.selectList(wrapper);
+    }
+
+    @Override
+    public void deleteByIdList(List<Long> deleteIdList) {
+        LambdaUpdateWrapper<BuPrescriptionItem> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.set(BuPrescriptionItem::getIsDel, 1)
+                .in(BuPrescriptionItem::getId, deleteIdList);
+        mapper.update(null,updateWrapper);
     }
 }

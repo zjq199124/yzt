@@ -142,6 +142,9 @@ public class BuPrescriptionRO {
         @ApiModelProperty(value="注意事项")
         private String attention;
 
+        @ApiModelProperty(value = "编辑前的处方条目表id")
+        private List<Long> preItemIdList;
+
         @ApiModelProperty(value="子项列表")
         private List<BuPrescriptionItemShiyi> itemList;
 

@@ -212,7 +212,7 @@
         ss.syndrome_id,
         ss.sytech_id as sytechId,
         ds.NAME AS syndromeName,
-        dd.content AS disease_name,
+        dd.content AS diseaseName,
         ts.name name
         FROM
         sch_sytech ss
@@ -240,8 +240,8 @@
             ss.customer_id IS NOT NULL
             OR ( ss.customer_id IS NULL AND ss.recommend = 1 )
         )
-        ORDER BY
-        ss.syndrome_id
+        GROUP BY ss.sytech_id
+        ORDER BY ss.syndrome_id
     </select>
 
 </mapper>

@@ -142,6 +142,9 @@ public class BuPrescriptionRO implements Serializable {
         @ApiModelProperty(value = "诊断相关信息")
         private DiagnoseInfo diagnoseInfo;
 
+        @ApiModelProperty(value = "编辑前的处方条目表id")
+        private List<Long> preItemIdList;
+
         @ApiModelProperty(value="子项列表")
         private List<BuPrescriptionItemShiyi> itemList;
 

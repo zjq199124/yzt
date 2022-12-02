@@ -15,4 +15,6 @@ public interface IBuPrescriptionItemService {
     Integer setPrescriptionItem(BuPrescriptionItem item);
 
     List<BuPrescriptionItem> getPrescriptionItemList(Long prescriptionId);
+
+    void deleteByIdList(List<Long> deleteIdList);
 }
