@@ -1,11 +1,4 @@
 
-### 服务配置 ###
-server:
-  port: 8083
-  session:
-    timeout: 7200
-  context-path: /ms/api
-#env: stg
 
 
 ### spring ###

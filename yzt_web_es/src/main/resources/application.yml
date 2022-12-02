@@ -2,6 +2,11 @@ spring:
   profiles:
     active: local,utils-prod
 
+server:
+  port: 10089
+  session:
+    timeout: 7200
+  context-path: /es/api
 
 oss:
   endpoint: "oss-cn-hangzhou.aliyuncs.com"

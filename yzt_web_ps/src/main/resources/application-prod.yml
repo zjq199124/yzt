@@ -1,8 +1,4 @@
-server:
-  port: 8093
-  session:
-    timeout: 7200
-#  context-path: /manage
+
 
 # mybatis 配置
 mybatis:

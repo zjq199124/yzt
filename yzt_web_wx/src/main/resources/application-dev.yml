@@ -1,10 +1,4 @@
-server:
-  port: 8083
-  session:
-    timeout: 7200
-  servlet:
-    context-path: //api
-env: stg
+
 # mybatis 配置
 mybatis:
   # mybatis配置文件所在路径

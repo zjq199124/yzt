@@ -2,7 +2,13 @@ spring:
   profiles:
     active: local
 
-
+### 服务配置 ###
+server:
+  port: 10082
+  session:
+    timeout: 7200
+  context-path: /hs/api
+#env: stg
 
 oss:
   endpoint: "oss-cn-hangzhou.aliyuncs.com"
@@ -13,5 +19,5 @@ oss:
   privateBucket: "yzt-equipment"
   privateBucketUrl: "https://yzt-equipment.oss-cn-hangzhou.aliyuncs.com"
   expiration: "30"
-  styleWatermark: "一真"
+  styleWatermark: "一真堂"
   styleMicro: "一真"
