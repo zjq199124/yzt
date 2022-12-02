@@ -1,11 +1,7 @@
 
 ### 服务配置 ###
 server:
-<<<<<<< HEAD
   port: 8085
-=======
-  port: 8087
->>>>>>> 8d6d1a14e75ab7fb26343af8ebbd2dd47e09c58c
   session:
     timeout: 7200
   servlet:
