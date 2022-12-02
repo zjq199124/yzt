@@ -1,7 +1,6 @@
 package com.maizhiyu.yzt.controller;
 
 import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.ObjectUtil;
 import com.maizhiyu.yzt.bean.aci.HisDoctorCI;
 import com.maizhiyu.yzt.bean.aci.HisOutpatientCI;
 import com.maizhiyu.yzt.bean.aci.HisPatientCI;
@@ -21,7 +20,6 @@ import com.maizhiyu.yzt.serviceimpl.YptTreatmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;

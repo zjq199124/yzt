@@ -1,6 +1,5 @@
 package com.maizhiyu.yzt.bean.aro;
 
-import com.maizhiyu.yzt.bean.aro.BasicPagerRO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
