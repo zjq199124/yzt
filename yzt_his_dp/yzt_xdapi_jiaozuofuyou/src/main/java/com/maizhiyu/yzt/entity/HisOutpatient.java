@@ -17,11 +17,12 @@ import java.util.Date;
 @Data
 @Accessors(chain=true)
 @TableName("ypt_Registration")
+//@TableName("his_outpatient")
 @ApiModel(description="门诊预约表")
 public class HisOutpatient implements Serializable {
 
     @TableId
-    @ApiModelProperty(value="预约ID")
+    @ApiModelProperty(value="预约ID(outpatientId)")
     @TableField(value = "code")
     private String code;
 
@@ -29,10 +30,10 @@ public class HisOutpatient implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Shanghai")
     private Date time;
 
-    @ApiModelProperty(value="医生ID")
+    @ApiModelProperty(value="his端医生ID")
     private String doctorId;
 
-    @ApiModelProperty(value="患者ID")
+    @ApiModelProperty(value="his端患者ID")
     private String patientId;
 
 }

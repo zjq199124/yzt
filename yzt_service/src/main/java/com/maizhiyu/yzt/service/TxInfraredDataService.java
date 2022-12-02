@@ -6,6 +6,7 @@ import com.maizhiyu.yzt.entity.TxInfraredData;
 import com.maizhiyu.yzt.vo.InfraredCheckVO;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,8 +20,8 @@ public interface TxInfraredDataService extends IService<TxInfraredData> {
      * 保存红外检测数据
      *
      * @param txInfraredData 检测数据
-     * @param inputStream 检测文件流
-     * @param file  文件名
+     * @param inputStream    检测文件流
+     * @param file           文件名
      * @return
      */
     TxInfraredData saveTxInfrareData(TxInfraredData txInfraredData, InputStream inputStream, String file);
@@ -35,13 +36,12 @@ public interface TxInfraredDataService extends IService<TxInfraredData> {
     Map<String, Object> getCheckAndDate(String mobile, String idCard);
 
     /**
-     *
-     * @param part 部位
-     * @param date 数据日期
+     * @param part       部位
+     * @param firstDate  第一个数据日期
+     * @param secondDate 第二个数据日期
      * @return
      */
-    InfraredCheckVO getInfrareDateCheck(String part,String date);
-
+    List<InfraredCheckVO> getInfrareDateCheck(String part, String firstDate, String secondDate);
 
 
 }

@@ -15,7 +15,7 @@ import java.util.Map;
 @Repository
 public interface DictSyndromeMapper extends BaseMapper<DictSymptom> {
 
-    List<DictSyndrome> selectByDiseaseId(@Param("diseaseId") Long diseaseId);
+    List<DictSyndrome> selectByDiseaseId(@Param("diseaseId") Long diseaseId, @Param("search") String search);
 
     List<DictSyndrome> selectDictSyndromeBySymptomIdList(@Param("symptomIdList") List<Long> symptomIdList);
 }

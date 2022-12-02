@@ -52,6 +52,13 @@ public interface SysMultimediaService extends IService<SysMultimedia> {
      */
     String getFileUrlByid(Serializable id);
 
+    /**
+     * 以id获取多媒体数据详情
+     * @param id
+     * @return
+     */
+    SysMultimedia getMultimedia(Serializable id);
+
 
 }
 

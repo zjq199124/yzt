@@ -9,10 +9,13 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class BuPrescriptionRO {
+public class BuPrescriptionRO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Data
     @ApiModel
@@ -120,7 +123,9 @@ public class BuPrescriptionRO {
     @Data
     @ApiModel
     @Validated
-    public static class AddPrescriptionShiyi {
+    public static class AddPrescriptionShiyi implements Serializable{
+
+        private static final long serialVersionUID = 1L;
 
         @ApiModelProperty(value="云平台中处方ID")
         private String id;
@@ -177,8 +182,8 @@ public class BuPrescriptionRO {
             @ApiModelProperty(value = "云平台疾病名称")
             private String disease;
 
-            @ApiModelProperty("分型id,多个使用‘，’分割")
-            private String syndromeIds;
+            @ApiModelProperty("分型id")
+            private String syndromeId;
 
             @ApiModelProperty("分型名称")
             private String syndrome;
@@ -294,6 +299,12 @@ public class BuPrescriptionRO {
         @NotBlank
         @ApiModelProperty(value="名称")
         private String name;
+
+        @ApiModelProperty(value = "所属适宜技术id")
+        private Long entityId;
+
+        @ApiModelProperty(value = "客户customerId，通过customerId的有无判断是协定方还是适宜技术")
+        private Long customerId;
 
         @ApiModelProperty(value="详情")
         private String detail;

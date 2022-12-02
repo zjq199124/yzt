@@ -6,8 +6,11 @@ import com.maizhiyu.yzt.bean.aro.BuDiagnoseRO;
 import com.maizhiyu.yzt.bean.avo.BuDiagnoseVO;
 import com.maizhiyu.yzt.bean.avo.DictSymptomVo;
 import com.maizhiyu.yzt.bean.avo.DictSyndromeVo;
-import com.maizhiyu.yzt.entity.JzfyDiseaseMapping;
+import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.feign.FeignYptClient;
+import com.maizhiyu.yzt.mapperhis.HisDoctorMapper;
+import com.maizhiyu.yzt.mapperhis.HisOutpatientMapper;
+import com.maizhiyu.yzt.mapperhis.HisPatientMapper;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.JzfyDiseaseMappingService;
 import com.maizhiyu.yzt.service.JzfyMedicantMappingService;
@@ -16,15 +19,14 @@ import com.maizhiyu.yzt.serviceimpl.YptDiseaseService;
 import com.maizhiyu.yzt.serviceimpl.YptMedicantService;
 import com.maizhiyu.yzt.serviceimpl.YptTreatmentService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -58,6 +60,15 @@ public class BuDiagnoseController {
 
     @Resource
     private JzfyDiseaseMappingService jzfyDiseaseMappingService;
+
+    @Resource
+    private HisOutpatientMapper outpatientMapper;
+
+    @Resource
+    private HisPatientMapper hisPatientMapper;
+
+    @Resource
+    private HisDoctorMapper hisDoctorMapper;
 
     @Value("${customer.name}")
     private String customerName;
@@ -317,10 +328,12 @@ public class BuDiagnoseController {
             ro.setDiseaseId(jzfyDiseaseMapping.getDiseaseId());
         }
 
-        //先查询下这次挂号看病是否已经有保存诊断信息和治疗处方
-        Result result = yptClient.getDetail(ro);
-        if(Objects.nonNull(result.getData()))
-            return result;
+        //在没有分型syndromeIdList以及没有症状集合symptomIdList先查询下这次挂号看病是否已经有保存诊断信息和治疗处方
+        if (CollectionUtils.isEmpty(ro.getSymptomIdList()) && CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
+            Result result = yptClient.getDetail(ro);
+            if(Objects.nonNull(result.getData()))
+                return result;
+        }
 
         //2.没有syndromeIdList的情况下，判断是否有传症状集合symptomIdList，没有的话通过Feign远程调用云平台中获取疾病所有症状的接口
         if (CollectionUtils.isEmpty(ro.getSyndromeIdList()) && CollectionUtils.isEmpty(ro.getSymptomIdList())) {
@@ -355,5 +368,34 @@ public class BuDiagnoseController {
         resultMap.put("prescriptionItemList", Collections.emptyList());
 
         return Result.success(resultMap);
+    }
+
+    @ApiOperation(value = "获取门诊诊断和患者信息", notes = "获取门诊诊断和患者信息")
+    @ApiImplicitParam(name = "outpatientId", value = "门诊ID", required = true)
+    @GetMapping("/getDiagnoseOfOutpatient")
+    public Result getDiagnoseOfOutpatient(Long outpatientId) throws Exception {
+        Assert.notNull(outpatientId, "outpatientId不能为空!");
+        HisOutpatient hisOutpatient = outpatientMapper.selectById(outpatientId);
+        if(Objects.isNull(hisOutpatient))
+            throw new Exception("不存在outpatientId为: " + outpatientId + " 的门诊信息!");
+
+        HisPatient hisPatient = hisPatientMapper.selectById(hisOutpatient.getPatientId());
+        if(Objects.isNull(hisPatient))
+            throw new Exception("不存在outpatientId为: " + outpatientId + " 对应的患者的信息!");
+
+        HisDoctor hisDoctor = hisDoctorMapper.selectById(hisOutpatient.getDoctorId());
+        if(Objects.isNull(hisDoctor))
+            throw new Exception("不存在outpatientId为: " + outpatientId + " 的此次门诊对应的医生信息!");
+
+        Result idResult = yptClient.getYptOutpatientByHisId(outpatientId);
+
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("hisOutpatient", hisOutpatient);
+        result.put("hisPatient", hisPatient);
+        result.put("hisDoctor", hisDoctor);
+        result.put("yptOutpatientId", idResult.getData());
+
+        return Result.success(result);
     }
 }

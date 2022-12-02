@@ -15,6 +15,9 @@
         SELECT ds.id,ds.name FROM dict_syndrome ds
         INNER JOIN rel_disease_syndrome rds ON ds.id = rds.syndrome_id AND rds.is_del = 0
         WHERE  rds.disease_id = #{diseaseId} AND ds.is_del = 0
+        <if test="search != null and search != ''">
+            and ds.name like concat('%',#{search},'%')
+        </if>
     </select>
     <select id="selectDictSyndromeBySymptomIdList" resultType="com.maizhiyu.yzt.entity.DictSyndrome">
         SELECT DISTINCT ds.id,ds.name FROM dict_syndrome ds

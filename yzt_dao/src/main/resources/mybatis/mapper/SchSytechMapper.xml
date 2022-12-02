@@ -2,6 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.maizhiyu.yzt.mapper.SchSytechMapper">
 
+    <resultMap id="SchSytechMap" type="com.maizhiyu.yzt.entity.SchSytech">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="diseaseId" column="disease_id" jdbcType="VARCHAR"/>
+        <result property="syndromeId" column="syndrome_id" jdbcType="VARCHAR"/>
+        <result property="sytechId" column="sytech_id" jdbcType="BIGINT"/>
+        <result property="customerId" column="customer_id" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="detail" column="detail" jdbcType="VARCHAR"/>
+        <result property="operation" column="operation" jdbcType="VARCHAR"/>
+        <result property="recommend" column="recommend" jdbcType="INTEGER"/>
+        <result property="syndromeName" column="syndromeName" jdbcType="VARCHAR"/>
+        <result property="diseaseName" column="diseaseName" jdbcType="VARCHAR"/>
+    </resultMap>
+
     <select id="selectSytechList" resultType="hashmap">
         select
             X.id, X.status, X.disease_id, X.syndrome_id, X.name, X.detail, X.operation,
@@ -32,5 +47,33 @@
         </where>
         order by disease_name
     </select>
+
+    <select id="getSytechBySytechId" resultType="java.util.Map">
+        SELECT
+            ss.id,
+            ss.disease_id AS diseaseId,
+            ss.syndrome_id AS syndromeId,
+            ss.sytech_id as sytechId,
+            ss.detail,
+            ss.operation,
+            ss.recommend,
+            ds.name AS syndromeName,
+            dd.content AS diseaseName,
+            ts.name
+        FROM
+            sch_sytech ss
+                INNER JOIN ts_sytech ts ON ss.sytech_id = ts.id
+                AND ts.STATUS = 1
+                LEFT JOIN dict_syndrome ds ON ss.syndrome_id = ds.id
+                AND ds.is_del = 0
+                LEFT JOIN dict_disease dd ON ss.disease_id = dd.id
+                AND dd.STATUS = 1
+        WHERE
+            ss.sytech_id = #{sytechId}
+          AND ss.disease_id = #{diseaseId}
+          AND ss.syndrome_id = #{syndromeId}
+        limit 1
+    </select>
+
 
 </mapper>

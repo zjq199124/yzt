@@ -134,7 +134,7 @@ public class MsCustomerService implements IMsCustomerService {
     @Override
     public MsCustomer getCustomerByName(String customerName) {
         LambdaQueryWrapper<MsCustomer> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(MsCustomer::getName, customerName)
+        queryWrapper.eq(MsCustomer::getUsername, customerName)
                 .eq(MsCustomer::getStatus, 1)
                 .orderByDesc(MsCustomer::getUpdateTime)
                 .last("limit 1");

@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.maizhiyu.yzt.entity.SchSytech;
 import com.maizhiyu.yzt.mapper.SchSytechMapper;
 import com.maizhiyu.yzt.service.ISchSytechService;
@@ -42,5 +43,11 @@ public class SchSytechService implements ISchSytechService {
     public List<Map<String, Object>> getSytechList(Long sytechId, Long diseaseId, Integer status, String term) {
         List<Map<String, Object>> list = mapper.selectSytechList(sytechId, diseaseId, status, term);
         return list;
+    }
+
+    @Override
+    public Map<String, Object> getSytechBySytechId(Long diseaseId, Long syndromeId, Long sytechId) {
+        Map<String, Object> map = mapper.getSytechBySytechId(sytechId, diseaseId, syndromeId);
+        return map;
     }
 }

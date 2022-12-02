@@ -8,6 +8,7 @@ import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.mapper.*;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.BuDiagnoseRO;
+import com.maizhiyu.yzt.service.IBuCheckService;
 import com.maizhiyu.yzt.service.IBuDiagnoseService;
 import com.maizhiyu.yzt.service.IBuRecommendService;
 import com.maizhiyu.yzt.service.IDictSyndromeService;
@@ -55,6 +56,9 @@ public class BuDiagnoseService implements IBuDiagnoseService {
 
     @Resource
     private HsUserMapper hsUserMapper;
+
+    @Resource
+    private IBuCheckService buCheckService;
 
     @Resource
     private IDictSyndromeService dictSyndromeService;
@@ -172,9 +176,8 @@ public class BuDiagnoseService implements IBuDiagnoseService {
                 .last("limit 1");
         BuOutpatient buOutpatient = outpatientMapper.selectOne(buOutpatientQueryWrapper);
 
-        if (Objects.isNull(buOutpatient)) {
+        if (Objects.isNull(buOutpatient))
             throw new Exception("云平台中不存在his方outpatientId为： " + ro.getOutpatientId() + " 患者预约信息!");
-        }
 
         //1：查询是否有诊断信息
         LambdaQueryWrapper<BuDiagnose> queryWrapper = new LambdaQueryWrapper<>();
@@ -224,10 +227,9 @@ public class BuDiagnoseService implements IBuDiagnoseService {
         }
 
         //3.1:查询这个疾病下的所有的分型列表
-        List<Long> syndromeIdList = Collections.emptyList();//保存最终用来查询推荐方案所有用的分型数据
-        List<DictSyndromeVo> dictSyndromeVoList = Collections.emptyList();
+        List<DictSyndromeVo> dictSyndromeVoList = Collections.emptyList();//保存所有的分型
 
-        List<DictSyndrome> dictSyndromeList = dictSyndromeMapper.selectByDiseaseId(ro.getDiseaseId());
+        List<DictSyndrome> dictSyndromeList = dictSyndromeMapper.selectByDiseaseId(ro.getDiseaseId(),null);
         if (CollectionUtils.isEmpty(dictSyndromeList)) {
             //疾病分型数据集合
             resultMap.put("dictSyndromeList", Collections.emptyList());
@@ -244,31 +246,24 @@ public class BuDiagnoseService implements IBuDiagnoseService {
                         item.setIsCheck(1);
                     }
                 });
-                syndromeIdList.add(buDiagnose.getSyndromeId());
-            } else {
-                //3.2通过上面选中的症状推出选中的分型有哪些 标记出之前的诊断保存时所选的分型
-                List<Long> symptomIdList = getSymptomIdList(buDiagnose);
-                if (!CollectionUtils.isEmpty(symptomIdList)) {
-                    List<DictSyndromeVo> checkDictSyndromeVoList = dictSyndromeService.selectDictSyndromeBySymptomIdList(symptomIdList);
-                    if (!CollectionUtils.isEmpty(checkDictSyndromeVoList)) {
-                        List<Long> dictSyndromeVoIdList = checkDictSyndromeVoList.stream().map(DictSyndromeVo::getId).collect(Collectors.toList());
-                        dictSyndromeVoList.forEach(item -> {
-                            if (dictSyndromeVoIdList.contains(buDiagnose.getSyndromeId())) {
-                                item.setIsCheck(1);
-                            }
-                        });
-                    }
-                    syndromeIdList = checkDictSyndromeVoList.stream().map(DictSyndromeVo::getId).collect(Collectors.toList());
+            }
+
+            //3.2通过上面选中的症状推出选中的分型有哪些 标记出之前的诊断保存时所选的分型
+            List<Long> symptomIdList = getSymptomIdList(buDiagnose);
+            if (!CollectionUtils.isEmpty(symptomIdList)) {
+                List<DictSyndromeVo> checkDictSyndromeVoList = dictSyndromeService.selectDictSyndromeBySymptomIdList(symptomIdList);
+                if (!CollectionUtils.isEmpty(checkDictSyndromeVoList)) {
+                    List<Long> checkDictSyndromeVoIdList = checkDictSyndromeVoList.stream().map(DictSyndromeVo::getId).collect(Collectors.toList());
+                    dictSyndromeVoList.forEach(item -> {
+                        if (checkDictSyndromeVoIdList.contains(item.getId())) {
+                            item.setIsShow(1);
+                        }
+                    });
                 }
             }
             //疾病分型数据集合
             resultMap.put("dictSyndromeList", dictSyndromeVoList);
         }
-
-        if (CollectionUtils.isEmpty(syndromeIdList)) {
-            syndromeIdList = dictSyndromeVoList.stream().map(DictSyndromeVo::getId).collect(Collectors.toList());
-        }
-
 
         //4：查询出已经保存的处方
         LambdaQueryWrapper<BuPrescription> prescriptionQueryWrapper = new LambdaQueryWrapper<>();
@@ -302,6 +297,16 @@ public class BuDiagnoseService implements IBuDiagnoseService {
         }
 
         //6：查询需要推荐的适宜技术
+        List<Long> syndromeIdList = ro.getSyndromeIdList();
+        if (CollectionUtils.isEmpty(syndromeIdList)) {
+            syndromeIdList = dictSyndromeVoList.stream().filter(item -> item.getIsCheck() == 1).map(DictSyndromeVo::getId).collect(Collectors.toList());
+        }else if (CollectionUtils.isEmpty(syndromeIdList)) {
+            syndromeIdList  = dictSyndromeVoList.stream().filter(item -> item.getIsShow() == 1).map(DictSyndromeVo::getId).collect(Collectors.toList());
+
+        }else if (CollectionUtils.isEmpty(syndromeIdList)) {
+            syndromeIdList = dictSyndromeVoList.stream().map(DictSyndromeVo::getId).collect(Collectors.toList());
+        }
+
         BuDiagnoseRO.GetRecommendRO recommendRo = new BuDiagnoseRO.GetRecommendRO();
         recommendRo.setDiseaseId(buDiagnose.getDiseaseId());
         recommendRo.setCustomerName(ro.getCustomerName());
@@ -313,7 +318,7 @@ public class BuDiagnoseService implements IBuDiagnoseService {
     }
 
     private List<Long> getSymptomIdList(BuDiagnose buDiagnose) {
-        if (StringUtils.isNotBlank(buDiagnose.getSymptomIds()))
+        if (StringUtils.isBlank(buDiagnose.getSymptomIds()))
             return Collections.emptyList();
 
         return Splitter.on(',').trimResults().splitToList(buDiagnose.getSymptomIds()).stream().map(str -> Long.valueOf(str)).collect(Collectors.toList());

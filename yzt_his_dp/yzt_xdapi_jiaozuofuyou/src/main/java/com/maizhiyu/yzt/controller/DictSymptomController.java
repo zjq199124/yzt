@@ -76,7 +76,7 @@ public class DictSymptomController {
                 Result<List<DictSymptomVo>> dictSymptomResult = feignYptClient.selectDictSymptomList(jzfyDiseaseMapping.getDiseaseId());
 
                 //3.通过Feign远程调用云平台中获取疾病所有分型的接口
-                Result<List<DictSyndromeVo>> dictSyndromeResult = feignYptClient.selectDictSyndromeListByDiseaseId(jzfyDiseaseMapping.getDiseaseId());
+                Result<List<DictSyndromeVo>> dictSyndromeResult = feignYptClient.selectDictSyndromeListByDiseaseId(jzfyDiseaseMapping.getDiseaseId(),null);
 
                 Map<String, Object> resultMap = new HashMap<>();
                 //疾病症状数据集合

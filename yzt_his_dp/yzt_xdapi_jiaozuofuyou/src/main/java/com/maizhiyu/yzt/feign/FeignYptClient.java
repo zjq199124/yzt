@@ -10,6 +10,7 @@ import com.maizhiyu.yzt.bean.axo.BuOutpatientXO;
 import com.maizhiyu.yzt.bean.axo.BuPatientXO;
 import com.maizhiyu.yzt.bean.axo.HsUserXO;
 import com.maizhiyu.yzt.result.Result;
+import jdk.internal.org.objectweb.asm.tree.analysis.Value;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +24,7 @@ import java.util.List;
 public interface FeignYptClient {
 
     @PostMapping(value = "/login")
-    feign.Response login(@RequestParam("username") String username, @RequestParam("password") String password);
+    feign.Response login(@RequestParam(value = "username") String username, @RequestParam(value = "password") String password);
 
     @PostMapping(value = "/diagnose/getRecommend")
     Result<BuDiagnoseVO.GetRecommendVO> getRecommend(@RequestBody BuDiagnoseRO.GetRecommendRO ro);
@@ -50,16 +51,17 @@ public interface FeignYptClient {
     Result<Integer> addPrescriptionShiyi(@RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro);
 
     @GetMapping(value = "/dictSymptom/list")
-    Result<List<DictSymptomVo>> selectDictSymptomList(@RequestParam Long diseaseId);
+    Result<List<DictSymptomVo>> selectDictSymptomList(@RequestParam(value = "diseaseId") Long diseaseId);
 
     @GetMapping(value = "/dictSyndrome/list")
-    Result<List<DictSyndromeVo>> selectDictSyndromeListByDiseaseId(@RequestParam Long diseaseId);
+    Result<List<DictSyndromeVo>> selectDictSyndromeListByDiseaseId(@RequestParam(value = "diseaseId") Long diseaseId,
+                                                                   @RequestParam(value = "search") String search);
 
     @PostMapping(value = "/dictSyndrome/selectBySymptom")
     Result<List<DictSyndromeVo>> selectDictSyndromeBySymptomIdList(@RequestBody List<Long> symptomIdList);
 
     @PostMapping(value = "/sytech/getRecommend")
-    Result getSytechRecommend(@RequestParam Long diseaseId,@RequestParam Long syndromeId,@RequestParam String term);
+    Result getSytechRecommend(@RequestParam(value = "diseaseId") Long diseaseId,@RequestParam(value = "syndromeId",required = false) Long syndromeId,@RequestParam(value = "term",required = false) String term);
 
     @PostMapping(value = "/relSyndromeSymptom/selectBySyndromeIds")
     Result<List<RelSyndromeSymptomVo>> selectDictSymptomBySyndromeIdList(@RequestBody List<Long> syndromeIds);
@@ -69,6 +71,19 @@ public interface FeignYptClient {
 
     @PostMapping(value = "/diagnose/getDetail")
     Result getDetail(@RequestBody BuDiagnoseRO.GetRecommendRO ro);
+
+    @GetMapping(value = "/diagnose/getYptOutpatient")
+    Result getYptOutpatientByHisId(@RequestParam(value = "outpatientId") Long outpatientId);
+
+    @GetMapping("/schtech/getSytechList")
+    Result getSytechList(@RequestParam(value = "diseaseId") Long diseaseId,
+                         @RequestParam(value = "syndromeId") Long syndromeId,
+                         @RequestParam(value = "search") String search);
+
+    @GetMapping("/schtech/getSytechBySytechId")
+    Result getSytechBySytechId(@RequestParam(value = "diseaseId") Long diseaseId,
+                               @RequestParam(value = "syndromeId") Long syndromeId,
+                               @RequestParam(value = "sytechId") Long sytechId);
 }
 
 

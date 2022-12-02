@@ -300,6 +300,12 @@ public class BuPrescriptionRO {
         @ApiModelProperty(value="名称")
         private String name;
 
+        @ApiModelProperty(value = "客户customerId，通过customerId的有无判断是协定方还是适宜技术")
+        private Long customerId;
+
+        @ApiModelProperty(value = "所属适宜技术id")
+        private Long entityId;
+
         @ApiModelProperty(value="详情")
         private String detail;
 

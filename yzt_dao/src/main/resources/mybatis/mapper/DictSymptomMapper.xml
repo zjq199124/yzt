@@ -15,6 +15,6 @@
         INNER JOIN rel_disease_syndrome rds ON rss.syndrome_id = rds.syndrome_id AND rds.is_del = 0
         WHERE  rds.disease_id = #{diseaseId} AND ds.status = 1
         GROUP BY ds.id
-        ORDER BY total DESC
+        ORDER BY total
     </select>
 </mapper>

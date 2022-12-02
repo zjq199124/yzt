@@ -4,29 +4,19 @@ import cn.hutool.core.lang.Assert;
 import com.maizhiyu.yzt.aro.BuPrescriptionRO;
 import com.maizhiyu.yzt.avo.BuDiagnoseVO;
 import com.maizhiyu.yzt.entity.BuDiagnose;
-import com.maizhiyu.yzt.entity.BuMedicant;
+import com.maizhiyu.yzt.entity.BuOutpatient;
 import com.maizhiyu.yzt.entity.MsCustomer;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.BuDiagnoseRO;
-import com.maizhiyu.yzt.service.IBuDiagnoseService;
-import com.maizhiyu.yzt.service.IBuMedicantService;
-import com.maizhiyu.yzt.service.IBuRecommendService;
-import com.maizhiyu.yzt.service.IMsCustomerService;
-import com.maizhiyu.yzt.serviceimpl.MsCustomerService;
+import com.maizhiyu.yzt.service.*;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 @Slf4j
@@ -46,6 +36,9 @@ public class BuDiagnoseController {
 
     @Resource
     private IBuDiagnoseService diagnoseService;
+
+    @Resource
+    private IBuOutpatientService buOutpatientService;
 
     @ApiOperation(value = "获取诊断方案推荐", notes = "获取诊断方案推荐")
     @PostMapping("/getRecommend")
@@ -216,12 +209,13 @@ public class BuDiagnoseController {
         if (shiyiList != null) {
             for (Map<String, Object> map : shiyiList) {
                 BuDiagnoseVO.ShiyiVO vo = new BuDiagnoseVO.ShiyiVO();
-                vo.setSytechId(Objects.isNull(map.get("sytech_id")) ? null : Long.valueOf(map.get("sytech_id").toString()));
-                vo.setName(((String) map.getOrDefault("sytech_name", "")));
+                vo.setSytechId(Objects.isNull(map.get("sytechId")) ? null : Long.valueOf(map.get("sytechId").toString()));
+                vo.setName(((String) map.getOrDefault("name", "")));
                 vo.setSymptoms(((String) map.getOrDefault("symptoms", "")));
+                vo.setSyndromeName(((String) map.getOrDefault("syndromeName", "")));
                 vo.setDetail(((String) map.getOrDefault("detail", "")));
                 vo.setOperation(((String) map.getOrDefault("operation", "")));
-                vo.setCustomerId(Objects.isNull(map.get("customer_id")) ? null : Long.valueOf(map.get("customer_id").toString()));
+                vo.setCustomerId(Objects.isNull(map.get("customerId")) ? null : Long.valueOf(map.get("customerId").toString()));
                 vo.setRecommend(Objects.isNull(map.get("recommend")) ? null : Integer.valueOf(map.get("recommend").toString()));
                 shiyiVOList.add(vo);
             }
@@ -256,6 +250,7 @@ public class BuDiagnoseController {
         buDiagnose.setDepartmentId(ro.getDiagnoseInfo().getDepartmentId());
         buDiagnose.setDisease(ro.getDiagnoseInfo().getDisease());
         buDiagnose.setDiseaseId(ro.getDiagnoseInfo().getDiseaseId());
+        buDiagnose.setDisease(ro.getDiagnoseInfo().getDisease());
         buDiagnose.setSymptoms(ro.getDiagnoseInfo().getSymptoms());
         buDiagnose.setSymptomIds(ro.getDiagnoseInfo().getSymptomIds());
         buDiagnose.setSyndrome(ro.getDiagnoseInfo().getSyndrome());
@@ -278,6 +273,14 @@ public class BuDiagnoseController {
         Assert.notNull(ro.getOutpatientId(), "his端患者门诊预约id不能为空!");
         Result result = diagnoseService.getDetails(ro);
         return result;
+    }
+
+    @ApiOperation(value = "获取云平台对应的outpatientID")
+    @GetMapping(value = "/getYptOutpatient")
+    Result getYptOutpatientByHisId(Long outpatientId) {
+      BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(null,outpatientId);
+        Long id = Optional.ofNullable(buOutpatient).orElse(new BuOutpatient()).getId();
+        return Result.success(id);
     }
 }
 

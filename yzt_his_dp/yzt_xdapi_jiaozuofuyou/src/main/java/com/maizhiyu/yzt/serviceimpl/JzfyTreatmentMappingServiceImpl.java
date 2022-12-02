@@ -50,7 +50,7 @@ public class JzfyTreatmentMappingServiceImpl extends ServiceImpl<JzfyTreatmentMa
     @Override
     public JzfyTreatmentMapping getTreatmentByHisCode(String hisCode) {
         LambdaQueryWrapper<JzfyTreatmentMapping> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(JzfyTreatmentMapping::getHisCode, hisCode)
+        queryWrapper.eq(JzfyTreatmentMapping::getHiscode, hisCode)
                 .eq(JzfyTreatmentMapping::getIsDel, 0)
                 .orderByDesc(JzfyTreatmentMapping::getUpdateTime)
                 .last("limit 1");
@@ -61,7 +61,7 @@ public class JzfyTreatmentMappingServiceImpl extends ServiceImpl<JzfyTreatmentMa
     @Override
     public JzfyTreatmentMapping getTreatmentByHisName(String hisName) {
         LambdaQueryWrapper<JzfyTreatmentMapping> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(JzfyTreatmentMapping::getHisName, hisName)
+        queryWrapper.eq(JzfyTreatmentMapping::getName, hisName)
                 .eq(JzfyTreatmentMapping::getIsDel, 0)
                 .orderByDesc(JzfyTreatmentMapping::getUpdateTime)
                 .last("limit 1");

@@ -35,6 +35,9 @@ public class SchSytech {
     @ApiModelProperty(value="客户id")
     private Long customerId;
 
+    @ApiModelProperty(value="名称")
+    private String name;
+
     @ApiModelProperty(value="技术详情")
     private String detail;
 
@@ -43,4 +46,10 @@ public class SchSytech {
 
     @ApiModelProperty(value="是否推荐 1是；0否")
     private Integer recommend;
+
+    @ApiModelProperty(value="分型名称")
+    private String syndromeName;
+
+    @ApiModelProperty(value="疾病名称")
+    private String diseaseName;
 }
