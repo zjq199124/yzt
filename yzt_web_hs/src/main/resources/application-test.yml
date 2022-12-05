@@ -1,5 +1,6 @@
 
 
+
 ### spring ###
 spring:
   application:
@@ -13,9 +14,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     #     mysql驱动包
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://rm-bp1xk4j7gsb2ylig3so.mysql.rds.aliyuncs.com:3306/yztpro?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
-    username: yztp
-    password: rootDB1sfdWSX
+    url: jdbc:mysql://rm-bp1xk4j7gsb2ylig3so.mysql.rds.aliyuncs.com:3306/yztdev?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    username: yztdev
+    password: workDB1gfd@WSX
     druid:
       #      数据库连接池的最小维持连接数
       min-idle: 10
@@ -61,7 +62,7 @@ spring:
 
   # redis 配置
   redis:
-    host: 127.0.0.1
+    host: 120.26.4.216
     port: 6379
     password: 1qaz@WSX
     timeout: 86400
@@ -73,6 +74,10 @@ spring:
 
 ### mybatis ###
 mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
   type-aliases-package: com.maizhiyu.yzt.entity
   mapper-locations: classpath*:/mybatis/mapper/*.xml
   configuration:
@@ -96,8 +101,8 @@ weixin:
   crontab: "0 0 */1 * * ?"
   # 微信基础信息
   token: maizhiyu
-  appid: wx45a97ac6e2fab051
-  appsecret: 237df951f632eb97c7fba964006c3c8a
+  appid: wx33df32715638a40a
+  appsecret: c899dac94e7566ecd20fefb3e4905d58
   # 授权相关信息
   auth_scope: snsapi_userinfo   # scope: snsapi_base
   api_domain: https://api.weixin.qq.com
@@ -118,26 +123,19 @@ swagger:
 
 ### 业务配置 ###
 file:
-  upload-folder: /home/work/ypt/backend/upload/
+  upload-folder: /home/work/yptdev/backend/upload
   static-access-path: /files/**
 
 
-### jwt ###
-jwt:
-  header: Authorization
-  prefix: Bearer_
-  secret: 1qaz@WSX
-  expire: 360000000000
-
-#阿里oss
 oss:
   endpoint: "oss-cn-hangzhou.aliyuncs.com"
   accessKeyId: "LTAI5tEozMaZFLJXmjtv2y1L"
   accessKeySecret: "DQtx7CwSvvrV3trwdaYEQRhhVAHCiw"
-  publicBucket: "yzt-public"
-  publicBucketUrl: "https://yzt-public.oss-cn-hangzhou.aliyuncs.com"
-  privateBucket: "yzt-privacy"
-  privateBucketUrl: "https://yzt-privacy.oss-cn-hangzhou.aliyuncs.com"
+  publicBucket: "yzt-test-public"
+  publicBucketUrl: "https://yzt-test-public.oss-cn-hangzhou.aliyuncs.com"
+  privateBucket: "yzt-test-privacy"
+  privateBucketUrl: "https://yzt-test-privacy.oss-cn-hangzhou.aliyuncs.com"
   expiration: "30"
   styleWatermark: "一真堂"
   styleMicro: "一真堂"
+

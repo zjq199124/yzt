@@ -162,6 +162,18 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <delimiters>
+                        <delimiter>@</delimiter>
+                    </delimiters>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                </configuration>
+            </plugin>
             <!--发布代码Jar插件-->
 <!--            <plugin>-->
 <!--                <groupId>org.apache.maven.plugins</groupId>-->
@@ -198,7 +210,21 @@
 <!--                </configuration>-->
 <!--            </plugin>-->
         </plugins>
+
+        <resources>
+            <resource>
+                <!-- 指定文件路径 -->
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <!-- **表示任意级目录，*表示任意文件 -->
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
+
+
 
     <profiles>
         <profile>
@@ -216,6 +242,12 @@
             <id>dev</id>
             <properties>
                 <profiles.active>dev</profiles.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <profiles.active>test</profiles.active>
             </properties>
         </profile>
         <profile>

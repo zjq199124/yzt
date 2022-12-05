@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local,utils-prod
+    active: @profiles.active@
 #    active: prod,utils-prod
 
 ### 服务配置 ###

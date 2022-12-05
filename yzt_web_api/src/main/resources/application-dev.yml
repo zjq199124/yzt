@@ -101,3 +101,4 @@ jwt:
 file:
   upload-folder: /Users/huhu/Temps/static/
   static-access-path: /files/**
+

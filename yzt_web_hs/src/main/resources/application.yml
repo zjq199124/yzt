@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local
+    active: @profiles.active@
 
 ### 服务配置 ###
 server:
@@ -10,14 +10,14 @@ server:
   context-path: /hs/api
 #env: stg
 
-oss:
-  endpoint: "oss-cn-hangzhou.aliyuncs.com"
-  accessKeyId: "LTAI5tEozMaZFLJXmjtv2y1L"
-  accessKeySecret: "DQtx7CwSvvrV3trwdaYEQRhhVAHCiw"
-  publicBucket: "yzt-hs-dev"
-  publicBucketUrl: "https://yzt-hs-dev.oss-cn-hangzhou.aliyuncs.com"
-  privateBucket: "yzt-equipment"
-  privateBucketUrl: "https://yzt-equipment.oss-cn-hangzhou.aliyuncs.com"
-  expiration: "30"
-  styleWatermark: "一真堂"
-  styleMicro: "一真"
+#oss:
+#  endpoint: "oss-cn-hangzhou.aliyuncs.com"
+#  accessKeyId: "LTAI5tEozMaZFLJXmjtv2y1L"
+#  accessKeySecret: "DQtx7CwSvvrV3trwdaYEQRhhVAHCiw"
+#  publicBucket: "yzt-hs-dev"
+#  publicBucketUrl: "https://yzt-hs-dev.oss-cn-hangzhou.aliyuncs.com"
+#  privateBucket: "yzt-equipment"
+#  privateBucketUrl: "https://yzt-equipment.oss-cn-hangzhou.aliyuncs.com"
+#  expiration: "30"
+#  styleWatermark: "一真堂"
+#  styleMicro: "一真堂"

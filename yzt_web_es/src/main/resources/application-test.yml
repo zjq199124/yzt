@@ -1,21 +1,20 @@
 
-
 ### spring ###
 spring:
   application:
     name: yizhentang
-  http:
+  servlet:
     multipart:
-      max-file-size: 2000Mb      # Max file size，默认1M
-      max-request-size: 2500Mb   # Max request size，默认10M
+      max-file-size: 10MB #
+      max-request-size: 100MB
   datasource:
     # 当前数据源操作类型
     type: com.alibaba.druid.pool.DruidDataSource
     #     mysql驱动包
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://rm-bp1xk4j7gsb2ylig3so.mysql.rds.aliyuncs.com:3306/yztpro?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
-    username: yztp
-    password: rootDB1sfdWSX
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+    url: jdbc:p6spy:mysql://192.168.0.90:3306/yztdev?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: yzt123456
     druid:
       #      数据库连接池的最小维持连接数
       min-idle: 10
@@ -57,27 +56,41 @@ spring:
       #      是否在自动回收超时连接的时候打印连接的超时错误
       log-abandoned: false
       #      监控统计用的filter:stat日志用的filter:log4j防御sql注入的filter:wall
-      filters: stat,wall,log4j
+      filters: stat,log4j
 
   # redis 配置
   redis:
+    #    host: 39.105.85.64
     host: 127.0.0.1
     port: 6379
-    password: 1qaz@WSX
+    #    password: zhanshen@
     timeout: 86400
-
-  # session 配置
+    password: 123456
+  # rabbitMQ 配置
+  #  rabbitmq:
+  #    host: 119.3.230.227
+  #    username: admin
+  #    password: admin
   session:
     store-type: redis
 
 
+
 ### mybatis ###
+#mybatis:
+#  # mybatis配置文件所在路径
+#  config-location: classpath:mybatis/mybatis.cfg.xml
+#  # 所有Entity别名类所在包
+#  type-aliases-package: com.maizhiyu.yzt.entity
+#  mapper-locations:
+#    # mapper映射文件
+#    - classpath:mybatis/mapper/*.xml
 mybatis-plus:
   type-aliases-package: com.maizhiyu.yzt.entity
   mapper-locations: classpath*:/mybatis/mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 
 ### 分页插件 ###
@@ -89,28 +102,6 @@ pagehelper:
   params: count=countSql
 
 
-# 微信公众号配置
-weixin:
-  # token更新设置
-  enable: true
-  crontab: "0 0 */1 * * ?"
-  # 微信基础信息
-  token: maizhiyu
-  appid: wx45a97ac6e2fab051
-  appsecret: 237df951f632eb97c7fba964006c3c8a
-  # 授权相关信息
-  auth_scope: snsapi_userinfo   # scope: snsapi_base
-  api_domain: https://api.weixin.qq.com
-  authorize_url: https://open.weixin.qq.com/connect/oauth2/authorize
-  # 页面跳转信息
-  redirect_url: http://ypt.yztyun.com/wx/api/wx/onCallback
-  business_url: http://ypt.yztyun.com/ps/index.html#/home
-  # 腾讯位置服务
-  location_domain: https://apis.map.qq.com
-  location_path: /ws/geocoder/v1
-  location_key: UZIBZ-E3CWK-O7GJ5-AZ5QE-5CFP7-ORFNL
-
-
 ### swagger ###（生产环境时需要关闭）
 swagger:
   enable: true
@@ -118,26 +109,18 @@ swagger:
 
 ### 业务配置 ###
 file:
-  upload-folder: /home/work/ypt/backend/upload/
+  upload-folder: /Users/huhu/Temps/static/
   static-access-path: /files/**
 
 
-### jwt ###
-jwt:
-  header: Authorization
-  prefix: Bearer_
-  secret: 1qaz@WSX
-  expire: 360000000000
-
-#阿里oss
 oss:
   endpoint: "oss-cn-hangzhou.aliyuncs.com"
   accessKeyId: "LTAI5tEozMaZFLJXmjtv2y1L"
   accessKeySecret: "DQtx7CwSvvrV3trwdaYEQRhhVAHCiw"
-  publicBucket: "yzt-public"
-  publicBucketUrl: "https://yzt-public.oss-cn-hangzhou.aliyuncs.com"
-  privateBucket: "yzt-privacy"
-  privateBucketUrl: "https://yzt-privacy.oss-cn-hangzhou.aliyuncs.com"
+  publicBucket: "yzt-test-public"
+  publicBucketUrl: "https://yzt-test-public.oss-cn-hangzhou.aliyuncs.com"
+  privateBucket: "yzt-test-privacy"
+  privateBucketUrl: "https://yzt-test-privacy.oss-cn-hangzhou.aliyuncs.com"
   expiration: "30"
   styleWatermark: "一真堂"
   styleMicro: "一真堂"
