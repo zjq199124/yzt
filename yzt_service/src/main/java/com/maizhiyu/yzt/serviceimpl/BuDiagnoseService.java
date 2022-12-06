@@ -268,7 +268,6 @@ public class BuDiagnoseService implements IBuDiagnoseService {
         //4：查询出已经保存的处方
         LambdaQueryWrapper<BuPrescription> prescriptionQueryWrapper = new LambdaQueryWrapper<>();
         prescriptionQueryWrapper.eq(BuPrescription::getPatientId, buPatient.getId())
-                //.eq(BuPrescription::getCustomerId, Optional.ofNullable(msCustomer).orElse(new MsCustomer()).getId())
                 .eq(BuPrescription::getOutpatientId, buOutpatient.getId())
                 .eq(BuPrescription::getDoctorId, hsUser.getId())
                 .eq(BuPrescription::getIsDel, 0)

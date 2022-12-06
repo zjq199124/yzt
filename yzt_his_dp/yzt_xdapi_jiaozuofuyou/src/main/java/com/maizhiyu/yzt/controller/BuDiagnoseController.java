@@ -354,6 +354,7 @@ public class BuDiagnoseController {
             //疾病分型数据集合
             resultMap.put("dictSyndromeList", dictSyndromeVoList);
             if (!CollectionUtils.isEmpty(dictSyndromeVoList)) {
+                dictSyndromeVoList.forEach(item -> item.setIsShow(1));
                 List<Long> syndromeIdList = dictSyndromeVoList.stream().map(DictSyndromeVo::getId).collect(Collectors.toList());
                 ro.setSyndromeIdList(syndromeIdList);
             }

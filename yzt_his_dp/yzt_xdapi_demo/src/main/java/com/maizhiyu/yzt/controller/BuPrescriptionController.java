@@ -2,7 +2,10 @@ package com.maizhiyu.yzt.controller;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.maizhiyu.yzt.bean.aci.HisDoctorCI;
 import com.maizhiyu.yzt.bean.aci.HisOutpatientCI;
 import com.maizhiyu.yzt.bean.aci.HisPatientCI;
@@ -44,6 +47,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -115,9 +120,29 @@ public class BuPrescriptionController {
         Assert.notNull(ro.getBaseInfo(), "基础信息不能为空!");
         BuPrescriptionRO.AddPrescriptionShiyi.BaseInfo baseInfo = ro.getBaseInfo();
 
-        if (Objects.nonNull(ro) && !CollectionUtils.isEmpty(ro.getItemList())) {
+        //判断医生，患者，患者门诊信息
+        processDoctor(baseInfo.getDoctorId().toString());
+        processPatient(baseInfo.getPatientId().toString());
+        processOutpatient(baseInfo.getOutpatientId().toString());
 
-            //克隆出一个对象用来进行翻译操作
+        if (Objects.nonNull(ro) && !CollectionUtils.isEmpty(ro.getItemList())) {
+            savePrescriptionShiyiToHis(ro);
+        }
+
+        if (Objects.nonNull(ro.getBaseInfo())) {
+            ro.getDiagnoseInfo().setCustomerName(customerName);
+            yptClient.addDiagnose(ro);
+        }
+
+        if(CollectionUtils.isEmpty(ro.getItemList()))
+            return Result.success();
+
+        Result<Integer> result = yptClient.addPrescriptionShiyi(ro);
+        return Result.success(result.getData());
+    }
+
+    private void savePrescriptionShiyiToHis(BuPrescriptionRO.AddPrescriptionShiyi ro) throws IOException {
+        //克隆出一个对象用来进行翻译操作
         BuPrescriptionRO.AddPrescriptionShiyi clone = ObjectUtil.cloneIfPossible(ro);
         for (BuPrescriptionRO.BuPrescriptionItemShiyi vo : clone.getItemList()) {
             try {
@@ -141,48 +166,44 @@ public class BuPrescriptionController {
             }
         }
 
-            TreatmentRo treatmentRo = new TreatmentRo();
+        TreatmentRo treatmentRo = new TreatmentRo();
 
-            treatmentRo.setDoctorId(clone.getBaseInfo().getDoctorId().intValue());
-            treatmentRo.setMedicalRecordId(clone.getBaseInfo().getOutpatientId().intValue());
+        treatmentRo.setDoctorId(clone.getBaseInfo().getDoctorId().intValue());
+        treatmentRo.setMedicalRecordId(clone.getBaseInfo().getOutpatientId().intValue());
 
-            clone.getItemList().stream().map(item -> {
-                TreatmentItemsRo treatmentItemsRo = new TreatmentItemsRo();
-                treatmentItemsRo.setFmedicalItemsId(item.getEntityId().intValue());
-                treatmentItemsRo.setActualQuantity(item.getQuantity());
-                return treatmentItemsRo;
-            }).collect(Collectors.toList());
+        List<TreatmentItemsRo> treatmentItemsRoList = clone.getItemList().stream().map(item -> {
+            TreatmentItemsRo treatmentItemsRo = new TreatmentItemsRo();
+            treatmentItemsRo.setFmedicalItemsId(item.getEntityId().intValue());
+            treatmentItemsRo.setQuantity(item.getQuantity());
+            return treatmentItemsRo;
+        }).collect(Collectors.toList());
 
-            Gson gson=new Gson();
-            String treatmentRoJstr = gson.toJson(treatmentRo);
+        treatmentRo.setTreatmentItemsList(treatmentItemsRoList);
 
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://192.168.0.88:8088/hoso/")
-                    .addConverterFactory(GsonConverterFactory.create(new Gson()))
-                    .build();
-            HisApi hisApi = retrofit.create(HisApi.class);
+        Gson gson=new Gson();
+        String treatmentRoJstr = gson.toJson(treatmentRo);
 
-            okhttp3.RequestBody body = okhttp3.RequestBody.create(MediaType.parse("application/json; charset=utf-8"),treatmentRoJstr);
-            Call<TreatmentRo> repos = hisApi.insertTreatment(body);
-            TreatmentRo res = repos.execute().body();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://192.168.0.95:8080/hoso/")
+                .addConverterFactory(GsonConverterFactory.create(new Gson()))
+                .build();
+        HisApi hisApi = retrofit.create(HisApi.class);
+
+        okhttp3.RequestBody body = okhttp3.RequestBody.create(MediaType.parse("application/json; charset=utf-8"),treatmentRoJstr);
+        Call<Object> repos = hisApi.insertTreatment(body);
+        Object result = repos.execute().body();
+        try {
+            if (Objects.nonNull(result)) {
+                JSONObject jsonObject = JSON.parseObject(gson.toJson(result));
+                if ("OK".equals(jsonObject.get("status"))) {
+                    Long hisId = new BigDecimal(jsonObject.get("data").toString()).longValue();
+                    ro.setHisId(hisId.toString());
+                }
+            }
+        } catch (Exception e) {
+            log.warn("处治保存到his失败!");
+            e.printStackTrace();
         }
-
-        processDoctor(baseInfo.getDoctorId().toString());
-        processPatient(baseInfo.getPatientId().toString());
-        processOutpatient(baseInfo.getOutpatientId().toString());
-
-
-
-        if (Objects.nonNull(ro.getBaseInfo())) {
-            ro.getDiagnoseInfo().setCustomerName(customerName);
-            yptClient.addDiagnose(ro);
-        }
-
-        if(CollectionUtils.isEmpty(ro.getItemList()))
-            return Result.success();
-
-        Result<Integer> result = yptClient.addPrescriptionShiyi(ro);
-        return Result.success(result.getData());
     }
 
     private Long processDoctor(String doctorId) {

@@ -9,5 +9,5 @@ import retrofit2.http.POST;
 public interface HisApi {
 
     @POST("doctor/treatment/insertTreatment")
-    public Call<TreatmentRo> insertTreatment(@Body RequestBody  treatmentRo);
+    public Call<Object> insertTreatment(@Body RequestBody  treatmentRo);
 }
