@@ -1,0 +1,23 @@
+package com.maizhiyu.yzt.bean.aci;
+
+import com.github.pagehelper.PageInfo;
+import com.maizhiyu.yzt.bean.aro.YptTreatmentRO;
+import com.maizhiyu.yzt.bean.avo.YptTreatmentVO;
+import com.maizhiyu.yzt.entity.YptTreatment;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+
+@Mapper
+public interface YptTreatmentCI {
+
+    YptTreatmentCI INSTANCE = Mappers.getMapper(YptTreatmentCI.class);
+
+    YptTreatment convert(YptTreatmentRO.AddTreatmentRO ro);
+
+    YptTreatment convert(YptTreatmentRO.SetTreatmentRO ro);
+
+    YptTreatmentVO.GetTreatmentVO invertGetTreatmentVO(YptTreatment treatment);
+
+    PageInfo<YptTreatmentVO.GetTreatmentListVO> invertGetTreatmentListVO(PageInfo<YptTreatment> pageInfo);
+
+}

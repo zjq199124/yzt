@@ -281,8 +281,10 @@ public class BuDiagnoseService implements IBuDiagnoseService {
             resultMap.put("prescriptionItemList", Collections.emptyList());
             //处方id
             resultMap.put("yptPrescriptionId",  null);
+            resultMap.put("yptPrescription",  null);
         } else {
             resultMap.put("yptPrescriptionId",  buPrescription.getId());
+            resultMap.put("yptPrescription",  buPrescription);
             //5:查询保存的处方所对应的具体适宜技术
             LambdaQueryWrapper<BuPrescriptionItem> buPrescriptionItemQueryWrapper = new LambdaQueryWrapper<>();
             buPrescriptionItemQueryWrapper.eq(BuPrescriptionItem::getPrescriptionId, buPrescription.getId())

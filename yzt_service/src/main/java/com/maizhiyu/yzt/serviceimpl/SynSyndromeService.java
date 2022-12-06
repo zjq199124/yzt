@@ -36,30 +36,12 @@ public class SynSyndromeService implements ISynSyndromeService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer setSyndrome(SynSyndrome syndrome) {
-        SynSyndrome synSyndrome = mapper.selectById(syndrome.getId());
-
-        if(synSyndrome.getDiseaseId() != null) {
-            DictDisease dictDisease = dictDiseaseMapper.selectById(synSyndrome.getDiseaseId());
-            if(dictDisease != null) {
-                dictDisease.setKeyss(syndrome.getKeyss());
-                dictDiseaseMapper.updateById(dictDisease);
-            }
-        }
-
-        syndrome.setKeyss(null);
         return mapper.updateById(syndrome);
     }
 
     @Override
     public SynSyndrome getSyndrome(Long id) {
-
         SynSyndrome synSyndrome = mapper.selectById(id);
-        if(synSyndrome.getDiseaseId() != null) {
-            DictDisease dictDisease = dictDiseaseMapper.selectById(synSyndrome.getDiseaseId());
-            if(dictDisease != null) {
-                synSyndrome.setKeyss(dictDisease.getKeyss());
-            }
-        }
         return synSyndrome;
     }
 

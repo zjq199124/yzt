@@ -42,7 +42,7 @@ public class BuOutpatientController {
 
     @ApiOperation(value = "新增门诊预约His", notes = "新增门诊预约His")
     @PostMapping("/addOutpatientHis")
-    public Result<BuOutpatientVO.AddOutpatientVO> addOutpatient(HttpServletRequest request, @RequestBody @Valid BuOutpatientRO.AddOutpatientRO ro) {
+    public Result<Long> addOutpatient(HttpServletRequest request, @RequestBody @Valid BuOutpatientRO.AddOutpatientRO ro) {
         // 获取token字段
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
@@ -79,7 +79,7 @@ public class BuOutpatientController {
         BuOutpatient newOutpatient = service.getOutpatientByHisId(customerId, Long.valueOf(ro.getHisId()));
         BuOutpatientVO.AddOutpatientVO vo = BuOutpatientCI.INSTANCE.invertAddOutpatientVO(newOutpatient);
         // 返回结果
-        return Result.success(vo);
+        return Result.success(vo.getId());
     }
 
 }

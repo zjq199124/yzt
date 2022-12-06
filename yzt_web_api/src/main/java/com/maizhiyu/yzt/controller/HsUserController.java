@@ -33,7 +33,7 @@ public class HsUserController {
 
     @ApiOperation(value = "增加用户", notes = "增加用户")
     @PostMapping("/addUser")
-    public Result<HsUserVO.AddUserVO> addUser(HttpServletRequest request, @RequestBody @Valid HsUserRO.AddUserRO ro) {
+    public Result<Long> addUser(HttpServletRequest request, @RequestBody @Valid HsUserRO.AddUserRO ro) {
         // 获取token字段
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
@@ -87,7 +87,7 @@ public class HsUserController {
         HsUser newUser = service.getUserByHisId(customerId, Long.valueOf(ro.getHisId()));
         HsUserVO.AddUserVO vo = HsUserCI.INSTANCE.invertAddUserVO(newUser);
         // 返回结果
-        return Result.success(vo);
+        return Result.success(vo.getId());
     }
 
 }

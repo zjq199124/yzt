@@ -13,6 +13,7 @@
     <artifactId>yzt_his_dp</artifactId>
 
     <modules>
+        <module>yzt_xdapi_demo</module>
         <module>yzt_xdapi_jiaozuofuyou</module>
         <module>yzt_xdata</module>
     </modules>
