@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.maizhiyu.yzt.bean.aci.HisDoctorCI;
@@ -15,10 +16,7 @@ import com.maizhiyu.yzt.bean.aro.TreatmentRo;
 import com.maizhiyu.yzt.bean.axo.BuOutpatientXO;
 import com.maizhiyu.yzt.bean.axo.BuPatientXO;
 import com.maizhiyu.yzt.bean.axo.HsUserXO;
-import com.maizhiyu.yzt.entity.HisDoctor;
-import com.maizhiyu.yzt.entity.HisOutpatient;
-import com.maizhiyu.yzt.entity.HisPatient;
-import com.maizhiyu.yzt.entity.TreatmentMapping;
+import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.exception.HisException;
 import com.maizhiyu.yzt.feign.FeignYptClient;
 import com.maizhiyu.yzt.his.HisApi;
@@ -123,7 +121,10 @@ public class BuPrescriptionController {
         //判断医生，患者，患者门诊信息
         processDoctor(baseInfo.getDoctorId().toString());
         processPatient(baseInfo.getPatientId().toString());
-        processOutpatient(baseInfo.getOutpatientId().toString());
+        Long outpatientId = processOutpatient(baseInfo.getOutpatientId().toString());
+        //ro中的outpatientId是视图中的registration_id,要换成code才是我们这边所说的his中medical_record_id对应云平台的his中的outpatientId
+        YptOutpatient yptOutpatient = getYptOutpatientById(outpatientId);
+        ro.getBaseInfo().setOutpatientId(yptOutpatient.getHisId());
 
         if (Objects.nonNull(ro) && !CollectionUtils.isEmpty(ro.getItemList())) {
             savePrescriptionShiyiToHis(ro);
@@ -251,7 +252,10 @@ public class BuPrescriptionController {
     }
 
     private Long processOutpatient(String outpatientId) {
-        HisOutpatient outpatient = outpatientMapper.selectById(outpatientId);
+        LambdaQueryWrapper<HisOutpatient> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(HisOutpatient::getRegistrationId, outpatientId)
+                .last("limit 1");
+        HisOutpatient outpatient = outpatientMapper.selectOne(queryWrapper);
         if (outpatient == null) {
             throw new HisException("获取预约信息失败:" + outpatientId);
         } else {
@@ -265,5 +269,13 @@ public class BuPrescriptionController {
                 throw new HisException("添加预约失败: " + result);
             }
         }
+    }
+
+    private YptOutpatient getYptOutpatientById(Long outpatientId) {
+        Result<Object> result = yptClient.getYptOutpatientById(outpatientId);
+        String jsonStr = JSONObject.toJSONString(result.getData());
+        JSONObject jsonObject = JSON.parseObject(jsonStr);
+        YptOutpatient yptOutpatient = JSON.toJavaObject(jsonObject, YptOutpatient.class);
+        return yptOutpatient;
     }
 }

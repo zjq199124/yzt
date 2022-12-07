@@ -9,6 +9,7 @@ import com.maizhiyu.yzt.bean.avo.RelSyndromeSymptomVo;
 import com.maizhiyu.yzt.bean.axo.BuOutpatientXO;
 import com.maizhiyu.yzt.bean.axo.BuPatientXO;
 import com.maizhiyu.yzt.bean.axo.HsUserXO;
+import com.maizhiyu.yzt.entity.YptOutpatient;
 import com.maizhiyu.yzt.result.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -83,6 +84,9 @@ public interface FeignYptClient {
     Result getSytechBySytechId(@RequestParam(value = "diseaseId") Long diseaseId,
                                @RequestParam(value = "syndromeId") Long syndromeId,
                                @RequestParam(value = "sytechId") Long sytechId);
+
+    @PostMapping(value = "/outpatient/getYptOutpatientById")
+    Result<Object> getYptOutpatientById(@RequestParam(value = "outpatientId") Long outpatientId);
 }
 
 

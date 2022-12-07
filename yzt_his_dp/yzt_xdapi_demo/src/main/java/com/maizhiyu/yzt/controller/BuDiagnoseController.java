@@ -331,6 +331,14 @@ public class BuDiagnoseController {
             ro.setDiseaseId(jzfyDiseaseMapping.getDiseaseId());
         }
 
+        LambdaQueryWrapper<HisOutpatient> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(HisOutpatient::getRegistrationId, ro.getOutpatientId())
+                .last("limit 1");
+        HisOutpatient outpatient = outpatientMapper.selectOne(queryWrapper);
+        if (Objects.nonNull(outpatient)) {
+            ro.setOutpatientId(Long.parseLong(outpatient.getCode()));
+        }
+
         //在没有分型syndromeIdList以及没有症状集合symptomIdList先查询下这次挂号看病是否已经有保存诊断信息和治疗处方
         if (CollectionUtils.isEmpty(ro.getSymptomIdList()) && CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
             Result result = yptClient.getDetail(ro);
@@ -396,9 +404,6 @@ public class BuDiagnoseController {
         HisDoctor hisDoctor = hisDoctorMapper.selectById(hisOutpatient.getDoctorId());
         if(Objects.isNull(hisDoctor))
             throw new Exception("不存在outpatientId为: " + outpatientId + " 的此次门诊对应的医生信息!");
-
-        Result idResult = yptClient.getYptOutpatientByHisId(outpatientId);
-
 
         Map<String, Object> result = new HashMap<>();
         result.put("hisOutpatient", hisOutpatient);
