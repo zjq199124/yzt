@@ -1,6 +1,3 @@
-
-
-
 ### spring ###
 spring:
   application:
@@ -79,14 +76,6 @@ spring:
 
 
 ### mybatis ###
-#mybatis:
-#  # mybatis配置文件所在路径
-#  config-location: classpath:mybatis/mybatis.cfg.xml
-#  # 所有Entity别名类所在包
-#  type-aliases-package: com.maizhiyu.yzt.entity
-#  mapper-locations:
-#    # mapper映射文件
-#    - classpath:mybatis/mapper/*.xml
 mybatis-plus:
   type-aliases-package: com.maizhiyu.yzt.entity
   mapper-locations: classpath*:/mybatis/mapper/*.xml
@@ -103,18 +92,16 @@ pagehelper:
   page-size-zero: true
   params: count=countSql
 
-
 ### swagger ###（生产环境时需要关闭）
 swagger:
   enable: true
-
 
 ### 业务配置 ###
 file:
   upload-folder: /Users/huhu/Temps/static/
   static-access-path: /files/**
 
-
+#
 oss:
   endpoint: "oss-cn-hangzhou.aliyuncs.com"
   accessKeyId: "LTAI5tEozMaZFLJXmjtv2y1L"

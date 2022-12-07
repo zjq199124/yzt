@@ -107,3 +107,8 @@ custom:
 my:
   writeLimit: false
   isEncryption: false
+
+### 业务配置 ###
+file:
+  upload-folder: /home/work/yptdev/backend/upload
+  static-access-path: /files/**

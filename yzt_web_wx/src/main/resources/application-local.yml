@@ -77,22 +77,6 @@ spring:
     store-type: redis
 
 
-### logging ###
-#logging:
-#  level:
-#    root=debug
-#    org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping=trace
-
-
-### mybatis ###
-#mybatis:
-#  # mybatis配置文件所在路径
-#  config-location: classpath:mybatis/mybatis.cfg.xml
-#  # 所有Entity别名类所在包
-#  type-aliases-package: com.maizhiyu.yzt.entity
-#  mapper-locations:
-#    # mapper映射文件
-#    - classpath:mybatis/mapper/*.xml
 mybatis-plus:
   type-aliases-package: com.maizhiyu.yzt.entity
   mapper-locations: classpath*:/mybatis/mapper/*.xml

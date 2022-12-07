@@ -26,7 +26,6 @@ public class BuCheckController {
     @Autowired
     private IBuCheckService checkService;
 
-
     @ApiOperation(value = "增加检查", notes = "增加检查")
     @ApiImplicitParams({})
     @PostMapping("/addCheck")
