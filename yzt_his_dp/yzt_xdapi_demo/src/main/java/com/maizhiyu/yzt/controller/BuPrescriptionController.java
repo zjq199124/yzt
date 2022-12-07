@@ -166,8 +166,24 @@ public class BuPrescriptionController {
             }
         }
 
-        TreatmentRo treatmentRo = new TreatmentRo();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://192.168.0.95:8088/hoso/")
+                .addConverterFactory(GsonConverterFactory.create(new Gson()))
+                .build();
+        HisApi hisApi = retrofit.create(HisApi.class);
+        Gson gson=new Gson();
 
+        //his中处置id不为空的话那么先删除his中的处置
+        if (Objects.nonNull(clone.getHisId())) {
+            try {
+                hisApi.cancelTreatmentById(Integer.parseInt(clone.getHisId()));
+            } catch (Exception e) {
+                log.warn("处治保存到his失败!");
+                e.printStackTrace();
+            }
+        }
+
+        TreatmentRo treatmentRo = new TreatmentRo();
         treatmentRo.setDoctorId(clone.getBaseInfo().getDoctorId().intValue());
         treatmentRo.setMedicalRecordId(clone.getBaseInfo().getOutpatientId().intValue());
 
@@ -180,14 +196,7 @@ public class BuPrescriptionController {
 
         treatmentRo.setTreatmentItemsList(treatmentItemsRoList);
 
-        Gson gson=new Gson();
         String treatmentRoJstr = gson.toJson(treatmentRo);
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.0.95:8080/hoso/")
-                .addConverterFactory(GsonConverterFactory.create(new Gson()))
-                .build();
-        HisApi hisApi = retrofit.create(HisApi.class);
 
         okhttp3.RequestBody body = okhttp3.RequestBody.create(MediaType.parse("application/json; charset=utf-8"),treatmentRoJstr);
         Call<Object> repos = hisApi.insertTreatment(body);
