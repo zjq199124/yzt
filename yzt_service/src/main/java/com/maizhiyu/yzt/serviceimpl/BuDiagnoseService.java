@@ -268,7 +268,6 @@ public class BuDiagnoseService implements IBuDiagnoseService {
         //4：查询出已经保存的处方
         LambdaQueryWrapper<BuPrescription> prescriptionQueryWrapper = new LambdaQueryWrapper<>();
         prescriptionQueryWrapper.eq(BuPrescription::getPatientId, buPatient.getId())
-                //.eq(BuPrescription::getCustomerId, Optional.ofNullable(msCustomer).orElse(new MsCustomer()).getId())
                 .eq(BuPrescription::getOutpatientId, buOutpatient.getId())
                 .eq(BuPrescription::getDoctorId, hsUser.getId())
                 .eq(BuPrescription::getIsDel, 0)
@@ -281,8 +280,10 @@ public class BuDiagnoseService implements IBuDiagnoseService {
             resultMap.put("prescriptionItemList", Collections.emptyList());
             //处方id
             resultMap.put("yptPrescriptionId",  null);
+            resultMap.put("yptPrescription",  null);
         } else {
             resultMap.put("yptPrescriptionId",  buPrescription.getId());
+            resultMap.put("yptPrescription",  buPrescription);
             //5:查询保存的处方所对应的具体适宜技术
             LambdaQueryWrapper<BuPrescriptionItem> buPrescriptionItemQueryWrapper = new LambdaQueryWrapper<>();
             buPrescriptionItemQueryWrapper.eq(BuPrescriptionItem::getPrescriptionId, buPrescription.getId())

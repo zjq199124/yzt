@@ -23,17 +23,18 @@ public class DictDisease {
     @ApiModelProperty(value="状态(0:停用 1:启用)")
     private Integer status;
 
-    @ApiModelProperty(value="取值")
-    private Integer value;
+    @ApiModelProperty(value="编码")
+    private String code;
 
-    @ApiModelProperty(value="显示内容")
-    private String content;
+    @ApiModelProperty(value="名称")
+    private String name;
 
-    @ApiModelProperty(value="关键词 添加时,分隔")
-    private String keyss;
+    @ApiModelProperty(value="名称近义词")
+    private String jyName;
 
     @ApiModelProperty(value="备注说明")
-    private String note;
+    private String remark;
 
-
+    @ApiModelProperty(value="是否删除：1是；0否")
+    private Integer isDel;
 }
