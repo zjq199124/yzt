@@ -36,4 +36,7 @@ public class HisOutpatient implements Serializable {
     @ApiModelProperty(value="his端患者ID")
     private String patientId;
 
+
+    @ApiModelProperty(value="his端患患者的挂号id")
+    private String registrationId;
 }

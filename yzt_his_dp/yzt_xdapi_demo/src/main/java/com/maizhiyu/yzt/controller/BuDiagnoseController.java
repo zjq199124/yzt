@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.controller;
 
 import cn.hutool.core.lang.Assert;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.base.Preconditions;
 import com.maizhiyu.yzt.bean.aro.BuDiagnoseRO;
 import com.maizhiyu.yzt.bean.avo.BuDiagnoseVO;
@@ -378,9 +379,13 @@ public class BuDiagnoseController {
     @ApiImplicitParam(name = "outpatientId", value = "门诊ID", required = true)
     @GetMapping("/getDiagnoseOfOutpatient")
     public Result getDiagnoseOfOutpatient(@RequestParam Long outpatientId) throws Exception {
+        //内部这里的outpatientId是内部his的registration_id，我们查询出视图中的code（就是内部his中的medical_record_id） 当做云平台的outpatient_id
         // 获取token字段
         Assert.notNull(outpatientId, "outpatientId不能为空!");
-        HisOutpatient hisOutpatient = outpatientMapper.selectById(outpatientId);
+        LambdaQueryWrapper<HisOutpatient> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(HisOutpatient::getRegistrationId, outpatientId)
+                .last("limit 1");
+        HisOutpatient hisOutpatient = outpatientMapper.selectOne(queryWrapper);
         if(Objects.isNull(hisOutpatient))
             throw new Exception("不存在outpatientId为: " + outpatientId + " 的门诊信息!");
 
