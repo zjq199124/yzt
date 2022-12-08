@@ -67,7 +67,7 @@ swagger:
 ### feign ###
 api:
   ypt:
-    domain: http://120.26.4.216:10090/open/api
+    domain: https://yptdev.yztyun.com/open/api
     customer: ouhubang
     secretkey: 123456
     cronenable: true
