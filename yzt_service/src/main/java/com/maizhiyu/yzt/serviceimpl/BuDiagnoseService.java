@@ -138,7 +138,7 @@ public class BuDiagnoseService implements IBuDiagnoseService {
                 .last("limit 1");
         MsCustomer msCustomer = msCustomerMapper.selectOne(customerQueryWrapper);
         if (Objects.isNull(msCustomer)) {
-            throw new Exception("云平台中不存在名称为： " + ro.getCustomerName() + " 的客户!");
+            return Result.success(null);
         }
 
         //0.2:查询出医生id
@@ -151,7 +151,7 @@ public class BuDiagnoseService implements IBuDiagnoseService {
         HsUser hsUser = hsUserMapper.selectOne(hsUserQueryWrapper);
 
         if (Objects.isNull(hsUser)) {
-            throw new Exception("云平台中不存在his方doctorId为： " + ro.getHisDoctorId() + " 的医生!");
+            return Result.success(null);
         }
 
         //0.3:先查询出患者id
@@ -163,7 +163,7 @@ public class BuDiagnoseService implements IBuDiagnoseService {
                 .last("limit 1");
         BuPatient buPatient = patientMapper.selectOne(buPatientQueryWrapper);
         if (Objects.isNull(buPatient)) {
-            throw new Exception("云平台中不存在his方patientId为： " + ro.getPatientId() + " 患者!");
+            return Result.success(null);
         }
 
         //0.4:先查询出患者预约id
@@ -176,8 +176,9 @@ public class BuDiagnoseService implements IBuDiagnoseService {
                 .last("limit 1");
         BuOutpatient buOutpatient = outpatientMapper.selectOne(buOutpatientQueryWrapper);
 
-        if (Objects.isNull(buOutpatient))
-            throw new Exception("云平台中不存在his方outpatientId为： " + ro.getOutpatientId() + " 患者预约信息!");
+        if (Objects.isNull(buOutpatient)) {
+            return Result.success(null);
+        }
 
         //1：查询是否有诊断信息
         LambdaQueryWrapper<BuDiagnose> queryWrapper = new LambdaQueryWrapper<>();

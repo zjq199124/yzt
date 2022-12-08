@@ -29,6 +29,9 @@ public class RelSyndromeSymptom extends Model<RelSyndromeSymptom> {
     @ApiModelProperty("分型主键id")
     private Long syndromeId;
 
+    @ApiModelProperty("分型主键id")
+    private Long diseaseId;
+
     @ApiModelProperty("0:未删除；1：已删除")
     private Integer isDel;
 
