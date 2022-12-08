@@ -60,8 +60,8 @@ spring:
   # redis 配置
   redis:
     host: 120.26.4.216
-    port: 6379
-    password: 1qaz@WSX
+    port: 6300
+    password: yzt123456
     timeout: 86400
 
   # session 配置
