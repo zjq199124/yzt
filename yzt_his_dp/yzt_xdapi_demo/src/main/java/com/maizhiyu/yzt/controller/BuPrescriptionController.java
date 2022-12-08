@@ -78,6 +78,9 @@ public class BuPrescriptionController {
     @Value("${customer.name}")
     private String customerName;
 
+    @Value("${his.url}")
+    private String hisUrl;
+
     @ApiOperation(value = "新增处方(中药)", notes = "新增处方(中药)")
     @PostMapping("/addPrescriptionZhongyao")
     public Result addPrescriptionZhongyao(@RequestBody @Valid BuPrescriptionRO.AddPrescriptionZhongyao ro) {
@@ -168,7 +171,7 @@ public class BuPrescriptionController {
         }
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.0.95:8088/hoso/")
+                .baseUrl(hisUrl)
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .build();
         HisApi hisApi = retrofit.create(HisApi.class);
