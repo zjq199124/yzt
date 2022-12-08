@@ -11,13 +11,9 @@ spring:
     ypt:
       type: com.alibaba.druid.pool.DruidDataSource
       driver-class-name: com.mysql.cj.jdbc.Driver
-      #url: jdbc:mysql://120.26.4.216:3306/inner_hismapping?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
-      #username: root
-      #password: yzt123456
-
-      url: jdbc:mysql://rm-bp1xk4j7gsb2ylig3so.mysql.rds.aliyuncs.com:3306/inner_hismapping?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
-      username: yztdev
-      password: workDB1gfd@WSX
+      url: jdbc:mysql://120.26.4.216:3306/inner_hismapping?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+      username: root
+      password: yzt123456
 
     his:
       type: com.alibaba.druid.pool.DruidDataSource
