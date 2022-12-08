@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local
+    active: @profiles.active@
 
 ### 服务配置 ###
 server:

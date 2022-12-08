@@ -58,4 +58,13 @@ public class TsSytechController {
         return Result.success(result);
     }
 
+    @ApiOperation(value = "以疾病分型获取适宜技术", notes = "以疾病分型获取适宜技术")
+    @GetMapping("/getSytechListByDisAndSyn")
+    public Result getSytechListByDisAndSyn(@RequestParam(value = "diseaseId") Long diseaseId,
+                                           @RequestParam(value = "syndromeId") Long syndromeId,
+                                           @RequestParam(value = "search", required = false) String search) {
+        List<TsSytech> tsSytechList = service.selectSytechList(diseaseId, syndromeId, search);
+        return Result.success(tsSytechList);
+    }
+
 }

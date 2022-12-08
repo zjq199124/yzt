@@ -1,11 +1,14 @@
 package com.maizhiyu.yzt.controller;
 
 
+import cn.hutool.core.lang.Assert;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.maizhiyu.yzt.entity.SynSyndrome;
 import com.maizhiyu.yzt.result.Result;
+import com.maizhiyu.yzt.service.IDictSyndromeService;
 import com.maizhiyu.yzt.service.ISynSyndromeService;
+import com.maizhiyu.yzt.vo.DictSyndromeVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -13,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -22,8 +26,11 @@ import java.util.Map;
 @RequestMapping("/syndrome")
 public class SynSyndromeController {
 
-    @Autowired
+    @Resource
     private ISynSyndromeService service;
+
+    @Resource
+    private IDictSyndromeService dictSyndromeService;
 
 
     @ApiOperation(value = "获取辨证方案信息", notes = "获取辨证方案信息")
@@ -54,6 +61,18 @@ public class SynSyndromeController {
         List<Map<String, Object>> list = service.getSyndromeList(diseaseName, status, term);
         PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
         return Result.success(pageInfo);
+    }
+
+    @ApiOperation(value = "获取疾病的所有分型列表", notes = "获取疾病的所有分型列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "diseaseId", value = "云平台疾病id"),
+            @ApiImplicitParam(name = "search", value = "分型搜索字段")
+    })
+    @GetMapping("/list")
+    public Result<List<DictSyndromeVo>> DictSymptomList(@RequestParam Long diseaseId, @RequestParam(required = false) String search) {
+        Assert.notNull(diseaseId, "疾病id不能为空!");
+        List<DictSyndromeVo> dictSyndromeVoList = dictSyndromeService.selectByDiseaseId(diseaseId, search);
+        return Result.success(dictSyndromeVoList);
     }
 
 }
