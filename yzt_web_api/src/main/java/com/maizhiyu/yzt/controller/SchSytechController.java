@@ -1,16 +1,10 @@
 package com.maizhiyu.yzt.controller;
 
-import cn.hutool.core.lang.Assert;
-import com.maizhiyu.yzt.aro.BuPrescriptionRO;
-import com.maizhiyu.yzt.avo.BuDiagnoseVO;
 import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.result.Result;
-import com.maizhiyu.yzt.ro.BuDiagnoseRO;
 import com.maizhiyu.yzt.service.*;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

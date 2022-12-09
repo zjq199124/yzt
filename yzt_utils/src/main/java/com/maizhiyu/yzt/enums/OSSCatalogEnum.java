@@ -5,7 +5,6 @@ package com.maizhiyu.yzt.enums;
  */
 public enum OSSCatalogEnum {
     INFRARED("equipment/hw/", "红外成像设备检查文件"),
-
     MERIDIAN("equipment/jl/", "经络检测设备检测文件"),
     INFRARED_IMG("equipment/hw/imgs/", "红外成像设备检查文件中的图片")
 

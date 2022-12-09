@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.service;
 
 import com.maizhiyu.yzt.entity.BuDiagnose;
 import com.maizhiyu.yzt.ro.BuDiagnoseRO;
+import com.maizhiyu.yzt.vo.BuDiagnoseVO;
 
 import java.util.List;
 import java.util.Map;

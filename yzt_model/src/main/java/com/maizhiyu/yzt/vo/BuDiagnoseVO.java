@@ -1,11 +1,10 @@
-package com.maizhiyu.yzt.avo;
+package com.maizhiyu.yzt.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.List;
-
 public class BuDiagnoseVO {
 
     @Data
@@ -75,7 +74,7 @@ public class BuDiagnoseVO {
     @Data
     @ApiModel
     public static class ShiyiVO {
-       /* @ApiModelProperty(value="技术编码")
+       /* @ApiModelProperty(value="编码")
         private String code;*/
 
         @ApiModelProperty(value="所属适宜技术id")
@@ -96,7 +95,7 @@ public class BuDiagnoseVO {
         @ApiModelProperty(value="操作")
         private String operation;
 
-        @ApiModelProperty(value = "客户id")
+        @ApiModelProperty(value="客户id")
         private Long customerId;
 
         @ApiModelProperty("是否推荐：1是；0否")

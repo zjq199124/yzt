@@ -201,7 +201,7 @@
         sx.syndrome_id
     </select>
 
-    <select id="getRecommendSytech" resultType="java.util.Map">
+    <select id="getRecommendSytech" resultType="com.maizhiyu.yzt.vo.BuDiagnoseVO$ShiyiVO">
 
         SELECT
         ss.customer_id as customerId,

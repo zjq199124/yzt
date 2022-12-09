@@ -1,17 +1,30 @@
 package com.maizhiyu.yzt.serviceimpl;
 
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import cn.hutool.core.lang.Assert;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.google.common.base.Preconditions;
 import com.maizhiyu.yzt.entity.BuDiagnose;
+import com.maizhiyu.yzt.entity.BuOutpatient;
+import com.maizhiyu.yzt.entity.DictDisease;
 import com.maizhiyu.yzt.entity.DictSyndrome;
+import com.maizhiyu.yzt.mapper.BuOutpatientMapper;
 import com.maizhiyu.yzt.mapper.BuRecommendMapper;
+import com.maizhiyu.yzt.mapper.DictDiseaseMapper;
 import com.maizhiyu.yzt.mapper.DictSyndromeMapper;
+import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.BuDiagnoseRO;
 import com.maizhiyu.yzt.service.IBuRecommendService;
+import com.maizhiyu.yzt.service.IDictSyndromeService;
+import com.maizhiyu.yzt.vo.BuDiagnoseVO;
+import com.maizhiyu.yzt.vo.DictSymptomVo;
+import com.maizhiyu.yzt.vo.DictSyndromeVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -20,14 +33,26 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@Transactional(rollbackFor=Exception.class)
+@Transactional(rollbackFor = Exception.class)
 public class BuRecommendService implements IBuRecommendService {
 
     @Autowired
     private BuRecommendMapper mapper;
 
     @Resource
-    private DictSyndromeMapper dictSyndromeMapper;
+    private IDictSyndromeService dictSyndromeService;
+
+    @Resource
+    private DictSymptomService dictSymptomService;
+
+    @Resource
+    private DictDiseaseMapper dictDiseaseMapper;
+
+    @Resource
+    private BuOutpatientMapper buOutpatientMapper;
+
+    @Resource
+    private BuDiagnoseService buDiagnoseService;
 
     @Override
     public Map<String, Object> getRecommend(BuDiagnose diagnose) {
@@ -36,8 +61,7 @@ public class BuRecommendService implements IBuRecommendService {
         List<Map<String, Object>> syndromeListB = null;
         List<Map<String, Object>> syndromeList = null;
         // 通过疾病获取辨证列表
-        if ((diagnose.getDisease()!=null && diagnose.getDisease().length() > 0) ||
-                (diagnose.getSyndrome()!=null && diagnose.getSyndrome().length() > 0)) {
+        if ((diagnose.getDisease() != null && diagnose.getDisease().length() > 0) || (diagnose.getSyndrome() != null && diagnose.getSyndrome().length() > 0)) {
             syndromeListA = mapper.selectSyndromeByDisease(diagnose.getDisease(), diagnose.getSyndrome());
         }
         // 通过症状获取辨证列表
@@ -50,7 +74,7 @@ public class BuRecommendService implements IBuRecommendService {
             syndromeList = new ArrayList<>();
             for (Map<String, Object> it1 : syndromeListA) {
                 for (Map<String, Object> it2 : syndromeListB) {
-                    if ( (long)it1.get("id") == (long)it2.get("id") ) {
+                    if ((long) it1.get("id") == (long) it2.get("id")) {
                         syndromeList.add(it2);
                     }
                 }
@@ -64,12 +88,13 @@ public class BuRecommendService implements IBuRecommendService {
         }
         // 计算辨证得分
         for (Map<String, Object> syndrome : syndromeList) {
+            //症状列表
             String[] arr = ((String) syndrome.get("symptoms")).split(",|，");
             long count = (long) syndrome.get("count");
-            if(StringUtils.isNotBlank(diagnose.getSymptoms())) {
+            if (StringUtils.isNotBlank(diagnose.getSymptoms())) {
                 String[] arr2 = diagnose.getSymptoms().split(",|，");
-                List<String> list1= new ArrayList<>(Arrays.asList(arr));
-                List<String> list2= new ArrayList<>(Arrays.asList(arr2));
+                List<String> list1 = new ArrayList<>(Arrays.asList(arr));
+                List<String> list2 = new ArrayList<>(Arrays.asList(arr2));
                 List<String> intersection = list1.stream().filter(item -> list2.contains(item)).collect(Collectors.toList());
                 count = intersection.size();
             }
@@ -79,7 +104,7 @@ public class BuRecommendService implements IBuRecommendService {
             syndrome.put("score", score);
         }
         // 按照得分排序
-        syndromeList.sort((a,b) -> Double.compare((double)b.get("score"), (double)a.get("score")));
+        syndromeList.sort((a, b) -> Double.compare((double) b.get("score"), (double) a.get("score")));
         int limit = syndromeList.size() < 10 ? syndromeList.size() : 10;
         syndromeList = syndromeList.subList(0, limit);
         // 输出辨证列表
@@ -122,7 +147,7 @@ public class BuRecommendService implements IBuRecommendService {
             syndrome.put("score", score);
         }
         // 按照得分排序
-        syndromeList.sort((a,b) -> Double.compare((double)b.get("score"), (double)a.get("score")));
+        syndromeList.sort((a, b) -> Double.compare((double) b.get("score"), (double) a.get("score")));
         // 保留得分最高
         int limit = syndromeList.size() < 10 ? syndromeList.size() : 10;
         syndromeList = syndromeList.subList(0, limit);
@@ -132,17 +157,71 @@ public class BuRecommendService implements IBuRecommendService {
         return result;
     }
 
+    // 根据辨证分型获取推荐方案
     @Override
     public Map<String, Object> selectRecommend(BuDiagnoseRO.GetRecommendRO ro) {
-        Map<String, Object> result = new HashMap<>();
+        //推荐方案必须要有病名称或id
+        DictDisease disease = null;
+        if (ro.getDisease() != null) {
+            LambdaQueryWrapper<DictDisease> wrapper = Wrappers.lambdaQuery();
+            wrapper.eq(DictDisease::getName, ro.getDisease());
+            disease = dictDiseaseMapper.selectOne(wrapper);
+        } else {
+            disease = dictDiseaseMapper.selectById(ro.getDiseaseId());
+        }
+        Assert.notNull(ro.getDiseaseId(), "疾病名称或id不存在!");
+        ro.setDiseaseId(disease.getId());
+        Map<String, Object> resultMap = new HashMap<>();
 
-        List<Map<String, Object>> sytechList = mapper.getRecommendSytech(ro.getSyndromeIdList(),ro.getDiseaseId(),ro.getSytechId(),ro.getCustomerName());
+        //在没有分型syndromeIdList以及没有症状集合symptomIdList先查询下这次挂号看病是否已经有保存诊断信息和治疗处方
+        if (CollectionUtils.isEmpty(ro.getSymptomIdList()) && CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
+            Map<String, Object> result = buDiagnoseService.getDetails(ro);
+            if (Objects.nonNull(result))
+                return result;
+        }
 
-        // 整理返回数据
-        result.put("sytechList", sytechList);
+        //2.没有syndromeIdList的情况下，判断是否有传症状集合symptomIdList，没有的话通过Feign远程调用云平台中获取疾病所有症状的接口
+        if (CollectionUtils.isEmpty(ro.getSyndromeIdList()) && CollectionUtils.isEmpty(ro.getSymptomIdList())) {
+            //疾病症状数据集合
+            List<DictSymptomVo> dictSymptomVoList = dictSymptomService.selectByDiseaseId(ro.getDiseaseId());
+            resultMap.put("dictSymptomList", dictSymptomVoList);
 
+            if (!CollectionUtils.isEmpty(dictSymptomVoList)) {
+                List<Long> symptomIdList = dictSymptomVoList.stream().map(DictSymptomVo::getId).collect(Collectors.toList());
+                ro.setSymptomIdList(symptomIdList);
+            }
+        }
+
+        //3.判断是否有传分型集合syndromeIdList，没有的话使用symptomIdList通过Feign远程调用云平台中获取疾病所有分型的接口
+        if (CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
+            List<DictSyndromeVo> dictSyndromeVoList = dictSyndromeService.selectDictSyndromeBySymptomIdList(ro.getSymptomIdList());
+            //疾病分型数据集合
+            resultMap.put("dictSyndromeList", dictSyndromeVoList);
+            if (!CollectionUtils.isEmpty(dictSyndromeVoList)) {
+                dictSyndromeVoList.forEach(item -> item.setIsShow(1));
+                List<Long> syndromeIdList = dictSyndromeVoList.stream().map(DictSyndromeVo::getId).collect(Collectors.toList());
+                ro.setSyndromeIdList(syndromeIdList);
+            }
+        }
+
+        List<BuDiagnoseVO.ShiyiVO> sytechList = mapper.getRecommendSytech(ro.getSyndromeIdList(), ro.getDiseaseId(), ro.getSytechId(), ro.getCustomerName());
+        // 整合数据
+        BuDiagnoseVO.GetRecommendVO vo = new BuDiagnoseVO.GetRecommendVO();
+        vo.setZhongyaoList(Collections.emptyList());
+        vo.setChengyaoList(Collections.emptyList());
+        vo.setXiedingList(Collections.emptyList());
+        vo.setShiyiList(sytechList);
+        resultMap.put("shiyiList", vo.getShiyiList());
+        resultMap.put("yptDiagnoseId", null);
+        resultMap.put("yptPrescriptionId", null);
+        resultMap.put("yptPrescription", null);
+        resultMap.put("prescriptionItemList", Collections.emptyList());
+        //云平台中医诊断名称
+        resultMap.put("yptDiseaseName", disease.getName());
+        //云平台中医诊断Id
+        resultMap.put("yptDiseaseId", disease.getId());
         // 返回数据
-        return result;
+        return resultMap;
     }
 
     // 根据辨证分型获取推荐方案
@@ -154,15 +233,15 @@ public class BuRecommendService implements IBuRecommendService {
         // 整理Id列表
         Long[] ids = syndromeList.stream().map(it -> it.get("id")).toArray(Long[]::new);
         // 获取推荐方案
-        List<Map<String, Object>> zhongyaoList = mapper.selectRecommendZhongyao(ids);
-        List<Map<String, Object>> chengyaoList = mapper.selectRecommendChengyao(ids);
-        List<Map<String, Object>> xiedingList = mapper.selectRecommendXieding(ids);
+//        List<Map<String, Object>> zhongyaoList = mapper.selectRecommendZhongyao(ids);
+//        List<Map<String, Object>> chengyaoList = mapper.selectRecommendChengyao(ids);
+//        List<Map<String, Object>> xiedingList = mapper.selectRecommendXieding(ids);
         List<Map<String, Object>> sytechList = mapper.selectRecommendSytech(ids);
         // 整理返回数据
         result.put("syndromeList", syndromeList);
-        result.put("zhongyaoList", zhongyaoList);
-        result.put("chengyaoList", chengyaoList);
-        result.put("xiedingList", xiedingList);
+//        result.put("zhongyaoList", zhongyaoList);
+//        result.put("chengyaoList", chengyaoList);
+//        result.put("xiedingList", xiedingList);
         result.put("sytechList", sytechList);
     }
 }

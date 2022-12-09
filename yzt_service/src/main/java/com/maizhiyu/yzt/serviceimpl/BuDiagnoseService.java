@@ -12,6 +12,7 @@ import com.maizhiyu.yzt.service.IBuCheckService;
 import com.maizhiyu.yzt.service.IBuDiagnoseService;
 import com.maizhiyu.yzt.service.IBuRecommendService;
 import com.maizhiyu.yzt.service.IDictSyndromeService;
+import com.maizhiyu.yzt.vo.BuDiagnoseVO;
 import com.maizhiyu.yzt.vo.DictSymptomVo;
 import com.maizhiyu.yzt.vo.DictSyndromeVo;
 import org.apache.commons.lang3.StringUtils;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 
 
 @Service
-@Transactional(rollbackFor=Exception.class)
+@Transactional(rollbackFor = Exception.class)
 public class BuDiagnoseService implements IBuDiagnoseService {
 
     @Autowired
@@ -126,7 +127,7 @@ public class BuDiagnoseService implements IBuDiagnoseService {
     }
 
     @Override
-    public Result getDetails(BuDiagnoseRO.GetRecommendRO ro) throws Exception {
+    public Map<String, Object> getDetails(BuDiagnoseRO.GetRecommendRO ro) {
 
         Map<String, Object> resultMap = new HashMap<>();
 
@@ -138,7 +139,7 @@ public class BuDiagnoseService implements IBuDiagnoseService {
                 .last("limit 1");
         MsCustomer msCustomer = msCustomerMapper.selectOne(customerQueryWrapper);
         if (Objects.isNull(msCustomer)) {
-            return Result.success(null);
+            return null;
         }
 
         //0.2:查询出医生id
@@ -151,7 +152,7 @@ public class BuDiagnoseService implements IBuDiagnoseService {
         HsUser hsUser = hsUserMapper.selectOne(hsUserQueryWrapper);
 
         if (Objects.isNull(hsUser)) {
-            return Result.success(null);
+            return null;
         }
 
         //0.3:先查询出患者id
@@ -163,7 +164,7 @@ public class BuDiagnoseService implements IBuDiagnoseService {
                 .last("limit 1");
         BuPatient buPatient = patientMapper.selectOne(buPatientQueryWrapper);
         if (Objects.isNull(buPatient)) {
-            return Result.success(null);
+            return null;
         }
 
         //0.4:先查询出患者预约id
@@ -177,7 +178,7 @@ public class BuDiagnoseService implements IBuDiagnoseService {
         BuOutpatient buOutpatient = outpatientMapper.selectOne(buOutpatientQueryWrapper);
 
         if (Objects.isNull(buOutpatient)) {
-            return Result.success(null);
+            return null;
         }
 
         //1：查询是否有诊断信息
@@ -190,14 +191,14 @@ public class BuDiagnoseService implements IBuDiagnoseService {
                 .last("limit 1");
         BuDiagnose buDiagnose = mapper.selectOne(queryWrapper);
         if (Objects.isNull(buDiagnose)) {
-            return Result.success(null);
+            return null;
         } else {
             //云平台中医疾病名称
-            resultMap.put("yptDiseaseName",  buDiagnose.getDisease());
+            resultMap.put("yptDiseaseName", buDiagnose.getDisease());
             //云平台中医疾病Id
-            resultMap.put("yptDiseaseId",  buDiagnose.getDiseaseId());
+            resultMap.put("yptDiseaseId", buDiagnose.getDiseaseId());
             //云平台中诊断信息Id
-            resultMap.put("yptDiagnoseId",  buDiagnose.getId());
+            resultMap.put("yptDiagnoseId", buDiagnose.getId());
         }
 
         //2.1:查询这个疾病下的所有的症状列表
@@ -206,7 +207,7 @@ public class BuDiagnoseService implements IBuDiagnoseService {
         if (CollectionUtils.isEmpty(list)) {
             //疾病症状数据集合
             resultMap.put("dictSymptomList", Collections.emptyList());
-        } else{
+        } else {
             dictSymptomVoList = list.stream().map(item -> {
                 DictSymptomVo dictSymptomVo = new DictSymptomVo();
                 BeanUtils.copyProperties(item, dictSymptomVo);
@@ -230,7 +231,7 @@ public class BuDiagnoseService implements IBuDiagnoseService {
         //3.1:查询这个疾病下的所有的分型列表
         List<DictSyndromeVo> dictSyndromeVoList = Collections.emptyList();//保存所有的分型
 
-        List<DictSyndrome> dictSyndromeList = dictSyndromeMapper.selectByDiseaseId(ro.getDiseaseId(),null);
+        List<DictSyndrome> dictSyndromeList = dictSyndromeMapper.selectByDiseaseId(ro.getDiseaseId(), null);
         if (CollectionUtils.isEmpty(dictSyndromeList)) {
             //疾病分型数据集合
             resultMap.put("dictSyndromeList", Collections.emptyList());
@@ -280,11 +281,11 @@ public class BuDiagnoseService implements IBuDiagnoseService {
             //处方中所包含的适宜技术的列表
             resultMap.put("prescriptionItemList", Collections.emptyList());
             //处方id
-            resultMap.put("yptPrescriptionId",  null);
-            resultMap.put("yptPrescription",  null);
+            resultMap.put("yptPrescriptionId", null);
+            resultMap.put("yptPrescription", null);
         } else {
-            resultMap.put("yptPrescriptionId",  buPrescription.getId());
-            resultMap.put("yptPrescription",  buPrescription);
+            resultMap.put("yptPrescriptionId", buPrescription.getId());
+            resultMap.put("yptPrescription", buPrescription);
             //5:查询保存的处方所对应的具体适宜技术
             LambdaQueryWrapper<BuPrescriptionItem> buPrescriptionItemQueryWrapper = new LambdaQueryWrapper<>();
             buPrescriptionItemQueryWrapper.eq(BuPrescriptionItem::getPrescriptionId, buPrescription.getId())
@@ -302,10 +303,10 @@ public class BuDiagnoseService implements IBuDiagnoseService {
         List<Long> syndromeIdList = ro.getSyndromeIdList();
         if (CollectionUtils.isEmpty(syndromeIdList)) {
             syndromeIdList = dictSyndromeVoList.stream().filter(item -> item.getIsCheck() == 1).map(DictSyndromeVo::getId).collect(Collectors.toList());
-        }else if (CollectionUtils.isEmpty(syndromeIdList)) {
-            syndromeIdList  = dictSyndromeVoList.stream().filter(item -> item.getIsShow() == 1).map(DictSyndromeVo::getId).collect(Collectors.toList());
+        } else if (CollectionUtils.isEmpty(syndromeIdList)) {
+            syndromeIdList = dictSyndromeVoList.stream().filter(item -> item.getIsShow() == 1).map(DictSyndromeVo::getId).collect(Collectors.toList());
 
-        }else if (CollectionUtils.isEmpty(syndromeIdList)) {
+        } else if (CollectionUtils.isEmpty(syndromeIdList)) {
             syndromeIdList = dictSyndromeVoList.stream().map(DictSyndromeVo::getId).collect(Collectors.toList());
         }
 
@@ -316,7 +317,7 @@ public class BuDiagnoseService implements IBuDiagnoseService {
         Map<String, Object> stringObjectMap = buRecommendService.selectRecommend(recommendRo);
         resultMap.put("shiyiList", stringObjectMap.get("sytechList"));
 
-        return Result.success(resultMap);
+        return resultMap;
     }
 
     private List<Long> getSymptomIdList(BuDiagnose buDiagnose) {

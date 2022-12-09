@@ -35,6 +35,7 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Slf4j
@@ -314,20 +315,12 @@ public class BuDiagnoseController {
     @PostMapping("/getRecommend")
     public Result getRecommend(@RequestBody @Valid BuDiagnoseRO.GetRecommendRO ro) {
         Assert.notNull(ro, "查询对象不能为空!");
-        Map<String, Object> resultMap = new HashMap<>();
-
         ro.setCustomerName(customerName);
-
         //1.对his传过来的疾病名称和云平台疾病名称进行映射(有西医诊断优先匹配西医诊断)
         if (Objects.isNull(ro.getDiseaseId())) {
             String hisDiseaseName = Objects.nonNull(ro.getWestDiagnose()) ? ro.getWestDiagnose() : ro.getTcmDiagnose();
             DiseaseMapping jzfyDiseaseMapping = diseaseMappingService.selectByHisName(hisDiseaseName);
             Preconditions.checkArgument(Objects.nonNull(jzfyDiseaseMapping), "his中的诊断：" + hisDiseaseName + " 在云平台中没有与之相匹配的中医诊断!");
-            //云平台中医诊断名称
-            resultMap.put("yptDiseaseName", jzfyDiseaseMapping.getName());
-            //云平台中医诊断Id
-            resultMap.put("yptDiseaseId", jzfyDiseaseMapping.getDiseaseId());
-
             ro.setDiseaseId(jzfyDiseaseMapping.getDiseaseId());
         }
 
@@ -338,49 +331,16 @@ public class BuDiagnoseController {
         if (Objects.nonNull(outpatient)) {
             ro.setOutpatientId(Long.parseLong(outpatient.getCode()));
         }
-
         //在没有分型syndromeIdList以及没有症状集合symptomIdList先查询下这次挂号看病是否已经有保存诊断信息和治疗处方
         if (CollectionUtils.isEmpty(ro.getSymptomIdList()) && CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
             Result result = yptClient.getDetail(ro);
-            if(Objects.nonNull(result.getData()))
+            if (Objects.nonNull(result.getData()))
                 return result;
         }
-
-        //2.没有syndromeIdList的情况下，判断是否有传症状集合symptomIdList，没有的话通过Feign远程调用云平台中获取疾病所有症状的接口
-        if (CollectionUtils.isEmpty(ro.getSyndromeIdList()) && CollectionUtils.isEmpty(ro.getSymptomIdList())) {
-            Result<List<DictSymptomVo>> dictSymptomResult = yptClient.selectDictSymptomList(ro.getDiseaseId());
-            //疾病症状数据集合
-            List<DictSymptomVo> dictSymptomVoList = dictSymptomResult.getData();
-            resultMap.put("dictSymptomList", dictSymptomVoList);
-
-            if (!CollectionUtils.isEmpty(dictSymptomVoList)) {
-                List<Long> symptomIdList = dictSymptomVoList.stream().map(DictSymptomVo::getId).collect(Collectors.toList());
-                ro.setSymptomIdList(symptomIdList);
-            }
-        }
-
-        //3.判断是否有传分型集合syndromeIdList，没有的话使用symptomIdList通过Feign远程调用云平台中获取疾病所有分型的接口
-        if (CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
-            Result<List<DictSyndromeVo>> dictSyndromeResult = yptClient.selectDictSyndromeBySymptomIdList(ro.getSymptomIdList());
-            List<DictSyndromeVo> dictSyndromeVoList = dictSyndromeResult.getData();
-            //疾病分型数据集合
-            resultMap.put("dictSyndromeList", dictSyndromeVoList);
-            if (!CollectionUtils.isEmpty(dictSyndromeVoList)) {
-                dictSyndromeVoList.forEach(item -> item.setIsShow(1));
-                List<Long> syndromeIdList = dictSyndromeVoList.stream().map(DictSyndromeVo::getId).collect(Collectors.toList());
-                ro.setSyndromeIdList(syndromeIdList);
-            }
-        }
-
         // 调用开放接口获取诊断推荐
-        Result<BuDiagnoseVO.GetRecommendVO> recommendResult = yptClient.getRecommend(ro);
-        resultMap.put("shiyiList", recommendResult.getData().getShiyiList());
-        resultMap.put("yptDiagnoseId", null);
-        resultMap.put("yptPrescriptionId", null);
-        resultMap.put("yptPrescription",  null);
-        resultMap.put("prescriptionItemList", Collections.emptyList());
+        Map<String, Object> recommendMap = yptClient.getRecommend(ro);
 
-        return Result.success(resultMap);
+        return Result.success(recommendMap);
     }
 
     @ApiOperation(value = "获取门诊诊断和患者信息", notes = "获取门诊诊断和患者信息")
@@ -394,15 +354,15 @@ public class BuDiagnoseController {
         queryWrapper.eq(HisOutpatient::getRegistrationId, outpatientId)
                 .last("limit 1");
         HisOutpatient hisOutpatient = outpatientMapper.selectOne(queryWrapper);
-        if(Objects.isNull(hisOutpatient))
+        if (Objects.isNull(hisOutpatient))
             throw new Exception("不存在outpatientId为: " + outpatientId + " 的门诊信息!");
 
         HisPatient hisPatient = hisPatientMapper.selectById(hisOutpatient.getPatientId());
-        if(Objects.isNull(hisPatient))
+        if (Objects.isNull(hisPatient))
             throw new Exception("不存在outpatientId为: " + outpatientId + " 对应的患者的信息!");
 
         HisDoctor hisDoctor = hisDoctorMapper.selectById(hisOutpatient.getDoctorId());
-        if(Objects.isNull(hisDoctor))
+        if (Objects.isNull(hisDoctor))
             throw new Exception("不存在outpatientId为: " + outpatientId + " 的此次门诊对应的医生信息!");
 
         Map<String, Object> result = new HashMap<>();

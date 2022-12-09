@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 
 
 @FeignClient(name = "yptapi", url = "${api.ypt.domain}")
@@ -27,7 +28,7 @@ public interface FeignYptClient {
     feign.Response login(@RequestParam(value = "username") String username, @RequestParam(value = "password") String password);
 
     @PostMapping(value = "/diagnose/getRecommend")
-    Result<BuDiagnoseVO.GetRecommendVO> getRecommend(@RequestBody BuDiagnoseRO.GetRecommendRO ro);
+    Map<String,Object> getRecommend(@RequestBody BuDiagnoseRO.GetRecommendRO ro);
 
     @PostMapping(value = "/user/addUser")
     Result<Long> addDoctor(@RequestBody HsUserXO.AddUserXO xo);
