@@ -3,16 +3,10 @@ package com.maizhiyu.yzt.serviceimpl;
 import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.google.common.base.Preconditions;
 import com.maizhiyu.yzt.entity.BuDiagnose;
-import com.maizhiyu.yzt.entity.BuOutpatient;
 import com.maizhiyu.yzt.entity.DictDisease;
-import com.maizhiyu.yzt.entity.DictSyndrome;
-import com.maizhiyu.yzt.mapper.BuOutpatientMapper;
 import com.maizhiyu.yzt.mapper.BuRecommendMapper;
 import com.maizhiyu.yzt.mapper.DictDiseaseMapper;
-import com.maizhiyu.yzt.mapper.DictSyndromeMapper;
-import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.BuDiagnoseRO;
 import com.maizhiyu.yzt.service.IBuRecommendService;
 import com.maizhiyu.yzt.service.IDictSyndromeService;
@@ -47,9 +41,6 @@ public class BuRecommendService implements IBuRecommendService {
 
     @Resource
     private DictDiseaseMapper dictDiseaseMapper;
-
-    @Resource
-    private BuOutpatientMapper buOutpatientMapper;
 
     @Resource
     private BuDiagnoseService buDiagnoseService;
@@ -194,7 +185,7 @@ public class BuRecommendService implements IBuRecommendService {
 
         //3.判断是否有传分型集合syndromeIdList，没有的话使用symptomIdList通过Feign远程调用云平台中获取疾病所有分型的接口
         if (CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
-            List<DictSyndromeVo> dictSyndromeVoList = dictSyndromeService.selectDictSyndromeBySymptomIdList(ro.getSymptomIdList());
+            List<DictSyndromeVo> dictSyndromeVoList = dictSyndromeService.selectDictSyndromeBySymptomIdList(disease.getId(),ro.getSymptomIdList());
             //疾病分型数据集合
             resultMap.put("dictSyndromeList", dictSyndromeVoList);
             if (!CollectionUtils.isEmpty(dictSyndromeVoList)) {

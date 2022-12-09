@@ -1,7 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.maizhiyu.yzt.entity.DictDisease;
 import com.maizhiyu.yzt.entity.DictSymptom;
 import com.maizhiyu.yzt.mapper.DictSymptomMapper;
 import com.maizhiyu.yzt.service.IDictSymptomService;
