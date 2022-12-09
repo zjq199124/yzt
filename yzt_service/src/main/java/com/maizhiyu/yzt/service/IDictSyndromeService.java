@@ -7,5 +7,5 @@ import java.util.List;
 public interface IDictSyndromeService {
     List<DictSyndromeVo> selectByDiseaseId(Long diseaseId,String search);
 
-    List<DictSyndromeVo> selectDictSyndromeBySymptomIdList(List<Long> symptomIdList);
+    List<DictSyndromeVo> selectDictSyndromeBySymptomIdList(Long diseaseId,List<Long> symptomIdList);
 }

@@ -39,9 +39,9 @@ public class DictSyndromeServiceImpl implements IDictSyndromeService {
     }
 
     @Override
-    public List<DictSyndromeVo> selectDictSyndromeBySymptomIdList(List<Long> symptomIdList) {
+    public List<DictSyndromeVo> selectDictSyndromeBySymptomIdList(Long diseaseId,List<Long> symptomIdList) {
         //1:查询该包含所列症状的分型
-        List<DictSyndrome> list = dictSyndromeMapper.selectDictSyndromeBySymptomIdList(symptomIdList);
+        List<DictSyndrome> list = dictSyndromeMapper.selectDictSyndromeBySymptomIdList(diseaseId,symptomIdList);
         if(CollectionUtils.isEmpty(list))
             return Collections.emptyList();
         List<DictSyndromeVo> dictSyndromeVoList = getDictSyndromeVos(list);

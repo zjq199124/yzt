@@ -59,7 +59,7 @@ public interface FeignYptClient {
                                                                    @RequestParam(value = "search") String search);
 
     @PostMapping(value = "/dictSyndrome/selectBySymptom")
-    Result<List<DictSyndromeVo>> selectDictSyndromeBySymptomIdList(@RequestBody List<Long> symptomIdList);
+    Result<List<DictSyndromeVo>> selectDictSyndromeBySymptomIdList(@RequestParam(value = "diseaseId") Long diseaseId,@RequestBody List<Long> symptomIdList);
 
     @PostMapping(value = "/sytech/getRecommend")
     Result getSytechRecommend(@RequestParam(value = "diseaseId") Long diseaseId,@RequestParam(value = "syndromeId",required = false) Long syndromeId,@RequestParam(value = "term",required = false) String term);
@@ -74,7 +74,7 @@ public interface FeignYptClient {
     Result getDetail(@RequestBody BuDiagnoseRO.GetRecommendRO ro);
 
     @GetMapping(value = "/diagnose/getYptOutpatient")
-    Result getYptOutpatientByHisId(@RequestParam(value = "outpatientId") Long outpatientId);
+    Result<Long>getYptOutpatientByHisId(@RequestParam(value = "outpatientId") Long outpatientId);
 
     @GetMapping("/schtech/getSytechList")
     Result getSytechList(@RequestParam(value = "diseaseId") Long diseaseId,
