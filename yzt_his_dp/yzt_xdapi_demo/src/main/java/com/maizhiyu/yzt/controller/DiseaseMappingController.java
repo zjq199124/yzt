@@ -22,7 +22,7 @@ import java.util.Objects;
  * @author zhangxiansho
  * @since 2022-11-14
  */
-@Api(tags = "焦作妇幼疾病翻译接口")
+@Api(tags = "内部his系统疾病翻译接口")
 @RestController
 @RequestMapping("/jzfyDiseaseMapping")
 public class DiseaseMappingController {
@@ -30,7 +30,7 @@ public class DiseaseMappingController {
     @Resource
     private DiseaseMappingService diseaseMappingService;
 
-    @ApiOperation(value = "焦作妇幼疾病映射接口")
+    @ApiOperation(value = "内部his系统疾病映射接口")
     @ApiImplicitParam(name = "hisDiseaseName",value = "his疾病名称",required = true)
     @GetMapping("/jzfy")
     public Result selectDiseaseMappingByHisDiseaseName(String hisDiseaseName) {
