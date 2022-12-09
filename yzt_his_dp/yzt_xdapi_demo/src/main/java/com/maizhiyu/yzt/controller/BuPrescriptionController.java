@@ -180,7 +180,8 @@ public class BuPrescriptionController {
         //his中处置id不为空的话那么先删除his中的处置
         if (Objects.nonNull(clone.getHisId())) {
             try {
-                hisApi.cancelTreatmentById(Integer.parseInt(clone.getHisId()));
+                Call<Object> repos = hisApi.cancelTreatmentById(Integer.parseInt(clone.getHisId()));
+                repos.execute().body();
             } catch (Exception e) {
                 log.warn("处治保存到his失败!");
                 e.printStackTrace();

@@ -73,7 +73,7 @@ public interface FeignYptClient {
     Result getDetail(@RequestBody BuDiagnoseRO.GetRecommendRO ro);
 
     @GetMapping(value = "/diagnose/getYptOutpatient")
-    Result getYptOutpatientByHisId(@RequestParam(value = "outpatientId") Long outpatientId);
+    Result<Long>getYptOutpatientByHisId(@RequestParam(value = "outpatientId") Long outpatientId);
 
     @GetMapping("/schtech/getSytechList")
     Result getSytechList(@RequestParam(value = "diseaseId") Long diseaseId,

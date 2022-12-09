@@ -387,7 +387,7 @@ public class BuDiagnoseController {
     @ApiImplicitParam(name = "outpatientId", value = "门诊ID", required = true)
     @GetMapping("/getDiagnoseOfOutpatient")
     public Result getDiagnoseOfOutpatient(@RequestParam Long outpatientId) throws Exception {
-        //内部这里的outpatientId是内部his的registration_id，我们查询出视图中的code（就是内部his中的medical_record_id） 当做云平台的outpatient_id
+        //内部这里的outpatientId是内部his的registration_id，我们查询出视图中的code（就是内部his中的medical_record_id） 当做云平台中的outpatient表中的hisId
         // 获取token字段
         Assert.notNull(outpatientId, "outpatientId不能为空!");
         LambdaQueryWrapper<HisOutpatient> queryWrapper = new LambdaQueryWrapper<>();
@@ -396,6 +396,9 @@ public class BuDiagnoseController {
         HisOutpatient hisOutpatient = outpatientMapper.selectOne(queryWrapper);
         if(Objects.isNull(hisOutpatient))
             throw new Exception("不存在outpatientId为: " + outpatientId + " 的门诊信息!");
+
+        //拿到hisOutpatient中的code，当做hisId去云平台的bu_outpatient中查询
+        Result<Long> yptOutpatientIdResult = yptClient.getYptOutpatientByHisId(Long.parseLong(hisOutpatient.getCode()));
 
         HisPatient hisPatient = hisPatientMapper.selectById(hisOutpatient.getPatientId());
         if(Objects.isNull(hisPatient))
@@ -410,6 +413,7 @@ public class BuDiagnoseController {
         result.put("hisPatient", hisPatient);
         result.put("hisDoctor", hisDoctor);
         result.put("customerName", customerName);
+        result.put("yptOutpatientId", yptOutpatientIdResult.getData());
 
         return Result.success(result);
     }

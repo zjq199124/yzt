@@ -9,6 +9,7 @@ import com.maizhiyu.yzt.entity.MsCustomer;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.BuDiagnoseRO;
 import com.maizhiyu.yzt.service.*;
+import com.maizhiyu.yzt.utils.JwtTokenUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 
@@ -277,8 +279,11 @@ public class BuDiagnoseController {
 
     @ApiOperation(value = "获取云平台对应的outpatientID")
     @GetMapping(value = "/getYptOutpatient")
-    Result getYptOutpatientByHisId(Long outpatientId) {
-      BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(null,outpatientId);
+    Result<Long> getYptOutpatientByHisId(HttpServletRequest request, @RequestParam(value = "outpatientId") Long outpatientId) {
+        Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
+        if (customerId == null) return Result.failure(10001, "token错误");
+
+      BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId,outpatientId);
         Long id = Optional.ofNullable(buOutpatient).orElse(new BuOutpatient()).getId();
         return Result.success(id);
     }
