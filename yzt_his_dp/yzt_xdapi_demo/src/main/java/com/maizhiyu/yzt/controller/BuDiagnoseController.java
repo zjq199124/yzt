@@ -361,7 +361,7 @@ public class BuDiagnoseController {
 
         //3.判断是否有传分型集合syndromeIdList，没有的话使用symptomIdList通过Feign远程调用云平台中获取疾病所有分型的接口
         if (CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
-            Result<List<DictSyndromeVo>> dictSyndromeResult = yptClient.selectDictSyndromeBySymptomIdList(ro.getSymptomIdList());
+            Result<List<DictSyndromeVo>> dictSyndromeResult = yptClient.selectDictSyndromeBySymptomIdList(ro.getDiseaseId(),ro.getSymptomIdList());
             List<DictSyndromeVo> dictSyndromeVoList = dictSyndromeResult.getData();
             //疾病分型数据集合
             resultMap.put("dictSyndromeList", dictSyndromeVoList);

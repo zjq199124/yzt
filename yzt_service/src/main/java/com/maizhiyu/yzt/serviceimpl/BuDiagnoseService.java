@@ -252,7 +252,7 @@ public class BuDiagnoseService implements IBuDiagnoseService {
             //3.2通过上面选中的症状推出选中的分型有哪些 标记出之前的诊断保存时所选的分型
             List<Long> symptomIdList = getSymptomIdList(buDiagnose);
             if (!CollectionUtils.isEmpty(symptomIdList)) {
-                List<DictSyndromeVo> checkDictSyndromeVoList = dictSyndromeService.selectDictSyndromeBySymptomIdList(symptomIdList);
+                List<DictSyndromeVo> checkDictSyndromeVoList = dictSyndromeService.selectDictSyndromeBySymptomIdList(ro.getDiseaseId(),symptomIdList);
                 if (!CollectionUtils.isEmpty(checkDictSyndromeVoList)) {
                     List<Long> checkDictSyndromeVoIdList = checkDictSyndromeVoList.stream().map(DictSyndromeVo::getId).collect(Collectors.toList());
                     dictSyndromeVoList.forEach(item -> {

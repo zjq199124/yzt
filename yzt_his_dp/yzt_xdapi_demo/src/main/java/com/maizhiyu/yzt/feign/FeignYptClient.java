@@ -58,7 +58,7 @@ public interface FeignYptClient {
                                                                    @RequestParam(value = "search") String search);
 
     @PostMapping(value = "/dictSyndrome/selectBySymptom")
-    Result<List<DictSyndromeVo>> selectDictSyndromeBySymptomIdList(@RequestBody List<Long> symptomIdList);
+    Result<List<DictSyndromeVo>> selectDictSyndromeBySymptomIdList(@RequestParam(value = "diseaseId") Long diseaseId,@RequestBody List<Long> symptomIdList);
 
     @PostMapping(value = "/sytech/getRecommend")
     Result getSytechRecommend(@RequestParam(value = "diseaseId") Long diseaseId,@RequestParam(value = "syndromeId",required = false) Long syndromeId,@RequestParam(value = "term",required = false) String term);

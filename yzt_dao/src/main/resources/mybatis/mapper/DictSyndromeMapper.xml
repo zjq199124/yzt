@@ -22,7 +22,7 @@
     <select id="selectDictSyndromeBySymptomIdList" resultType="com.maizhiyu.yzt.entity.DictSyndrome">
         SELECT DISTINCT ds.id,ds.name FROM dict_syndrome ds
         INNER JOIN rel_syndrome_symptom rss ON ds.id = rss.syndrome_id AND rss.is_del = 0
-        WHERE ds.is_del = 0 AND rss.symptom_id IN
+        WHERE ds.is_del = 0 AND rss.disease_id = #{diseaseId} AND rss.symptom_id IN
         <foreach collection="symptomIdList" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
