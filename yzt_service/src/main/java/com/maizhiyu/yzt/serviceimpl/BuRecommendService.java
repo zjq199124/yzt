@@ -160,7 +160,7 @@ public class BuRecommendService implements IBuRecommendService {
         } else {
             disease = dictDiseaseMapper.selectById(ro.getDiseaseId());
         }
-        Assert.notNull(ro.getDiseaseId(), "疾病名称或id不存在!");
+        Assert.notNull(disease.getId(), "疾病名称或id不存在!");
         ro.setDiseaseId(disease.getId());
         Map<String, Object> resultMap = new HashMap<>();
 

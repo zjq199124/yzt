@@ -1,6 +1,5 @@
 package com.maizhiyu.yzt.controller;
 
-import com.baomidou.mybatisplus.extension.api.R;
 import com.maizhiyu.yzt.aro.BuPrescriptionRO;
 import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.result.Result;
@@ -8,17 +7,21 @@ import com.maizhiyu.yzt.service.*;
 import com.maizhiyu.yzt.utils.JwtTokenUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -62,7 +65,7 @@ public class BuPrescriptionController {
         BuPatient buPatient = buPatientService.getPatientByHisId(customerId, Long.valueOf(ro.getPatientId()));
         if (buPatient == null) return Result.failure(10003, "患者信息错误");
         // 获取预约信息
-        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId,Long.valueOf(ro.getOutpatientId()));
+        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, Long.valueOf(ro.getOutpatientId()));
         if (buOutpatient == null) return Result.failure(10004, "预约信息错误");
         // 整理处方数据
         List<BuPrescriptionItem> itemList = new ArrayList<>();
@@ -98,7 +101,7 @@ public class BuPrescriptionController {
         }
         // 保存药材
         //Integer res = service.addPrescription(prescription);
-        Integer res = service.saveOrUpdate(prescription);
+        Boolean res = service.saveOrUpdate(prescription);
         // 返回结果
         return Result.success(res);
     }
@@ -277,7 +280,7 @@ public class BuPrescriptionController {
             }
         }
         // 保存药材
-        Integer res = service.saveOrUpdate(prescription);
+        Boolean res = service.saveOrUpdate(prescription);
         // 返回结果
         return Result.success(res);
     }
