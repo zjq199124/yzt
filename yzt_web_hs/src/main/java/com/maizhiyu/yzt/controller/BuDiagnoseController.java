@@ -1,12 +1,10 @@
 package com.maizhiyu.yzt.controller;
 
-import com.maizhiyu.yzt.entity.BuCheck;
 import com.maizhiyu.yzt.entity.BuDiagnose;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.BuDiagnoseRO;
 import com.maizhiyu.yzt.service.IBuDiagnoseService;
 import com.maizhiyu.yzt.service.IBuRecommendService;
-import com.maizhiyu.yzt.vo.BuDiagnoseVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -15,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 
@@ -30,11 +27,10 @@ public class BuDiagnoseController {
     @Autowired
     private IBuRecommendService recommendService;
 
-
     @ApiOperation(value = "增加诊断", notes = "增加诊断")
     @ApiImplicitParams({})
     @PostMapping("/addDiagnose")
-    public Result addDiagnose (@RequestBody BuDiagnose diagnose) {
+    public Result addDiagnose(@RequestBody BuDiagnose diagnose) {
         diagnose.setStatus(1);
         diagnose.setCreateTime(new Date());
         diagnose.setUpdateTime(diagnose.getCreateTime());
@@ -45,7 +41,7 @@ public class BuDiagnoseController {
 
     @ApiOperation(value = "修改诊断信息", notes = "修改诊断信息")
     @PostMapping("/setDiagnose")
-    public Result setDiagnose (@RequestBody BuDiagnose diagnose) {
+    public Result setDiagnose(@RequestBody BuDiagnose diagnose) {
         diagnose.setUpdateTime(new Date());
         Integer res = diagnoseService.setDiagnose(diagnose);
         return Result.success(diagnose);
@@ -68,7 +64,7 @@ public class BuDiagnoseController {
             @ApiImplicitParam(name = "outpatientId", value = "门诊ID", required = true),
     })
     @GetMapping("/getDiagnoseOfOutpatient")
-    public Result getDiagnoseOfOutpatient(Long outpatientId) {
+    public Result<Map<String,Object>> getDiagnoseOfOutpatient(Long outpatientId) {
         BuDiagnose diagnose = diagnoseService.getDiagnoseOfOutpatient(outpatientId);
         return Result.success(diagnose);
     }
@@ -78,7 +74,7 @@ public class BuDiagnoseController {
     @ApiImplicitParams({})
     @PostMapping("/getRecommend")
     public Result getRecommend(@RequestBody BuDiagnoseRO.GetRecommendRO ro) {
-        Map<String,Object> map = recommendService.selectRecommend(ro);
+        Map<String, Object> map = recommendService.selectRecommend(ro);
         return Result.success(map);
     }
 

@@ -8,7 +8,6 @@ import com.maizhiyu.yzt.entity.MsCustomer;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.BuDiagnoseRO;
 import com.maizhiyu.yzt.service.*;
-import com.maizhiyu.yzt.vo.BuDiagnoseVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -75,8 +74,8 @@ public class BuDiagnoseController {
         if (Objects.isNull(buDiagnose.getId())) {
             buDiagnose.setCreateTime(new Date());
         }
-        Integer integer = diagnoseService.saveOrUpdate(buDiagnose);
-        return Result.success(integer);
+        boolean isSave = diagnoseService.saveOrUpdate(buDiagnose);
+        return Result.success(isSave);
     }
 
 

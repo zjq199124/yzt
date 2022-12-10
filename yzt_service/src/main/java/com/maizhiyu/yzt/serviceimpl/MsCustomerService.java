@@ -1,15 +1,12 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.HsCustomerHerbs;
-import com.maizhiyu.yzt.entity.HsUser;
 import com.maizhiyu.yzt.entity.MsCustomer;
 import com.maizhiyu.yzt.entity.MsHerbs;
 import com.maizhiyu.yzt.exception.BusinessException;
 import com.maizhiyu.yzt.mapper.HsCustomerHerbsMapper;
-import com.maizhiyu.yzt.mapper.HsUserMapper;
 import com.maizhiyu.yzt.mapper.MsCustomerMapper;
 import com.maizhiyu.yzt.mapper.MsHerbsMapper;
 import com.maizhiyu.yzt.service.IMsCustomerService;
