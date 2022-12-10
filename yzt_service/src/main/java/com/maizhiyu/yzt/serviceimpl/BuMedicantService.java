@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.BuMedicant;
 import com.maizhiyu.yzt.mapper.BuMedicantMapper;
 import com.maizhiyu.yzt.service.IBuMedicantService;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class BuMedicantService implements IBuMedicantService {
+public class BuMedicantService extends ServiceImpl<BuMedicantMapper,BuMedicant> implements IBuMedicantService {
 
     @Autowired
     private BuMedicantMapper mapper;

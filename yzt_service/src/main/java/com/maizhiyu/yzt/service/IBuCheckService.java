@@ -1,10 +1,11 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.BuCheck;
 
 import java.util.List;
 
-public interface IBuCheckService {
+public interface IBuCheckService extends IService<BuCheck> {
 
     Integer addCheck(BuCheck check);
 

@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.TeBgq;
 import com.maizhiyu.yzt.exception.BusinessException;
 import com.maizhiyu.yzt.mapper.TeBgqMapper;
@@ -16,7 +17,7 @@ import java.util.Map;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class TeBgqService implements ITeBgqService {
+public class TeBgqService extends ServiceImpl<TeBgqMapper,TeBgq> implements ITeBgqService {
 
     @Autowired
     private TeBgqMapper mapper;

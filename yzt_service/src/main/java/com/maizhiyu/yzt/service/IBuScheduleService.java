@@ -1,12 +1,13 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.BuSchedule;
 
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
-public interface IBuScheduleService {
+public interface IBuScheduleService extends IService<BuSchedule> {
 
     Integer addSchedule(BuSchedule schedule);
 

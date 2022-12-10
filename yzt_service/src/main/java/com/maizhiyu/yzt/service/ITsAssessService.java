@@ -1,11 +1,13 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.maizhiyu.yzt.entity.TeBgq;
 import com.maizhiyu.yzt.entity.TsAssess;
 
 import java.util.List;
 import java.util.Map;
 
-public interface ITsAssessService {
+public interface ITsAssessService extends IService<TsAssess> {
 
     public Integer addAssess(TsAssess assess);
 

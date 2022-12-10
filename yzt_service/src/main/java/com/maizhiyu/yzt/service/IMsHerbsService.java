@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.maizhiyu.yzt.entity.MsHerbs;
 
@@ -11,7 +12,7 @@ import com.maizhiyu.yzt.entity.MsHerbs;
  * @DATE:2021/12/16 9:21 上午
  * @Author:2101825180@qq.com
  */
-public interface IMsHerbsService {
+public interface IMsHerbsService extends IService<MsHerbs> {
     Integer addMsHerbs(MsHerbs item);
 
     Integer delMsHerbs(Long id);

@@ -1,12 +1,13 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.BuPrescription;
 import com.maizhiyu.yzt.entity.BuPrescriptionItem;
 
 import java.util.List;
 import java.util.Map;
 
-public interface IBuPrescriptionItemService {
+public interface IBuPrescriptionItemService extends IService<BuPrescriptionItem> {
 
     Integer addPrescriptionItem(BuPrescriptionItem item);
 

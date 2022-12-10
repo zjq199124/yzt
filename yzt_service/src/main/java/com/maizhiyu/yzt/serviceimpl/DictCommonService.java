@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.DictCommon;
 import com.maizhiyu.yzt.exception.BusinessException;
 import com.maizhiyu.yzt.mapper.DictCommonMapper;
@@ -15,7 +16,7 @@ import java.util.Map;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class DictCommonService implements IDictCommonService {
+public class DictCommonService extends ServiceImpl<DictCommonMapper,DictCommon> implements IDictCommonService {
 
     @Autowired
     private DictCommonMapper mapper;

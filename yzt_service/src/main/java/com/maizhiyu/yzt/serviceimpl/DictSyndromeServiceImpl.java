@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.DictSyndrome;
 import com.maizhiyu.yzt.mapper.DictSyndromeMapper;
 import com.maizhiyu.yzt.service.IDictSyndromeService;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class DictSyndromeServiceImpl implements IDictSyndromeService {
+public class DictSyndromeServiceImpl  implements IDictSyndromeService {
 
     @Resource
     private DictSyndromeMapper dictSyndromeMapper;

@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.BuPrescription;
 import com.maizhiyu.yzt.entity.BuTreatment;
 import com.maizhiyu.yzt.mapper.BuPrescriptionMapper;
@@ -15,7 +16,7 @@ import java.util.*;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class BuTreatmentService implements IBuTreatmentService {
+public class BuTreatmentService extends ServiceImpl<BuTreatmentMapper,BuTreatment> implements IBuTreatmentService {
 
     @Autowired
     private BuTreatmentMapper mapper;

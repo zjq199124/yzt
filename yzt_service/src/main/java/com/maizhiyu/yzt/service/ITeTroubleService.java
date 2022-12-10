@@ -1,12 +1,13 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.TeModel;
 import com.maizhiyu.yzt.entity.TeTrouble;
 
 import java.util.List;
 import java.util.Map;
 
-public interface ITeTroubleService {
+public interface ITeTroubleService extends IService<TeTrouble> {
 
     Integer addTrouble(TeTrouble trouble);
 

@@ -1,12 +1,13 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.maizhiyu.yzt.entity.MsExaminationPaper;
 import com.maizhiyu.yzt.entity.TsSytechItem;
 
 import java.util.List;
 
-public interface ITsSytechItemService {
+public interface ITsSytechItemService extends IService<TsSytechItem> {
 
     Integer addSytechItem(TsSytechItem sytech);
 

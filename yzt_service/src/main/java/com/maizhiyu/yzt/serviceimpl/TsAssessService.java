@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.TsAssess;
 import com.maizhiyu.yzt.mapper.TsAssessMapper;
 import com.maizhiyu.yzt.service.ITsAssessService;
@@ -14,7 +15,7 @@ import java.util.Map;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class TsAssessService implements ITsAssessService {
+public class TsAssessService extends ServiceImpl<TsAssessMapper,TsAssess> implements ITsAssessService {
 
     @Autowired
     private TsAssessMapper mapper;

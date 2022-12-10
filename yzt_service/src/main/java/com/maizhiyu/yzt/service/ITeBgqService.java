@@ -1,11 +1,12 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.TeBgq;
 
 import java.util.List;
 import java.util.Map;
 
-public interface ITeBgqService {
+public interface ITeBgqService extends IService<TeBgq> {
 
     Integer addBgq(TeBgq bgq);
 

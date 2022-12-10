@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.exception.BusinessException;
 import com.maizhiyu.yzt.mapper.*;
 import com.maizhiyu.yzt.service.IBuPrescriptionService;
+import com.mysql.cj.xdevapi.SchemaImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +19,7 @@ import java.util.*;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class BuPrescriptionService implements IBuPrescriptionService {
+public class BuPrescriptionService extends ServiceImpl<BuPrescriptionMapper,BuPrescription> implements IBuPrescriptionService {
 
     @Autowired
     private BuPrescriptionMapper mapper;
@@ -211,30 +213,30 @@ public class BuPrescriptionService implements IBuPrescriptionService {
 
     }
 
-    @Override
-    public Integer saveOrUpdate(BuPrescription prescription) {
-        if (Objects.isNull(prescription.getId())) {
-            // 生成编码
-            if (prescription.getCode() == null) {
-                String code = UUID.randomUUID().toString().replace("-", "").substring(0, 20);
-                prescription.setCode(code);
-            }
-
-            // 新增处方
-            int res = mapper.insert(prescription);
-            // 增加处方项
-            saveOrUpdateItems(prescription);
-            // 返回结果
-            return res;
-        } else {
-            // 编辑处方
-            int res = mapper.updateById(prescription);
-            // 增加处方项
-            saveOrUpdateItems(prescription);
-            // 返回结果
-            return res;
-        }
-    }
+//    @Override
+//    public Integer saveOrUpdate(BuPrescription prescription) {
+//        if (Objects.isNull(prescription.getId())) {
+//            // 生成编码
+//            if (prescription.getCode() == null) {
+//                String code = UUID.randomUUID().toString().replace("-", "").substring(0, 20);
+//                prescription.setCode(code);
+//            }
+//
+//            // 新增处方
+//            int res = mapper.insert(prescription);
+//            // 增加处方项
+//            saveOrUpdateItems(prescription);
+//            // 返回结果
+//            return res;
+//        } else {
+//            // 编辑处方
+//            int res = mapper.updateById(prescription);
+//            // 增加处方项
+//            saveOrUpdateItems(prescription);
+//            // 返回结果
+//            return res;
+//        }
+//    }
 
 
     private void saveOrUpdateItems(BuPrescription prescription) {

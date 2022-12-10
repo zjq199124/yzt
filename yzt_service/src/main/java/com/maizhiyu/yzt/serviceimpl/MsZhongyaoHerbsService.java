@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.MsHerbs;
 import com.maizhiyu.yzt.entity.MsZhongyaoHerbs;
 import com.maizhiyu.yzt.exception.BusinessException;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
  */
 
 @Service
-public class MsZhongyaoHerbsService implements IMsZhongyaoHerbsService {
+public class MsZhongyaoHerbsService extends ServiceImpl<MsZhongyaoHerbsMapper,MsZhongyaoHerbs> implements IMsZhongyaoHerbsService {
 
     @Autowired
     private MsZhongyaoHerbsMapper msZhongyaoHerbsMapper;

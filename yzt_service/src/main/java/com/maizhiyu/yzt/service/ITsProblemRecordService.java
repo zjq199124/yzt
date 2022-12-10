@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.TsProblemRecord;
 
 /**
@@ -10,7 +11,7 @@ import com.maizhiyu.yzt.entity.TsProblemRecord;
  * @DATE:2021/12/13 4:21 下午
  * @Author:2101825180@qq.com
  */
-public interface ITsProblemRecordService  {
+public interface ITsProblemRecordService extends IService<TsProblemRecord> {
     void addTsProblemRecord(TsProblemRecord tsProblemRecord);
 
     TsProblemRecord getTsProblemRecordById(Long tsProblemRecordId);

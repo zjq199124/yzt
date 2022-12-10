@@ -1,11 +1,12 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.SchSytech;
 
 import java.util.List;
 import java.util.Map;
 
-public interface ISchSytechService {
+public interface ISchSytechService extends IService<SchSytech> {
 
     public Integer addSytech(SchSytech sytech);
 

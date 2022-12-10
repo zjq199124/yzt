@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.DictSymptom;
 import com.maizhiyu.yzt.mapper.DictSymptomMapper;
 import com.maizhiyu.yzt.service.IDictSymptomService;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class DictSymptomService implements IDictSymptomService {
+public class DictSymptomService extends ServiceImpl<DictSymptomMapper,DictSymptom> implements IDictSymptomService {
 
     @Autowired
     private DictSymptomMapper mapper;

@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.TeModel;
 import com.maizhiyu.yzt.mapper.TeModelMapper;
 import com.maizhiyu.yzt.service.ITeModelService;
@@ -14,7 +15,7 @@ import java.util.Map;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class TeModelService implements ITeModelService {
+public class TeModelService extends ServiceImpl<TeModelMapper,TeModel> implements ITeModelService {
 
     @Autowired
     private TeModelMapper mapper;

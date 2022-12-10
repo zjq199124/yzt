@@ -1,11 +1,12 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.DictCommon;
 
 import java.util.List;
 import java.util.Map;
 
-public interface IDictCommonService {
+public interface IDictCommonService extends IService<DictCommon> {
 
     // 字典类别接口
     Integer addCate(DictCommon cate);

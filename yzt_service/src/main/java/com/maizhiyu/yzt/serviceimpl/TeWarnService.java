@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.TeWarn;
 import com.maizhiyu.yzt.mapper.TeWarnMapper;
 import com.maizhiyu.yzt.service.ITeWarnService;
@@ -15,7 +16,7 @@ import java.util.Map;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class TeWarnService implements ITeWarnService {
+public class TeWarnService extends ServiceImpl<TeWarnMapper,TeWarn> implements ITeWarnService {
 
     @Autowired
     private TeWarnMapper mapper;

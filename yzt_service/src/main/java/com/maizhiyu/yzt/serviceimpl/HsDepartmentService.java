@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.HsDepartment;
 import com.maizhiyu.yzt.mapper.HsDepartmentMapper;
 import com.maizhiyu.yzt.service.IHsDepartmentService;
@@ -14,7 +15,7 @@ import java.util.Map;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class HsDepartmentService implements IHsDepartmentService {
+public class HsDepartmentService extends ServiceImpl<HsDepartmentMapper,HsDepartment> implements IHsDepartmentService {
 
     @Autowired
     private HsDepartmentMapper mapper;

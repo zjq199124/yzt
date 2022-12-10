@@ -1,11 +1,12 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.HsRole;
 
 import java.util.List;
 import java.util.Map;
 
-public interface IHsRoleService {
+public interface IHsRoleService extends IService<HsRole> {
 
     Integer addRole(HsRole role);
 

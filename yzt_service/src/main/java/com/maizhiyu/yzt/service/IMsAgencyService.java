@@ -1,11 +1,12 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.MsAgency;
 
 import java.util.List;
 import java.util.Map;
 
-public interface IMsAgencyService {
+public interface IMsAgencyService extends IService<MsAgency> {
 
     public Integer addAgency(MsAgency agency);
 

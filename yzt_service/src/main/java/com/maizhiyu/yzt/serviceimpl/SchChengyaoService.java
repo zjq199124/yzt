@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.SchChengyao;
 import com.maizhiyu.yzt.mapper.SchChengyaoMapper;
 import com.maizhiyu.yzt.service.ISchChengyaoService;
@@ -13,7 +14,7 @@ import java.util.Map;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class SchChengyaoService implements ISchChengyaoService {
+public class SchChengyaoService extends ServiceImpl<SchChengyaoMapper,SchChengyao> implements ISchChengyaoService {
 
     @Autowired
     private SchChengyaoMapper mapper;

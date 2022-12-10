@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.TsAssess;
 import com.maizhiyu.yzt.entity.TsProblemRecord;
 import com.maizhiyu.yzt.exception.BusinessException;
@@ -21,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 
 @Service
-public class TsProblemRecordService implements ITsProblemRecordService {
+public class TsProblemRecordService extends ServiceImpl<TsProblemRecordMapper,TsProblemRecord> implements ITsProblemRecordService {
 
     @Autowired
     private TsProblemRecordMapper tsProblemRecordMapper;

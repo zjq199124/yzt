@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.HsCustomerHerbs;
 import com.maizhiyu.yzt.entity.HsUser;
 import com.maizhiyu.yzt.entity.MsCustomer;
@@ -23,7 +24,7 @@ import java.util.*;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class MsCustomerService implements IMsCustomerService {
+public class MsCustomerService extends ServiceImpl<MsCustomerMapper,MsCustomer> implements IMsCustomerService {
 
     @Autowired
     private MsCustomerMapper mapper;

@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.DictDisease;
 import com.maizhiyu.yzt.entity.MsAgency;
 import com.maizhiyu.yzt.mapper.MsAgencyMapper;
@@ -15,7 +16,7 @@ import java.util.Map;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class MsAgencyService implements IMsAgencyService {
+public class MsAgencyService extends ServiceImpl<MsAgencyMapper,MsAgency> implements IMsAgencyService {
 
     @Autowired
     private MsAgencyMapper mapper;

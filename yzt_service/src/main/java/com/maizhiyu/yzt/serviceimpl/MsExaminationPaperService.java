@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.serviceimpl;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.maizhiyu.yzt.entity.MsExaminationPaper;
@@ -19,7 +20,7 @@ import java.util.List;
 * @Author:2101825180@qq.com
 */
 @Service
-public class MsExaminationPaperService implements IMsExaminationPaperService {
+public class MsExaminationPaperService extends ServiceImpl<MsExaminationPaperMapper,MsExaminationPaper> implements IMsExaminationPaperService {
 
     @Autowired
     private MsExaminationPaperMapper msExaminationPaperMapper;

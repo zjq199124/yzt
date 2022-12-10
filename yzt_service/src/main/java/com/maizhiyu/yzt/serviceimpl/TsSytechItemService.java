@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.maizhiyu.yzt.entity.MsExaminationPaper;
@@ -17,7 +18,7 @@ import java.util.List;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class TsSytechItemService implements ITsSytechItemService {
+public class TsSytechItemService extends ServiceImpl<TsSytechItemMapper,TsSytechItem> implements ITsSytechItemService {
 
     @Autowired
     private TsSytechItemMapper mapper;

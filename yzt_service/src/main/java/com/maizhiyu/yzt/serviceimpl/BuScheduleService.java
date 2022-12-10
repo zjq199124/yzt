@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.serviceimpl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.BuOutpatient;
 import com.maizhiyu.yzt.entity.BuSchedule;
 import com.maizhiyu.yzt.mapper.BuOutpatientMapper;
@@ -18,7 +19,7 @@ import java.util.*;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class BuScheduleService implements IBuScheduleService {
+public class BuScheduleService extends ServiceImpl<BuScheduleMapper,BuSchedule> implements IBuScheduleService {
 
     @Autowired
     private BuScheduleMapper mapper;

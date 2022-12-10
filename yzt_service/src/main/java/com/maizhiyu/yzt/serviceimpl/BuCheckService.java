@@ -3,6 +3,7 @@ package com.maizhiyu.yzt.serviceimpl;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.BuCheck;
 import com.maizhiyu.yzt.entity.SysMultimedia;
 import com.maizhiyu.yzt.enums.CheckTypeEnum;
@@ -24,7 +25,7 @@ import java.util.Map;
 @Service
 @Transactional(rollbackFor = Exception.class)
 @Slf4j
-public class BuCheckService implements IBuCheckService {
+public class BuCheckService extends ServiceImpl<BuCheckMapper,BuCheck> implements IBuCheckService {
 
     @Autowired
     private BuCheckMapper mapper;

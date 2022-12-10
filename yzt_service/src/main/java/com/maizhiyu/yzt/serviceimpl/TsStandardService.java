@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.TsStandard;
 import com.maizhiyu.yzt.entity.TsSytech;
 import com.maizhiyu.yzt.mapper.TsStandardMapper;
@@ -17,7 +18,7 @@ import java.util.Map;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class TsStandardService implements ITsStandardService {
+public class TsStandardService extends ServiceImpl<TsStandardMapper,TsStandard> implements ITsStandardService {
 
     @Autowired
     private TsStandardMapper standardMapper;

@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.PsUser;
 import com.maizhiyu.yzt.mapper.PsUserMapper;
 import com.maizhiyu.yzt.service.IPsUserService;
@@ -14,7 +15,7 @@ import java.util.Map;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class PsUserService implements IPsUserService {
+public class PsUserService extends ServiceImpl<PsUserMapper,PsUser> implements IPsUserService {
 
     @Autowired
     private PsUserMapper mapper;

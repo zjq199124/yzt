@@ -1,10 +1,11 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.SchZhongyao;
 import java.util.List;
 import java.util.Map;
 
-public interface ISchZhongyaoService {
+public interface ISchZhongyaoService extends IService<SchZhongyao> {
 
     public Integer addZhongyao(SchZhongyao agency);
 

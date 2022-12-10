@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.HsRole;
 import com.maizhiyu.yzt.entity.HsRoleResource;
 import com.maizhiyu.yzt.mapper.HsRoleMapper;
@@ -17,7 +18,7 @@ import java.util.Map;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class HsRoleService implements IHsRoleService {
+public class HsRoleService extends ServiceImpl<HsRoleMapper,HsRole> implements IHsRoleService {
 
     @Autowired
     private HsRoleMapper roleMapper;

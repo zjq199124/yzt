@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.serviceimpl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.MsResource;
 import com.maizhiyu.yzt.entity.MsRole;
 import com.maizhiyu.yzt.entity.MsRoleResource;
@@ -19,7 +20,7 @@ import java.util.*;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class MsRoleService implements IMsRoleService {
+public class MsRoleService extends ServiceImpl<MsRoleMapper,MsRole> implements IMsRoleService {
 
     @Autowired
     private MsRoleMapper roleMapper;

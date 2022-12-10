@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.TxBgqRun;
 import com.maizhiyu.yzt.mapper.TxBgqRunMapper;
 import com.maizhiyu.yzt.service.ITxBgqRunService;
@@ -17,7 +18,7 @@ import java.util.List;
 @Slf4j
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class TxBgqRunService implements ITxBgqRunService {
+public class TxBgqRunService extends ServiceImpl<TxBgqRunMapper,TxBgqRun> implements ITxBgqRunService {
 
     @Autowired
     private TxBgqRunMapper runMapper;

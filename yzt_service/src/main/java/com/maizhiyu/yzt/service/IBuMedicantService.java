@@ -1,10 +1,11 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.BuMedicant;
 
 import java.util.List;
 
-public interface IBuMedicantService {
+public interface IBuMedicantService extends IService<BuMedicant> {
 
     Integer addMedicant(BuMedicant medicant);
 

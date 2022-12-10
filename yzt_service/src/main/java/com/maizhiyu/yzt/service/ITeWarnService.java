@@ -1,11 +1,12 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.TeWarn;
 
 import java.util.List;
 import java.util.Map;
 
-public interface ITeWarnService {
+public interface ITeWarnService extends IService<TeWarn> {
 
     Integer addWarn(TeWarn warn);
 

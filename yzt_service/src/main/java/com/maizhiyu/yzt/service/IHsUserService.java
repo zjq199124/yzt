@@ -1,11 +1,12 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.HsUser;
 
 import java.util.List;
 import java.util.Map;
 
-public interface IHsUserService {
+public interface IHsUserService extends IService<HsUser> {
 
     Integer addUser(HsUser user);
 

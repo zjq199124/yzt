@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.TeEquip;
 import com.maizhiyu.yzt.entity.TeMaintain;
 import com.maizhiyu.yzt.entity.TxXzcData;
@@ -8,7 +9,7 @@ import com.maizhiyu.yzt.entity.TxXzcRun;
 import java.util.List;
 import java.util.Map;
 
-public interface ITeEquipService {
+public interface ITeEquipService extends IService<TeEquip> {
 
     Integer addEquip(TeEquip equip);
 

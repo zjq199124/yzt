@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.maizhiyu.yzt.entity.HsCustomerHerbs;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
  */
 
 @Service
-public class HsCustomerHerbsService implements IHsCustomerHerbsService {
+public class HsCustomerHerbsService extends ServiceImpl<HsCustomerHerbsMapper,HsCustomerHerbs> implements IHsCustomerHerbsService {
 
     @Autowired
     private HsCustomerHerbsMapper hsCustomerHerbsMapper;

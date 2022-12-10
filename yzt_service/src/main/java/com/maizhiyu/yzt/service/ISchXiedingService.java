@@ -1,11 +1,12 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.SchXieding;
 
 import java.util.List;
 import java.util.Map;
 
-public interface ISchXiedingService {
+public interface ISchXiedingService extends IService<SchXieding> {
 
     public Integer addXieding(SchXieding agency);
 

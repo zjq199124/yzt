@@ -1,11 +1,12 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.TeModel;
 
 import java.util.List;
 import java.util.Map;
 
-public interface ITeModelService {
+public interface ITeModelService extends IService<TeModel> {
 
     public Integer addModel(TeModel model);
 

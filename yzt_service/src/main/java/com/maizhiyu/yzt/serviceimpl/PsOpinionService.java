@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.PsOpinion;
 import com.maizhiyu.yzt.mapper.PsOpinionMapper;
 import com.maizhiyu.yzt.service.IPsOpinionService;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class PsOpinionService implements IPsOpinionService {
+public class PsOpinionService extends ServiceImpl<PsOpinionMapper,PsOpinion> implements IPsOpinionService {
 
     @Autowired
     private PsOpinionMapper mapper;

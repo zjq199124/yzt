@@ -3,6 +3,7 @@ package com.maizhiyu.yzt.serviceimpl;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.base.Splitter;
 import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.mapper.*;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class BuDiagnoseService implements IBuDiagnoseService {
+public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper,BuDiagnose> implements IBuDiagnoseService {
 
     @Autowired
     private BuDiagnoseMapper mapper;
@@ -117,14 +118,14 @@ public class BuDiagnoseService implements IBuDiagnoseService {
         return list;
     }
 
-    @Override
-    public Integer saveOrUpdate(BuDiagnose buDiagnose) {
-        if (Objects.isNull(buDiagnose.getId())) {
-            return mapper.insert(buDiagnose);
-        } else {
-            return mapper.updateById(buDiagnose);
-        }
-    }
+//    @Override
+//    public Integer saveOrUpdate(BuDiagnose buDiagnose) {
+//        if (Objects.isNull(buDiagnose.getId())) {
+//            return mapper.insert(buDiagnose);
+//        } else {
+//            return mapper.updateById(buDiagnose);
+//        }
+//    }
 
     @Override
     public Map<String, Object> getDetails(BuDiagnoseRO.GetRecommendRO ro) {

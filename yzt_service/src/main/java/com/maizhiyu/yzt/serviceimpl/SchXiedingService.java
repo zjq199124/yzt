@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.SchXieding;
 import com.maizhiyu.yzt.mapper.SchXiedingMapper;
 import com.maizhiyu.yzt.service.ISchXiedingService;
@@ -15,7 +16,7 @@ import java.util.Map;
 @Service
 @Transactional(rollbackFor=Exception.class)
 @RequestMapping("/xieding")
-public class SchXiedingService implements ISchXiedingService {
+public class SchXiedingService extends ServiceImpl<SchXiedingMapper,SchXieding> implements ISchXiedingService {
 
     @Autowired
     private SchXiedingMapper mapper;

@@ -1,11 +1,12 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.SchChengyao;
 
 import java.util.List;
 import java.util.Map;
 
-public interface ISchChengyaoService {
+public interface ISchChengyaoService extends IService<SchChengyao> {
 
     public Integer addChengyao(SchChengyao chengyao);
 

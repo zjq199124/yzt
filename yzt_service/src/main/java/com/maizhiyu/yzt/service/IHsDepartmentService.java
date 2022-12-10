@@ -1,11 +1,12 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.HsDepartment;
 
 import java.util.List;
 import java.util.Map;
 
-public interface IHsDepartmentService {
+public interface IHsDepartmentService extends IService<HsDepartment> {
 
     public Integer addDepartment(HsDepartment department);
 

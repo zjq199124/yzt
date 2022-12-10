@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.BuTemplate;
 import com.maizhiyu.yzt.mapper.BuTemplateMapper;
 import com.maizhiyu.yzt.service.IBuTemplateService;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class BuTemplateService implements IBuTemplateService {
+public class BuTemplateService extends ServiceImpl<BuTemplateMapper,BuTemplate> implements IBuTemplateService {
 
     @Autowired
     private BuTemplateMapper mapper;

@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.BuDiagnose;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.BuDiagnoseRO;
@@ -7,7 +8,7 @@ import com.maizhiyu.yzt.ro.BuDiagnoseRO;
 import java.util.List;
 import java.util.Map;
 
-public interface IBuDiagnoseService {
+public interface IBuDiagnoseService extends IService<BuDiagnose> {
 
     Integer addDiagnose(BuDiagnose diagnose);
 
@@ -19,7 +20,7 @@ public interface IBuDiagnoseService {
 
     List<Map<String, Object>> getDiagnoseList(Long customerId, String start, String end);
 
-    Integer saveOrUpdate(BuDiagnose buDiagnose);
+//    Integer saveOrUpdate(BuDiagnose buDiagnose);
 
     Map<String, Object> getDetails(BuDiagnoseRO.GetRecommendRO ro) throws Exception;
 }

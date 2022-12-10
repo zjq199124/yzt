@@ -1,11 +1,12 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.BuTemplate;
 
 import java.util.List;
 import java.util.Map;
 
-public interface IBuTemplateService {
+public interface IBuTemplateService extends IService<BuTemplate> {
 
     Integer addTemplate(BuTemplate template);
 

@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.MsZhongyaoHerbs;
 import com.maizhiyu.yzt.vo.SchZhongyaoHerbsVO;
 
@@ -13,7 +14,7 @@ import java.util.List;
  * @DATE:2021/12/17 2:48 下午
  * @Author:2101825180@qq.com
  */
-public interface IMsZhongyaoHerbsService {
+public interface IMsZhongyaoHerbsService extends IService<MsZhongyaoHerbs> {
     List<SchZhongyaoHerbsVO> getMsZhongyaoHerbsListBySchZhongyaoId(Long id);
 
     Integer removeSchZhongyaoHerbs(Long id);

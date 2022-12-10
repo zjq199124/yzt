@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.serviceimpl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.HsResource;
 import com.maizhiyu.yzt.mapper.HsResourceMapper;
 import com.maizhiyu.yzt.service.IHsResourceService;
@@ -16,7 +17,7 @@ import java.util.Map;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class HsResourceService implements IHsResourceService {
+public class HsResourceService extends ServiceImpl<HsResourceMapper,HsResource> implements IHsResourceService {
 
     @Autowired
     private HsResourceMapper mapper;

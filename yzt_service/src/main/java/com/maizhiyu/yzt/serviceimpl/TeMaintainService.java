@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.TeMaintain;
 import com.maizhiyu.yzt.mapper.TeMaintainMapper;
 import com.maizhiyu.yzt.service.ITeMaintainService;
@@ -13,7 +14,7 @@ import java.util.Map;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class TeMaintainService implements ITeMaintainService {
+public class TeMaintainService extends ServiceImpl<TeMaintainMapper,TeMaintain> implements ITeMaintainService {
 
     @Autowired
     private TeMaintainMapper mapper;

@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.exception.BusinessException;
 import com.maizhiyu.yzt.service.IFileService;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +17,7 @@ import java.io.*;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class FileService implements IFileService {
+public class FileService  implements IFileService {
 
     @Value("${file.static-access-path}")
     private String staticAccessPath;

@@ -1,11 +1,13 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.BuPrescription;
+import com.maizhiyu.yzt.serviceimpl.BuDiagnoseService;
 
 import java.util.List;
 import java.util.Map;
 
-public interface IBuPrescriptionService {
+public interface IBuPrescriptionService extends IService<BuPrescription> {
 
     Integer addPrescription(BuPrescription prescription);
 
@@ -27,5 +29,5 @@ public interface IBuPrescriptionService {
 
     void setPaymentStatus(Long id, Long userId);
 
-    Integer saveOrUpdate(BuPrescription prescription);
+//    Integer saveOrUpdate(BuPrescription prescription);
 }

@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.SchSytech;
 import com.maizhiyu.yzt.mapper.SchSytechMapper;
 import com.maizhiyu.yzt.service.ISchSytechService;
@@ -14,7 +15,7 @@ import java.util.Map;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class SchSytechService implements ISchSytechService {
+public class SchSytechService extends ServiceImpl<SchSytechMapper,SchSytech> implements ISchSytechService {
 
     @Autowired
     private SchSytechMapper mapper;

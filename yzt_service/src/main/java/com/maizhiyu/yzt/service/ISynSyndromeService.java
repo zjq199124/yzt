@@ -1,11 +1,12 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.SynSyndrome;
 
 import java.util.List;
 import java.util.Map;
 
-public interface ISynSyndromeService {
+public interface ISynSyndromeService extends IService<SynSyndrome> {
 
     Integer addSyndrome(SynSyndrome syndrome);
 

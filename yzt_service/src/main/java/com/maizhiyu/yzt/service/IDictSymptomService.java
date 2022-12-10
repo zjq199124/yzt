@@ -1,12 +1,13 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.DictSymptom;
 import com.maizhiyu.yzt.vo.DictSymptomVo;
 
 import java.util.List;
 import java.util.Map;
 
-public interface IDictSymptomService {
+public interface IDictSymptomService extends IService<DictSymptom> {
 
     public Integer addSymptom(DictSymptom symptom);
 

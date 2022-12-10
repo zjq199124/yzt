@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.BuPrescriptionItem;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemMapper;
 import com.maizhiyu.yzt.service.IBuPrescriptionItemService;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class BuPrescriptionItemService implements IBuPrescriptionItemService {
+public class BuPrescriptionItemService extends ServiceImpl<BuPrescriptionItemMapper,BuPrescriptionItem> implements IBuPrescriptionItemService {
 
     @Autowired
     private BuPrescriptionItemMapper mapper;

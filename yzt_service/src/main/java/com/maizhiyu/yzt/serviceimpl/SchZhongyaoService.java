@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.SchZhongyao;
 import com.maizhiyu.yzt.mapper.MsZhongyaoHerbsMapper;
 import com.maizhiyu.yzt.mapper.SchZhongyaoMapper;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class SchZhongyaoService implements ISchZhongyaoService {
+public class SchZhongyaoService extends ServiceImpl<SchZhongyaoMapper,SchZhongyao> implements ISchZhongyaoService {
 
     @Autowired
     private SchZhongyaoMapper mapper;

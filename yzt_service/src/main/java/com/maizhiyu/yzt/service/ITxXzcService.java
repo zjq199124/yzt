@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.TxXzcCmd;
 import com.maizhiyu.yzt.entity.TxXzcData;
 import com.maizhiyu.yzt.entity.TxXzcRun;
@@ -7,7 +8,7 @@ import com.maizhiyu.yzt.entity.TxXzcRun;
 import java.util.List;
 import java.util.Map;
 
-public interface ITxXzcService {
+public interface ITxXzcService  {
 
     Integer addCmd(TxXzcCmd cmd);
 
