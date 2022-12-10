@@ -1,4 +1,13 @@
 spring:
   profiles:
-    active: local,utils-prod
+    active: @profiles.active@
 #    active: prod,utils-prod
+
+### 服务配置 ###
+server:
+  port: 10080
+  session:
+    timeout: 7200
+  servlet:
+    context-path: /wx/api
+#env: stg

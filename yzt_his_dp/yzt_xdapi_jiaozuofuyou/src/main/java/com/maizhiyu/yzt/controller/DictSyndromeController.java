@@ -1,11 +1,7 @@
 package com.maizhiyu.yzt.controller;
 
 
-import cn.hutool.core.lang.Assert;
-import com.google.common.base.Preconditions;
-import com.maizhiyu.yzt.bean.avo.DictSymptomVo;
 import com.maizhiyu.yzt.bean.avo.DictSyndromeVo;
-import com.maizhiyu.yzt.entity.JzfyDiseaseMapping;
 import com.maizhiyu.yzt.feign.FeignYptClient;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.JzfyDiseaseMappingService;
@@ -20,10 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 
 /**

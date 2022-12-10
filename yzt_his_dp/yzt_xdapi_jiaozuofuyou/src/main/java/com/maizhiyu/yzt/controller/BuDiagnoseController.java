@@ -20,7 +20,6 @@ import com.maizhiyu.yzt.serviceimpl.YptMedicantService;
 import com.maizhiyu.yzt.serviceimpl.YptTreatmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -355,6 +354,7 @@ public class BuDiagnoseController {
             //疾病分型数据集合
             resultMap.put("dictSyndromeList", dictSyndromeVoList);
             if (!CollectionUtils.isEmpty(dictSyndromeVoList)) {
+                dictSyndromeVoList.forEach(item -> item.setIsShow(1));
                 List<Long> syndromeIdList = dictSyndromeVoList.stream().map(DictSyndromeVo::getId).collect(Collectors.toList());
                 ro.setSyndromeIdList(syndromeIdList);
             }

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.maizhiyu.yzt.entity.HsUser;
 import com.maizhiyu.yzt.entity.HsUserDepartment;
 import com.maizhiyu.yzt.entity.HsUserRole;
-import com.maizhiyu.yzt.entity.MsUser;
 import com.maizhiyu.yzt.mapper.HsUserDepartmentMapper;
 import com.maizhiyu.yzt.mapper.HsUserMapper;
 import com.maizhiyu.yzt.mapper.HsUserRoleMapper;

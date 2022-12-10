@@ -12,9 +12,9 @@
     <select id="selectByDiseaseId" resultType="com.maizhiyu.yzt.entity.DictSymptom" parameterType="java.lang.Long">
         SELECT ds.*, count(ds.id) AS total FROM dict_symptom ds
         INNER JOIN rel_syndrome_symptom rss ON ds.id = rss.symptom_id AND is_del = 0
-        INNER JOIN rel_disease_syndrome rds ON rss.syndrome_id = rds.syndrome_id AND rds.is_del = 0
-        WHERE  rds.disease_id = #{diseaseId} AND ds.status = 1
+        WHERE  rss.disease_id = 51 AND ds.status = 1
         GROUP BY ds.id
         ORDER BY total
+
     </select>
 </mapper>

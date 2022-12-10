@@ -1,12 +1,4 @@
 
-### 服务配置 ###
-server:
-  port: 8084
-  session:
-    timeout: 7200
-  servlet:
-    context-path: /open/api
-#env: stg
 
 
 ### spring ###
@@ -109,3 +101,4 @@ jwt:
 file:
   upload-folder: /Users/huhu/Temps/static/
   static-access-path: /files/**
+

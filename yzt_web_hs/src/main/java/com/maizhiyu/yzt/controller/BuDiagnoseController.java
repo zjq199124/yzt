@@ -3,8 +3,10 @@ package com.maizhiyu.yzt.controller;
 import com.maizhiyu.yzt.entity.BuCheck;
 import com.maizhiyu.yzt.entity.BuDiagnose;
 import com.maizhiyu.yzt.result.Result;
+import com.maizhiyu.yzt.ro.BuDiagnoseRO;
 import com.maizhiyu.yzt.service.IBuDiagnoseService;
 import com.maizhiyu.yzt.service.IBuRecommendService;
+import com.maizhiyu.yzt.vo.BuDiagnoseVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -75,8 +77,8 @@ public class BuDiagnoseController {
     @ApiOperation(value = "获取诊断方案推荐", notes = "获取诊断方案推荐")
     @ApiImplicitParams({})
     @PostMapping("/getRecommend")
-    public Result getRecommend(@RequestBody BuDiagnose diagnose) {
-        Map<String, Object> map = recommendService.getRecommend(diagnose);
+    public Result getRecommend(@RequestBody BuDiagnoseRO.GetRecommendRO ro) {
+        Map<String,Object> map = recommendService.selectRecommend(ro);
         return Result.success(map);
     }
 

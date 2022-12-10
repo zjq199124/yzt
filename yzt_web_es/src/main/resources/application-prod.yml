@@ -1,8 +1,4 @@
-server:
-  port: 8093
-  session:
-    timeout: 7200
-#  context-path: /manage
+
 
 # mybatis 配置
 mybatis:
@@ -107,3 +103,16 @@ custom:
 my:
   writeLimit: false
   isEncryption: false
+
+
+oss:
+  endpoint: "oss-cn-hangzhou.aliyuncs.com"
+  accessKeyId: "LTAI5tEozMaZFLJXmjtv2y1L"
+  accessKeySecret: "DQtx7CwSvvrV3trwdaYEQRhhVAHCiw"
+  publicBucket: "yzt-public"
+  publicBucketUrl: "https://yzt-public.oss-cn-hangzhou.aliyuncs.com"
+  privateBucket: "yzt-privacy"
+  privateBucketUrl: "https://yzt-privacy.oss-cn-hangzhou.aliyuncs.com"
+  expiration: "30"
+  styleWatermark: "一真堂"
+  styleMicro: "一真堂"

@@ -1,17 +1,15 @@
 spring:
   profiles:
-    active: local
+    active: @profiles.active@
+  mvc:
+    servlet:
+      load-on-startup: 1
 
+### 服务配置 ###
+server:
+  port: 10082
+  session:
+    timeout: 7200
+  servlet:
+    context-path: /hs/api
 
-
-oss:
-  endpoint: "oss-cn-hangzhou.aliyuncs.com"
-  accessKeyId: "LTAI5tEozMaZFLJXmjtv2y1L"
-  accessKeySecret: "DQtx7CwSvvrV3trwdaYEQRhhVAHCiw"
-  publicBucket: "yzt-hs-dev"
-  publicBucketUrl: "https://yzt-hs-dev.oss-cn-hangzhou.aliyuncs.com"
-  privateBucket: "yzt-equipment"
-  privateBucketUrl: "https://yzt-equipment.oss-cn-hangzhou.aliyuncs.com"
-  expiration: "30"
-  styleWatermark: "一真"
-  styleMicro: "一真"

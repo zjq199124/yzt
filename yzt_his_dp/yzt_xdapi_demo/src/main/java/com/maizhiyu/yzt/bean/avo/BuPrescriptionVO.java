@@ -1,4 +1,4 @@
-package com.maizhiyu.yzt.avo;
+package com.maizhiyu.yzt.bean.avo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -6,7 +6,7 @@ import lombok.Data;
 
 import java.util.List;
 
-public class BuDiagnoseVO {
+public class BuPrescriptionVO {
 
     @Data
     @ApiModel
@@ -36,7 +36,6 @@ public class BuDiagnoseVO {
         @ApiModelProperty(value="药材组成")
         private List<ZhongyaoComponentVO> component;
     }
-
 
     @Data
     @ApiModel
@@ -75,11 +74,8 @@ public class BuDiagnoseVO {
     @Data
     @ApiModel
     public static class ShiyiVO {
-       /* @ApiModelProperty(value="技术编码")
-        private String code;*/
-
-        @ApiModelProperty(value="所属适宜技术id")
-        private Long sytechId;
+        @ApiModelProperty(value="编码")
+        private String code;
 
         @ApiModelProperty(value="技术名称")
         private String name;
@@ -87,20 +83,11 @@ public class BuDiagnoseVO {
         @ApiModelProperty(value="适用症状")
         private String symptoms;
 
-        @ApiModelProperty(value="适用分型名称")
-        private String syndromeName;
-
         @ApiModelProperty(value="详情")
         private String detail;
 
         @ApiModelProperty(value="操作")
         private String operation;
-
-        @ApiModelProperty(value = "客户id")
-        private Long customerId;
-
-        @ApiModelProperty("是否推荐：1是；0否")
-        private Integer recommend;
     }
 
 

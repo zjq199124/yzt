@@ -1,13 +1,4 @@
 
-### 服务配置 ###
-server:
-#  port: 8086
-  port: 7000
-  session:
-    timeout: 7200
-  servlet:
-    context-path: /es/api
-#env: stg
 
 
 ### spring ###
@@ -113,3 +104,16 @@ logging:
   level:
     com.maizhiyu.yzt: DEBUG
     org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: trace
+
+
+oss:
+  endpoint: "oss-cn-hangzhou.aliyuncs.com"
+  accessKeyId: "LTAI5tEozMaZFLJXmjtv2y1L"
+  accessKeySecret: "DQtx7CwSvvrV3trwdaYEQRhhVAHCiw"
+  publicBucket: "yzt-test-public"
+  publicBucketUrl: "https://yzt-test-public.oss-cn-hangzhou.aliyuncs.com"
+  privateBucket: "yzt-test-privacy"
+  privateBucketUrl: "https://yzt-test-privacy.oss-cn-hangzhou.aliyuncs.com"
+  expiration: "30"
+  styleWatermark: "一真堂"
+  styleMicro: "一真堂"

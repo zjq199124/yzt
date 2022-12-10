@@ -131,13 +131,13 @@
         SELECT
         sz.*,
         ds.NAME AS syndrome_name,
-        dd.content AS disease_name
+        dd.name AS disease_name
         FROM
         sch_zhongyao sz
         INNER JOIN dict_syndrome ds ON sz.syndrome_id = ds.id
         AND ds.is_del = 0
         INNER JOIN dict_disease dd ON sz.disease_id = dd.id
-        AND dd.STATUS = 1
+        AND dd.is_del = 0
         WHERE
         sz.disease_id = #{diseaseId}
         AND sz.STATUS = 1
@@ -157,13 +157,13 @@
         SELECT
         sc.*,
         ds.NAME AS syndrome_name,
-        dd.content AS disease_name
+        dd.name AS disease_name
         FROM
         sch_chengyao sc
         INNER JOIN dict_syndrome ds ON sc.syndrome_id = ds.id
         AND ds.is_del = 0
         INNER JOIN dict_disease dd ON sc.disease_id = dd.id
-        AND dd.STATUS = 1
+        AND dd.is_del = 0
         WHERE
         sc.disease_id = #{diseaseId}
         AND sc.STATUS = 1
@@ -181,13 +181,13 @@
         SELECT
         sx.*,
         ds.NAME AS syndrome_name,
-        dd.content AS disease_name
+        dd.name AS disease_name
         FROM
         sch_xieding sx
         INNER JOIN dict_syndrome ds ON sx.syndrome_id = ds.id
         AND ds.is_del = 0
         INNER JOIN dict_disease dd ON sx.disease_id = dd.id
-        AND dd.STATUS = 1
+        AND dd.is_del = 0
         WHERE
         sx.disease_id = #{diseaseId}
         AND sx.STATUS = 1
@@ -201,7 +201,7 @@
         sx.syndrome_id
     </select>
 
-    <select id="getRecommendSytech" resultType="java.util.Map">
+    <select id="getRecommendSytech" resultType="com.maizhiyu.yzt.vo.BuDiagnoseVO$ShiyiVO">
 
         SELECT
         ss.customer_id as customerId,
@@ -212,14 +212,14 @@
         ss.syndrome_id,
         ss.sytech_id as sytechId,
         ds.NAME AS syndromeName,
-        dd.content AS disease_name,
+        dd.name AS diseaseName,
         ts.name name
         FROM
         sch_sytech ss
         INNER JOIN dict_syndrome ds ON ss.syndrome_id = ds.id
         AND ds.is_del = 0
         INNER JOIN dict_disease dd ON ss.disease_id = dd.id
-        AND dd.STATUS = 1
+        AND dd.is_del = 0
         LEFT JOIN ts_sytech ts ON ts.id = ss.sytech_id
         <if test="customerName != null and customerName != ''">
             LEFT JOIN ms_customer mc ON ss.customer_id = mc.id AND mc.status = 1 AND  mc.username = #{customerName}
@@ -240,8 +240,8 @@
             ss.customer_id IS NOT NULL
             OR ( ss.customer_id IS NULL AND ss.recommend = 1 )
         )
-        ORDER BY
-        ss.syndrome_id
+        GROUP BY ss.sytech_id
+        ORDER BY ss.syndrome_id
     </select>
 
 </mapper>

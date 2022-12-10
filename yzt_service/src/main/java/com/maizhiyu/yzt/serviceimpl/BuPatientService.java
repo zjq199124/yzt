@@ -1,7 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.maizhiyu.yzt.entity.BuPatient;
 import com.maizhiyu.yzt.entity.PsUserPatient;
 import com.maizhiyu.yzt.mapper.BuPatientMapper;

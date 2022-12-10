@@ -1,7 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.maizhiyu.yzt.constants.DictConstant;
 import com.maizhiyu.yzt.entity.DictCommon;
 import com.maizhiyu.yzt.exception.BusinessException;
 import com.maizhiyu.yzt.mapper.DictCommonMapper;

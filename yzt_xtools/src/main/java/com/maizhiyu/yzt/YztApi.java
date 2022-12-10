@@ -1,7 +1,6 @@
 package com.maizhiyu.yzt;
 
 
-import com.maizhiyu.yzt.entity.BuCheck;
 import com.maizhiyu.yzt.result.Result;
 import okhttp3.MultipartBody;
 import retrofit2.Call;

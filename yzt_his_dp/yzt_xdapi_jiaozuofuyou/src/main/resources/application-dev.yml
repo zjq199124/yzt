@@ -98,7 +98,7 @@ api:
     #cronenable: true
     #cron: "0 0 0 * * ?"
 
-    domain: http://localhost:8085/open/api
+    domain: http://localhost:10090/open/api
     customer: ouhubang
     secretkey: 123456
     cronenable: true

@@ -21,5 +21,5 @@ public interface IBuDiagnoseService {
 
     Integer saveOrUpdate(BuDiagnose buDiagnose);
 
-    Result getDetails(BuDiagnoseRO.GetRecommendRO ro) throws Exception;
+    Map<String, Object> getDetails(BuDiagnoseRO.GetRecommendRO ro) throws Exception;
 }

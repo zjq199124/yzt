@@ -1,15 +1,3 @@
-
-### 服务配置 ###
-server:
-  port: 8084
-  session:
-    timeout: 7200
-  servlet:
-#    context-path: /hs/api
-    context-path: /hs/api
-#env: stg
-
-
 ### spring ###
 spring:
   application:
@@ -22,7 +10,7 @@ spring:
     # 当前数据源操作类型
     type: com.alibaba.druid.pool.DruidDataSource
     #     mysql驱动包
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://rm-bp1xk4j7gsb2ylig3so.mysql.rds.aliyuncs.com:3306/yztdev?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
     username: yztdev
     password: workDB1gfd@WSX
@@ -130,18 +118,31 @@ swagger:
   enable: true
 
 
-#### 业务配置 ###
-#file:
-#  upload-folder: /home/work/yptdev/backend/upload
-#  static-access-path: /files/**
+
+### 业务配置 ###
+file:
+  upload-folder: /home/work/yptdev/backend/upload
+  static-access-path: /files/**
 
 
-oss.endpoint: https://oss-cn-hangzhou.aliyuncs.com
-oss.accessKeyId: LTAI5tE56JZeMtFwEFjx93MM
-oss.accessKeySecret: YLfoT7wlHQOINc1ZCAWWqwJebQnTWo
-oss.publicBucket: yzt-hs-dev
-oss.publicBucketUrl: https://yzt-hs-dev.oss-cn-hangzhou.aliyuncs.com
-oss.expiration: 1800
-oss.style_watermark: watermark
-oss.style_micro: micro
+oss:
+  endpoint: "oss-cn-hangzhou.aliyuncs.com"
+  accessKeyId: "LTAI5tEozMaZFLJXmjtv2y1L"
+  accessKeySecret: "DQtx7CwSvvrV3trwdaYEQRhhVAHCiw"
+  publicBucket: "yzt-test-public"
+  publicBucketUrl: "https://yzt-test-public.oss-cn-hangzhou.aliyuncs.com"
+  privateBucket: "yzt-test-privacy"
+  privateBucketUrl: "https://yzt-test-privacy.oss-cn-hangzhou.aliyuncs.com"
+  expiration: "30"
+  styleWatermark: "一真堂"
+  styleMicro: "一真堂"
+
+#oss.endpoint: https://oss-cn-hangzhou.aliyuncs.com
+#oss.accessKeyId: LTAI5tE56JZeMtFwEFjx93MM
+#oss.accessKeySecret: YLfoT7wlHQOINc1ZCAWWqwJebQnTWo
+#oss.publicBucket: yzt-hs-dev
+#oss.publicBucketUrl: https://yzt-hs-dev.oss-cn-hangzhou.aliyuncs.com
+#oss.expiration: 1800
+#oss.style_watermark: watermark
+#oss.style_micro: micro
 

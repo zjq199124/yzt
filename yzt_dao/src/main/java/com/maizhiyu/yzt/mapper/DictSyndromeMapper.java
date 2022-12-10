@@ -17,5 +17,5 @@ public interface DictSyndromeMapper extends BaseMapper<DictSymptom> {
 
     List<DictSyndrome> selectByDiseaseId(@Param("diseaseId") Long diseaseId, @Param("search") String search);
 
-    List<DictSyndrome> selectDictSyndromeBySymptomIdList(@Param("symptomIdList") List<Long> symptomIdList);
+    List<DictSyndrome> selectDictSyndromeBySymptomIdList(@Param("diseaseId") Long diseaseId, @Param("symptomIdList") List<Long> symptomIdList);
 }

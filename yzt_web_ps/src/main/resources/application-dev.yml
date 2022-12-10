@@ -1,9 +1,12 @@
+### 服务配置 ###
 server:
-  port: 8083
+  port: 10014
   session:
     timeout: 7200
-#  context-path: /manage
-env: stg
+  servlet:
+    context-path: /ps/api
+#env: stg
+
 # mybatis 配置
 mybatis:
   # mybatis配置文件所在路径

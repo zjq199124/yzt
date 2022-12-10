@@ -1,16 +1,4 @@
 
-### 服务配置 ###
-server:
-<<<<<<< HEAD
-  port: 8085
-=======
-  port: 8087
->>>>>>> 8d6d1a14e75ab7fb26343af8ebbd2dd47e09c58c
-  session:
-    timeout: 7200
-  servlet:
-    context-path: /open/api
-#env: stg
 
 
 ### spring ###
@@ -145,11 +133,11 @@ oss:
   endpoint: "oss-cn-hangzhou.aliyuncs.com"
   accessKeyId: "LTAI5tEozMaZFLJXmjtv2y1L"
   accessKeySecret: "DQtx7CwSvvrV3trwdaYEQRhhVAHCiw"
-  publicBucket: "yzt-hs-dev"
-  publicBucketUrl: "yzt-hs-dev.oss-cn-hangzhou.aliyuncs.com"
-  privateBucket: "yzt-equipment"
-  privateBucketUrl: "yzt-equipment.oss-cn-hangzhou.aliyuncs.com"
+  publicBucket: "yzt-test-public"
+  publicBucketUrl: "https://yzt-test-public.oss-cn-hangzhou.aliyuncs.com"
+  privateBucket: "yzt-test-privacy"
+  privateBucketUrl: "https://yzt-test-privacy.oss-cn-hangzhou.aliyuncs.com"
   expiration: "30"
-  styleWatermark: "一真"
-  styleMicro: "一真"
+  styleWatermark: "一真堂"
+  styleMicro: "一真堂"
 

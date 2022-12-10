@@ -1,8 +1,4 @@
-server:
-  port: 8093
-  session:
-    timeout: 7200
-#  context-path: /manage
+
 
 # mybatis 配置
 mybatis:
@@ -105,7 +101,7 @@ custom:
         sessionInvalidUrl: /login
 
 # 微信公众号配置
-weixin:
-  token: maizhiyu
-  appid: wx33df32715638a40a
-  appsecret: c899dac94e7566ecd20fefb3e4905d58
+#weixin:
+#  token: maizhiyu
+#  appid: wx33df32715638a40a
+#  appsecret: c899dac94e7566ecd20fefb3e4905d58

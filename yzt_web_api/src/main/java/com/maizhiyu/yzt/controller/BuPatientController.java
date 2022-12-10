@@ -32,7 +32,7 @@ public class BuPatientController {
 
     @ApiOperation(value = "增加患者(存在则更新)", notes = "增加患者(存在则更新)")
     @PostMapping("/addPatientOrUpdate")
-    public Result<BuPatientVO.AddPatientVO> addPatientOrUpdate (HttpServletRequest request, @RequestBody @Valid BuPatientRO.AddPatientRO ro) {
+    public Result<Long> addPatientOrUpdate (HttpServletRequest request, @RequestBody @Valid BuPatientRO.AddPatientRO ro) {
         // 获取token字段
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
@@ -58,7 +58,7 @@ public class BuPatientController {
         BuPatient newPatient = service.getPatient(patient.getName(), patient.getPhone(), patient.getIdcard());
         BuPatientVO.AddPatientVO vo = BuPatientCI.INSTANCE.invertAddPatientVO(newPatient);
         // 返回结果
-        return Result.success(vo);
+        return Result.success(vo.getId());
     }
 
 }

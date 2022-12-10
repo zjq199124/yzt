@@ -2,7 +2,6 @@ package com.maizhiyu.yzt.serviceimpl;
 
 import com.maizhiyu.yzt.entity.BuPrescription;
 import com.maizhiyu.yzt.entity.BuTreatment;
-import com.maizhiyu.yzt.entity.TsSytech;
 import com.maizhiyu.yzt.mapper.BuPrescriptionMapper;
 import com.maizhiyu.yzt.mapper.BuTreatmentMapper;
 import com.maizhiyu.yzt.mapper.TsSytechMapper;

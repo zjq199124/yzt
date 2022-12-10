@@ -18,10 +18,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -48,6 +46,8 @@ public class BuPrescriptionController {
     @Resource
     private IBuDiagnoseService diagnoseService;
 
+    @Resource
+    private IBuPrescriptionItemService buPrescriptionItemService;
 
     @ApiOperation(value = "新增处方(中药)", notes = "新增处方(中药)")
     @PostMapping("/addPrescriptionZhongyao")
@@ -266,6 +266,15 @@ public class BuPrescriptionController {
             }*/
             // 添加到列表
             itemList.add(item);
+        }
+
+        //保存前先检查是否有删除
+        if (!CollectionUtils.isEmpty(ro.getPreItemIdList())) {
+            List<Long> itemIdList = itemList.stream().filter(item -> Objects.nonNull(item.getId())).map(BuPrescriptionItem::getId).collect(Collectors.toList());
+            List<Long> deleteIdList = ro.getPreItemIdList().stream().filter(item -> !(itemIdList.contains(item))).collect(Collectors.toList());
+            if (!CollectionUtils.isEmpty(deleteIdList)) {
+                buPrescriptionItemService.deleteByIdList(deleteIdList);
+            }
         }
         // 保存药材
         Integer res = service.saveOrUpdate(prescription);

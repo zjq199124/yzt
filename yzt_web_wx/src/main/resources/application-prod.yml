@@ -1,22 +1,10 @@
-server:
-  port: 8093
-  session:
-    timeout: 7200
-#  context-path: /manage
 
-# mybatis 配置
-mybatis:
-  # mybatis配置文件所在路径
-  config-location: classpath:mybatis/mybatis.cfg.xml
-  # 所有Entity别名类所在包
-  type-aliases-package: com.mtis.entity
-  mapper-locations:
-    # mapper映射文件
-    - classpath:mybatis/mapper/**/*.xml
 
+
+### spring ###
 spring:
   application:
-    name: mtis
+    name: yizhentang
   http:
     multipart:
       max-file-size: 2000Mb      # Max file size，默认1M
@@ -26,9 +14,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     #     mysql驱动包
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/mzy_his_cf?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
-    username: work
-    password: MZY1qaz@WSX
+    url: jdbc:mysql://119.3.214.235:3306/mzy_his_cf?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: 1qaz@WSX
     druid:
       #      数据库连接池的最小维持连接数
       min-idle: 10
@@ -74,10 +62,12 @@ spring:
 
   # redis 配置
   redis:
+    #    host: 39.105.85.64
     host: 127.0.0.1
     port: 6379
-    password: MZY1qaz@WSX
+    #    password: zhanshen@
     timeout: 86400
+    password: 123456
   # rabbitMQ 配置
   #  rabbitmq:
   #    host: 119.3.230.227
@@ -85,27 +75,61 @@ spring:
   #    password: admin
   session:
     store-type: redis
-  mvc:
-    async:
-      request-timeout: 300000
 
-# swagger 配置（生产环境关闭）
-swagger:
-  enable: true
 
-# 用户自定义配置
-custom:
-  security:
-    strategy: MODE_INHERITABLETHREADLOCAL
-    browser:
-      loginType: JSON
-      loginPageUrl: /login
-      logoutPageUrl: /login
-      session:
-        sessionInvalidUrl: /login
+mybatis-plus:
+  type-aliases-package: com.maizhiyu.yzt.entity
+  mapper-locations: classpath*:/mybatis/mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+### 分页插件 ###
+pagehelper:
+  auto-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  page-size-zero: true
+  params: count=countSql
+
 
 # 微信公众号配置
 weixin:
-  token: maizhiyu
-  appid: wx33df32715638a40a
-  appsecret: c899dac94e7566ecd20fefb3e4905d58
+  # token更新设置
+  enable: true
+  crontab: "0 0 */1 * * ?"
+  # 微信基础信息
+  # 公众号脉之语
+  #  appid: wx770c893ff4f74c9a
+  #  appsecret: ad183550a3205ffb22c9bf805263c0ad
+  #  token: mzy18ljf61gk2801cgy451zsw3452by4
+  # 公众号中医真知
+  #  appid: wxbbf7c24f3dc46277
+  #  appsecret: f8c2b9d05197df61ec28b12c43d0229c
+  #  token: mzy18ljf61gk2801cgy451zsw3452by4
+  # 公众号测试账号
+  appid: wx201279a7616325aa
+  appsecret: 9d92acd5a15f2f6a2fc3e36a1883e238
+  token: huhutech
+  # 授权相关信息
+  auth_scope: snsapi_userinfo   # scope: snsapi_base
+  api_domain: https://api.weixin.qq.com
+  authorize_url: https://open.weixin.qq.com/connect/oauth2/authorize
+  # 页面跳转信息
+  redirect_url: http://klqlfnb.nat.ipyingshe.com/wx/api/wx/onCallback
+  business_url: http://klqlfnb.nat.ipyingshe.com/ps/index.html
+  # 腾讯位置服务
+  location_domain: https://apis.map.qq.com
+  location_path: /ws/geocoder/v1
+  location_key: UZIBZ-E3CWK-O7GJ5-AZ5QE-5CFP7-ORFNL
+
+
+### swagger ###（生产环境时需要关闭）
+swagger:
+  enable: true
+
+### 业务配置 ###
+file:
+  upload-folder: /Users/huhu/Temps/static/
+  static-access-path: /files/**

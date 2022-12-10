@@ -1,11 +1,5 @@
 
-### 服务配置 ###
-server:
-  port: 8084
-  session:
-    timeout: 7200
-  context-path: /api
-#env: stg
+
 
 
 ### spring ###
@@ -20,7 +14,7 @@ spring:
     # 当前数据源操作类型
     type: com.alibaba.druid.pool.DruidDataSource
     #     mysql驱动包
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://rm-bp1xk4j7gsb2ylig3so.mysql.rds.aliyuncs.com:3306/yztpro?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
     username: yztp
     password: rootDB1sfdWSX
@@ -117,3 +111,17 @@ swagger:
 
 
 ### 业务配置 ###
+
+
+
+oss:
+  endpoint: "oss-cn-hangzhou.aliyuncs.com"
+  accessKeyId: "LTAI5tEozMaZFLJXmjtv2y1L"
+  accessKeySecret: "DQtx7CwSvvrV3trwdaYEQRhhVAHCiw"
+  publicBucket: "yzt-public"
+  publicBucketUrl: "https://yzt-public.oss-cn-hangzhou.aliyuncs.com"
+  privateBucket: "yzt-privacy"
+  privateBucketUrl: "https://yzt-privacy.oss-cn-hangzhou.aliyuncs.com"
+  expiration: "30"
+  styleWatermark: "一真堂"
+  styleMicro: "一真堂"

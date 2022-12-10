@@ -12,9 +12,9 @@
         <result column="remark" property="remark" />
     </resultMap>
     <select id="selectByDiseaseId" resultType="com.maizhiyu.yzt.entity.DictSyndrome" parameterType="java.lang.Long">
-        SELECT ds.id,ds.name FROM dict_syndrome ds
-        INNER JOIN rel_disease_syndrome rds ON ds.id = rds.syndrome_id AND rds.is_del = 0
-        WHERE  rds.disease_id = #{diseaseId} AND ds.is_del = 0
+        SELECT distinct ds.id,ds.name FROM dict_syndrome ds
+        INNER JOIN rel_syndrome_symptom rss ON ds.id = rss.syndrome_id AND rss.is_del = 0
+        WHERE  rss.disease_id = #{diseaseId} AND ds.is_del = 0
         <if test="search != null and search != ''">
             and ds.name like concat('%',#{search},'%')
         </if>
@@ -22,7 +22,7 @@
     <select id="selectDictSyndromeBySymptomIdList" resultType="com.maizhiyu.yzt.entity.DictSyndrome">
         SELECT DISTINCT ds.id,ds.name FROM dict_syndrome ds
         INNER JOIN rel_syndrome_symptom rss ON ds.id = rss.syndrome_id AND rss.is_del = 0
-        WHERE ds.is_del = 0 AND rss.symptom_id IN
+        WHERE ds.is_del = 0 AND rss.disease_id = #{diseaseId} AND rss.symptom_id IN
         <foreach collection="symptomIdList" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>

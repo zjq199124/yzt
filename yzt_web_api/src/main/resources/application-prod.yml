@@ -1,13 +1,4 @@
 
-### 服务配置 ###
-server:
-  port: 10090
-  session:
-    timeout: 7200
-  servlet:
-    context-path: /open/api
-#env: stg
-
 
 ### spring ###
 spring:
@@ -137,3 +128,16 @@ jwt:
   prefix: Bearer_
   secret: 1qaz@WSX
   expire: 360000000000
+
+#阿里oss
+oss:
+  endpoint: "oss-cn-hangzhou.aliyuncs.com"
+  accessKeyId: "LTAI5tEozMaZFLJXmjtv2y1L"
+  accessKeySecret: "DQtx7CwSvvrV3trwdaYEQRhhVAHCiw"
+  publicBucket: "yzt-public"
+  publicBucketUrl: "https://yzt-public.oss-cn-hangzhou.aliyuncs.com"
+  privateBucket: "yzt-privacy"
+  privateBucketUrl: "https://yzt-privacy.oss-cn-hangzhou.aliyuncs.com"
+  expiration: "30"
+  styleWatermark: "一真堂"
+  styleMicro: "一真堂"

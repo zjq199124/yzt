@@ -28,9 +28,10 @@ public class DictSyndromeController {
     @ApiOperation(value = "根据症状确定分型的接口",notes = "根据症状确定分型的接口")
     @ApiImplicitParam(name = "symptomIdList",value = "症状id的list")
     @PostMapping("/selectBySymptom")
-    public Result<List<DictSyndromeVo>> selectDictSyndromeBySymptomIdList(@RequestBody List<Long> symptomIdList) {
+    public Result<List<DictSyndromeVo>> selectDictSyndromeBySymptomIdList(@RequestParam(value = "diseaseId") Long diseaseId,@RequestBody List<Long> symptomIdList) {
         Assert.notNull(symptomIdList, "症状id不能为空!");
-        List<DictSyndromeVo> dictSyndromeVoList = dictSyndromeService.selectDictSyndromeBySymptomIdList(symptomIdList);
+        Assert.notNull(diseaseId, "疾病id不能为空!");
+        List<DictSyndromeVo> dictSyndromeVoList = dictSyndromeService.selectDictSyndromeBySymptomIdList(diseaseId,symptomIdList);
         return Result.success(dictSyndromeVoList);
     }
 
