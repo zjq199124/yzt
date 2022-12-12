@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 public class BuPrescriptionController {
 
     @Autowired
-    private IBuPrescriptionService service;
+    private IBuPrescriptionService iBuPrescriptionService;
 
     @Autowired
     private IHsUserService hsUserService;
@@ -101,14 +101,14 @@ public class BuPrescriptionController {
         }
         // 保存药材
         //Integer res = service.addPrescription(prescription);
-        Boolean res = service.saveOrUpdate(prescription);
+        Boolean res = iBuPrescriptionService.saveOrUpdate(prescription);
         // 返回结果
         return Result.success(res);
     }
 
     @ApiOperation(value = "新增处方(成药)", notes = "新增处方(成药)")
     @PostMapping("/addPrescriptionChengyao")
-    public Result<Integer> addPrescriptionChengyao(HttpServletRequest request, @RequestBody BuPrescriptionRO.AddPrescriptionChengyao ro) {
+    public Result<Boolean> addPrescriptionChengyao(HttpServletRequest request, @RequestBody BuPrescriptionRO.AddPrescriptionChengyao ro) {
         // 获取token字段
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
@@ -152,14 +152,14 @@ public class BuPrescriptionController {
             itemList.add(item);
         }
         // 保存药材
-        Integer res = service.addPrescription(prescription);
+        Boolean res = iBuPrescriptionService.addPrescription(prescription);
         // 返回结果
         return Result.success(res);
     }
 
     @ApiOperation(value = "新增处方(协定)", notes = "新增处方(协定)")
     @PostMapping("/addPrescriptionXieding")
-    public Result<Integer> addPrescriptionXieding(HttpServletRequest request, @RequestBody BuPrescriptionRO.AddPrescriptionXieding ro) {
+    public Result<Boolean> addPrescriptionXieding(HttpServletRequest request, @RequestBody BuPrescriptionRO.AddPrescriptionXieding ro) {
         // 获取token字段
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
@@ -202,7 +202,7 @@ public class BuPrescriptionController {
             itemList.add(item);
         }
         // 保存药材
-        Integer res = service.addPrescription(prescription);
+        Boolean res = iBuPrescriptionService.addPrescription(prescription);
         // 返回结果
         return Result.success(res);
     }
@@ -252,21 +252,6 @@ public class BuPrescriptionController {
             item.setQuantity(new BigDecimal(it.getQuantity()));
             item.setNote(it.getNote());
             item.setEntityId(it.getEntityId());
-//            // 实现一：传入参数中code就是适宜技术的id（string）数据库中存储是int格式，需要转格式
-//            try {
-//                Long entityId = Long.parseLong(it.getCode());
-//                item.setEntityId(entityId);
-//            } catch (Exception e) {
-//                log.warn("转化适宜技术ID异常 " + it);
-//            }
-            // 实现二：根据名称查询entityId
-            /*try {
-                TsSytech sytech = sytechService.getSytechByName(it.getName());
-                item.setEntityId(sytech.getId());
-                log.info("查询适宜技术成功 " + sytech);
-            } catch (Exception e) {
-                log.warn("查询适宜技术异常 " + it);
-            }*/
             // 添加到列表
             itemList.add(item);
         }
@@ -280,7 +265,7 @@ public class BuPrescriptionController {
             }
         }
         // 保存药材
-        Boolean res = service.saveOrUpdate(prescription);
+        Boolean res = iBuPrescriptionService.saveOrUpdate(prescription);
         // 返回结果
         return Result.success(res);
     }

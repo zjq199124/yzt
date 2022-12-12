@@ -2,31 +2,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.maizhiyu.yzt.mapper.BuRecommendMapper">
 
-<!--    <select id="selectSyndromeByDisease" resultType="hashmap">-->
-<!--        select-->
-<!--            X.*, D.content disease_name-->
-<!--        from-->
-<!--            dict_disease D-->
-<!--                join syn_syndrome X on X.disease_id = D.id-->
-<!--        where-->
-<!--            D.content LIKE CONCAT('%',#{symptom},'%')-->
-<!--    </select>-->
-
     <select id="selectSyndromeByDisease" resultType="hashmap">
         select
-            X.*, D.content disease_name, 0 `count`
+        X.*, D.name disease_name,GROUP_CONCAT( dsm.content ) symptoms, 0 `count`
         from
-            dict_disease D
-            join syn_syndrome X on X.disease_id = D.id
+        dict_disease D
+        LEFT JOIN rel_syndrome_symptom X ON X.disease_id = D.id
+        LEFT JOIN dict_syndrome ds ON ds.id = X.syndrome_id
+        LEFT JOIN dict_symptom dsm ON dsm.id = X.symptom_id
         <where>
             <if test="disease != null">
-                and D.content LIKE CONCAT('%',#{disease},'%')
+                and D.name LIKE CONCAT('%',#{disease},'%')
             </if>
             <if test="syndrome != null">
-                and X.name LIKE CONCAT('%',#{syndrome},'%')
+                and ds.name LIKE CONCAT('%',#{syndrome},'%')
             </if>
         </where>
-        <!--         limit 20-->
+        GROUP BY
+        ds.id
     </select>
 
     <select id="selectSyndromeBySymptom" resultType="hashmap">
@@ -34,97 +27,98 @@
         *, count(*) `count`
         from
         (
-            select
-            X.*, D.content disease_name
-            from
-            syn_syndrome X
-            join dict_disease D on D.id = X.disease_id
-            where
+        select
+        X.*, D.content disease_name
+        from
+        syn_syndrome X
+        join dict_disease D on D.id = X.disease_id
+        where
         <foreach collection="symptoms" item="symptom" index="index" open="(" separator=" or " close=")">
             symptoms LIKE CONCAT('%',#{symptom},'%')
         </foreach>
-            ) X
+        ) X
         group by id
     </select>
 
     <select id="selectRecommendZhongyao" resultType="hashmap">
         select
-            X.*,
-            A.content disease_name,
-            B.name syndrome_name, B.symptoms
+        X.*,
+        A.content disease_name,
+        B.name syndrome_name, B.symptoms
         from
-            (
-                select * from sch_zhongyao
-                <where>
-                    syndrome_id in
-                    <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
-                        #{id}
-                    </foreach>
-                </where>
-            ) X
+        (
+        select * from sch_zhongyao
+        <where>
+            syndrome_id in
+            <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </where>
+        ) X
 
-            left join dict_disease A on A.id = X.disease_id
-            left join syn_syndrome B on B.id = X.syndrome_id
+        left join dict_disease A on A.id = X.disease_id
+        left join syn_syndrome B on B.id = X.syndrome_id
     </select>
 
     <select id="selectRecommendChengyao" resultType="hashmap">
         select
-            X.*,
-            A.content disease_name,
-            B.name syndrome_name, B.symptoms
+        X.*,
+        A.content disease_name,
+        B.name syndrome_name, B.symptoms
         from
-            (
-                select * from sch_chengyao
-                <where>
-                    syndrome_id in
-                    <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
-                        #{id}
-                    </foreach>
-                </where>
-            ) X
-            left join dict_disease A on A.id = X.disease_id
-            left join syn_syndrome B on B.id = X.syndrome_id
+        (
+        select * from sch_chengyao
+        <where>
+            syndrome_id in
+            <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </where>
+        ) X
+        left join dict_disease A on A.id = X.disease_id
+        left join syn_syndrome B on B.id = X.syndrome_id
     </select>
 
     <select id="selectRecommendXieding" resultType="hashmap">
         select
-            X.*,
-            A.content disease_name,
-            B.name syndrome_name, B.symptoms
+        X.*,
+        A.content disease_name,
+        B.name syndrome_name, B.symptoms
         from
-            (
-                select * from sch_xieding
-                <where>
-                    syndrome_id in
-                    <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
-                        #{id}
-                    </foreach>
-                </where>
-            ) X
-            left join dict_disease A on A.id = X.disease_id
-            left join syn_syndrome B on B.id = X.syndrome_id
+        (
+        select * from sch_xieding
+        <where>
+            syndrome_id in
+            <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </where>
+        ) X
+        left join dict_disease A on A.id = X.disease_id
+        left join syn_syndrome B on B.id = X.syndrome_id
     </select>
 
     <select id="selectRecommendSytech" resultType="hashmap">
-        select
-            X.*,
-            A.content disease_name,
-            B.name syndrome_name, B.symptoms,
-            C.name sytech_name
-        from
-            (
-                select * from sch_sytech
-                <where>
-                    syndrome_id in
-                    <foreach
-                        collection="ids" item="id" index="index" open="(" close=")" separator=",">
-                        #{id}
-                    </foreach>
-                </where>
-            ) X
-            left join dict_disease A on A.id = X.disease_id
-            left join syn_syndrome B on B.id = X.syndrome_id
-            left join ts_sytech C on C.id = X.sytech_id
+        SELECT DISTINCT
+        ss.* ,
+        ts.name sytech_name,
+        dd.name disease_name,
+        ds.name syndrome_name
+        FROM
+        ts_sytech ts
+        left JOIN sch_sytech ss ON ts.id = ss.sytech_id
+        left join dict_disease dd on dd.id=ss.disease_id
+        left join dict_syndrome ds on ds.id=ss.syndrome_id
+        AND ss.STATUS = 1
+        <where>
+            ts.STATUS = 1
+            AND ss.disease_id = 51
+            and ss.syndrome_id in
+            <foreach
+                    collection="ids" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </where>
     </select>
 
     <select id="getRecommendZhongyao" resultType="java.util.Map">
@@ -168,10 +162,10 @@
         sc.disease_id = #{diseaseId}
         AND sc.STATUS = 1
         <if test="ids != null and ids.size > 0">
-        AND sc.syndrome_id IN
-        <foreach collection="ids" item="item" open="(" separator="," close=")">
-            #{item}
-        </foreach>
+            AND sc.syndrome_id IN
+            <foreach collection="ids" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
         ORDER BY
         sc.syndrome_id
@@ -192,10 +186,10 @@
         sx.disease_id = #{diseaseId}
         AND sx.STATUS = 1
         <if test="ids != null and ids.size > 0">
-        AND sx.syndrome_id IN
-        <foreach collection="ids" item="item" open="(" separator="," close=")">
-            #{item}
-        </foreach>
+            AND sx.syndrome_id IN
+            <foreach collection="ids" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
         ORDER BY
         sx.syndrome_id
@@ -222,23 +216,23 @@
         AND dd.is_del = 0
         LEFT JOIN ts_sytech ts ON ts.id = ss.sytech_id
         <if test="customerName != null and customerName != ''">
-            LEFT JOIN ms_customer mc ON ss.customer_id = mc.id AND mc.status = 1 AND  mc.username = #{customerName}
+            LEFT JOIN ms_customer mc ON ss.customer_id = mc.id AND mc.status = 1 AND mc.username = #{customerName}
         </if>
         WHERE
         ss.disease_id = #{diseaseId}
         AND ss.STATUS = 1
         <if test="sytechId != null">
-        AND ss.sytech_id = #{sytechId}
+            AND ss.sytech_id = #{sytechId}
         </if>
         <if test="ids != null and ids.size > 0">
-        AND ss.syndrome_id IN
-        <foreach collection="ids" item="item" open="(" separator="," close=")">
-            #{item}
-        </foreach>
+            AND ss.syndrome_id IN
+            <foreach collection="ids" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
         AND (
-            ss.customer_id IS NOT NULL
-            OR ( ss.customer_id IS NULL AND ss.recommend = 1 )
+        ss.customer_id IS NOT NULL
+        OR ( ss.customer_id IS NULL AND ss.recommend = 1 )
         )
         GROUP BY ss.sytech_id
         ORDER BY ss.syndrome_id

@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import cn.hutool.core.lang.Assert;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -7,13 +8,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.base.Splitter;
 import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.mapper.*;
-import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.BuDiagnoseRO;
 import com.maizhiyu.yzt.service.IBuCheckService;
 import com.maizhiyu.yzt.service.IBuDiagnoseService;
 import com.maizhiyu.yzt.service.IBuRecommendService;
 import com.maizhiyu.yzt.service.IDictSyndromeService;
-import com.maizhiyu.yzt.vo.BuDiagnoseVO;
 import com.maizhiyu.yzt.vo.DictSymptomVo;
 import com.maizhiyu.yzt.vo.DictSyndromeVo;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +29,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper,BuDiagnose> implements IBuDiagnoseService {
+public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose> implements IBuDiagnoseService {
 
     @Autowired
     private BuDiagnoseMapper mapper;
@@ -118,70 +117,13 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper,BuDiagnose> 
         return list;
     }
 
-//    @Override
-//    public Integer saveOrUpdate(BuDiagnose buDiagnose) {
-//        if (Objects.isNull(buDiagnose.getId())) {
-//            return mapper.insert(buDiagnose);
-//        } else {
-//            return mapper.updateById(buDiagnose);
-//        }
-//    }
-
     @Override
     public Map<String, Object> getDetails(BuDiagnoseRO.GetRecommendRO ro) {
 
+        Assert.notNull(ro, "入参信息为空!");
+        BuOutpatient buOutpatient = outpatientMapper.selectById(ro.getOutpatientId());
+        Assert.notNull(buOutpatient, "门诊信息为空!");
         Map<String, Object> resultMap = new HashMap<>();
-
-        //0.1:查询出客户id
-        LambdaQueryWrapper<MsCustomer> customerQueryWrapper = new LambdaQueryWrapper<>();
-        customerQueryWrapper.eq(MsCustomer::getUsername, ro.getCustomerName())
-                .eq(MsCustomer::getStatus, 1)
-                .orderByDesc(MsCustomer::getUpdateTime)
-                .last("limit 1");
-        MsCustomer msCustomer = msCustomerMapper.selectOne(customerQueryWrapper);
-        if (Objects.isNull(msCustomer)) {
-            return null;
-        }
-
-        //0.2:查询出医生id
-        LambdaQueryWrapper<HsUser> hsUserQueryWrapper = new LambdaQueryWrapper<>();
-        hsUserQueryWrapper.eq(HsUser::getHisId, ro.getHisDoctorId())
-                .eq(HsUser::getCustomerId, msCustomer.getId())
-                .eq(HsUser::getStatus, 1)
-                .orderByDesc(HsUser::getUpdateTime)
-                .last("limit 1");
-        HsUser hsUser = hsUserMapper.selectOne(hsUserQueryWrapper);
-
-        if (Objects.isNull(hsUser)) {
-            return null;
-        }
-
-        //0.3:先查询出患者id
-        LambdaQueryWrapper<BuPatient> buPatientQueryWrapper = new LambdaQueryWrapper<>();
-        buPatientQueryWrapper.eq(BuPatient::getHisId, ro.getPatientId())
-                .eq(BuPatient::getCustomerId, msCustomer.getId())
-                .eq(BuPatient::getStatus, 1)
-                .orderByDesc(BuPatient::getUpdateTime)
-                .last("limit 1");
-        BuPatient buPatient = patientMapper.selectOne(buPatientQueryWrapper);
-        if (Objects.isNull(buPatient)) {
-            return null;
-        }
-
-        //0.4:先查询出患者预约id
-        LambdaQueryWrapper<BuOutpatient> buOutpatientQueryWrapper = new LambdaQueryWrapper<>();
-        buOutpatientQueryWrapper.eq(BuOutpatient::getHisId, ro.getOutpatientId())
-                .eq(BuOutpatient::getCustomerId, msCustomer.getId())
-                .eq(BuOutpatient::getDoctorId, hsUser.getId())
-                .eq(BuOutpatient::getPatientId, buPatient.getId())
-                .orderByDesc(BuOutpatient::getUpdateTime)
-                .last("limit 1");
-        BuOutpatient buOutpatient = outpatientMapper.selectOne(buOutpatientQueryWrapper);
-
-        if (Objects.isNull(buOutpatient)) {
-            return null;
-        }
-
         //1：查询是否有诊断信息
         LambdaQueryWrapper<BuDiagnose> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(BuDiagnose::getPatientId, ro.getPatientId())
@@ -195,7 +137,7 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper,BuDiagnose> 
             return null;
         } else {
             //云平台中医疾病名称
-            resultMap.put("yptDiseaseName", buDiagnose.getDisease());
+            resultMap.put("yptDiseaseName", ro.getDisease());
             //云平台中医疾病Id
             resultMap.put("yptDiseaseId", buDiagnose.getDiseaseId());
             //云平台中诊断信息Id
@@ -254,7 +196,7 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper,BuDiagnose> 
             //3.2通过上面选中的症状推出选中的分型有哪些 标记出之前的诊断保存时所选的分型
             List<Long> symptomIdList = getSymptomIdList(buDiagnose);
             if (!CollectionUtils.isEmpty(symptomIdList)) {
-                List<DictSyndromeVo> checkDictSyndromeVoList = dictSyndromeService.selectDictSyndromeBySymptomIdList(ro.getDiseaseId(),symptomIdList);
+                List<DictSyndromeVo> checkDictSyndromeVoList = dictSyndromeService.selectDictSyndromeBySymptomIdList(ro.getDiseaseId(), symptomIdList);
                 if (!CollectionUtils.isEmpty(checkDictSyndromeVoList)) {
                     List<Long> checkDictSyndromeVoIdList = checkDictSyndromeVoList.stream().map(DictSyndromeVo::getId).collect(Collectors.toList());
                     dictSyndromeVoList.forEach(item -> {
@@ -270,9 +212,9 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper,BuDiagnose> 
 
         //4：查询出已经保存的处方
         LambdaQueryWrapper<BuPrescription> prescriptionQueryWrapper = new LambdaQueryWrapper<>();
-        prescriptionQueryWrapper.eq(BuPrescription::getPatientId, buPatient.getId())
+        prescriptionQueryWrapper.eq(BuPrescription::getPatientId, buOutpatient.getPatientId())
                 .eq(BuPrescription::getOutpatientId, buOutpatient.getId())
-                .eq(BuPrescription::getDoctorId, hsUser.getId())
+                .eq(BuPrescription::getDoctorId, buOutpatient.getDoctorId())
                 .eq(BuPrescription::getIsDel, 0)
                 .orderByDesc(BuPrescription::getUpdateTime)
                 .last("limit 1");
@@ -290,8 +232,8 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper,BuDiagnose> 
             //5:查询保存的处方所对应的具体适宜技术
             LambdaQueryWrapper<BuPrescriptionItem> buPrescriptionItemQueryWrapper = new LambdaQueryWrapper<>();
             buPrescriptionItemQueryWrapper.eq(BuPrescriptionItem::getPrescriptionId, buPrescription.getId())
-                    .eq(BuPrescriptionItem::getDoctorId, hsUser.getId())
-                    .eq(BuPrescriptionItem::getPatientId, buPatient.getId())
+                    .eq(BuPrescriptionItem::getDoctorId, buOutpatient.getDoctorId())
+                    .eq(BuPrescriptionItem::getPatientId, buOutpatient.getPatientId())
                     .eq(BuPrescriptionItem::getOutpatientId, buOutpatient.getId())
                     .eq(BuPrescriptionItem::getType, 5)
                     .eq(BuPrescriptionItem::getIsDel, 0);

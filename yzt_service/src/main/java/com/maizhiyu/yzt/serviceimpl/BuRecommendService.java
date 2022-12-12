@@ -45,6 +45,7 @@ public class BuRecommendService implements IBuRecommendService {
     @Resource
     private BuDiagnoseService buDiagnoseService;
 
+
     @Override
     public Map<String, Object> getRecommend(BuDiagnose diagnose) {
         Map<String, Object> result = new HashMap<>();
@@ -185,7 +186,7 @@ public class BuRecommendService implements IBuRecommendService {
 
         //3.判断是否有传分型集合syndromeIdList，没有的话使用symptomIdList通过Feign远程调用云平台中获取疾病所有分型的接口
         if (CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
-            List<DictSyndromeVo> dictSyndromeVoList = dictSyndromeService.selectDictSyndromeBySymptomIdList(disease.getId(),ro.getSymptomIdList());
+            List<DictSyndromeVo> dictSyndromeVoList = dictSyndromeService.selectDictSyndromeBySymptomIdList(disease.getId(), ro.getSymptomIdList());
             //疾病分型数据集合
             resultMap.put("dictSyndromeList", dictSyndromeVoList);
             if (!CollectionUtils.isEmpty(dictSyndromeVoList)) {

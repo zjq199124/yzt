@@ -12,10 +12,15 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.Date;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 
 @Slf4j
@@ -42,6 +47,9 @@ public class BuDiagnoseController {
     @ApiOperation(value = "获取诊断方案推荐", notes = "获取诊断方案推荐")
     @PostMapping("/getRecommend")
     public Result<Map<String, Object>> getRecommend(@RequestBody BuDiagnoseRO.GetRecommendRO ro) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        ro.setCustomerName(currentPrincipalName);
         Map<String, Object> map = recommendService.selectRecommend(ro);
         return Result.success(map);
     }

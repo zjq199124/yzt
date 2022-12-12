@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.controller;
 
+import com.maizhiyu.yzt.base.BaseController;
 import com.maizhiyu.yzt.entity.BuDiagnose;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.BuDiagnoseRO;
@@ -19,7 +20,7 @@ import java.util.Map;
 @Api(tags = "诊断接口")
 @RestController
 @RequestMapping("/diagnose")
-public class BuDiagnoseController {
+public class BuDiagnoseController extends BaseController {
 
     @Autowired
     private IBuDiagnoseService diagnoseService;
@@ -74,6 +75,7 @@ public class BuDiagnoseController {
     @ApiImplicitParams({})
     @PostMapping("/getRecommend")
     public Result getRecommend(@RequestBody BuDiagnoseRO.GetRecommendRO ro) {
+        //TODO 确定医院
         Map<String, Object> map = recommendService.selectRecommend(ro);
         return Result.success(map);
     }
