@@ -21,6 +21,9 @@ public class HsUserXO {
         @ApiModelProperty(value="用户真名")
         private String realname;
 
+        @ApiModelProperty(value="用户昵称")
+        private String nickName;
+
         @ApiModelProperty(value="用户性别(0:女，1:男)")
         private Integer sex;
 

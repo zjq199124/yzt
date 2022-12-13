@@ -119,24 +119,28 @@ public class BuPrescriptionController {
     public Result addPrescriptionShiyi(@RequestBody @Valid BuPrescriptionRO.AddPrescriptionShiyi ro) throws IOException {
         Assert.notNull(ro, "处方数据不能为空!");
         Assert.notNull(ro.getBaseInfo(), "基础信息不能为空!");
+        Assert.notNull(ro.getDiagnoseInfo(), "诊断信息不能为空!");
         BuPrescriptionRO.AddPrescriptionShiyi.BaseInfo baseInfo = ro.getBaseInfo();
 
         //判断医生，患者，患者门诊信息
-        processDoctor(baseInfo.getDoctorId().toString());
-        processPatient(baseInfo.getPatientId().toString());
-        Long outpatientId = processOutpatient(baseInfo.getOutpatientId().toString());
+        Long yptDoctorId = processDoctor(baseInfo.getDoctorId().toString());
+        Long yptPatientId = processPatient(baseInfo.getPatientId().toString());
+        Long yptOutpatientId = processOutpatient(baseInfo.getOutpatientId().toString(),yptDoctorId,yptPatientId);
         //ro中的outpatientId是视图中的registration_id,要换成code才是我们这边所说的his中medical_record_id对应云平台的his中的outpatientId
-        YptOutpatient yptOutpatient = getYptOutpatientById(outpatientId);
+        YptOutpatient yptOutpatient = getYptOutpatientById(yptOutpatientId);
         ro.getBaseInfo().setOutpatientId(yptOutpatient.getHisId());
 
         if (Objects.nonNull(ro) && !CollectionUtils.isEmpty(ro.getItemList())) {
             savePrescriptionShiyiToHis(ro);
         }
 
-        if (Objects.nonNull(ro.getBaseInfo())) {
-            ro.getDiagnoseInfo().setCustomerName(customerName);
-            yptClient.addDiagnose(ro);
-        }
+        //保存诊断信息
+        ro.getDiagnoseInfo().setCustomerName(customerName);
+        //讲patientId,outPatientId,doctorId替换成云平台对应的数据
+        ro.getBaseInfo().setDoctorId(yptDoctorId);
+        ro.getBaseInfo().setPatientId(yptPatientId);
+        ro.getBaseInfo().setOutpatientId(yptOutpatientId);
+        yptClient.addDiagnose(ro);
 
         if(CollectionUtils.isEmpty(ro.getItemList()))
             return Result.success();
@@ -255,7 +259,7 @@ public class BuPrescriptionController {
         }
     }
 
-    private Long processOutpatient(String outpatientId) {
+    private Long processOutpatient(String outpatientId,Long yptDoctorId, Long yptPatientId) {
         LambdaQueryWrapper<HisOutpatient> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(HisOutpatient::getRegistrationId, outpatientId)
                 .last("limit 1");
@@ -264,6 +268,8 @@ public class BuPrescriptionController {
             throw new HisException("获取预约信息失败:" + outpatientId);
         } else {
             BuOutpatientXO.AddOutpatientXO xo = HisOutpatientCI.INSTANCE.toAddOutpatientXO(outpatient);
+            xo.setDoctorId(yptDoctorId.toString());
+            xo.setPatientId(yptPatientId.toString());
             Result<Long> result = yptClient.addOutpatient(xo);
             if (result.getCode() == 0) {
                 log.info("添加预约成功：" + result);

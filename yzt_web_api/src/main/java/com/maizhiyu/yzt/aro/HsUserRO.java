@@ -26,6 +26,9 @@ public class HsUserRO {
         @ApiModelProperty(value="用户真名")
         private String realname;
 
+        @ApiModelProperty(value="用户昵称，his登录账户")
+        private String nickname;
+
         @ApiModelProperty(value="用户手机")
         private String phone;
 
