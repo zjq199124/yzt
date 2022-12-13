@@ -9,23 +9,23 @@ import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.exception.BusinessException;
 import com.maizhiyu.yzt.mapper.*;
 import com.maizhiyu.yzt.service.IBuPrescriptionService;
-import com.mysql.cj.xdevapi.SchemaImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Service
-@Transactional(rollbackFor=Exception.class)
-public class BuPrescriptionService extends ServiceImpl<BuPrescriptionMapper,BuPrescription> implements IBuPrescriptionService {
+@Transactional(rollbackFor = Exception.class)
+public class BuPrescriptionService extends ServiceImpl<BuPrescriptionMapper, BuPrescription> implements IBuPrescriptionService {
 
     @Autowired
-    private BuPrescriptionMapper mapper;
-
-    @Autowired
-    private BuPrescriptionItemMapper itemMapper;
+    private BuPrescriptionItemService buPrescriptionItemService;
 
     @Autowired
     private BuPatientMapper patientMapper;
@@ -40,31 +40,24 @@ public class BuPrescriptionService extends ServiceImpl<BuPrescriptionMapper,BuPr
     private HsCustomerHerbsMapper hsCustomerHerbsMapper;
 
     @Override
-    public Integer addPrescription(BuPrescription prescription) {
+    public boolean addPrescription(BuPrescription prescription) {
         // 生成编码
         if (prescription.getCode() == null) {
-            String code = UUID.randomUUID().toString().replace("-", "").substring(0,20);
+            String code = UUID.randomUUID().toString().replace("-", "").substring(0, 20);
             prescription.setCode(code);
         }
-
-//        BigDecimal pr = new BigDecimal(0);
-//        for (BuPrescriptionItem item : prescription.getItemList()) {
-//            BigDecimal multiply = item.getDosage().multiply(item.getPrice());
-//            pr = pr.add(multiply);
-//        }
-//        prescription.setPrice(pr);
         // 新增处方
-        int res = mapper.insert(prescription);
+        boolean res = saveOrUpdate(prescription);
         // 增加处方项
-        saveOrUpdateItems(prescription);
+        boolean save = saveOrUpdateItems(prescription);
         // 返回结果
-        return res;
+        return res && save;
     }
 
     @Override
     public Integer delPrescription(Long id) {
         // 删除处方
-        int res = mapper.deleteById(id);
+        int res = baseMapper.deleteById(id);
         // 删除处方项
         delItems(id);
         // 返回数据
@@ -74,20 +67,12 @@ public class BuPrescriptionService extends ServiceImpl<BuPrescriptionMapper,BuPr
     @Override
     public Integer setPrescription(BuPrescription prescription) {
         // 获取原来处方数据
-        BuPrescription original = mapper.selectById(prescription.getId());
+        BuPrescription original = baseMapper.selectById(prescription.getId());
         // 更新处方
         prescription.setOutpatientId(original.getOutpatientId());
         prescription.setDoctorId(original.getDoctorId());
         prescription.setPatientId(original.getPatientId());
-
-//        BigDecimal pr = new BigDecimal(0);
-//        for (BuPrescriptionItem item : prescription.getItemList()) {
-//            BigDecimal multiply = item.getDosage().multiply(item.getPrice());
-//            pr = pr.add(multiply);
-//        }
-//        prescription.setPrice(pr);
-
-        int res = mapper.updateById(prescription);
+        int res = baseMapper.updateById(prescription);
         // 删除处方项
         delItems(prescription.getId());
         // 增加处方项
@@ -98,13 +83,13 @@ public class BuPrescriptionService extends ServiceImpl<BuPrescriptionMapper,BuPr
 
     @Override
     public Integer setPrescriptionStatus(BuPrescription prescription) {
-        return mapper.updateById(prescription);
+        return baseMapper.updateById(prescription);
     }
 
     @Override
     public BuPrescription getPrescription(Long id) {
         // 获取处方
-        BuPrescription prescription = mapper.selectById(id);
+        BuPrescription prescription = baseMapper.selectById(id);
         // 获取医生
         HsUser user = hsUserMapper.selectById(prescription.getDoctorId());
         // 获取处方项
@@ -121,7 +106,7 @@ public class BuPrescriptionService extends ServiceImpl<BuPrescriptionMapper,BuPr
         // 查询处方列表
         QueryWrapper<BuPrescription> wrapper = new QueryWrapper<>();
         wrapper.eq("outpatient_id", outpatientId);
-        List<BuPrescription> prescriptions = mapper.selectList(wrapper);
+        List<BuPrescription> prescriptions = baseMapper.selectList(wrapper);
         // 查询每个处方的项目列表
         for (BuPrescription prescription : prescriptions) {
             // 查询处方项列表
@@ -147,7 +132,7 @@ public class BuPrescriptionService extends ServiceImpl<BuPrescriptionMapper,BuPr
                 .ge("update_time", start)
                 .lt("update_time", end)
                 .last("limit 100");
-        List<BuPrescription> prescriptions = mapper.selectList(wrapper);
+        List<BuPrescription> prescriptions = baseMapper.selectList(wrapper);
         // 查询每个处方的项目列表和患者信息
         for (BuPrescription prescription : prescriptions) {
             // 查询患者信息
@@ -170,109 +155,86 @@ public class BuPrescriptionService extends ServiceImpl<BuPrescriptionMapper,BuPr
 
     @Override
     public List<Map<String, Object>> getPrescriptionItemSummary(Long prescriptionId) {
-        return mapper.selectPrescriptionItemSummary(prescriptionId);
+        return baseMapper.selectPrescriptionItemSummary(prescriptionId);
     }
 
     @Override
     public List<Map<String, Object>> getPatientPrescriptionItemSummary(Long patientId) {
-        return mapper.selectPatientPrescriptionItemSummary(patientId);
+        return baseMapper.selectPatientPrescriptionItemSummary(patientId);
     }
 
     @Override
     public void setPaymentStatus(Long id, Long userId) {
-        BuPrescription buPrescription = mapper.selectById(Wrappers.<BuPrescription>lambdaQuery().eq(BuPrescription::getId, id).eq(BuPrescription::getDoctorId,userId).eq(BuPrescription::getPaymentStatus,0).last("for update "));
-
-        if(buPrescription == null) {
+        BuPrescription buPrescription = baseMapper.selectById(Wrappers.<BuPrescription>lambdaQuery().eq(BuPrescription::getId, id).eq(BuPrescription::getDoctorId, userId).eq(BuPrescription::getPaymentStatus, 0).last("for update "));
+        if (buPrescription == null) {
             throw new BusinessException("未找到这条数据");
         }
-
-        if(buPrescription.getPaymentStatus() == 1) {
+        if (buPrescription.getPaymentStatus() == 1) {
             throw new BusinessException("当前处方以结算，请勿重复结算");
         }
-
-
-        if(buPrescription.getStatus() == 2) {
-            List<BuPrescriptionItem> buPrescriptionItems = itemMapper.selectList(Wrappers.<BuPrescriptionItem>lambdaQuery().eq(BuPrescriptionItem::getPrescriptionId, id));
+        if (buPrescription.getStatus() == 2) {
+            List<BuPrescriptionItem> buPrescriptionItems = buPrescriptionItemService.getBaseMapper().selectList(Wrappers.<BuPrescriptionItem>lambdaQuery().eq(BuPrescriptionItem::getPrescriptionId, id));
             for (BuPrescriptionItem item : buPrescriptionItems) {
-                if(buPrescription.getType() == 2) {
-                    if(item.getHerbsId() == null || item.getCustomerHerbsId() == null) {
+                if (buPrescription.getType() == 2) {
+                    if (item.getHerbsId() == null || item.getCustomerHerbsId() == null) {
                         throw new BusinessException("客户中药标示和中药标示不能为空");
                     }
-                    int c = hsCustomerHerbsMapper.updateDeductionInventory(item.getCustomerHerbsId(),item.getDosage());
-                    if(c <= 0) {
+                    int c = hsCustomerHerbsMapper.updateDeductionInventory(item.getCustomerHerbsId(), item.getDosage());
+                    if (c <= 0) {
                         throw new BusinessException(item.getName() + "库存不足");
                     }
                 }
             }
 
-
-        }else {
+        } else {
             throw new BusinessException("当前数据未打印，不能结算");
         }
-
-
     }
 
-//    @Override
-//    public Integer saveOrUpdate(BuPrescription prescription) {
-//        if (Objects.isNull(prescription.getId())) {
-//            // 生成编码
-//            if (prescription.getCode() == null) {
-//                String code = UUID.randomUUID().toString().replace("-", "").substring(0, 20);
-//                prescription.setCode(code);
-//            }
-//
-//            // 新增处方
-//            int res = mapper.insert(prescription);
-//            // 增加处方项
-//            saveOrUpdateItems(prescription);
-//            // 返回结果
-//            return res;
-//        } else {
-//            // 编辑处方
-//            int res = mapper.updateById(prescription);
-//            // 增加处方项
-//            saveOrUpdateItems(prescription);
-//            // 返回结果
-//            return res;
-//        }
-//    }
-
-
-    private void saveOrUpdateItems(BuPrescription prescription) {
-        if(CollectionUtils.isEmpty(prescription.getItemList()))
-            return;
-
-        Date date = new Date();
-        for (BuPrescriptionItem item : prescription.getItemList()) {
-            item.setType(prescription.getType());
-            item.setCustomerId(prescription.getCustomerId());
-            item.setDepartmentId(prescription.getDepartmentId());
-            item.setDoctorId(prescription.getDoctorId());
-            item.setPatientId(prescription.getPatientId());
-            item.setOutpatientId(prescription.getOutpatientId());
-            item.setPrescriptionId(prescription.getId());
-            item.setCreateTime(date);
-            item.setUpdateTime(date);
-            if (Objects.isNull(item.getId())) {
-                itemMapper.insert(item);
-            } else {
-                itemMapper.updateById(item);
-            }
+    @Override
+    public boolean saveOrUpdate(BuPrescription prescription) {
+        // 生成编码
+        if (prescription.getCode() == null) {
+            String code = UUID.randomUUID().toString().replace("-", "").substring(0, 20);
+            prescription.setCode(code);
         }
+        // 新增处方
+        boolean savePrescription = saveOrUpdate(prescription);
+        // 增加处方项
+        boolean savePrescriptionItem = saveOrUpdateItems(prescription);
+        // 返回结果
+        return savePrescription && savePrescriptionItem;
+    }
+
+
+    private boolean saveOrUpdateItems(BuPrescription prescription) {
+        if (CollectionUtils.isEmpty(prescription.getItemList()))
+            return false;
+
+        List<BuPrescriptionItem> item = prescription.getItemList().stream().map(e -> {
+            e.setType(prescription.getType());
+            e.setCustomerId(prescription.getCustomerId());
+            e.setDepartmentId(prescription.getDepartmentId());
+            e.setDoctorId(prescription.getDoctorId());
+            e.setPatientId(prescription.getPatientId());
+            e.setOutpatientId(prescription.getOutpatientId());
+            e.setPrescriptionId(prescription.getId());
+            return e;
+        }).collect(Collectors.toList());
+        return buPrescriptionItemService.saveOrUpdateBatch(item);
     }
 
 
     private void delItems(Long prescriptionId) {
         QueryWrapper<BuPrescriptionItem> wrapper = new QueryWrapper<>();
         wrapper.eq("prescription_id", prescriptionId);
-        itemMapper.delete(wrapper);
+        buPrescriptionItemService.remove(wrapper);
     }
 
 
     private List<BuPrescriptionItem> getItems(Long prescriptionId) {
         QueryWrapper<BuPrescriptionItem> itemQueryWrapper = new QueryWrapper<>();
         itemQueryWrapper.eq("prescription_id", prescriptionId);
-        return itemMapper.selectList(itemQueryWrapper);
+        return buPrescriptionItemService.list(itemQueryWrapper);
     }
 }

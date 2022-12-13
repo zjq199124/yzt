@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.maizhiyu.yzt.bean.aci.HisDoctorCI;
 import com.maizhiyu.yzt.bean.aci.HisOutpatientCI;
 import com.maizhiyu.yzt.bean.aci.HisPatientCI;
@@ -114,6 +113,7 @@ public class BuPrescriptionController {
         return result;
     }
 
+//TODO 这里是对接his的数据保存到云平台，内嵌页面的保存应当按照我们的处方保存接口接收数据保存数据
     @ApiOperation(value = "新增处方(适宜)", notes = "新增处方(适宜)")
     @PostMapping("/addPrescriptionShiyi")
     public Result addPrescriptionShiyi(@RequestBody @Valid BuPrescriptionRO.AddPrescriptionShiyi ro) throws IOException {
