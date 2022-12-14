@@ -86,13 +86,14 @@ public class BuDiagnoseController {
             Preconditions.checkArgument(Objects.nonNull(jzfyDiseaseMapping), "his中的诊断：" + hisDiseaseName + " 在云平台中没有与之相匹配的中医诊断!");
             ro.setDiseaseId(jzfyDiseaseMapping.getDiseaseId());
         }
-
+        //查询his门诊信息是否有对应的云平台数据
         LambdaQueryWrapper<HisOutpatient> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(HisOutpatient::getRegistrationId, ro.getOutpatientId())
                 .last("limit 1");
         HisOutpatient outpatient = outpatientMapper.selectOne(queryWrapper);
-        if (Objects.nonNull(outpatient)) {
-            ro.setOutpatientId(Long.parseLong(outpatient.getCode()));
+        Result<Long> res=yptClient.getYptOutpatientByHisId(Long.parseLong(outpatient.getCode()));
+        if (Objects.nonNull(res.getData())) {
+            ro.setOutpatientId(res.getData());
         }
         //在没有分型syndromeIdList以及没有症状集合symptomIdList先查询下这次挂号看病是否已经有保存诊断信息和治疗处方
         if (CollectionUtils.isEmpty(ro.getSymptomIdList()) && CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
@@ -101,8 +102,7 @@ public class BuDiagnoseController {
                 return result;
         }
         // 调用开放接口获取诊断推荐
-        Map<String, Object> recommendMap = yptClient.getRecommend(ro);
-        return Result.success(recommendMap.get("data"), recommendMap.get("msg").toString());
+        return yptClient.getRecommend(ro);
     }
 
     @ApiOperation(value = "获取门诊诊断和患者信息", notes = "获取门诊诊断和患者信息")
