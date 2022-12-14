@@ -4,9 +4,6 @@ import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.base.Preconditions;
 import com.maizhiyu.yzt.bean.aro.BuDiagnoseRO;
-import com.maizhiyu.yzt.bean.avo.BuDiagnoseVO;
-import com.maizhiyu.yzt.bean.avo.DictSymptomVo;
-import com.maizhiyu.yzt.bean.avo.DictSyndromeVo;
 import com.maizhiyu.yzt.entity.DiseaseMapping;
 import com.maizhiyu.yzt.entity.HisDoctor;
 import com.maizhiyu.yzt.entity.HisOutpatient;
@@ -33,9 +30,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 
 @Slf4j
@@ -105,8 +102,7 @@ public class BuDiagnoseController {
         }
         // 调用开放接口获取诊断推荐
         Map<String, Object> recommendMap = yptClient.getRecommend(ro);
-
-        return Result.success(recommendMap);
+        return Result.success(recommendMap.get("data"), recommendMap.get("msg").toString());
     }
 
     @ApiOperation(value = "获取门诊诊断和患者信息", notes = "获取门诊诊断和患者信息")

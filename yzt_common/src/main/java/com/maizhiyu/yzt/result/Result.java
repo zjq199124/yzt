@@ -36,6 +36,10 @@ public class Result<T> implements Serializable {
         return new Result(ResultCode.SUCCESS.code(), ResultCode.SUCCESS.msg(), data);
     }
 
+    public static Result success(Object data,String msg) {
+        return new Result(ResultCode.SUCCESS.code(), msg, data);
+    }
+
     public static Result failure(ResultCode resultCode) {
         return new Result(resultCode.code(), resultCode.msg(), null);
     }
