@@ -98,7 +98,7 @@ public class BuDiagnoseController {
 
     @ApiOperation(value = "获取云平台对应的outpatientID")
     @GetMapping(value = "/getYptOutpatient")
-    public Result getYptOutpatientByHisId(Long outpatientId) {
+    public Result<Long> getYptOutpatientByHisId(Long outpatientId) {
         BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(null, outpatientId);
         Long id = Optional.ofNullable(buOutpatient).orElse(new BuOutpatient()).getId();
         return Result.success(id);
