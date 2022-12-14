@@ -125,7 +125,8 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
 
         Assert.notNull(ro, "入参信息为空!");
         BuOutpatient buOutpatient = outpatientMapper.selectById(ro.getOutpatientId());
-        Assert.notNull(buOutpatient, "门诊信息为空!");
+        if(buOutpatient==null) return null;
+//        Assert.notNull(buOutpatient, "门诊信息为空!");
         Map<String, Object> resultMap = new HashMap<>();
         //1：查询是否有诊断信息
         LambdaQueryWrapper<BuDiagnose> queryWrapper = new LambdaQueryWrapper<>();

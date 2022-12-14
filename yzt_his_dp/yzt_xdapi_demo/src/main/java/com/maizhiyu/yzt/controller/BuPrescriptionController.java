@@ -133,7 +133,6 @@ public class BuPrescriptionController {
         if (Objects.nonNull(ro) && !CollectionUtils.isEmpty(ro.getItemList())) {
             savePrescriptionShiyiToHis(ro);
         }
-
         //保存诊断信息
         ro.getDiagnoseInfo().setCustomerName(customerName);
         //讲patientId,outPatientId,doctorId替换成云平台对应的数据
