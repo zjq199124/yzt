@@ -24,19 +24,19 @@ public class BaseController {
 
 
     public Claims getClaims() {
-        String token = request.getHeader("token") == null? request.getParameter("token") : request.getHeader("token");
+        String token = request.getHeader("token") == null ? request.getParameter("token") : request.getHeader("token");
 
-        if(token == null) {
+        if (token == null) {
             throw new BusinessException("token 不能为空");
         }
 
         Claims claims = JWTUtil.checkJWT(token);
 
-        if(token == null) {
+        if (token == null) {
             throw new BusinessException("token 验证失败");
         }
 
         return claims;
-        }
+    }
 
 }

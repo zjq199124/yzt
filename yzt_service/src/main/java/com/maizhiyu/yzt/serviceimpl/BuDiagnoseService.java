@@ -86,6 +86,9 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
     public BuDiagnose getDiagnoseOfOutpatient(Long outpatientId) {
         QueryWrapper<BuDiagnose> wrapper = new QueryWrapper<>();
         wrapper.eq("outpatient_id", outpatientId);
+//        result.put("hisPatient", hisPatient);
+//        result.put("hisDoctor", hisDoctor);
+//        result.put("customerName", customerName);
         return mapper.selectOne(wrapper);
     }
 
