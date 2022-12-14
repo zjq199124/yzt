@@ -44,10 +44,10 @@ public class BuOutpatientController {
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
         // 获取医生信息
-        HsUser hsUser = hsUserService.getById(Long.valueOf(ro.getDoctorId()));
+        HsUser hsUser = hsUserService.getUserByHisId(customerId, Long.valueOf(ro.getDoctorId()));
         if (hsUser == null) return Result.failure(10002, "医生信息错误");
         // 获取患者信息
-        BuPatient buPatient = buPatientService.getById(Long.valueOf(ro.getPatientId()));
+        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, Long.valueOf(ro.getPatientId()));
         if (buPatient == null) return Result.failure(10003, "患者信息错误");
         // 数据转换
         BuOutpatient outpatient = new BuOutpatient();

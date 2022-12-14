@@ -2,14 +2,12 @@ package com.maizhiyu.yzt.feign;
 
 import com.maizhiyu.yzt.bean.aro.BuDiagnoseRO;
 import com.maizhiyu.yzt.bean.aro.BuPrescriptionRO;
-import com.maizhiyu.yzt.bean.avo.BuDiagnoseVO;
 import com.maizhiyu.yzt.bean.avo.DictSymptomVo;
 import com.maizhiyu.yzt.bean.avo.DictSyndromeVo;
 import com.maizhiyu.yzt.bean.avo.RelSyndromeSymptomVo;
 import com.maizhiyu.yzt.bean.axo.BuOutpatientXO;
 import com.maizhiyu.yzt.bean.axo.BuPatientXO;
 import com.maizhiyu.yzt.bean.axo.HsUserXO;
-import com.maizhiyu.yzt.entity.YptOutpatient;
 import com.maizhiyu.yzt.result.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.Map;
 
 
 @FeignClient(name = "yptapi", url = "${api.ypt.domain}")
@@ -28,7 +25,7 @@ public interface FeignYptClient {
     feign.Response login(@RequestParam(value = "username") String username, @RequestParam(value = "password") String password);
 
     @PostMapping(value = "/diagnose/getRecommend")
-    Map<String,Object> getRecommend(@RequestBody BuDiagnoseRO.GetRecommendRO ro);
+    Result getRecommend(@RequestBody BuDiagnoseRO.GetRecommendRO ro);
 
     @PostMapping(value = "/user/addUser")
     Result<Long> addDoctor(@RequestBody HsUserXO.AddUserXO xo);
