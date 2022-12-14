@@ -67,7 +67,7 @@ swagger:
 ### feign ###
 api:
   ypt:
-    domain: http://localhost:10090/open/api
+    domain: http://192.168.0.90/open/api
     customer: ouhubang
     secretkey: 123456
     cronenable: true
@@ -99,4 +99,4 @@ oss:
 
 
 his:
-  url: https://yptdev.yztyun.com/hoso/
+  url: http://192.168.0.90/hoso/
