@@ -151,7 +151,7 @@ public class BuRecommendService implements IBuRecommendService {
 
     // 根据辨证分型获取推荐方案
     @Override
-    public Map<String, Object> selectRecommend(BuDiagnoseRO.GetRecommendRO ro) throws Exception {
+    public Map<String, Object> selectRecommend(BuDiagnoseRO.GetRecommendRO ro) {
         //推荐方案必须要有病名称或id
         DictDisease disease = null;
         if (ro.getDisease() != null) {
@@ -176,8 +176,7 @@ public class BuRecommendService implements IBuRecommendService {
         if (CollectionUtils.isEmpty(ro.getSyndromeIdList()) && CollectionUtils.isEmpty(ro.getSymptomIdList())) {
             //疾病症状数据集合
             List<DictSymptomVo> dictSymptomVoList = dictSymptomService.selectByDiseaseId(ro.getDiseaseId());
-            if(CollectionUtils.isEmpty(dictSymptomVoList))
-                throw new Exception("该疾病下没有对应的症状，分型等基础数据!");
+            Assert.notEmpty(dictSymptomVoList, "该疾病下没有对应的症状，分型等基础数据!");
             resultMap.put("dictSymptomList", dictSymptomVoList);
 
             if (!CollectionUtils.isEmpty(dictSymptomVoList)) {

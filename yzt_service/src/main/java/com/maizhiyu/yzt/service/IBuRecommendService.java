@@ -17,5 +17,5 @@ public interface IBuRecommendService  {
 
     Map<String, Object> getRecommendBySymptom(BuDiagnose diagnose);
 
-    Map<String, Object> selectRecommend(BuDiagnoseRO.GetRecommendRO ro) throws Exception;
+    Map<String, Object> selectRecommend(BuDiagnoseRO.GetRecommendRO ro);
 }
