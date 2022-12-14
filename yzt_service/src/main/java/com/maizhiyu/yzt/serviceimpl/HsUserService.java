@@ -106,6 +106,8 @@ public class HsUserService extends ServiceImpl<HsUserMapper,HsUser> implements I
         return userMapper.selectOne(wrapper);
     }
 
+
+
     @Override
     public HsUser getAdmin(Long customerId) {
         return userMapper.selectAdmin(customerId);

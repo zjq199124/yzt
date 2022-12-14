@@ -18,7 +18,7 @@ spring:
     his:
       type: com.alibaba.druid.pool.DruidDataSource
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://192.168.0.90:3306/graduation_hosoneu?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+      url: jdbc:mysql://120.26.4.216:3306/his?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
       username: root
       password: yzt123456
 
@@ -99,4 +99,4 @@ oss:
 
 
 his:
-  url: http://yptdev/yztyun.com/hoso/
+  url: https://yptdev.yztyun.com/hoso/
