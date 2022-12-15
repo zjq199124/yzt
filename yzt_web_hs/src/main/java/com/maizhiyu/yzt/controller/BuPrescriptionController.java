@@ -40,7 +40,7 @@ public class BuPrescriptionController extends BaseController {
     @GetMapping("/delPrescription")
     public Result delPrescription(Long id) {
         // TODO: 需要增加状态判断，很多状态是不能删除的
-        Integer res = service.delPrescription(id);
+        boolean res = service.delPrescription(id);
         return Result.success(res);
     }
 
@@ -49,7 +49,7 @@ public class BuPrescriptionController extends BaseController {
     @PostMapping("/setPrescription")
     public Result setPrescription(@RequestBody BuPrescription prescription) {
         prescription.setUpdateTime(new Date());
-        Integer res = service.setPrescription(prescription);
+        Boolean res = service.setPrescription(prescription);
         return Result.success(prescription);
     }
 

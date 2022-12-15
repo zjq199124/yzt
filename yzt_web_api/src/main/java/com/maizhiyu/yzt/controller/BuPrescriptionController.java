@@ -9,7 +9,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +20,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -255,17 +252,8 @@ public class BuPrescriptionController {
             // 添加到列表
             itemList.add(item);
         }
-
-        //保存前先检查是否有删除
-        if (!CollectionUtils.isEmpty(ro.getPreItemIdList())) {
-            List<Long> itemIdList = itemList.stream().filter(item -> Objects.nonNull(item.getId())).map(BuPrescriptionItem::getId).collect(Collectors.toList());
-            List<Long> deleteIdList = ro.getPreItemIdList().stream().filter(item -> !(itemIdList.contains(item))).collect(Collectors.toList());
-            if (!CollectionUtils.isEmpty(deleteIdList)) {
-                buPrescriptionItemService.deleteByIdList(deleteIdList);
-            }
-        }
         // 保存药材
-        Boolean res = iBuPrescriptionService.saveOrUpdate(prescription);
+        Boolean res = iBuPrescriptionService.setPrescriptionByDiff(prescription, ro.getPreItemIdList());
         // 返回结果
         return Result.success(res);
     }
