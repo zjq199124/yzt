@@ -164,9 +164,9 @@ public class BuRecommendService implements IBuRecommendService {
         Assert.notNull(disease.getId(), "疾病名称或id不存在!");
         ro.setDiseaseId(disease.getId());
         Map<String, Object> resultMap = new HashMap<>();
-
         //在没有分型syndromeIdList以及没有症状集合symptomIdList先查询下这次挂号看病是否已经有保存诊断信息和治疗处方
         if (CollectionUtils.isEmpty(ro.getSymptomIdList()) && CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
+            //
             Map<String, Object> result = buDiagnoseService.getDetails(ro);
             if (Objects.nonNull(result))
                 return result;

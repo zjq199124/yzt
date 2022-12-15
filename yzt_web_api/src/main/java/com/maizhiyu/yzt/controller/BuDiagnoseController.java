@@ -46,12 +46,22 @@ public class BuDiagnoseController {
     @Resource
     private IBuOutpatientService buOutpatientService;
 
+    @Resource
+    private HttpServletRequest request;
+
     @ApiOperation(value = "获取诊断方案推荐", notes = "获取诊断方案推荐")
     @PostMapping("/getRecommend")
     public Result<Map<String, Object>> getRecommend(@RequestBody BuDiagnoseRO.GetRecommendRO ro) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
         ro.setCustomerName(currentPrincipalName);
+        Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
+        ro.setCustomerId(customerId);
+        //查询云平台outpatient
+        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getOutpatientId());
+        //赋值为云平台数据
+        ro.setOutpatientId(buOutpatient.getId());
+        ro.setPatientId(buOutpatient.getPatientId());
         Map<String, Object> map = recommendService.selectRecommend(ro);
         return Result.success(map);
     }
@@ -59,7 +69,7 @@ public class BuDiagnoseController {
 
     @ApiOperation(value = "保存诊断信息接口")
     @PostMapping(value = "/addDiagnoseInfo")
-    public Result addDiagnose(@RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro) throws Exception {
+    public Result<Boolean> addDiagnose(@RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro) throws Exception {
         MsCustomer msCustomer = msCustomerService.getCustomerByName(ro.getDiagnoseInfo().getCustomerName());
         if (Objects.isNull(msCustomer))
             throw new Exception("不存在名称为：" + ro.getDiagnoseInfo().getCustomerName() + " 的客户!");

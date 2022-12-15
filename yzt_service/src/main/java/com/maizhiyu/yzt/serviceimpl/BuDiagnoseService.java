@@ -86,9 +86,6 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
     public BuDiagnose getDiagnoseOfOutpatient(Long outpatientId) {
         QueryWrapper<BuDiagnose> wrapper = new QueryWrapper<>();
         wrapper.eq("outpatient_id", outpatientId);
-//        result.put("hisPatient", hisPatient);
-//        result.put("hisDoctor", hisDoctor);
-//        result.put("customerName", customerName);
         return mapper.selectOne(wrapper);
     }
 
@@ -125,16 +122,16 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
 
         Assert.notNull(ro, "入参信息为空!");
         LambdaQueryWrapper<BuOutpatient> outpatientQueryWrapper = new LambdaQueryWrapper<>();
-        outpatientQueryWrapper.eq(BuOutpatient::getHisId, ro.getOutpatientId())
-                .eq(BuOutpatient::getCustomerId, ro.getCustomerId())
-                .last("limit 1");
+        outpatientQueryWrapper.eq(BuOutpatient::getId, ro.getOutpatientId());
         BuOutpatient buOutpatient = outpatientMapper.selectOne(outpatientQueryWrapper);
-        Assert.notNull(buOutpatient, "门诊信息为空!");
+        if(buOutpatient==null)return null;
+//        Assert.notNull(buOutpatient, "门诊信息为空!");
         Map<String, Object> resultMap = new HashMap<>();
         //1：查询是否有诊断信息
         LambdaQueryWrapper<BuDiagnose> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(BuDiagnose::getPatientId, buOutpatient.getPatientId())
-                .eq(BuDiagnose::getOutpatientId, buOutpatient.getId())
+        queryWrapper.eq(BuDiagnose::getPatientId, ro.getPatientId())
+                .eq(BuDiagnose::getOutpatientId, ro.getOutpatientId())
+                .eq(BuDiagnose::getDiseaseId, ro.getDiseaseId())
                 .eq(BuDiagnose::getDiseaseId, ro.getDiseaseId())
                 .eq(BuDiagnose::getStatus, 1)
                 .orderByDesc(BuDiagnose::getUpdateTime)
