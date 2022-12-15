@@ -144,7 +144,7 @@ public class BuPrescriptionController {
         if (CollectionUtils.isEmpty(ro.getItemList()))
             return Result.success();
 
-        Result<Integer> result = yptClient.addPrescriptionShiyi(ro);
+        Result<Boolean> result = yptClient.addPrescriptionShiyi(ro);
         return Result.success(result.getData());
     }
 

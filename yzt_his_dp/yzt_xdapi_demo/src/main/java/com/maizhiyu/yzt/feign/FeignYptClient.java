@@ -46,7 +46,7 @@ public interface FeignYptClient {
     Result<Integer> addPrescriptionXieding(@RequestBody BuPrescriptionRO.AddPrescriptionXieding ro);
 
     @PostMapping(value = "/prescription/addPrescriptionShiyi")
-    Result<Integer> addPrescriptionShiyi(@RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro);
+    Result<Boolean> addPrescriptionShiyi(@RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro);
 
     @GetMapping(value = "/dictSymptom/list")
     Result<List<DictSymptomVo>> selectDictSymptomList(@RequestParam(value = "diseaseId") Long diseaseId);
