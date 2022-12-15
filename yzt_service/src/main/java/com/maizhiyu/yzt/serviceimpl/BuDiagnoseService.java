@@ -124,13 +124,17 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
     public Map<String, Object> getDetails(BuDiagnoseRO.GetRecommendRO ro) {
 
         Assert.notNull(ro, "入参信息为空!");
-        BuOutpatient buOutpatient = outpatientMapper.selectById(ro.getOutpatientId());
+        LambdaQueryWrapper<BuOutpatient> outpatientQueryWrapper = new LambdaQueryWrapper<>();
+        outpatientQueryWrapper.eq(BuOutpatient::getHisId, ro.getOutpatientId())
+                .eq(BuOutpatient::getCustomerId, ro.getCustomerId())
+                .last("limit 1");
+        BuOutpatient buOutpatient = outpatientMapper.selectOne(outpatientQueryWrapper);
         Assert.notNull(buOutpatient, "门诊信息为空!");
         Map<String, Object> resultMap = new HashMap<>();
         //1：查询是否有诊断信息
         LambdaQueryWrapper<BuDiagnose> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(BuDiagnose::getPatientId, ro.getPatientId())
-                .eq(BuDiagnose::getOutpatientId, ro.getOutpatientId())
+        queryWrapper.eq(BuDiagnose::getPatientId, buOutpatient.getPatientId())
+                .eq(BuDiagnose::getOutpatientId, buOutpatient.getId())
                 .eq(BuDiagnose::getDiseaseId, ro.getDiseaseId())
                 .eq(BuDiagnose::getStatus, 1)
                 .orderByDesc(BuDiagnose::getUpdateTime)

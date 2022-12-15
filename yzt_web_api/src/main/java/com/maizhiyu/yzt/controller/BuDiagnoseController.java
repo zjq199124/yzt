@@ -8,6 +8,7 @@ import com.maizhiyu.yzt.entity.MsCustomer;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.BuDiagnoseRO;
 import com.maizhiyu.yzt.service.*;
+import com.maizhiyu.yzt.utils.JwtTokenUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
@@ -89,9 +91,13 @@ public class BuDiagnoseController {
 
     @ApiOperation(value = "获取诊断详情")
     @PostMapping(value = "/getDetail")
-    public Result getDetail(@RequestBody BuDiagnoseRO.GetRecommendRO ro) throws Exception {
+    public Result getDetail(HttpServletRequest request, @RequestBody BuDiagnoseRO.GetRecommendRO ro) throws Exception {
         Assert.notNull(ro.getPatientId(), "his端患者id不能为空!");
         Assert.notNull(ro.getOutpatientId(), "his端患者门诊预约id不能为空!");
+        // 获取token字段
+        Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
+        if (customerId == null) return Result.failure(10001, "token错误");
+        ro.setCustomerId(customerId);
         Map<String, Object> result = diagnoseService.getDetails(ro);
         return Result.success(result);
     }
