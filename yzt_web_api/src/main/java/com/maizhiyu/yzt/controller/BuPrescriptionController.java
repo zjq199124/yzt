@@ -214,13 +214,13 @@ public class BuPrescriptionController {
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
         // 获取医生信息
-        HsUser hsUser = hsUserService.getUserByHisId(customerId, ro.getBaseInfo().getDoctorId());
+        HsUser hsUser = hsUserService.getById(ro.getBaseInfo().getDoctorId());
         if (hsUser == null) return Result.failure(10002, "医生信息错误");
         // 获取患者信息
-        BuPatient buPatient = buPatientService.getPatientByHisId(customerId, ro.getBaseInfo().getPatientId());
+        BuPatient buPatient = buPatientService.getById(ro.getBaseInfo().getPatientId());
         if (buPatient == null) return Result.failure(10003, "患者信息错误");
         // 获取预约信息
-        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getBaseInfo().getOutpatientId());
+        BuOutpatient buOutpatient = buOutpatientService.getById(ro.getBaseInfo().getOutpatientId());
         if (buOutpatient == null) return Result.failure(10004, "预约信息错误");
 
         // 整理处方数据
