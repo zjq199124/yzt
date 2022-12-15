@@ -60,8 +60,10 @@ public class BuDiagnoseController {
         //查询云平台outpatient
         BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getOutpatientId());
         //赋值为云平台数据
-        ro.setOutpatientId(buOutpatient.getId());
-        ro.setPatientId(buOutpatient.getPatientId());
+        if (buOutpatient != null) {
+            ro.setOutpatientId(buOutpatient.getId());
+            ro.setPatientId(buOutpatient.getPatientId());
+        }
         Map<String, Object> map = recommendService.selectRecommend(ro);
         return Result.success(map);
     }
