@@ -40,5 +40,8 @@ public class BuDiagnoseRO {
 
         @ApiModelProperty(value = "his方医生id")
         private Long hisDoctorId;
+
+        @ApiModelProperty(value = "客户id")
+        private Long customerId;
     }
 }

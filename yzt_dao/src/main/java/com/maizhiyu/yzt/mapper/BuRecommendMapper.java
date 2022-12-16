@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.maizhiyu.yzt.vo.BuDiagnoseVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -11,7 +12,7 @@ import java.util.Map;
 
 @Mapper
 @Repository
-public interface BuRecommendMapper {
+public interface BuRecommendMapper extends BaseMapper<Object> {
 
     List<Map<String, Object>> selectSyndromeByDisease(
             @Param("disease") String disease,

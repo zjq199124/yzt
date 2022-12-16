@@ -13,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -55,35 +52,51 @@ public class BuPrescriptionService extends ServiceImpl<BuPrescriptionMapper, BuP
     }
 
     @Override
-    public Integer delPrescription(Long id) {
+    public boolean delPrescription(Long id) {
         // 删除处方
-        int res = baseMapper.deleteById(id);
+        boolean res = removeById(id);
         // 删除处方项
-        delItems(id);
+        Boolean dres = delItems(id);
         // 返回数据
-        return res;
+        return res && dres;
     }
 
     @Override
-    public Integer setPrescription(BuPrescription prescription) {
+    public Boolean setPrescription(BuPrescription prescription) {
         // 获取原来处方数据
         BuPrescription original = baseMapper.selectById(prescription.getId());
         // 更新处方
         prescription.setOutpatientId(original.getOutpatientId());
         prescription.setDoctorId(original.getDoctorId());
         prescription.setPatientId(original.getPatientId());
-        int res = baseMapper.updateById(prescription);
+        Boolean res = updateById(prescription);
         // 删除处方项
-        delItems(prescription.getId());
+        Boolean res1 = delItems(prescription.getId());
         // 增加处方项
-        saveOrUpdateItems(prescription);
+        Boolean res2 = saveOrUpdateItems(prescription);
         // 返回结果
-        return res;
+        return res && res1 && res2;
     }
 
+    //TODO 前端没有给 preItemIdList 导致删除的item 没有被删除
     @Override
-    public Integer setPrescriptionStatus(BuPrescription prescription) {
-        return baseMapper.updateById(prescription);
+    public Boolean setPrescriptionByDiff(BuPrescription prescription, List<Long> preItemIdList) {
+        //保存前先检查是否有删除
+        List<BuPrescriptionItem> itemList = prescription.getItemList();
+        if (!CollectionUtils.isEmpty(preItemIdList)) {
+            List<Long> itemIdList = itemList.stream().filter(item -> Objects.nonNull(item.getId())).map(BuPrescriptionItem::getId).collect(Collectors.toList());
+            List<Long> deleteIdList = preItemIdList.stream().filter(item -> !(itemIdList.contains(item))).collect(Collectors.toList());
+            if (!org.springframework.util.CollectionUtils.isEmpty(deleteIdList)) {
+                buPrescriptionItemService.deleteByIdList(deleteIdList);
+            }
+        }
+        return addPrescription(prescription);
+    }
+
+
+    @Override
+    public Boolean setPrescriptionStatus(BuPrescription prescription) {
+        return updateById(prescription);
     }
 
     @Override
@@ -191,22 +204,6 @@ public class BuPrescriptionService extends ServiceImpl<BuPrescriptionMapper, BuP
         }
     }
 
-    @Override
-    public boolean saveOrUpdate(BuPrescription prescription) {
-        // 生成编码
-        if (prescription.getCode() == null) {
-            String code = UUID.randomUUID().toString().replace("-", "").substring(0, 20);
-            prescription.setCode(code);
-        }
-        // 新增处方
-        boolean savePrescription = saveOrUpdate(prescription);
-        // 增加处方项
-        boolean savePrescriptionItem = saveOrUpdateItems(prescription);
-        // 返回结果
-        return savePrescription && savePrescriptionItem;
-    }
-
-
     private boolean saveOrUpdateItems(BuPrescription prescription) {
         if (CollectionUtils.isEmpty(prescription.getItemList()))
             return false;
@@ -225,10 +222,10 @@ public class BuPrescriptionService extends ServiceImpl<BuPrescriptionMapper, BuP
     }
 
 
-    private void delItems(Long prescriptionId) {
+    private Boolean delItems(Long prescriptionId) {
         QueryWrapper<BuPrescriptionItem> wrapper = new QueryWrapper<>();
         wrapper.eq("prescription_id", prescriptionId);
-        buPrescriptionItemService.remove(wrapper);
+        return buPrescriptionItemService.remove(wrapper);
     }
 
 

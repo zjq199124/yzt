@@ -11,8 +11,8 @@ import com.maizhiyu.yzt.mapper.*;
 import com.maizhiyu.yzt.ro.BuDiagnoseRO;
 import com.maizhiyu.yzt.service.IBuCheckService;
 import com.maizhiyu.yzt.service.IBuDiagnoseService;
-import com.maizhiyu.yzt.service.IBuRecommendService;
 import com.maizhiyu.yzt.service.IDictSyndromeService;
+import com.maizhiyu.yzt.vo.BuDiagnoseVO;
 import com.maizhiyu.yzt.vo.DictSymptomVo;
 import com.maizhiyu.yzt.vo.DictSyndromeVo;
 import org.apache.commons.lang3.StringUtils;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose> implements IBuDiagnoseService {
 
     @Autowired
-    private BuDiagnoseMapper mapper;
+    private BuDiagnoseMapper buDiagnoseMapper;
 
     @Autowired
     private BuPatientMapper patientMapper;
@@ -65,31 +65,28 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
     private IDictSyndromeService dictSyndromeService;
 
     @Resource
-    private IBuRecommendService buRecommendService;
+    private BuRecommendMapper buRecommendMapper;
 
     @Override
     public Integer addDiagnose(BuDiagnose diagnose) {
-        return mapper.insert(diagnose);
+        return buDiagnoseMapper.insert(diagnose);
     }
 
     @Override
     public Integer setDiagnose(BuDiagnose diagnose) {
-        return mapper.updateById(diagnose);
+        return buDiagnoseMapper.updateById(diagnose);
     }
 
     @Override
     public BuDiagnose getDiagnose(Long id) {
-        return mapper.selectById(id);
+        return buDiagnoseMapper.selectById(id);
     }
 
     @Override
     public BuDiagnose getDiagnoseOfOutpatient(Long outpatientId) {
         QueryWrapper<BuDiagnose> wrapper = new QueryWrapper<>();
         wrapper.eq("outpatient_id", outpatientId);
-//        result.put("hisPatient", hisPatient);
-//        result.put("hisDoctor", hisDoctor);
-//        result.put("customerName", customerName);
-        return mapper.selectOne(wrapper);
+        return buDiagnoseMapper.selectOne(wrapper);
     }
 
     @Override
@@ -102,7 +99,7 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
                 .ge("update_time", start)
                 .lt("update_time", end)
                 .last("limit 100");
-        List<BuDiagnose> diagnoses = mapper.selectList(wrapper);
+        List<BuDiagnose> diagnoses = buDiagnoseMapper.selectList(wrapper);
         // 查询挂号信息
         for (BuDiagnose diagnose : diagnoses) {
             // 查询患者信息
@@ -124,17 +121,22 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
     public Map<String, Object> getDetails(BuDiagnoseRO.GetRecommendRO ro) {
 
         Assert.notNull(ro, "入参信息为空!");
-        BuOutpatient buOutpatient = outpatientMapper.selectById(ro.getOutpatientId());
-        Assert.notNull(buOutpatient, "门诊信息为空!");
+        LambdaQueryWrapper<BuOutpatient> outpatientQueryWrapper = new LambdaQueryWrapper<>();
+        outpatientQueryWrapper.eq(BuOutpatient::getId, ro.getOutpatientId());
+        BuOutpatient buOutpatient = outpatientMapper.selectOne(outpatientQueryWrapper);
+        if (buOutpatient == null) return null;
+//        Assert.notNull(buOutpatient, "门诊信息为空!");
         Map<String, Object> resultMap = new HashMap<>();
         //1：查询是否有诊断信息
         LambdaQueryWrapper<BuDiagnose> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(BuDiagnose::getPatientId, buOutpatient.getPatientId())
-                .eq(BuDiagnose::getOutpatientId, buOutpatient.getId())
+        queryWrapper.eq(BuDiagnose::getPatientId, ro.getPatientId())
+                .eq(BuDiagnose::getOutpatientId, ro.getOutpatientId())
+                .eq(BuDiagnose::getDiseaseId, ro.getDiseaseId())
+                .eq(BuDiagnose::getDiseaseId, ro.getDiseaseId())
                 .eq(BuDiagnose::getStatus, 1)
                 .orderByDesc(BuDiagnose::getUpdateTime)
                 .last("limit 1");
-        BuDiagnose buDiagnose = mapper.selectOne(queryWrapper);
+        BuDiagnose buDiagnose = buDiagnoseMapper.selectOne(queryWrapper);
         if (Objects.isNull(buDiagnose)) {
             return null;
         } else {
@@ -255,12 +257,13 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
             syndromeIdList = dictSyndromeVoList.stream().map(DictSyndromeVo::getId).collect(Collectors.toList());
         }
 
-        BuDiagnoseRO.GetRecommendRO recommendRo = new BuDiagnoseRO.GetRecommendRO();
-        recommendRo.setDiseaseId(buDiagnose.getDiseaseId());
-        recommendRo.setCustomerName(ro.getCustomerName());
-        recommendRo.setSyndromeIdList(syndromeIdList);
-        Map<String, Object> stringObjectMap = buRecommendService.selectRecommend(recommendRo);
-        resultMap.put("shiyiList", stringObjectMap.get("sytechList"));
+        List<BuDiagnoseVO.ShiyiVO> sytechList = buRecommendMapper.getRecommendSytech(syndromeIdList, ro.getDiseaseId(), ro.getSytechId(), ro.getCustomerName());
+//        BuDiagnoseRO.GetRecommendRO recommendRo = new BuDiagnoseRO.GetRecommendRO();
+//        recommendRo.setDiseaseId(buDiagnose.getDiseaseId());
+//        recommendRo.setCustomerName(ro.getCustomerName());
+//        recommendRo.setSyndromeIdList(syndromeIdList);
+//        Map<String, Object> stringObjectMap = buRecommendService.selectRecommend(recommendRo);
+        resultMap.put("shiyiList", sytechList);
 
         return resultMap;
     }

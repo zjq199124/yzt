@@ -14,18 +14,12 @@ import com.maizhiyu.yzt.mapperhis.HisOutpatientMapper;
 import com.maizhiyu.yzt.mapperhis.HisPatientMapper;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.DiseaseMappingService;
-import com.maizhiyu.yzt.service.MedicantMappingService;
-import com.maizhiyu.yzt.service.TreatmentMappingService;
-import com.maizhiyu.yzt.serviceimpl.YptDiseaseService;
-import com.maizhiyu.yzt.serviceimpl.YptMedicantService;
-import com.maizhiyu.yzt.serviceimpl.YptTreatmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -44,21 +38,6 @@ public class BuDiagnoseController {
     @Autowired
     private FeignYptClient yptClient;
 
-    @Autowired
-    private YptDiseaseService diseaseService;
-
-    @Autowired
-    private YptMedicantService medicantService;
-
-    @Autowired
-    private YptTreatmentService treatmentService;
-
-    @Resource
-    private MedicantMappingService medicantMappingService;
-
-    @Resource
-    private TreatmentMappingService treatmentMappingService;
-
     @Resource
     private DiseaseMappingService diseaseMappingService;
 
@@ -74,6 +53,7 @@ public class BuDiagnoseController {
     @Value("${customer.name}")
     private String customerName;
 
+    //TODO 这里的参数为his中的参数，逻辑是不能通的
     @ApiOperation(value = "获取诊断方案推荐", notes = "获取诊断方案推荐")
     @PostMapping("/getRecommend")
     public Result getRecommend(@RequestBody @Valid BuDiagnoseRO.GetRecommendRO ro) {
@@ -85,24 +65,18 @@ public class BuDiagnoseController {
             DiseaseMapping jzfyDiseaseMapping = diseaseMappingService.selectByHisName(hisDiseaseName);
             Preconditions.checkArgument(Objects.nonNull(jzfyDiseaseMapping), "his中的诊断：" + hisDiseaseName + " 在云平台中没有与之相匹配的中医诊断!");
             ro.setDiseaseId(jzfyDiseaseMapping.getDiseaseId());
+            ro.setDisease(jzfyDiseaseMapping.getName());
         }
-        //查询his门诊信息是否有对应的云平台数据
         LambdaQueryWrapper<HisOutpatient> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(HisOutpatient::getRegistrationId, ro.getOutpatientId())
                 .last("limit 1");
         HisOutpatient outpatient = outpatientMapper.selectOne(queryWrapper);
-        Result<Long> res=yptClient.getYptOutpatientByHisId(Long.parseLong(outpatient.getCode()));
-        if (Objects.nonNull(res.getData())) {
-            ro.setOutpatientId(res.getData());
-        }
-        //在没有分型syndromeIdList以及没有症状集合symptomIdList先查询下这次挂号看病是否已经有保存诊断信息和治疗处方
-        if (CollectionUtils.isEmpty(ro.getSymptomIdList()) && CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
-            Result result = yptClient.getDetail(ro);
-            if (Objects.nonNull(result.getData()))
-                return result;
+        if (Objects.nonNull(outpatient)) {
+            ro.setOutpatientId(Long.parseLong(outpatient.getCode()));
         }
         // 调用开放接口获取诊断推荐
-        return yptClient.getRecommend(ro);
+        Result result=yptClient.getRecommend(ro);
+        return result;
     }
 
     @ApiOperation(value = "获取门诊诊断和患者信息", notes = "获取门诊诊断和患者信息")

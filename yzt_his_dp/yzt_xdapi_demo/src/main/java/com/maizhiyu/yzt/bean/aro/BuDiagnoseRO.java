@@ -3,11 +3,8 @@ package com.maizhiyu.yzt.bean.aro;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.NonNull;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class BuDiagnoseRO {
@@ -25,6 +22,9 @@ public class BuDiagnoseRO {
 
         @ApiModelProperty(value = "云平台疾病id")
         private Long diseaseId;
+
+        @ApiModelProperty(value = "云平台疾病名称")
+        private String disease;
 
         @ApiModelProperty(value = "分型id列表")
         private List<Long> syndromeIdList;

@@ -50,7 +50,7 @@ public class DictDiseaseService extends ServiceImpl<DictDiseaseMapper,DictDiseas
             wrapper.eq("status", status);
         }
         if (term != null) {
-            wrapper.like("content", term);
+            wrapper.like("name", term);
         }
         List<Map<String, Object>> list = mapper.selectMaps(wrapper);
         return list;

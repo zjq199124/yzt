@@ -8,6 +8,7 @@ import com.maizhiyu.yzt.entity.MsCustomer;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.BuDiagnoseRO;
 import com.maizhiyu.yzt.service.*;
+import com.maizhiyu.yzt.utils.JwtTokenUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
@@ -44,12 +46,24 @@ public class BuDiagnoseController {
     @Resource
     private IBuOutpatientService buOutpatientService;
 
+    @Resource
+    private HttpServletRequest request;
+
     @ApiOperation(value = "获取诊断方案推荐", notes = "获取诊断方案推荐")
     @PostMapping("/getRecommend")
     public Result<Map<String, Object>> getRecommend(@RequestBody BuDiagnoseRO.GetRecommendRO ro) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
         ro.setCustomerName(currentPrincipalName);
+        Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
+        ro.setCustomerId(customerId);
+        //查询云平台outpatient
+        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getOutpatientId());
+        //赋值为云平台数据
+        if (buOutpatient != null) {
+            ro.setOutpatientId(buOutpatient.getId());
+            ro.setPatientId(buOutpatient.getPatientId());
+        }
         Map<String, Object> map = recommendService.selectRecommend(ro);
         return Result.success(map);
     }
@@ -57,7 +71,7 @@ public class BuDiagnoseController {
 
     @ApiOperation(value = "保存诊断信息接口")
     @PostMapping(value = "/addDiagnoseInfo")
-    public Result addDiagnose(@RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro) throws Exception {
+    public Result<Boolean> addDiagnose(@RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro) throws Exception {
         MsCustomer msCustomer = msCustomerService.getCustomerByName(ro.getDiagnoseInfo().getCustomerName());
         if (Objects.isNull(msCustomer))
             throw new Exception("不存在名称为：" + ro.getDiagnoseInfo().getCustomerName() + " 的客户!");
@@ -89,9 +103,13 @@ public class BuDiagnoseController {
 
     @ApiOperation(value = "获取诊断详情")
     @PostMapping(value = "/getDetail")
-    public Result getDetail(@RequestBody BuDiagnoseRO.GetRecommendRO ro) throws Exception {
+    public Result getDetail(HttpServletRequest request, @RequestBody BuDiagnoseRO.GetRecommendRO ro) throws Exception {
         Assert.notNull(ro.getPatientId(), "his端患者id不能为空!");
         Assert.notNull(ro.getOutpatientId(), "his端患者门诊预约id不能为空!");
+        // 获取token字段
+        Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
+        if (customerId == null) return Result.failure(10001, "token错误");
+        ro.setCustomerId(customerId);
         Map<String, Object> result = diagnoseService.getDetails(ro);
         return Result.success(result);
     }

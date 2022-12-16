@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.BuOutpatientAppointmentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.maizhiyu.yzt.entity.BuOutpatientAppointment">
+        <id column="id" property="id" />
+        <result column="customer_id" property="customerId" />
+        <result column="outpatient_id" property="outpatientId" />
+        <result column="patient_id" property="patientId" />
+        <result column="department_id" property="departmentId" />
+        <result column="diagnose_id" property="diagnoseId" />
+        <result column="outpatient_time" property="outpatientTime" />
+        <result column="state" property="state" />
+        <result column="is_del" property="isDel" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="remark" property="remark" />
+        <result column="name" property="name" />
+        <result column="dname" property="dname" />
+        <result column="disease" property="disease" />
+        <result column="gender" property="gender" />
+    </resultMap>
+    <select id="list" resultType="com.maizhiyu.yzt.entity.BuOutpatientAppointment">
+        SELECT
+            boa.*,
+            bp.name,
+            CASE
+                WHEN bp.sex = 1 THEN '男'
+                WHEN bp.sex = 0 THEN '女'
+                ELSE '未知'
+                END AS gender,
+            bd.disease,
+            hd.dname
+        FROM
+            `bu_outpatient_appointment` boa
+                LEFT JOIN bu_patient bp ON boa.patient_id = bp.id
+                LEFT JOIN bu_diagnose bd ON boa.diagnose_id = bd.id
+                LEFT JOIN hs_department hd ON boa.department_id = hd.id
+                AND boa.customer_id = hd.customer_id
+        WHERE
+            boa.is_del = 0
+            and boa.customer_id = #{outpatientAppointmentRo.customerId}
+            <if test="outpatientAppointmentRo.search != null and outpatientAppointmentRo.search != ''">
+                and ( bp.name like concat('%',#{outpatientAppointmentRo.search},'%') or bp.phone like concat('%',#{outpatientAppointmentRo.search},'%') )
+            </if>
+            <if test="outpatientAppointmentRo.departmentId != null">
+                and boa.department_id = #{outpatientAppointmentRo.departmentId}
+            </if>
+            <if test="outpatientAppointmentRo.state != null">
+                and boa.state = #{outpatientAppointmentRo.state}
+            </if>
+            <if test="outpatientAppointmentRo.startDate != null and outpatientAppointmentRo.endDate != null">
+                and (boa.outpatient_time between #{outpatientAppointmentRo.startDate} and #{outpatientAppointmentRo.endDate})
+            </if>
+    </select>
+</mapper>

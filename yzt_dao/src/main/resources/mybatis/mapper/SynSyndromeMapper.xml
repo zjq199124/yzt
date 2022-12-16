@@ -3,18 +3,19 @@
 <mapper namespace="com.maizhiyu.yzt.mapper.SynSyndromeMapper">
 
     <select id="selectSyndromeList" resultType="hashmap">
-        select
-            X.*,
-            A.content disease_name
-        from
-            syn_syndrome X
-            left join dict_disease A on X.disease_id = A.id
+        SELECT
+        X.*,
+        A.name disease_name
+        FROM
+        dict_syndrome X
+        LEFT JOIN rel_syndrome_symptom rss ON rss.syndrome_id = X.id
+        LEFT JOIN dict_disease A ON rss.disease_id = A.id
         <where>
             <if test="diseaseId != null">
-                and X.disease_id = #{diseaseId}
+                and X.id = #{diseaseId}
             </if>
             <if test="diseaseName != null">
-                and A.content like concat(concat('%',#{diseaseName}),'%')
+                and A.name like concat(concat('%',#{diseaseName}),'%')
             </if>
             <if test="status != null">
                 and X.status = #{status}
@@ -23,6 +24,7 @@
                 and X.name like concat(concat('%',#{term}),'%')
             </if>
         </where>
+        GROUP BY X.id
     </select>
 
 </mapper>

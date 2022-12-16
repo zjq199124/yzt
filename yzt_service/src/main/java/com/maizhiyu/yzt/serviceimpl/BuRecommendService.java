@@ -3,6 +3,7 @@ package com.maizhiyu.yzt.serviceimpl;
 import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.BuDiagnose;
 import com.maizhiyu.yzt.entity.DictDisease;
 import com.maizhiyu.yzt.mapper.BuRecommendMapper;
@@ -28,10 +29,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class BuRecommendService implements IBuRecommendService {
+public class BuRecommendService extends ServiceImpl<BuRecommendMapper,Object> implements IBuRecommendService {
 
     @Autowired
-    private BuRecommendMapper mapper;
+    private BuRecommendMapper buRecommendMapper;
 
     @Resource
     private IDictSyndromeService dictSyndromeService;
@@ -54,12 +55,12 @@ public class BuRecommendService implements IBuRecommendService {
         List<Map<String, Object>> syndromeList = null;
         // 通过疾病获取辨证列表
         if ((diagnose.getDisease() != null && diagnose.getDisease().length() > 0) || (diagnose.getSyndrome() != null && diagnose.getSyndrome().length() > 0)) {
-            syndromeListA = mapper.selectSyndromeByDisease(diagnose.getDisease(), diagnose.getSyndrome());
+            syndromeListA = buRecommendMapper.selectSyndromeByDisease(diagnose.getDisease(), diagnose.getSyndrome());
         }
         // 通过症状获取辨证列表
         if (diagnose.getSymptoms() != null && diagnose.getSymptoms().length() > 0) {
             String[] symptoms = diagnose.getSymptoms().split(",|，");
-            syndromeListB = mapper.selectSyndromeBySymptom(symptoms);
+            syndromeListB = buRecommendMapper.selectSyndromeBySymptom(symptoms);
         }
         // 处理辨证结果
         if (syndromeListA != null && syndromeListB != null) {
@@ -114,7 +115,7 @@ public class BuRecommendService implements IBuRecommendService {
     public Map<String, Object> getRecommendByDisease(BuDiagnose diagnose) {
         Map<String, Object> result = new HashMap<>();
         // 获取辨证分型
-        List<Map<String, Object>> syndromeList = mapper.selectSyndromeByDisease(diagnose.getDisease(), diagnose.getSyndrome());
+        List<Map<String, Object>> syndromeList = buRecommendMapper.selectSyndromeByDisease(diagnose.getDisease(), diagnose.getSyndrome());
         // 获取推荐方案
         getRecommend(syndromeList, result);
         // 返回数据
@@ -127,7 +128,7 @@ public class BuRecommendService implements IBuRecommendService {
         // 获取症状列表
         String[] symptoms = diagnose.getSymptoms().split(",|，");
         // 获取辨证列表
-        List<Map<String, Object>> syndromeList = mapper.selectSyndromeBySymptom(symptoms);
+        List<Map<String, Object>> syndromeList = buRecommendMapper.selectSyndromeBySymptom(symptoms);
         // 计算辨证得分
         for (Map<String, Object> syndrome : syndromeList) {
             System.out.println(syndrome);
@@ -164,7 +165,6 @@ public class BuRecommendService implements IBuRecommendService {
         Assert.notNull(disease.getId(), "疾病名称或id不存在!");
         ro.setDiseaseId(disease.getId());
         Map<String, Object> resultMap = new HashMap<>();
-
         //在没有分型syndromeIdList以及没有症状集合symptomIdList先查询下这次挂号看病是否已经有保存诊断信息和治疗处方
         if (CollectionUtils.isEmpty(ro.getSymptomIdList()) && CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
             Map<String, Object> result = buDiagnoseService.getDetails(ro);
@@ -197,7 +197,7 @@ public class BuRecommendService implements IBuRecommendService {
             }
         }
 
-        List<BuDiagnoseVO.ShiyiVO> sytechList = mapper.getRecommendSytech(ro.getSyndromeIdList(), ro.getDiseaseId(), ro.getSytechId(), ro.getCustomerName());
+        List<BuDiagnoseVO.ShiyiVO> sytechList = buRecommendMapper.getRecommendSytech(ro.getSyndromeIdList(), ro.getDiseaseId(), ro.getSytechId(), ro.getCustomerName());
         // 整合数据
         BuDiagnoseVO.GetRecommendVO vo = new BuDiagnoseVO.GetRecommendVO();
         vo.setZhongyaoList(Collections.emptyList());
@@ -229,7 +229,7 @@ public class BuRecommendService implements IBuRecommendService {
 //        List<Map<String, Object>> zhongyaoList = mapper.selectRecommendZhongyao(ids);
 //        List<Map<String, Object>> chengyaoList = mapper.selectRecommendChengyao(ids);
 //        List<Map<String, Object>> xiedingList = mapper.selectRecommendXieding(ids);
-        List<Map<String, Object>> sytechList = mapper.selectRecommendSytech(ids);
+        List<Map<String, Object>> sytechList = buRecommendMapper.selectRecommendSytech(ids);
         // 整理返回数据
         result.put("syndromeList", syndromeList);
 //        result.put("zhongyaoList", zhongyaoList);

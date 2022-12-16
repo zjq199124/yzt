@@ -1,16 +1,11 @@
 package com.maizhiyu.yzt.controller;
-import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
-import cn.hutool.crypto.symmetric.SymmetricCrypto;
-import cn.hutool.http.HttpUtil;
-import com.alibaba.fastjson.JSONObject;
+
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.maizhiyu.yzt.base.BaseController;
 import com.maizhiyu.yzt.entity.BuPatient;
-import com.maizhiyu.yzt.exception.BusinessException;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IBuPatientService;
-import com.maizhiyu.yzt.vo.MzBrjbxxbVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -19,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

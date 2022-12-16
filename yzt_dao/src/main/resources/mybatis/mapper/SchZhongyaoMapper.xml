@@ -3,14 +3,17 @@
 <mapper namespace="com.maizhiyu.yzt.mapper.SchZhongyaoMapper">
 
     <select id="selectZhongyaoList" resultType="hashmap">
-        select
-            X.*,
-            A.content disease_name,
-            B.name syndrome_name, B.symptoms
-        from
-            sch_zhongyao X
-            join dict_disease A on X.disease_id = A.id
-            join syn_syndrome B on X.syndrome_id = B.id
+        SELECT
+        X.*,
+        A.name disease_name,
+        B.name syndrome_name,
+        ds.content symptoms
+        FROM
+        sch_zhongyao X
+        JOIN dict_disease A ON X.disease_id = A.id
+        JOIN dict_syndrome B ON X.syndrome_id = B.id
+        LEFT JOIN rel_syndrome_symptom rss ON X.syndrome_id = rss.syndrome_id
+        LEFT JOIN dict_symptom ds ON ds.id = rss.symptom_id
         <where>
             <if test="diseaseId != null">
                 and X.disease_id = #{diseaseId}
@@ -22,6 +25,7 @@
                 and X.name like concat(concat('%',#{term}),'%')
             </if>
         </where>
+        GROUP BY X.id
     </select>
 
 </mapper>

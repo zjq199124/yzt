@@ -84,9 +84,9 @@ public class BuPrescriptionController {
     @PostMapping("/addPrescriptionZhongyao")
     public Result addPrescriptionZhongyao(@RequestBody @Valid BuPrescriptionRO.AddPrescriptionZhongyao ro) {
         ro.setPatientId(ro.getOutpatientId());  // 使用outpatientId作为患者ID（HIS就这么给的，每次挂号都会新增患者）
-       /* processDoctor(ro.getDoctorId());
-        processPatient(ro.getPatientId());
-        processOutpatient(ro.getOutpatientId());*/
+        Long yptDoctorId = processDoctor(ro.getDoctorId());
+        Long yptPatientId = processPatient(ro.getPatientId());
+        Long yptOutpatientId = processOutpatient(ro.getOutpatientId(), yptDoctorId, yptPatientId);
         Result result = yptClient.addPrescriptionZhongyao(ro);
         return result;
     }
@@ -95,9 +95,9 @@ public class BuPrescriptionController {
     @PostMapping("/addPrescriptionChengyao")
     public Result addPrescriptionChengyao(@RequestBody @Valid BuPrescriptionRO.AddPrescriptionChengyao ro) {
         ro.setPatientId(ro.getOutpatientId());  // 使用outpatientId作为患者ID（HIS就这么给的，每次挂号都会新增患者）
-       /* processDoctor(ro.getDoctorId());
-        processPatient(ro.getPatientId());
-        processOutpatient(ro.getOutpatientId());*/
+        Long yptDoctorId = processDoctor(ro.getDoctorId());
+        Long yptPatientId = processPatient(ro.getPatientId());
+        Long yptOutpatientId = processOutpatient(ro.getOutpatientId(), yptDoctorId, yptPatientId);
         Result<Integer> result = yptClient.addPrescriptionChengyao(ro);
         return result;
     }
@@ -105,15 +105,16 @@ public class BuPrescriptionController {
     @ApiOperation(value = "新增处方(协定)", notes = "新增处方(协定)")
     @PostMapping("/addPrescriptionXieding")
     public Result addPrescriptionXieding(@RequestBody @Valid BuPrescriptionRO.AddPrescriptionXieding ro) {
-        ro.setPatientId(ro.getOutpatientId());  // 使用outpatientId作为患者ID（HIS就这么给的，每次挂号都会新增患者）
-       /* processDoctor(ro.getDoctorId());
-        processPatient(ro.getPatientId());
-        processOutpatient(ro.getOutpatientId());*/
+        //ro.setPatientId(ro.getOutpatientId());  // 使用outpatientId作为患者ID（HIS就这么给的，每次挂号都会新增患者）
+        Long yptDoctorId = processDoctor(ro.getDoctorId());
+        Long yptPatientId = processPatient(ro.getPatientId());
+        Long yptOutpatientId = processOutpatient(ro.getOutpatientId(), yptDoctorId, yptPatientId);
+
         Result<Integer> result = yptClient.addPrescriptionXieding(ro);
         return result;
     }
 
-//TODO 这里是对接his的数据保存到云平台，内嵌页面的保存应当按照我们的处方保存接口接收数据保存数据
+    //TODO 这里是对接his的数据保存到云平台，内嵌页面的保存应当按照我们的处方保存接口接收数据保存数据
     @ApiOperation(value = "新增处方(适宜)", notes = "新增处方(适宜)")
     @PostMapping("/addPrescriptionShiyi")
     public Result addPrescriptionShiyi(@RequestBody @Valid BuPrescriptionRO.AddPrescriptionShiyi ro) throws IOException {
@@ -125,14 +126,14 @@ public class BuPrescriptionController {
         //判断医生，患者，患者门诊信息
         Long yptDoctorId = processDoctor(baseInfo.getDoctorId().toString());
         Long yptPatientId = processPatient(baseInfo.getPatientId().toString());
-        Long yptOutpatientId = processOutpatient(baseInfo.getOutpatientId().toString(),yptDoctorId,yptPatientId);
+        Long yptOutpatientId = processOutpatient(baseInfo.getOutpatientId().toString(), yptDoctorId, yptPatientId);
         //ro中的outpatientId是视图中的registration_id,要换成code才是我们这边所说的his中medical_record_id对应云平台的his中的outpatientId
         YptOutpatient yptOutpatient = getYptOutpatientById(yptOutpatientId);
         ro.getBaseInfo().setOutpatientId(yptOutpatient.getHisId());
 
-        if (Objects.nonNull(ro) && !CollectionUtils.isEmpty(ro.getItemList())) {
-            savePrescriptionShiyiToHis(ro);
-        }
+//        if (Objects.nonNull(ro) && !CollectionUtils.isEmpty(ro.getItemList())) {
+//            savePrescriptionShiyiToHis(ro);
+//        }
         //保存诊断信息
         ro.getDiagnoseInfo().setCustomerName(customerName);
         //讲patientId,outPatientId,doctorId替换成云平台对应的数据
@@ -141,10 +142,10 @@ public class BuPrescriptionController {
         ro.getBaseInfo().setOutpatientId(yptOutpatientId);
         yptClient.addDiagnose(ro);
 
-        if(CollectionUtils.isEmpty(ro.getItemList()))
+        if (CollectionUtils.isEmpty(ro.getItemList()))
             return Result.success();
 
-        Result<Integer> result = yptClient.addPrescriptionShiyi(ro);
+        Result<Boolean> result = yptClient.addPrescriptionShiyi(ro);
         return Result.success(result.getData());
     }
 
@@ -160,7 +161,7 @@ public class BuPrescriptionController {
                         vo.setEntityId(Long.parseLong(treatmentMapping.getHiscode()));
                         continue;
                     }
-                }else if (StringUtils.isNotBlank(vo.getName())) {
+                } else if (StringUtils.isNotBlank(vo.getName())) {
                     // 按名称映射
                     TreatmentMapping treatmentMapping = treatmentMappingService.getTreatmentByName(vo.getName());
                     if (Objects.nonNull(treatmentMapping)) {
@@ -178,7 +179,7 @@ public class BuPrescriptionController {
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .build();
         HisApi hisApi = retrofit.create(HisApi.class);
-        Gson gson=new Gson();
+        Gson gson = new Gson();
 
         //his中处置id不为空的话那么先删除his中的处置
         if (Objects.nonNull(clone.getHisId())) {
@@ -206,7 +207,7 @@ public class BuPrescriptionController {
 
         String treatmentRoJstr = gson.toJson(treatmentRo);
 
-        okhttp3.RequestBody body = okhttp3.RequestBody.create(MediaType.parse("application/json; charset=utf-8"),treatmentRoJstr);
+        okhttp3.RequestBody body = okhttp3.RequestBody.create(MediaType.parse("application/json; charset=utf-8"), treatmentRoJstr);
         Call<Object> repos = hisApi.insertTreatment(body);
         Object result = repos.execute().body();
         try {
@@ -258,7 +259,7 @@ public class BuPrescriptionController {
         }
     }
 
-    private Long processOutpatient(String outpatientId,Long yptDoctorId, Long yptPatientId) {
+    private Long processOutpatient(String outpatientId, Long yptDoctorId, Long yptPatientId) {
         LambdaQueryWrapper<HisOutpatient> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(HisOutpatient::getRegistrationId, outpatientId)
                 .last("limit 1");
