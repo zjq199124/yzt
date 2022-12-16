@@ -6,9 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * className:JWTUtil
@@ -26,9 +24,6 @@ public class JWTUtil {
      * token 过期时间
      */
     private static final long EXPIRE = 1000 * 60 * 60 * 24 * 7 * 10;
-
-    public static String HEADER = "Authorization";
-
     /**
      * 加密的密钥
      */
@@ -81,28 +76,4 @@ public class JWTUtil {
              return null;
          }
      }
-
-    // 从request中获取Claims的字段
-    public static Object getFiled(HttpServletRequest request, String key) {
-        Claims claims = getClaims(request);
-        return Objects.nonNull(claims) ? claims.get(key) : null;
-    }
-
-    public static Claims parse(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET)
-                .parseClaimsJws(token)
-                .getBody();
-    }
-
-    public static Claims getClaims(HttpServletRequest request) {
-        String header = request.getHeader(HEADER);
-        if (header != null && header.startsWith(TOKEN_PREFIX)) {
-            // 截取token
-            String token = header.substring(TOKEN_PREFIX.length());
-            // 解析token
-            return parse(token);
-        }
-        return null;
-    }
 }

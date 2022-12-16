@@ -6,11 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OutpatientAppointmentRo implements Serializable {
+public class OutpatientAppointmentRo extends BaseRo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -25,6 +26,12 @@ public class OutpatientAppointmentRo implements Serializable {
 
     @ApiModelProperty("客户id")
     private Long customerId;
+
+    @ApiModelProperty("查询起始时间")
+    private Date startDate;
+
+    @ApiModelProperty("查询结束时间")
+    private Date endDate;
 }
 
 

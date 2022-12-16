@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.maizhiyu.yzt.entity.BuPrescriptionItemAppointment">
+        <id column="id" property="id" />
+        <result column="prescription_item_id" property="prescriptionItemId" />
+        <result column="customer_id" property="customerId" />
+        <result column="outpatient_id" property="outpatientId" />
+        <result column="patient_id" property="patientId" />
+        <result column="entity_id" property="entityId" />
+        <result column="prescription_id" property="prescriptionId" />
+        <result column="diagnose_id" property="diagnoseId" />
+        <result column="state" property="state" />
+        <result column="quantity" property="quantity" />
+        <result column="treatment_quantity" property="treatmentQuantity" />
+        <result column="appointment_quantity" property="appointmentQuantity" />
+        <result column="surplus_quantity" property="surplusQuantity" />
+        <result column="is_del" property="isDel" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="remark" property="remark" />
+        <result column="tsName" property="tsName" />
+    </resultMap>
+    <select id="selectByDiagnoseIdList" resultType="com.maizhiyu.yzt.entity.BuPrescriptionItemAppointment">
+        SELECT
+               bpia.*,
+               ts.name AS tsName
+        FROM bu_prescription_item_appointment bpia
+        LEFT JOIN ts_sytech ts ON bpia.entity_id = ts.id
+        WHERE bpia.is_del = 0
+        AND bpia.diagnose_id IN
+        <foreach collection="diagnoseIdList" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,12 +1,17 @@
 package com.maizhiyu.yzt.base;
 
 import com.maizhiyu.yzt.exception.BusinessException;
+import com.maizhiyu.yzt.result.Result;
+import com.maizhiyu.yzt.security.HsUserDetails;
 import com.maizhiyu.yzt.utils.JWTUtil;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 /**
  * className:FormerController
@@ -39,4 +44,13 @@ public class BaseController {
         return claims;
     }
 
+    public HsUserDetails getHsUserDetails() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        HsUserDetails hsUserDetails = (HsUserDetails) authentication.getPrincipal();
+        if (Objects.isNull(hsUserDetails)) {
+            throw new BusinessException("认证信息获取失败");
+        }
+
+        return hsUserDetails;
+    }
 }
