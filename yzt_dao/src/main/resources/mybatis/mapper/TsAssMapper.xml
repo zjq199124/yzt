@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.TsAssMapper">
+
+    <select id="selectAsslist" resultType="hashmap">
+        select
+            X.*,
+            A.name tname,
+            A.descrip tdescrip,
+            B.realname examiner_name,
+            C.realname therapist_name
+        from
+            ts_ass X
+            join ts_sytech A on X.sytech_id = A.id
+            join hs_user B on X.examiner_id = B.id
+            join hs_user C on X.therapist_id = C.id
+        <where>
+            <if test="sytechId != null">
+                and X.sytech_id = #{sytechId}
+            </if>
+            <if test="startDate != null">
+                and X.creat_time > #{startDate}
+            </if>
+            <if test="endDate != null">
+                and X.end_time &lt; #{endDate}
+            </if>
+            <if test="term != null">
+                and C.realname like concat(concat('%',#{term}),'%')
+            </if>
+        </where>
+    </select>
+
+</mapper>
