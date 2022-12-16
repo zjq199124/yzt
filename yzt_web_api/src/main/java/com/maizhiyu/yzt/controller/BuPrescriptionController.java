@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 
 @Slf4j
@@ -49,6 +50,12 @@ public class BuPrescriptionController {
 
     @Resource
     private IBuPrescriptionItemService buPrescriptionItemService;
+
+    @Resource
+    private IBuOutpatientAppointmentService buOutpatientAppointmentService;
+
+    @Resource
+    private IBuPrescriptionItemAppointmentService buPrescriptionItemAppointmentService;
 
     @ApiOperation(value = "新增处方(中药)", notes = "新增处方(中药)")
     @PostMapping("/addPrescriptionZhongyao")
@@ -222,6 +229,10 @@ public class BuPrescriptionController {
         }
         // 保存药材
         Boolean res = iBuPrescriptionService.setPrescriptionByDiff(prescription, ro.getPreItemIdList());
+
+        // 保存适宜技术成功后，要添加门诊预约数据，一个门诊下的诊断开的所有适宜技术的总和对应一张大的门诊预约表bu_outpatient_appointment中插入一条数据
+        addAppointmentInfo(prescription);
+
         // 返回结果
         return Result.success(res);
     }
@@ -242,5 +253,55 @@ public class BuPrescriptionController {
         BuOutpatient buOutpatient = buOutpatientService.getById(outPatientId);
         Assert.notNull(buOutpatient, "预约信息错误!");
     }
+    //开了处方之后添加预约数据
+    private void addAppointmentInfo(BuPrescription prescription) {
+        // 先查询这次门诊是否有预约数据
+        Long outpatientAppointmentId = null;
+        BuOutpatientAppointment select = buOutpatientAppointmentService.selectByDiagnoseId(prescription.getDiagnoseId());
+        if (Objects.isNull(select)) {
+            BuOutpatientAppointment buOutpatientAppointment = new BuOutpatientAppointment();
+            buOutpatientAppointment.setCustomerId(prescription.getCustomerId());
+            buOutpatientAppointment.setPatientId(prescription.getPatientId());
+            buOutpatientAppointment.setOutpatientId(prescription.getOutpatientId());
+            buOutpatientAppointment.setDepartmentId(prescription.getDepartmentId());
+            buOutpatientAppointment.setDiagnoseId(prescription.getDiagnoseId());
+            buOutpatientAppointment.setCreateTime(new Date());
+            buOutpatientAppointment.setUpdateTime(new Date());
 
+            BuDiagnose diagnose = diagnoseService.getDiagnose(prescription.getDiagnoseId());
+            buOutpatientAppointment.setOutpatientTime(diagnose.getCreateTime());
+            //根据诊断生成门诊预约数据
+            BuOutpatientAppointment insert = buOutpatientAppointmentService.insert(buOutpatientAppointment);
+            outpatientAppointmentId = insert.getId();
+        } else {
+            outpatientAppointmentId = select.getId();
+        }
+
+        //根据技术小项目生成对应的预约数据
+        Long finalOutpatientAppointmentId = outpatientAppointmentId;
+        prescription.getItemList().forEach(item -> {
+            //查询是否生成技术小项目的预约数据是否生成
+            BuPrescriptionItemAppointment buPrescriptionItemAppointment = buPrescriptionItemAppointmentService.selectByAppointmentIdAndItemId(finalOutpatientAppointmentId,item.getId());
+            if(Objects.nonNull(buPrescriptionItemAppointment))
+                return;
+
+            BuPrescriptionItemAppointment insert = new BuPrescriptionItemAppointment();
+            insert.setOutpatientAppointmentId(finalOutpatientAppointmentId);
+            insert.setPrescriptionItemId(item.getId());
+            insert.setCustomerId(prescription.getCustomerId());
+            insert.setPatientId(prescription.getPatientId());
+            insert.setOutpatientId(prescription.getOutpatientId());
+            insert.setEntityId(item.getEntityId());
+            insert.setPrescriptionId(prescription.getId());
+            insert.setDiagnoseId(prescription.getDiagnoseId());
+            insert.setState(1);
+            insert.setQuantity(item.getQuantity().intValue());
+            insert.setTreatmentQuantity(0);
+            insert.setAppointmentQuantity(0);
+            insert.setSurplusQuantity(insert.getQuantity());
+            insert.setCreateTime(new Date());
+            insert.setUpdateTime(insert.getCreateTime());
+            buPrescriptionItemAppointmentService.insert(insert);
+        });
+    }
 }
