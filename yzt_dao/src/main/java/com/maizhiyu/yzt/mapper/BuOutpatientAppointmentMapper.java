@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.BuOutpatient;
 import com.maizhiyu.yzt.entity.BuOutpatientAppointment;
 import com.maizhiyu.yzt.ro.OutpatientAppointmentRo;
@@ -14,5 +15,5 @@ import java.util.Map;
 
 @Mapper
 public interface BuOutpatientAppointmentMapper extends BaseMapper<BuOutpatientAppointment> {
-    List<BuOutpatientAppointment> list(@Param("outpatientAppointmentRo") OutpatientAppointmentRo outpatientAppointmentRo);
+    Page<BuOutpatientAppointment> list(@Param("page") Page<BuOutpatientAppointment> page, @Param("outpatientAppointmentRo") OutpatientAppointmentRo outpatientAppointmentRo);
 }
