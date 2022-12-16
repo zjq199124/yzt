@@ -23,14 +23,14 @@ import java.util.Map;
 public class DictDiseaseController {
 
     @Autowired
-    private IDictDiseaseService service;
+    private IDictDiseaseService iDictDiseaseService;
 
 
     @ApiOperation(value = "增加疾病", notes = "增加疾病")
     @PostMapping("/addDisease")
     public Result addDisease(@RequestBody DictDisease disease) {
         disease.setStatus(1);
-        Integer res = service.addDisease(disease);
+        Integer res = iDictDiseaseService.addDisease(disease);
         return Result.success(disease);
     }
 
@@ -41,7 +41,7 @@ public class DictDiseaseController {
     })
     @GetMapping("/delDisease")
     public Result delDisease(Long id) {
-        Integer res = service.delDisease(id);
+        Integer res = iDictDiseaseService.delDisease(id);
         return Result.success(res);
     }
 
@@ -49,7 +49,7 @@ public class DictDiseaseController {
     @ApiOperation(value = "修改疾病信息", notes = "修改疾病信息")
     @PostMapping("/setDisease")
     public Result setDisease(@RequestBody DictDisease disease) {
-        Integer res = service.setDisease(disease);
+        Integer res = iDictDiseaseService.setDisease(disease);
         return Result.success(disease);
     }
 
@@ -64,7 +64,7 @@ public class DictDiseaseController {
         DictDisease disease = new DictDisease();
         disease.setId(id);
         disease.setStatus(status);
-        Integer res = service.setDisease(disease);
+        Integer res = iDictDiseaseService.setDisease(disease);
         return Result.success(disease);
     }
 
@@ -75,7 +75,7 @@ public class DictDiseaseController {
     })
     @GetMapping("/getDisease")
     public Result getDisease(Long id) {
-        DictDisease disease = service.getDisease(id);
+        DictDisease disease = iDictDiseaseService.getDisease(id);
         return Result.success(disease);
     }
 
@@ -92,7 +92,7 @@ public class DictDiseaseController {
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = service.getDiseaseList(status, term);
+        List<Map<String, Object>> list = iDictDiseaseService.getDiseaseList(status, term);
         PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
         return Result.success(pageInfo);
     }

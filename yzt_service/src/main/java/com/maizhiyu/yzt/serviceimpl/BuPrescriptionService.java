@@ -78,6 +78,7 @@ public class BuPrescriptionService extends ServiceImpl<BuPrescriptionMapper, BuP
         return res && res1 && res2;
     }
 
+    //TODO 前端没有给 preItemIdList 导致删除的item 没有被删除
     @Override
     public Boolean setPrescriptionByDiff(BuPrescription prescription, List<Long> preItemIdList) {
         //保存前先检查是否有删除

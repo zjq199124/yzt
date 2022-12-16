@@ -18,16 +18,27 @@
     </resultMap>
 
     <select id="selectSytechList" resultType="hashmap">
-        select
-            X.id, X.status, X.disease_id, X.syndrome_id, X.name, X.detail, X.operation,
-            A.content disease_name,
-            B.name syndrome_name, B.symptoms,
-            C.id sytech_id, C.name sytech_name
-        from
-            sch_sytech X
-            left join dict_disease A on X.disease_id = A.id
-            left join syn_syndrome B on X.syndrome_id = B.id
-            left join ts_sytech C on X.sytech_id = C.id
+
+        SELECT
+        X.id,
+        X.STATUS,
+        X.disease_id,
+        X.syndrome_id,
+        X.NAME,
+        X.detail,
+        X.operation,
+        A.name disease_name,
+        B.NAME syndrome_name,
+        ds.content symptoms,
+        C.id sytech_id,
+        C.NAME sytech_name
+        FROM
+        sch_sytech X
+        LEFT JOIN dict_disease A ON X.disease_id = A.id
+        LEFT JOIN dict_syndrome B ON X.syndrome_id = B.id
+        LEFT JOIN ts_sytech C ON X.sytech_id = C.id
+        LEFT JOIN rel_syndrome_symptom rss ON X.syndrome_id = rss.syndrome_id
+        LEFT JOIN dict_symptom ds ON ds.id = rss.symptom_id
         <where>
             <if test="sytechId != null">
                 and X.sytech_id = #{sytechId}
@@ -45,6 +56,7 @@
                 or X.name like concat(concat('%',#{term}),'%') )
             </if>
         </where>
+        group by X.id
         order by disease_name
     </select>
 

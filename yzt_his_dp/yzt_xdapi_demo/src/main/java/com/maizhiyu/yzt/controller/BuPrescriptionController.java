@@ -84,9 +84,9 @@ public class BuPrescriptionController {
     @PostMapping("/addPrescriptionZhongyao")
     public Result addPrescriptionZhongyao(@RequestBody @Valid BuPrescriptionRO.AddPrescriptionZhongyao ro) {
         ro.setPatientId(ro.getOutpatientId());  // 使用outpatientId作为患者ID（HIS就这么给的，每次挂号都会新增患者）
-       /* processDoctor(ro.getDoctorId());
-        processPatient(ro.getPatientId());
-        processOutpatient(ro.getOutpatientId());*/
+        Long yptDoctorId = processDoctor(ro.getDoctorId());
+        Long yptPatientId = processPatient(ro.getPatientId());
+        Long yptOutpatientId = processOutpatient(ro.getOutpatientId(), yptDoctorId, yptPatientId);
         Result result = yptClient.addPrescriptionZhongyao(ro);
         return result;
     }
@@ -95,9 +95,9 @@ public class BuPrescriptionController {
     @PostMapping("/addPrescriptionChengyao")
     public Result addPrescriptionChengyao(@RequestBody @Valid BuPrescriptionRO.AddPrescriptionChengyao ro) {
         ro.setPatientId(ro.getOutpatientId());  // 使用outpatientId作为患者ID（HIS就这么给的，每次挂号都会新增患者）
-       /* processDoctor(ro.getDoctorId());
-        processPatient(ro.getPatientId());
-        processOutpatient(ro.getOutpatientId());*/
+        Long yptDoctorId = processDoctor(ro.getDoctorId());
+        Long yptPatientId = processPatient(ro.getPatientId());
+        Long yptOutpatientId = processOutpatient(ro.getOutpatientId(), yptDoctorId, yptPatientId);
         Result<Integer> result = yptClient.addPrescriptionChengyao(ro);
         return result;
     }
@@ -105,10 +105,11 @@ public class BuPrescriptionController {
     @ApiOperation(value = "新增处方(协定)", notes = "新增处方(协定)")
     @PostMapping("/addPrescriptionXieding")
     public Result addPrescriptionXieding(@RequestBody @Valid BuPrescriptionRO.AddPrescriptionXieding ro) {
-        ro.setPatientId(ro.getOutpatientId());  // 使用outpatientId作为患者ID（HIS就这么给的，每次挂号都会新增患者）
-       /* processDoctor(ro.getDoctorId());
-        processPatient(ro.getPatientId());
-        processOutpatient(ro.getOutpatientId());*/
+        //ro.setPatientId(ro.getOutpatientId());  // 使用outpatientId作为患者ID（HIS就这么给的，每次挂号都会新增患者）
+        Long yptDoctorId = processDoctor(ro.getDoctorId());
+        Long yptPatientId = processPatient(ro.getPatientId());
+        Long yptOutpatientId = processOutpatient(ro.getOutpatientId(), yptDoctorId, yptPatientId);
+
         Result<Integer> result = yptClient.addPrescriptionXieding(ro);
         return result;
     }
@@ -130,9 +131,9 @@ public class BuPrescriptionController {
         YptOutpatient yptOutpatient = getYptOutpatientById(yptOutpatientId);
         ro.getBaseInfo().setOutpatientId(yptOutpatient.getHisId());
 
-        if (Objects.nonNull(ro) && !CollectionUtils.isEmpty(ro.getItemList())) {
-            savePrescriptionShiyiToHis(ro);
-        }
+//        if (Objects.nonNull(ro) && !CollectionUtils.isEmpty(ro.getItemList())) {
+//            savePrescriptionShiyiToHis(ro);
+//        }
         //保存诊断信息
         ro.getDiagnoseInfo().setCustomerName(customerName);
         //讲patientId,outPatientId,doctorId替换成云平台对应的数据
