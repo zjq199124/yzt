@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.BuOutpatientAppointment;
@@ -56,5 +57,20 @@ public class BuOutpatientAppointmentServiceImpl extends ServiceImpl<BuOutpatient
             item.setBuPrescriptionItemAppointmentList(buPrescriptionItemAppointmentList);
         });
         return resultPage;
+    }
+
+    @Override
+    public BuOutpatientAppointment insert(BuOutpatientAppointment buOutpatientAppointment) {
+        buOutpatientAppointmentMapper.insert(buOutpatientAppointment);
+        return buOutpatientAppointment;
+    }
+
+    @Override
+    public BuOutpatientAppointment selectByDiagnoseId(Long diagnoseId) {
+        LambdaQueryWrapper<BuOutpatientAppointment> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(BuOutpatientAppointment::getDiagnoseId, diagnoseId)
+                .eq(BuOutpatientAppointment::getIsDel, 0)
+                .last("limit 1");
+        return buOutpatientAppointmentMapper.selectOne(queryWrapper);
     }
 }

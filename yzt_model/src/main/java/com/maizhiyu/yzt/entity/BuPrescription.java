@@ -53,6 +53,9 @@ public class BuPrescription implements Serializable {
     @ApiModelProperty(value="预约ID")
     private Long outpatientId;
 
+    @ApiModelProperty(value="诊断ID")
+    private Long diagnoseId;
+
     @ApiModelProperty(value="注意事项")
     private String attention;
 

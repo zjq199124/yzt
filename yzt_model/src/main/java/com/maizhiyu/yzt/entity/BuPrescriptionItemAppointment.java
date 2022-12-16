@@ -24,6 +24,9 @@ public class BuPrescriptionItemAppointment extends Model<BuPrescriptionItemAppoi
     @TableId(type = IdType.AUTO)
     private Long id;
 
+    @ApiModelProperty(value="门诊预约数据id")
+    private Long outpatientAppointmentId;
+
     @ApiModelProperty(value="处方条目id")
     private Long prescriptionItemId;
 
