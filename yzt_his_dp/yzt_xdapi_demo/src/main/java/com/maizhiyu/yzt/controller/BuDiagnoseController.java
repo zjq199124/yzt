@@ -75,7 +75,8 @@ public class BuDiagnoseController {
             ro.setOutpatientId(Long.parseLong(outpatient.getCode()));
         }
         // 调用开放接口获取诊断推荐
-        return yptClient.getRecommend(ro);
+        Result result=yptClient.getRecommend(ro);
+        return result;
     }
 
     @ApiOperation(value = "获取门诊诊断和患者信息", notes = "获取门诊诊断和患者信息")

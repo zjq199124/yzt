@@ -61,30 +61,26 @@
     </select>
 
     <select id="getSytechBySytechId" resultType="java.util.Map">
-        SELECT
-            ss.id,
-            ss.disease_id AS diseaseId,
-            ss.syndrome_id AS syndromeId,
-            ss.sytech_id as sytechId,
-            ss.detail,
-            ss.operation,
-            ss.recommend,
-            ds.name AS syndromeName,
-            dd.content AS diseaseName,
-            ts.name
-        FROM
-            sch_sytech ss
-                INNER JOIN ts_sytech ts ON ss.sytech_id = ts.id
-                AND ts.STATUS = 1
-                LEFT JOIN dict_syndrome ds ON ss.syndrome_id = ds.id
-                AND ds.is_del = 0
-                LEFT JOIN dict_disease dd ON ss.disease_id = dd.id
-                AND dd.STATUS = 1
-        WHERE
-            ss.sytech_id = #{sytechId}
+        SELECT ss.id,
+               ss.disease_id  AS diseaseId,
+               ss.syndrome_id AS syndromeId,
+               ss.sytech_id   as sytechId,
+               ss.detail,
+               ss.operation,
+               ss.recommend,
+               ds.name        AS syndromeName,
+               dd.content     AS diseaseName,
+               ts.name
+        FROM sch_sytech ss
+                 INNER JOIN ts_sytech ts ON ss.sytech_id = ts.id
+            AND ts.STATUS = 1
+                 LEFT JOIN dict_syndrome ds ON ss.syndrome_id = ds.id
+            AND ds.is_del = 0
+                 LEFT JOIN dict_disease dd ON ss.disease_id = dd.id
+            AND dd.STATUS = 1
+        WHERE ss.sytech_id = #{sytechId}
           AND ss.disease_id = #{diseaseId}
-          AND ss.syndrome_id = #{syndromeId}
-        limit 1
+          AND ss.syndrome_id = #{syndromeId} limit 1
     </select>
 
 
