@@ -1,7 +1,9 @@
 package com.maizhiyu.yzt.config;
 
+import com.alibaba.fastjson.JSONObject;
+import com.maizhiyu.yzt.entity.HsAppointmentSystem;
+import com.maizhiyu.yzt.entity.TimeSlotInfo;
 import com.maizhiyu.yzt.security.*;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Configuration
@@ -127,7 +132,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         /*BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();
 
         String password = "admin";
@@ -135,11 +140,48 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         System.out.println("password: " + password);
         System.out.println("encoded: " + encoded);*/
+        TimeSlotInfo timeSlotInfo = new TimeSlotInfo();
 
-        String ABC = null;
+        timeSlotInfo.setMorningStart(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2022-12-19 09:00:00"));
+        timeSlotInfo.setMorningEnd(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2022-12-19 11:30:00"));
+        timeSlotInfo.setMorningTimeSlot(30);
+        timeSlotInfo.setMorningTimeSlotQuantity(10);
+        List<String> morningTimeSlotList = new ArrayList<>();
+        morningTimeSlotList.add("08:30-09:00");
+        morningTimeSlotList.add("09:00-09:30");
+        morningTimeSlotList.add("09:30-10:00");
+        morningTimeSlotList.add("10:00-10:30");
+        morningTimeSlotList.add("10:30-11:00");
+        morningTimeSlotList.add("11:00-11:30");
+        timeSlotInfo.setMorningTimeSlotList(morningTimeSlotList);
 
-        System.out.println(StringUtils.isNotBlank(ABC));
+        timeSlotInfo.setAfternoonStart(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2022-12-19 13:00:00"));
+        timeSlotInfo.setAfternoonEnd(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2022-12-19 17:30:00"));
+        timeSlotInfo.setAfternoonTimeSlot(30);
+        timeSlotInfo.setAfternoonTimeSlotQuantity(10);
 
+        List<String> afternoonTimeSlotList = new ArrayList<>();
+        afternoonTimeSlotList.add("13:00-13:30");
+        afternoonTimeSlotList.add("13:30-14:00");
+        afternoonTimeSlotList.add("14:00-14:30");
+        afternoonTimeSlotList.add("14:30-15:00");
+        afternoonTimeSlotList.add("15:00-15:30");
+        afternoonTimeSlotList.add("15:30-16:00");
+        afternoonTimeSlotList.add("16:00-16:30");
+        afternoonTimeSlotList.add("16:30-17:00");
+        afternoonTimeSlotList.add("17:00-17:30");
+       /* timeSlotInfo.setAfternoonTimeSlotList(afternoonTimeSlotList);
+
+        HsAppointmentSystem hsAppointmentSystem = new HsAppointmentSystem();
+        hsAppointmentSystem.setHasHolidays(0);
+        hsAppointmentSystem.setCustomerId(28L);
+        hsAppointmentSystem.setTimeSlotInfo(timeSlotInfo);
+        String s = JSONObject.toJSONString(hsAppointmentSystem);*/
+
+        String s = JSONObject.toJSONString(timeSlotInfo).toString();
+        System.out.println(s);
+
+        String haha = "{\"afternoonEnd\":1671442200000,\"afternoonStart\":1671426000000,\"afternoonTimeSlot\":30,\"afternoonTimeSlotQuantity\":10,\"morningEnd\":1671420600000,\"morningStart\":1671411600000,\"morningTimeSlot\":30,\"morningTimeSlotList\":[\"08:30-09:00\",\"09:00-09:30\",\"09:30-10:00\",\"10:00-10:30\",\"10:30-11:00\",\"11:00-11:30\"],\"morningTimeSlotQuantity\":10}\n";
     }
 }
 
