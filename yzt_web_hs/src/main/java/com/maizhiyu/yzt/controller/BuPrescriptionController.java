@@ -28,9 +28,6 @@ public class BuPrescriptionController extends BaseController {
     @ApiOperation(value = "新增处方", notes = "新增处方")
     @PostMapping("/addPrescription")
     public Result<Boolean> addPrescription(@RequestBody BuPrescription prescription) {
-        prescription.setStatus(1);
-        prescription.setCreateTime(new Date());
-        prescription.setUpdateTime(prescription.getCreateTime());
         Boolean res = service.addPrescription(prescription);
         return Result.success(res);
     }

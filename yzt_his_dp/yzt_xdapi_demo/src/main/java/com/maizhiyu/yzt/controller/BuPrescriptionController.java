@@ -109,7 +109,6 @@ public class BuPrescriptionController {
         Long yptDoctorId = processDoctor(ro.getDoctorId());
         Long yptPatientId = processPatient(ro.getPatientId());
         Long yptOutpatientId = processOutpatient(ro.getOutpatientId(), yptDoctorId, yptPatientId);
-
         Result<Integer> result = yptClient.addPrescriptionXieding(ro);
         return result;
     }
@@ -122,7 +121,6 @@ public class BuPrescriptionController {
         Assert.notNull(ro.getBaseInfo(), "基础信息不能为空!");
         Assert.notNull(ro.getDiagnoseInfo(), "诊断信息不能为空!");
         BuPrescriptionRO.AddPrescriptionShiyi.BaseInfo baseInfo = ro.getBaseInfo();
-
         //判断医生，患者，患者门诊信息
         Long yptDoctorId = processDoctor(baseInfo.getDoctorId().toString());
         Long yptPatientId = processPatient(baseInfo.getPatientId().toString());
@@ -130,10 +128,6 @@ public class BuPrescriptionController {
         //ro中的outpatientId是视图中的registration_id,要换成code才是我们这边所说的his中medical_record_id对应云平台的his中的outpatientId
         YptOutpatient yptOutpatient = getYptOutpatientById(yptOutpatientId);
         ro.getBaseInfo().setOutpatientId(yptOutpatient.getHisId());
-
-//        if (Objects.nonNull(ro) && !CollectionUtils.isEmpty(ro.getItemList())) {
-//            savePrescriptionShiyiToHis(ro);
-//        }
         //保存诊断信息
         ro.getDiagnoseInfo().setCustomerName(customerName);
         //讲patientId,outPatientId,doctorId替换成云平台对应的数据

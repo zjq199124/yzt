@@ -169,7 +169,6 @@ public class BuPrescriptionRO implements Serializable {
         @ApiModel
         @Validated
         public static class DiagnoseInfo{
-
             @ApiModelProperty("诊断主键id")
             private Long id;
 
