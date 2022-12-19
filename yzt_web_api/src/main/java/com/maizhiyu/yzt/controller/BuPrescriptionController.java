@@ -296,7 +296,7 @@ public class BuPrescriptionController {
             insert.setSurplusQuantity(insert.getQuantity());
             insert.setCreateTime(new Date());
             insert.setUpdateTime(insert.getCreateTime());
-            buPrescriptionItemAppointmentService.insert(insert);
+            buPrescriptionItemAppointmentService.save(insert);
         });
     }
 }
