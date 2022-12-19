@@ -42,14 +42,8 @@ public class BuPrescriptionController {
     @Autowired
     private IBuOutpatientService buOutpatientService;
 
-    @Autowired
-    private ITsSytechService sytechService;
-
     @Resource
     private IBuDiagnoseService diagnoseService;
-
-    @Resource
-    private IBuPrescriptionItemService buPrescriptionItemService;
 
     @Resource
     private IBuOutpatientAppointmentService buOutpatientAppointmentService;
@@ -63,7 +57,7 @@ public class BuPrescriptionController {
         // 获取token字段
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
-        checkYptDataExist(Long.valueOf(ro.getDoctorId()),Long.valueOf(ro.getPatientId()),Long.valueOf(ro.getOutpatientId()));
+        checkYptDataExist(Long.valueOf(ro.getDoctorId()), Long.valueOf(ro.getPatientId()), Long.valueOf(ro.getOutpatientId()));
         // 整理处方数据
         List<BuPrescriptionItem> itemList = new ArrayList<>();
         BuPrescription prescription = new BuPrescription();
@@ -109,7 +103,7 @@ public class BuPrescriptionController {
         // 获取token字段
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
-        checkYptDataExist(Long.valueOf(ro.getDoctorId()),Long.valueOf(ro.getPatientId()),Long.valueOf(ro.getOutpatientId()));
+        checkYptDataExist(Long.valueOf(ro.getDoctorId()), Long.valueOf(ro.getPatientId()), Long.valueOf(ro.getOutpatientId()));
         // 整理处方数据
         List<BuPrescriptionItem> itemList = new ArrayList<>();
         BuPrescription prescription = new BuPrescription();
@@ -152,7 +146,7 @@ public class BuPrescriptionController {
         // 获取token字段
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
-        checkYptDataExist(Long.valueOf(ro.getDoctorId()),Long.valueOf(ro.getPatientId()),Long.valueOf(ro.getOutpatientId()));
+        checkYptDataExist(Long.valueOf(ro.getDoctorId()), Long.valueOf(ro.getPatientId()), Long.valueOf(ro.getOutpatientId()));
         // 整理处方数据
         List<BuPrescriptionItem> itemList = new ArrayList<>();
         BuPrescription prescription = new BuPrescription();
@@ -194,7 +188,7 @@ public class BuPrescriptionController {
         // 获取token字段
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
-        checkYptDataExist(ro.getBaseInfo().getDoctorId(),ro.getBaseInfo().getPatientId(),ro.getBaseInfo().getOutpatientId());
+        checkYptDataExist(ro.getBaseInfo().getDoctorId(), ro.getBaseInfo().getPatientId(), ro.getBaseInfo().getOutpatientId());
         // 整理处方数据
         List<BuPrescriptionItem> itemList = new ArrayList<>();
         BuPrescription prescription = new BuPrescription();
@@ -253,6 +247,7 @@ public class BuPrescriptionController {
         BuOutpatient buOutpatient = buOutpatientService.getById(outPatientId);
         Assert.notNull(buOutpatient, "预约信息错误!");
     }
+
     //开了处方之后添加预约数据
     private void addAppointmentInfo(BuPrescription prescription) {
         // 先查询这次门诊是否有预约数据
@@ -281,8 +276,8 @@ public class BuPrescriptionController {
         Long finalOutpatientAppointmentId = outpatientAppointmentId;
         prescription.getItemList().forEach(item -> {
             //查询是否生成技术小项目的预约数据是否生成
-            BuPrescriptionItemAppointment buPrescriptionItemAppointment = buPrescriptionItemAppointmentService.selectByAppointmentIdAndItemId(finalOutpatientAppointmentId,item.getId());
-            if(Objects.nonNull(buPrescriptionItemAppointment))
+            BuPrescriptionItemAppointment buPrescriptionItemAppointment = buPrescriptionItemAppointmentService.selectByAppointmentIdAndItemId(finalOutpatientAppointmentId, item.getId());
+            if (Objects.nonNull(buPrescriptionItemAppointment))
                 return;
 
             BuPrescriptionItemAppointment insert = new BuPrescriptionItemAppointment();
