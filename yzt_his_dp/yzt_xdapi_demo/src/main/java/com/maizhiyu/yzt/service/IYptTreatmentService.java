@@ -1,6 +1,5 @@
 package com.maizhiyu.yzt.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.YptTreatment;
 
@@ -22,6 +21,6 @@ public interface IYptTreatmentService {
 
     YptTreatment getTreatmentByHisName(String name);
 
-    IPage<YptTreatment> getTreatmentList(Page page, String term);
+    Page<YptTreatment> getTreatmentList(Page page, String term);
 
 }

@@ -1,8 +1,7 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.YptDisease;
-
-import java.util.List;
 
 public interface IYptDiseaseService {
 
@@ -18,6 +17,6 @@ public interface IYptDiseaseService {
 
     YptDisease getDiseaseByHisname(String name);
 
-    List<YptDisease> getDiseaseList(String term);
+    Page<YptDisease> getDiseaseList(Page page, String term);
 
 }

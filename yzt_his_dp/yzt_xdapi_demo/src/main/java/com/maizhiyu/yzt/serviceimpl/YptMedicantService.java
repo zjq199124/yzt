@@ -1,7 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.YptMedicant;
 import com.maizhiyu.yzt.mapperypt.YptMedicantMapper;
@@ -10,8 +9,6 @@ import com.maizhiyu.yzt.utils.ExistCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
@@ -57,7 +54,7 @@ public class YptMedicantService implements IYptMedicantService {
     }
 
     @Override
-    public IPage<YptMedicant> getMedicantList(Page page, String term) {
+    public Page<YptMedicant> getMedicantList(Page page, String term) {
         QueryWrapper<YptMedicant> wrapper = new QueryWrapper<>();
         wrapper.like("name", term)
                 .or().like("code", term)

@@ -1,7 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.YptTreatment;
 import com.maizhiyu.yzt.mapperypt.YptTreatmentMapper;
@@ -69,7 +68,7 @@ public class YptTreatmentService implements IYptTreatmentService {
     }
 
     @Override
-    public IPage<YptTreatment> getTreatmentList(Page page, String term) {
+    public Page<YptTreatment> getTreatmentList(Page page, String term) {
         QueryWrapper<YptTreatment> wrapper = new QueryWrapper<>();
         wrapper.like("name", term)
                 .or().like("code", term)
