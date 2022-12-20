@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.HsAppointmentSystemMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.maizhiyu.yzt.entity.HsAppointmentSystem">
+        <id column="id" property="id" />
+        <result column="customer_id" property="customerId" />
+        <result column="has_holidays" property="hasHolidays" />
+        <result column="effect_time" property="effectTime" />
+        <result column="end_time" property="endTime" />
+        <result column="time_slot_info" property="timeSlotInfo" />
+        <result column="is_del" property="isDel" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="remark" property="remark" />
+    </resultMap>
+
+    <select id="selectNow" resultType="com.maizhiyu.yzt.entity.HsAppointmentSystem">
+        select * from hs_appointment_system
+        where is_del = 0
+        and customer_id = #{customerId}
+        and effect_time &lt;= #{date}
+        and (end_time is null or (end_time &gt;= #{date}))
+        order by create_time desc
+        limit 1
+    </select>
+    <select id="selectTobeEffective" resultType="com.maizhiyu.yzt.entity.HsAppointmentSystem">
+        select * from hs_appointment_system
+        where is_del = 0
+          and customer_id = #{customerId}
+          and effect_time &gt;= #{date}
+          order by create_time desc
+          limit 1
+    </select>
+</mapper>
