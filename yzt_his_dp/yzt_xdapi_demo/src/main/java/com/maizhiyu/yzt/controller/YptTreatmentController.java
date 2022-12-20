@@ -77,8 +77,8 @@ public class YptTreatmentController {
     @ApiOperation(value = "获取治疗列表", notes = "获取治疗列表")
     @PostMapping("/getTreatmentList")
     public Result<IPage<YptTreatmentVO.GetTreatmentListVO>> getTreatmentList(@RequestBody @Valid YptTreatmentRO.GetTreatmentListRO ro) {
-        IPage<YptTreatment> list = service.getTreatmentList(new Page<YptTreatment>(ro.getPageNum(), ro.getPageSize()), ro.getTerm());
-        IPage<YptTreatmentVO.GetTreatmentListVO> pageInfo = YptTreatmentCI.INSTANCE.invertGetTreatmentListVO(list);
+        Page<YptTreatment> list = service.getTreatmentList(new Page<YptTreatment>(ro.getPageNum(), ro.getPageSize()), ro.getTerm());
+        Page<YptTreatmentVO.GetTreatmentListVO> pageInfo = YptTreatmentCI.INSTANCE.invertGetTreatmentListVO(list);
         return Result.success(pageInfo);
     }
 

@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.controller;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.bean.aci.YptDiseaseCI;
 import com.maizhiyu.yzt.bean.aro.YptDiseaseRO;
 import com.maizhiyu.yzt.bean.avo.YptDiseaseVO;
@@ -24,7 +25,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
 
 
 @Slf4j
@@ -77,8 +77,9 @@ public class YptDiseaseController {
     @ApiOperation(value = "获取疾病列表", notes = "获取疾病列表")
     @PostMapping("/getDiseaseList")
     public Result<IPage<YptDiseaseVO.GetDiseaseListVO>> getDiseaseList(@RequestBody @Valid YptDiseaseRO.GetDiseaseListRO ro) {
-        List<YptDisease> list = service.getDiseaseList(ro.getTerm());
-        return Result.success(list);
+        Page<YptDisease> list = service.getDiseaseList(new Page(ro.getPageNum(), ro.getPageSize()), ro.getTerm());
+        Page<YptDiseaseVO.GetDiseaseListVO> pageInfo = YptDiseaseCI.INSTANCE.invertGetDiseaseListVO(list);
+        return Result.success(pageInfo);
     }
 
 

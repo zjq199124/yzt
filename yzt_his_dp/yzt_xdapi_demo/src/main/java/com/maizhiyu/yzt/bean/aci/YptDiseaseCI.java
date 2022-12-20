@@ -1,6 +1,6 @@
 package com.maizhiyu.yzt.bean.aci;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.bean.aro.YptDiseaseRO;
 import com.maizhiyu.yzt.bean.avo.YptDiseaseVO;
 import com.maizhiyu.yzt.entity.YptDisease;
@@ -18,6 +18,6 @@ public interface YptDiseaseCI {
 
     YptDiseaseVO.GetDiseaseVO invertGetDiseaseVO(YptDisease disease);
 
-    IPage<YptDiseaseVO.GetDiseaseListVO> invertGetDiseaseListVO(IPage<YptDisease> pageInfo);
+    Page<YptDiseaseVO.GetDiseaseListVO> invertGetDiseaseListVO(Page<YptDisease> pageInfo);
 
 }
