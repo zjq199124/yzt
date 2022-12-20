@@ -1,6 +1,8 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.YptTreatment;
 import com.maizhiyu.yzt.mapperypt.YptTreatmentMapper;
 import com.maizhiyu.yzt.service.IYptTreatmentService;
@@ -8,8 +10,6 @@ import com.maizhiyu.yzt.utils.ExistCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
@@ -69,7 +69,7 @@ public class YptTreatmentService implements IYptTreatmentService {
     }
 
     @Override
-    public List<YptTreatment> getTreatmentList(String term) {
+    public IPage<YptTreatment> getTreatmentList(Page page, String term) {
         QueryWrapper<YptTreatment> wrapper = new QueryWrapper<>();
         wrapper.like("name", term)
                 .or().like("code", term)
@@ -77,6 +77,6 @@ public class YptTreatmentService implements IYptTreatmentService {
                 .or().like("abbr", term)
                 .or().like("hisname", term)
                 .or().like("hiscode", term);
-        return mapper.selectList(wrapper);
+        return mapper.selectPage(page,wrapper);
     }
 }

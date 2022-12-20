@@ -1,10 +1,9 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.TsSytech;
-import com.maizhiyu.yzt.exception.BusinessException;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.ITsSytechService;
 import io.swagger.annotations.Api;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.List;
 
 
 @Api(tags = "适宜技术接口")
@@ -98,10 +96,8 @@ public class TsSytechController {
     public Result getSytechList(Integer status, String term, Integer display,
                                 @RequestParam(defaultValue = "1") Integer pageNum,
                                 @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<TsSytech> list = service.getSytechList(status, term, display);
-        PageInfo<TsSytech> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+        IPage<TsSytech> list = service.getSytechList(new Page(pageNum, pageSize), status, term, display);
+        return Result.success(list);
     }
 
 }

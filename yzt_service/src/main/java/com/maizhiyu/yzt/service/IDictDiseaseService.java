@@ -1,10 +1,10 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.DictDisease;
-import com.maizhiyu.yzt.serviceimpl.DictDiseaseService;
 
-import java.util.List;
 import java.util.Map;
 
 public interface IDictDiseaseService extends IService<DictDisease> {
@@ -17,5 +17,5 @@ public interface IDictDiseaseService extends IService<DictDisease> {
 
     public DictDisease getDisease(Long id);
 
-    public List<Map<String,Object>> getDiseaseList(Integer status, String term);
+    public IPage<Map<String, Object>> getDiseaseList(Page page, Integer status, String term);
 }

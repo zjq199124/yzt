@@ -1,8 +1,6 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.maizhiyu.yzt.entity.PsUser;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IPsUserService;
@@ -14,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 
 @Api(tags = "用户接口")

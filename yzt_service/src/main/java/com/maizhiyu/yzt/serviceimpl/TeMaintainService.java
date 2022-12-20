@@ -1,5 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.TeMaintain;
 import com.maizhiyu.yzt.mapper.TeMaintainMapper;
@@ -40,8 +42,8 @@ public class TeMaintainService extends ServiceImpl<TeMaintainMapper,TeMaintain> 
     }
 
     @Override
-    public List<Map<String, Object>> getMaintainList(Long customerId, Long equipId, Integer type, String startDate, String endDate) {
-        List<Map<String, Object>> list = mapper.selectMaintainList(customerId, equipId, type, startDate, endDate);
+    public IPage<Map<String, Object>> getMaintainList(Page page, Long customerId, Long equipId, Integer type, String startDate, String endDate) {
+        IPage<Map<String, Object>> list = mapper.selectMaintainList(page,customerId, equipId, type, startDate, endDate);
         return list;
     }
 

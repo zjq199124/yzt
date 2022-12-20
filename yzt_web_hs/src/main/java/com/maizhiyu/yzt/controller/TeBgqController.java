@@ -1,8 +1,8 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.TeBgq;
 import com.maizhiyu.yzt.entity.TxBgqRun;
 import com.maizhiyu.yzt.result.Result;
@@ -16,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 
 @Api(tags = "拔罐器接口")
@@ -78,12 +76,10 @@ public class TeBgqController {
     })
     @GetMapping("/getBgqList")
     public Result getBgqList(Long customerId, Integer status, String term,
-                                @RequestParam(defaultValue = "1") Integer pageNum,
-                                @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<TeBgq> list = bgqService.getBgqList(null, customerId, status, term);
-        PageInfo<TeBgq> pageInfo = new PageInfo<>(list);
-        return Result.success(pageInfo);
+                             @RequestParam(defaultValue = "1") Integer pageNum,
+                             @RequestParam(defaultValue = "10") Integer pageSize) {
+        IPage<TeBgq> list = bgqService.getBgqList(new Page(pageNum, pageSize), null, customerId, status, term);
+        return Result.success(list);
     }
 
 
@@ -99,10 +95,8 @@ public class TeBgqController {
     public Result getBgqRunList(String code, String startDate, String endDate,
                                 @RequestParam(defaultValue = "1") Integer pageNum,
                                 @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<TxBgqRun> list = bgqRunService.getBgqRunList(code, startDate, endDate);
-        PageInfo<TxBgqRun> pageInfo = new PageInfo<>(list);
-        return Result.success(pageInfo);
+        IPage<TxBgqRun> list = bgqRunService.getBgqRunList(new Page(pageNum, pageSize), code, startDate, endDate);
+        return Result.success(list);
     }
 
 }

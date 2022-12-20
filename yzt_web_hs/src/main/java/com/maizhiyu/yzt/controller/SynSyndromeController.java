@@ -2,8 +2,8 @@ package com.maizhiyu.yzt.controller;
 
 
 import cn.hutool.core.lang.Assert;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.SynSyndrome;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IDictSyndromeService;
@@ -13,7 +13,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -57,10 +56,8 @@ public class SynSyndromeController {
             String diseaseName, Integer status, String term,
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = service.getSyndromeList(diseaseName, status, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+        IPage<Map<String, Object>> list = service.getSyndromeList(new Page(pageNum,pageSize),diseaseName, status, term);
+        return Result.success(list);
     }
 
     @ApiOperation(value = "获取疾病的所有分型列表", notes = "获取疾病的所有分型列表")

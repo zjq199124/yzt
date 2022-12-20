@@ -1,11 +1,10 @@
 package com.maizhiyu.yzt.serviceimpl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.TeEquip;
-import com.maizhiyu.yzt.entity.TxXzcData;
-import com.maizhiyu.yzt.entity.TxXzcRun;
 import com.maizhiyu.yzt.exception.BusinessException;
 import com.maizhiyu.yzt.mapper.TeEquipMapper;
 import com.maizhiyu.yzt.service.ITeEquipService;
@@ -58,23 +57,23 @@ public class TeEquipService extends ServiceImpl<TeEquipMapper,TeEquip> implement
     }
 
     @Override
-    public List<Map<String, Object>> getEquipList(
-            Long agencyId, Long customId, Integer type, Long modelId, Integer status, String term) {
-        List<Map<String, Object>> list = mapper.selectEquipList(agencyId, customId, type, modelId, status, term);
+    public IPage<Map<String, Object>> getEquipList(Page page,
+                                                  Long agencyId, Long customId, Integer type, Long modelId, Integer status, String term) {
+        IPage<Map<String, Object>> list = mapper.selectEquipList(page,agencyId, customId, type, modelId, status, term);
         return list;
     }
 
     @Override
-    public List<Map<String, Object>> getEquipListWithRunData(
-            Long agencyId, Long customId, Integer type, Long modelId, Integer status, String term) {
+    public List<Map<String, Object>> getEquipListWithRunData(Long agencyId, Long customId, Integer type, Long modelId, Integer status, String term) {
         List<Map<String, Object>> list = mapper.selectEquipListWithRunData(agencyId, customId, type, modelId, status, term);
         return list;
     }
 
+
+
     @Override
-    public List<Map<String, Object>> getEquipListWithMaintain(
-            Long agencyId, Long customId, Integer type, Long modelId, Integer status, String term) {
-        List<Map<String, Object>> list = mapper.selectEquipListWithMaintain(agencyId, customId, type, modelId, status, term);
+    public IPage<Map<String, Object>> getEquipListWithMaintain(Page page,Long agencyId, Long customId, Integer type, Long modelId, Integer status, String term) {
+        IPage<Map<String, Object>> list = mapper.selectEquipListWithMaintain(page,agencyId, customId, type, modelId, status, term);
         return list;
     }
 }

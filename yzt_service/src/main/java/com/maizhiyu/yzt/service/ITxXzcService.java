@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.TxXzcCmd;
 import com.maizhiyu.yzt.entity.TxXzcData;
 import com.maizhiyu.yzt.entity.TxXzcRun;
@@ -26,7 +27,7 @@ public interface ITxXzcService  {
 
     Integer addData(TxXzcData data);
 
-    List<TxXzcRun> getRunList(String code, String startDate, String endDate);
+    IPage<TxXzcRun> getRunList(Page page, String code, String startDate, String endDate);
 
     List<TxXzcData> getRunData(String code, String runId);
 

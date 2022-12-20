@@ -1,9 +1,10 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.HsDepartment;
 
-import java.util.List;
 import java.util.Map;
 
 public interface IHsDepartmentService extends IService<HsDepartment> {
@@ -16,5 +17,5 @@ public interface IHsDepartmentService extends IService<HsDepartment> {
 
     public HsDepartment getDepartment(Long id);
 
-    public List<Map<String,Object>> getDepartmentList(Long customerId, Integer status, String term);
+    public IPage<Map<String, Object>> getDepartmentList(Page page, Long customerId, Integer status, String term);
 }

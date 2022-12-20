@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Mapper
 @Repository
 public interface TxXzcRunMapper extends BaseMapper<TxXzcRun> {
+
 }

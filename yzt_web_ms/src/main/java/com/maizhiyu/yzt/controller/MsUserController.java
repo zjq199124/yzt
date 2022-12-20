@@ -1,8 +1,7 @@
 package com.maizhiyu.yzt.controller;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.maizhiyu.yzt.entity.MsDepartment;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.MsUser;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IMsUserService;
@@ -15,7 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 @Api(tags = "用户接口：密码处理暂未处理")
@@ -121,10 +119,8 @@ public class MsUserController {
     public Result getUserList(Long departmentId, Long roleId, Integer status, String term,
                               @RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = service.getUserList(departmentId, roleId, status, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list);
-        return Result.success(pageInfo);
+        IPage<Map<String, Object>> list = service.getUserList(new Page(pageNum, pageSize), departmentId, roleId, status, term);
+        return Result.success(list);
     }
 
 }

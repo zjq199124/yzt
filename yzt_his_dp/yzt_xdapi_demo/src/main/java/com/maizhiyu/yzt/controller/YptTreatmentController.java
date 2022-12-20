@@ -1,8 +1,8 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.bean.aci.YptTreatmentCI;
 import com.maizhiyu.yzt.bean.aro.YptTreatmentRO;
 import com.maizhiyu.yzt.bean.avo.YptTreatmentVO;
@@ -25,7 +25,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
 
 
 @Slf4j
@@ -77,16 +76,15 @@ public class YptTreatmentController {
 
     @ApiOperation(value = "获取治疗列表", notes = "获取治疗列表")
     @PostMapping("/getTreatmentList")
-    public Result<PageInfo<YptTreatmentVO.GetTreatmentListVO>> getTreatmentList(@RequestBody @Valid YptTreatmentRO.GetTreatmentListRO ro) {
-        PageHelper.startPage(ro.getPageNum(), ro.getPageSize());
-        List<YptTreatment> list = service.getTreatmentList(ro.getTerm());
-        PageInfo<YptTreatmentVO.GetTreatmentListVO> pageInfo = YptTreatmentCI.INSTANCE.invertGetTreatmentListVO(new PageInfo<>(list));
+    public Result<IPage<YptTreatmentVO.GetTreatmentListVO>> getTreatmentList(@RequestBody @Valid YptTreatmentRO.GetTreatmentListRO ro) {
+        IPage<YptTreatment> list = service.getTreatmentList(new Page<YptTreatment>(ro.getPageNum(), ro.getPageSize()), ro.getTerm());
+        IPage<YptTreatmentVO.GetTreatmentListVO> pageInfo = YptTreatmentCI.INSTANCE.invertGetTreatmentListVO(list);
         return Result.success(pageInfo);
     }
 
 
     @ApiOperation(value = "上传HIS治疗", notes = "根据名称进行匹配csv[code编码,name名称,abbr缩写]")
-    @ApiImplicitParam(name = "file", value = "文件", required = true, dataType="MultipartFile", paramType = "form")
+    @ApiImplicitParam(name = "file", value = "文件", required = true, dataType = "MultipartFile", paramType = "form")
     @PostMapping("/uploadTreatmentHis")
     public Result<YptTreatmentVO.UploadTreatmentHisVO> uploadTreatmentHis(@RequestPart MultipartFile file) {
         YptTreatmentVO.UploadTreatmentHisVO vo = new YptTreatmentVO.UploadTreatmentHisVO();

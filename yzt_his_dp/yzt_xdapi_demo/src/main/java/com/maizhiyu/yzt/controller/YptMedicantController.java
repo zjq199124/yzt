@@ -1,8 +1,8 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.bean.aci.YptMedicantCI;
 import com.maizhiyu.yzt.bean.aro.YptMedicantRO;
 import com.maizhiyu.yzt.bean.avo.YptMedicantVO;
@@ -25,7 +25,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
 
 
 @Slf4j
@@ -77,16 +76,15 @@ public class YptMedicantController {
 
     @ApiOperation(value = "获取药材列表", notes = "获取药材列表")
     @PostMapping("/getMedicantList")
-    public Result<PageInfo<YptMedicantVO.GetMedicantListVO>> getMedicantList(@RequestBody @Valid YptMedicantRO.GetMedicantListRO ro) {
-        PageHelper.startPage(ro.getPageNum(), ro.getPageSize());
-        List<YptMedicant> list = service.getMedicantList(ro.getTerm());
-        PageInfo<YptMedicantVO.GetMedicantListVO> pageInfo = YptMedicantCI.INSTANCE.invertGetMedicantListVO(new PageInfo<>(list));
+    public Result<IPage<YptMedicantVO.GetMedicantListVO>> getMedicantList(@RequestBody @Valid YptMedicantRO.GetMedicantListRO ro) {
+        IPage<YptMedicant> list = service.getMedicantList(new Page(ro.getPageNum(), ro.getPageSize()), ro.getTerm());
+        IPage<YptMedicantVO.GetMedicantListVO> pageInfo = YptMedicantCI.INSTANCE.invertGetMedicantListVO(list);
         return Result.success(pageInfo);
     }
 
 
     @ApiOperation(value = "上传HIS药材", notes = "根据名称进行匹配csv[code编码,name名称,abbr缩写]")
-    @ApiImplicitParam(name = "file", value = "文件", required = true, dataType="MultipartFile", paramType = "form")
+    @ApiImplicitParam(name = "file", value = "文件", required = true, dataType = "MultipartFile", paramType = "form")
     @PostMapping("/uploadMedicantHis")
     public Result<YptMedicantVO.UploadMedicantHisVO> uploadMedicantHis(@RequestPart MultipartFile file) {
         YptMedicantVO.UploadMedicantHisVO vo = new YptMedicantVO.UploadMedicantHisVO();

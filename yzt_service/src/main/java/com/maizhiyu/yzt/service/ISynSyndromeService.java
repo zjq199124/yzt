@@ -1,9 +1,10 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.SynSyndrome;
 
-import java.util.List;
 import java.util.Map;
 
 public interface ISynSyndromeService extends IService<SynSyndrome> {
@@ -16,7 +17,7 @@ public interface ISynSyndromeService extends IService<SynSyndrome> {
 
     SynSyndrome getSyndrome(Long id);
 
-    List<Map<String,Object>> getSyndromeList(Long diseaseId, Integer status, String term);
+    IPage<Map<String, Object>> getSyndromeList(Page page, Long diseaseId, Integer status, String term);
 
-    List<Map<String,Object>> getSyndromeList(String diseaseName, Integer status, String term);
+    IPage<Map<String, Object>> getSyndromeList(Page page,String diseaseName, Integer status, String term);
 }

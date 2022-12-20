@@ -1,7 +1,7 @@
 package com.maizhiyu.yzt.controller;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.base.BaseController;
 import com.maizhiyu.yzt.entity.BuPatient;
 import com.maizhiyu.yzt.result.Result;
@@ -30,7 +30,7 @@ public class BuPatientController extends BaseController {
     @ApiOperation(value = "增加患者", notes = "增加患者")
     @ApiImplicitParams({})
     @PostMapping("/addPatient")
-    public Result addPatient (@RequestBody BuPatient patient) {
+    public Result addPatient(@RequestBody BuPatient patient) {
         patient.setStatus(1);
         patient.setCreateTime(new Date());
         patient.setUpdateTime(patient.getCreateTime());
@@ -41,7 +41,7 @@ public class BuPatientController extends BaseController {
 
     @ApiOperation(value = "删除患者", notes = "删除患者")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "患者id", required = true)
+            @ApiImplicitParam(name = "id", value = "患者id", required = true, dataTypeClass = Long.class)
     })
     @GetMapping("/delPatient")
     public Result delPatient(Long id) {
@@ -52,7 +52,7 @@ public class BuPatientController extends BaseController {
 
     @ApiOperation(value = "修改患者信息", notes = "修改患者信息")
     @PostMapping("/setPatient")
-    public Result setPatient (@RequestBody BuPatient patient) {
+    public Result setPatient(@RequestBody BuPatient patient) {
         patient.setUpdateTime(new Date());
         Integer res = service.setPatient(patient);
         return Result.success(patient);
@@ -61,7 +61,7 @@ public class BuPatientController extends BaseController {
 
     @ApiOperation(value = "获取患者信息", notes = "获取患者信息")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "患者ID", required = true),
+            @ApiImplicitParam(name = "id", value = "患者ID", required = true, dataTypeClass = Long.class),
     })
     @GetMapping("/getPatient")
     public Result getPatient(Long id) {
@@ -109,7 +109,6 @@ public class BuPatientController extends BaseController {
 //    }
 
 
-
     @ApiOperation(value = "获取患者列表", notes = "获取患者列表(搜索使用)")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "customerId", value = "客户ID", required = true),
@@ -143,12 +142,10 @@ public class BuPatientController extends BaseController {
     })
     @GetMapping("/getPatientListByDoctor")
     public Result getPatientListByDoctor(Long doctorId, String term,
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = service.getPatientListByDoctor(doctorId, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+                                         @RequestParam(defaultValue = "1") Integer pageNum,
+                                         @RequestParam(defaultValue = "10") Integer pageSize) {
+        IPage<Map<String, Object>> list = service.getPatientListByDoctor(new Page(pageNum, pageSize), doctorId, term);
+        return Result.success(list);
     }
 
 
@@ -162,11 +159,9 @@ public class BuPatientController extends BaseController {
     })
     @GetMapping("/getPatientListByTherapist")
     public Result getPatientListByTherapist(Long therapistId, Integer type, String term,
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = service.getPatientListByTherapist(therapistId, type, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+                                            @RequestParam(defaultValue = "1") Integer pageNum,
+                                            @RequestParam(defaultValue = "10") Integer pageSize) {
+        IPage<Map<String, Object>> list = service.getPatientListByTherapist(new Page(pageNum, pageSize), therapistId, type, term);
+        return Result.success(list);
     }
 }

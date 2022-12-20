@@ -1,8 +1,7 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.maizhiyu.yzt.bean.aci.YptDiseaseCI;
 import com.maizhiyu.yzt.bean.aro.YptDiseaseRO;
 import com.maizhiyu.yzt.bean.avo.YptDiseaseVO;
@@ -77,16 +76,14 @@ public class YptDiseaseController {
 
     @ApiOperation(value = "获取疾病列表", notes = "获取疾病列表")
     @PostMapping("/getDiseaseList")
-    public Result<PageInfo<YptDiseaseVO.GetDiseaseListVO>> getDiseaseList(@RequestBody @Valid YptDiseaseRO.GetDiseaseListRO ro) {
-        PageHelper.startPage(ro.getPageNum(), ro.getPageSize());
+    public Result<IPage<YptDiseaseVO.GetDiseaseListVO>> getDiseaseList(@RequestBody @Valid YptDiseaseRO.GetDiseaseListRO ro) {
         List<YptDisease> list = service.getDiseaseList(ro.getTerm());
-        PageInfo<YptDiseaseVO.GetDiseaseListVO> pageInfo = YptDiseaseCI.INSTANCE.invertGetDiseaseListVO(new PageInfo<>(list));
-        return Result.success(pageInfo);
+        return Result.success(list);
     }
 
 
     @ApiOperation(value = "上传HIS疾病", notes = "根据名称进行匹配csv[code编码,name名称,abbr缩写]")
-    @ApiImplicitParam(name = "file", value = "文件", required = true, dataType="MultipartFile", paramType = "form")
+    @ApiImplicitParam(name = "file", value = "文件", required = true, dataType = "MultipartFile", paramType = "form")
     @PostMapping("/uploadDiseaseHis")
     public Result<YptDiseaseVO.UploadDiseaseHisVO> uploadDiseaseHis(@RequestPart MultipartFile file) {
         YptDiseaseVO.UploadDiseaseHisVO vo = new YptDiseaseVO.UploadDiseaseHisVO();

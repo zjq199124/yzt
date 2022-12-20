@@ -1,5 +1,7 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.DictSymptom;
 import com.maizhiyu.yzt.vo.DictSymptomVo;
@@ -17,7 +19,7 @@ public interface IDictSymptomService extends IService<DictSymptom> {
 
     public DictSymptom getSymptom(Long id);
 
-    public List<Map<String,Object>> getSymptomList(Integer status, String term);
+    IPage<Map<String, Object>> getSymptomList(Page page, Integer status, String term);
 
     List<DictSymptomVo> selectByDiseaseId(Long diseaseId);
 }

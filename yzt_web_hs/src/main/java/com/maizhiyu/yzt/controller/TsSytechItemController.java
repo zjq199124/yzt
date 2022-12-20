@@ -1,13 +1,9 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.maizhiyu.yzt.entity.TsSytech;
 import com.maizhiyu.yzt.entity.TsSytechItem;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.ITsSytechItemService;
-import com.maizhiyu.yzt.service.ITsSytechService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -15,9 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 
 @Api(tags = "适宜技术考核项目接口")

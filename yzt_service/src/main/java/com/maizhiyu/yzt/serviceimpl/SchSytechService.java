@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.SchSytech;
 import com.maizhiyu.yzt.mapper.SchSytechMapper;
@@ -41,8 +42,8 @@ public class SchSytechService extends ServiceImpl<SchSytechMapper,SchSytech> imp
     }
 
     @Override
-    public List<Map<String, Object>> getSytechList(Long sytechId, Long diseaseId, Integer status, String term) {
-        List<Map<String, Object>> list = mapper.selectSytechList(sytechId, diseaseId, status, term);
+    public IPage<Map<String, Object>> getSytechList(Page page, Long sytechId, Long diseaseId, Integer status, String term) {
+        IPage<Map<String, Object>> list = mapper.selectSytechList(page,sytechId, diseaseId, status, term);
         return list;
     }
 

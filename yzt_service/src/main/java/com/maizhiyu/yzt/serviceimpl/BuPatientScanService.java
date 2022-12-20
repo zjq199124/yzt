@@ -1,5 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.BuPatientScan;
 import com.maizhiyu.yzt.mapper.BuPatientScanMapper;
@@ -8,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -35,8 +36,8 @@ public class BuPatientScanService extends ServiceImpl<BuPatientScanMapper,BuPati
     }
 
     @Override
-    public List<Map<String, Object>> getPatientScanList(Long customerId, String term) {
-        return mapper.selectPatientScanList(customerId, term);
+    public IPage<Map<String, Object>> getPatientScanList(Page page, Long customerId, String term) {
+        return mapper.selectPatientScanList(page,customerId, term);
     }
 
 }

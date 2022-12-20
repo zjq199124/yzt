@@ -1,8 +1,8 @@
 package com.maizhiyu.yzt.serviceimpl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.maizhiyu.yzt.entity.DictDisease;
 import com.maizhiyu.yzt.entity.MsAgency;
 import com.maizhiyu.yzt.mapper.MsAgencyMapper;
 import com.maizhiyu.yzt.service.IMsAgencyService;
@@ -42,8 +42,8 @@ public class MsAgencyService extends ServiceImpl<MsAgencyMapper,MsAgency> implem
     }
 
     @Override
-    public List<Map<String, Object>> getAgencyList(Integer status, String term) {
-        List<Map<String, Object>> list = mapper.selectAgencyList(status, term);
+    public IPage<Map<String, Object>> getAgencyList(Page page, Integer status, String term) {
+        IPage<Map<String, Object>> list = mapper.selectAgencyList(page,status, term);
         return list;
     }
 }

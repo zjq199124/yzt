@@ -1,5 +1,7 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.TsSytech;
 
@@ -17,7 +19,7 @@ public interface ITsSytechService extends IService<TsSytech> {
 
     public TsSytech getSytechByName(String name);
 
-    public List<TsSytech> getSytechList(Integer status, String term, Integer display);
+    IPage<TsSytech> getSytechList(Page page, Integer status, String term, Integer display);
 
     List<TsSytech> selectSytechList(Long diseaseId, Long syndromeId, String search);
 }

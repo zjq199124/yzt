@@ -1,8 +1,8 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.SchSytech;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.ISchSytechService;
@@ -14,7 +14,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -41,8 +40,8 @@ public class SchSytechController {
         }
         // 如果无辨证ID则查询疾病对应的所有辨证ID，每个辨证增加一条记录
         else {
-            List<Map<String, Object>> list = syndromeService.getSyndromeList(sytech.getDiseaseId(), null, null);
-            for (Map<String, Object> map : list) {
+            IPage<Map<String, Object>> pages = syndromeService.getSyndromeList(new Page(0, -1), sytech.getDiseaseId(), null, null);
+            for (Map<String, Object> map : pages.getRecords()) {
                 sytech.setStatus(1);
                 sytech.setSyndromeId((Long) map.get("id"));
                 Integer res = service.addSytech(sytech);
@@ -108,12 +107,10 @@ public class SchSytechController {
     })
     @GetMapping("/getSytechList")
     public Result getSytechList(Long sytechId, Long diseaseId, Integer status, String term,
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = service.getSytechList(sytechId, diseaseId, status, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+                                @RequestParam(defaultValue = "1") Integer pageNum,
+                                @RequestParam(defaultValue = "10") Integer pageSize) {
+        IPage<Map<String, Object>> list = service.getSytechList(new Page(pageNum, pageSize), sytechId, diseaseId, status, term);
+        return Result.success(list);
     }
 
 }

@@ -1,9 +1,9 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.maizhiyu.yzt.entity.HsCustomerHerbs;
 import com.maizhiyu.yzt.entity.MsCustomer;
 import com.maizhiyu.yzt.entity.MsHerbs;
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  */
 
 @Service
-public class MsHerbsService extends ServiceImpl<MsHerbsMapper,MsHerbs> implements IMsHerbsService {
+public class MsHerbsService extends ServiceImpl<MsHerbsMapper, MsHerbs> implements IMsHerbsService {
 
     @Autowired
     private MsHerbsMapper msHerbsMapper;
@@ -52,21 +52,21 @@ public class MsHerbsService extends ServiceImpl<MsHerbsMapper,MsHerbs> implement
     @Override
     public Integer addMsHerbs(MsHerbs ite) {
         int i = msHerbsMapper.insert(ite);
-        if(i <= 0) {
+        if (i <= 0) {
             throw new BusinessException("创建失败，请重试");
         }
         List<MsCustomer> msCustomers = mapper.selectList(null);
         for (MsCustomer msCustomer : msCustomers) {
-                HsCustomerHerbs item = new HsCustomerHerbs();
-                item.setCustomerId(msCustomer.getId());
-                item.setInventory(new BigDecimal(0));
-                item.setUnitPrice(new BigDecimal(0));
-                item.setHerbsId(ite.getId());
-                item.setCreateTime(new Date());
-                Integer res = hsCustomerHerbsMapper.insert(item);
-                if (res <= 0) {
-                    throw new BusinessException("创建失败，请重试");
-                }
+            HsCustomerHerbs item = new HsCustomerHerbs();
+            item.setCustomerId(msCustomer.getId());
+            item.setInventory(new BigDecimal(0));
+            item.setUnitPrice(new BigDecimal(0));
+            item.setHerbsId(ite.getId());
+            item.setCreateTime(new Date());
+            Integer res = hsCustomerHerbsMapper.insert(item);
+            if (res <= 0) {
+                throw new BusinessException("创建失败，请重试");
+            }
         }
         return i;
     }
@@ -75,11 +75,11 @@ public class MsHerbsService extends ServiceImpl<MsHerbsMapper,MsHerbs> implement
     @Transactional(rollbackFor = Exception.class)
     public Integer delMsHerbs(Long id) {
         MsHerbs msHerbs = msHerbsMapper.selectOne(Wrappers.<MsHerbs>lambdaQuery().eq(MsHerbs::getId, id).last(" for update "));
-        if(msHerbs == null) {
+        if (msHerbs == null) {
             throw new BusinessException("删除失败");
         }
-        Integer count = msZhongyaoHerbsMapper.selectCount(Wrappers.<MsZhongyaoHerbs>lambdaQuery().eq(MsZhongyaoHerbs::getHerbsId, id));
-        if(count > 0) {
+        Long count = msZhongyaoHerbsMapper.selectCount(Wrappers.<MsZhongyaoHerbs>lambdaQuery().eq(MsZhongyaoHerbs::getHerbsId, id));
+        if (count > 0) {
             throw new BusinessException("删除失败，当前中药已被加入中药方案中，请先移除中药方案的中药关联");
         }
         return msHerbsMapper.deleteById(id);
@@ -96,21 +96,17 @@ public class MsHerbsService extends ServiceImpl<MsHerbsMapper,MsHerbs> implement
     }
 
     @Override
-    public PageInfo<MsHerbs> getMsHerbsList(String herbsName, Integer pageNum, Integer pageSize,Long zyId) {
-        PageHelper.startPage(pageNum, pageSize);
+    public IPage<MsHerbs> getMsHerbsList(String herbsName, Integer pageNum, Integer pageSize, Long zyId) {
         List<MsHerbs> list1 = msHerbsMapper.selectList(
-                Wrappers.<MsHerbs>lambdaQuery().ge(MsHerbs::getFlag,0).like(StringUtils.isNotBlank(herbsName),MsHerbs::getHerbsName,herbsName));
-
-        if(zyId != null) {
+                Wrappers.<MsHerbs>lambdaQuery().ge(MsHerbs::getFlag, 0).like(StringUtils.isNotBlank(herbsName), MsHerbs::getHerbsName, herbsName));
+        if (zyId != null) {
             List<SchZhongyaoHerbsVO> list2 = msZhongyaoHerbsMapper.getMsZhongyaoHerbsListBySchZhongyaoId(zyId);
-            if(list1 != null && list2 != null) {
+            if (list1 != null && list2 != null) {
                 List<Long> collect = list2.stream().map(SchZhongyaoHerbsVO::getHerbsId).collect(Collectors.toList());
                 List<MsHerbs> collect1 = list1.stream().filter(item -> !collect.contains(item.getId())).collect(Collectors.toList());
                 list1 = collect1;
             }
         }
-
-        PageInfo<MsHerbs> pageInfo = new PageInfo<>(list1, pageSize);
-        return pageInfo;
+        return new Page().setRecords(list1);
     }
 }

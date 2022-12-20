@@ -1,23 +1,24 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.alibaba.fastjson.JSONObject;
-import com.maizhiyu.yzt.entity.*;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.maizhiyu.yzt.entity.TxXzcData;
+import com.maizhiyu.yzt.entity.TxXzcRun;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.ITeEquipService;
 import com.maizhiyu.yzt.service.ITeMaintainService;
 import com.maizhiyu.yzt.service.ITeWarnService;
 import com.maizhiyu.yzt.service.ITxXzcService;
-import com.maizhiyu.yzt.utils.MyDate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.xml.crypto.Data;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +49,7 @@ public class TeXzcDebugController {
     public Result getRunList(String code) {
         String startDate = "2020-01-01";
         String endDate = "2030-01-01";
-        List<TxXzcRun> list = xzcService.getRunList(code, startDate, endDate);
+        IPage<TxXzcRun> list = xzcService.getRunList(new Page(-1,0),code, startDate, endDate);
         return Result.success(list);
     }
 
@@ -71,7 +72,7 @@ public class TeXzcDebugController {
     })
     @GetMapping("/getMaintainList")
     public Result getMaintainList(Long equipId) {
-        List<Map<String, Object>> list = maintainService.getMaintainList(null, equipId, null, null, null);
+        IPage<Map<String, Object>> list = maintainService.getMaintainList(null,null, equipId, null, null, null);
         return Result.success(list);
     }
 
@@ -80,7 +81,7 @@ public class TeXzcDebugController {
     @ApiImplicitParams({})
     @GetMapping("/getWarnList")
     public Result getWarnList() {
-        List<Map<String, Object>> list = warnService.getWarnList(null, null, null, null, null, null);
+        IPage<Map<String, Object>> list = warnService.getWarnList(null,null, null, null, null, null, null);
         return Result.success(list);
     }
 

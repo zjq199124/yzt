@@ -1,5 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.SchZhongyao;
 import com.maizhiyu.yzt.mapper.MsZhongyaoHerbsMapper;
@@ -46,44 +48,15 @@ public class SchZhongyaoService extends ServiceImpl<SchZhongyaoMapper,SchZhongya
     }
 
     @Override
-    public List<Map<String, Object>> getZhongyaoList(Long diseaseId, Integer status, String term) {
-        List<Map<String, Object>> list = mapper.selectZhongyaoList(status, diseaseId, term);
-
-//        某开发写的应该是对接藕湖浜的开发，没开发完，不能使用
-//        if(list != null && list.size() > 0) {
-//            List<Long> ids = list.stream().map(item -> (Long)item.get("id")).collect(Collectors.toList());
-//            List<SchZhongyaoHerbsVO> list1 = msZhongyaoHerbsMapper.getMsZhongyaoHerbsListBySchZhongyaoIds(ids);
-//            if(list1 != null && list1.size() > 0) {
-//                Map<Long, List<SchZhongyaoHerbsVO>> collect = list1.stream().collect(Collectors.groupingBy(SchZhongyaoHerbsVO::getZyId));
-//                list.forEach(item -> {
-//                    List<SchZhongyaoHerbsVO> list2 = collect.get((Long) item.get("id"));
-//                    if(list2 != null) {
-//                        StringBuffer stringBuffer = new StringBuffer("");
-//                        for (int i = 0; i < list2.size(); i++) {
-//                            SchZhongyaoHerbsVO schZhongyaoHerbsVOS = list2.get(i);
-//                            stringBuffer.append(schZhongyaoHerbsVOS.getHerbsName());
-//                            stringBuffer.append(":");
-//                            stringBuffer.append(schZhongyaoHerbsVOS.getNum());
-//                            stringBuffer.append(schZhongyaoHerbsVOS.getUnit());
-//                            if(i < list2.size()-1) {
-//                                stringBuffer.append("，");
-//                            }
-//                        }
-//                        item.put("herbss",stringBuffer.toString());
-//
-//                    }
-//                });
-//            }
-//
-//        }
-
+    public IPage<Map<String, Object>> getZhongyaoList(Page page,Long diseaseId, Integer status, String term) {
+        IPage<Map<String, Object>> list = mapper.selectZhongyaoList(page,status, diseaseId, term);
         return list;
     }
 
     @Override
     public List<Map<String, Object>> getZhongyaoList2(Long diseaseId, Integer status, String term,Long customerId) {
-        List<Map<String, Object>> list = mapper.selectZhongyaoList(status, diseaseId, term);
-
+        IPage<Map<String, Object>> pages = mapper.selectZhongyaoList(new Page(0,-1),status, diseaseId, term);
+        List<Map<String,Object>> list=pages.getRecords();
         if(list != null && list.size() > 0) {
             List<Long> ids = list.stream().map(item -> (Long)item.get("id")).collect(Collectors.toList());
             List<SchZhongyaoHerbsVO> list1 = msZhongyaoHerbsMapper.getMsZhongyaoHerbsListBySchZhongyaoIdsByCustomerId(ids,customerId);

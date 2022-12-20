@@ -1,9 +1,10 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.SchChengyao;
 
-import java.util.List;
 import java.util.Map;
 
 public interface ISchChengyaoService extends IService<SchChengyao> {
@@ -16,5 +17,5 @@ public interface ISchChengyaoService extends IService<SchChengyao> {
 
     public SchChengyao getChengyao(Long id);
 
-    public List<Map<String,Object>> getChengyaoList(Long diseaseId, Integer status, String term);
+    public IPage<Map<String, Object>> getChengyaoList(Page page, Long diseaseId, Integer status, String term);
 }

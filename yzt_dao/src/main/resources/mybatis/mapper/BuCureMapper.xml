@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.BuCureMapper">
+ 
+    <resultMap type="com.maizhiyu.yzt.entity.BuCure" id="BuCureMap">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="outPatientId" column="out_patient_id" jdbcType="BIGINT"/>
+        <result property="signatureId" column="signature_id" jdbcType="BIGINT"/>
+        <result property="registrantId" column="registrant_id" jdbcType="BIGINT"/>
+        <result property="cureUserId" column="cure_user_id" jdbcType="BIGINT"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="isDel" column="is_del" jdbcType="INTEGER"/>
+    </resultMap>
+
+ 
+</mapper>

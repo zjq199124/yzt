@@ -1,6 +1,8 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.HsUser;
 import com.maizhiyu.yzt.entity.HsUserDepartment;
@@ -119,20 +121,20 @@ public class HsUserService extends ServiceImpl<HsUserMapper,HsUser> implements I
     }
 
     @Override
-    public List<Map<String, Object>> getUserList(Long customerId, Long departmentId, Long roleId, Integer status, String term) {
-        List<Map<String, Object>> list = userMapper.selectUserList(customerId, departmentId, roleId, status, term, null, null);
+    public IPage<Map<String, Object>> getUserList(Page page, Long customerId, Long departmentId, Long roleId, Integer status, String term) {
+        IPage<Map<String, Object>> list = userMapper.selectUserList(page,customerId, departmentId, roleId, status, term, null, null);
         return list;
     }
 
     @Override
-    public List<Map<String, Object>> getDoctorList(Long customerId, Long departmentId, Integer status, String term) {
-        List<Map<String, Object>> list = userMapper.selectUserList(customerId, departmentId, null, status, term, 1, null);
+    public IPage<Map<String, Object>> getDoctorList(Page page,Long customerId, Long departmentId, Integer status, String term) {
+        IPage<Map<String, Object>> list = userMapper.selectUserList(page,customerId, departmentId, null, status, term, 1, null);
         return list;
     }
 
     @Override
-    public List<Map<String, Object>> getTherapistList(Long customerId, Long departmentId, Integer status, String term) {
-        List<Map<String, Object>> list = userMapper.selectUserList(customerId, departmentId, null, status, term, null, 1);
+    public IPage<Map<String, Object>> getTherapistList(Page page,Long customerId, Long departmentId, Integer status, String term) {
+        IPage<Map<String, Object>> list = userMapper.selectUserList(page,customerId, departmentId, null, status, term, null, 1);
         return list;
     }
 

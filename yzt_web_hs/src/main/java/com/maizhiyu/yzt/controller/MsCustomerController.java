@@ -1,27 +1,18 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.maizhiyu.yzt.entity.HsUser;
 import com.maizhiyu.yzt.entity.MsCustomer;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.MsCustomerTimeslotRO;
-import com.maizhiyu.yzt.service.IHsUserService;
 import com.maizhiyu.yzt.service.IMsCustomerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 

@@ -1,5 +1,7 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.TeFault;
 import com.maizhiyu.yzt.entity.TeFaultSolution;
@@ -17,7 +19,7 @@ public interface ITeFaultService  extends IService<TeFault> {
 
     TeFault getFault(Long id);
 
-    List<Map<String, Object>> getFaultList(Long customId, Integer status, String code);
+    IPage<Map<String, Object>> getFaultList(Page page, Long customerId, Integer status, String code);
 
     List<TeFaultSolution> getFaultSolutionList(Integer type);
 }

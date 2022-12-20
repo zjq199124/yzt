@@ -1,9 +1,10 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.SchXieding;
 
-import java.util.List;
 import java.util.Map;
 
 public interface ISchXiedingService extends IService<SchXieding> {
@@ -16,5 +17,5 @@ public interface ISchXiedingService extends IService<SchXieding> {
 
     public SchXieding getXieding(Long id);
 
-    public List<Map<String,Object>> getXiedingList(Long diseaseId, Integer status, String term);
+    public IPage<Map<String, Object>> getXiedingList(Page page, Long diseaseId, Integer status, String term);
 }

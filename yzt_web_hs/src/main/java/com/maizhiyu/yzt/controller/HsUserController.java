@@ -1,7 +1,7 @@
 package com.maizhiyu.yzt.controller;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.HsUser;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IHsUserService;
@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotNull;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 @Api(tags = "用户接口")
@@ -65,7 +63,7 @@ public class HsUserController {
     @ApiOperation(value = "修改用户信息", notes = "修改用户信息")
     @PostMapping("/setUser")
     public Result setUser(@RequestBody HsUser user) {
-        if (user.getPassword() != null && user.getPassword().trim().length()>0) {
+        if (user.getPassword() != null && user.getPassword().trim().length() > 0) {
             BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();
             String encoded = bcryptPasswordEncoder.encode(user.getPassword());
             user.setPassword(encoded);
@@ -131,10 +129,8 @@ public class HsUserController {
     public Result getUserList(Long customerId, Long departmentId, Long roleId, Integer status, String term,
                               @RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = service.getUserList(customerId, departmentId, roleId, status, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list);
-        return Result.success(pageInfo);
+        IPage<Map<String, Object>> list = service.getUserList(new Page(pageNum, pageSize), customerId, departmentId, roleId, status, term);
+        return Result.success(list);
     }
 
 
@@ -149,12 +145,10 @@ public class HsUserController {
     })
     @GetMapping("/getDoctorList")
     public Result getDoctorList(Long customerId, Long departmentId, Integer status, String term,
-                              @RequestParam(defaultValue = "1") Integer pageNum,
-                              @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = service.getDoctorList(customerId, departmentId, status, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list);
-        return Result.success(pageInfo);
+                                @RequestParam(defaultValue = "1") Integer pageNum,
+                                @RequestParam(defaultValue = "10") Integer pageSize) {
+        IPage<Map<String, Object>> list = service.getDoctorList(new Page(pageNum, pageSize), customerId, departmentId, status, term);
+        return Result.success(list);
     }
 
 
@@ -169,12 +163,10 @@ public class HsUserController {
     })
     @GetMapping("/getTherapistList")
     public Result getTherapistList(Long customerId, Long departmentId, Integer status, String term,
-                                @RequestParam(defaultValue = "1") Integer pageNum,
-                                @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = service.getTherapistList(customerId, departmentId, status, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list);
-        return Result.success(pageInfo);
+                                   @RequestParam(defaultValue = "1") Integer pageNum,
+                                   @RequestParam(defaultValue = "10") Integer pageSize) {
+        IPage<Map<String, Object>> list = service.getTherapistList(new Page(pageNum, pageSize), customerId, departmentId, status, term);
+        return Result.success(list);
     }
 
 }

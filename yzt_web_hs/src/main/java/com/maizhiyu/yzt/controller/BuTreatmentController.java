@@ -1,8 +1,8 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.BuTreatment;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IBuTreatmentService;
@@ -128,19 +128,17 @@ public class BuTreatmentController {
     })
     @GetMapping("/getTreatmentList")
     public Result getTreatmentList(String startDate, String endDate, String date,
-            Long customerId, Long departmentId, Long therapistId, Long patientId, Long prescriptionId, Long projectId,
-            Integer type, Integer status, String term,
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize) throws ParseException {
+                                   Long customerId, Long departmentId, Long therapistId, Long patientId, Long prescriptionId, Long projectId,
+                                   Integer type, Integer status, String term,
+                                   @RequestParam(defaultValue = "1") Integer pageNum,
+                                   @RequestParam(defaultValue = "10") Integer pageSize) throws ParseException {
         if (startDate == null && endDate == null && date != null) {
             startDate = date;
             endDate = MyDate.getNextDay(date);
         }
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = service.getTreatmentList(startDate, endDate,
+        IPage<Map<String, Object>> list = service.getTreatmentList(new Page(pageNum, pageSize), startDate, endDate,
                 customerId, departmentId, therapistId, patientId, prescriptionId, projectId, type, status, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+        return Result.success(list);
     }
 
 
@@ -157,17 +155,15 @@ public class BuTreatmentController {
     })
     @GetMapping("/getTreatmentWaitingList")
     public Result getTreatmentWaitingList(String startDate, String endDate, String date,
-                                   Long customerId, Long departmentId, Long therapistId,
-                                   @RequestParam(defaultValue = "1") Integer pageNum,
-                                   @RequestParam(defaultValue = "10") Integer pageSize) throws ParseException {
+                                          Long customerId, Long departmentId, Long therapistId,
+                                          @RequestParam(defaultValue = "1") Integer pageNum,
+                                          @RequestParam(defaultValue = "10") Integer pageSize) throws ParseException {
         if (startDate == null && endDate == null && date != null) {
             startDate = date;
             endDate = MyDate.getNextDay(date);
         }
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = service.getTreatmentWaitingList(startDate, endDate, customerId, departmentId, therapistId);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+        IPage<Map<String, Object>> list = service.getTreatmentWaitingList(new Page(pageNum, pageSize), startDate, endDate, customerId, departmentId, therapistId);
+        return Result.success(list);
     }
 
 
@@ -184,9 +180,8 @@ public class BuTreatmentController {
     })
     @GetMapping("/getTreatmentStatisticsOfTherapist")
     public Result getTreatmentStatisticsOfTherapist(String startDate, String endDate, Long customerId, Long departmentId, Long therapistId, String projects,
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "100") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
+                                                    @RequestParam(defaultValue = "1") Integer pageNum,
+                                                    @RequestParam(defaultValue = "100") Integer pageSize) {
         List<Long> projectList = new ArrayList<>();
         if (projects != null) {
             for (String pid : projects.split(",")) {
@@ -195,9 +190,8 @@ public class BuTreatmentController {
         } else {
             throw new RuntimeException("请选择项目");
         }
-        List<Map<String, Object>> list = service.getTreatmentStatistics(startDate, endDate, customerId, departmentId, therapistId, projectList);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+        IPage<Map<String, Object>> list = service.getTreatmentStatistics(new Page(pageNum, pageSize), startDate, endDate, customerId, departmentId, therapistId, projectList);
+        return Result.success(list);
     }
 
 }

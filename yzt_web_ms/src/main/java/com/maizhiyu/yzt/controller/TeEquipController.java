@@ -1,8 +1,8 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.TeEquip;
 import com.maizhiyu.yzt.entity.TxXzcData;
 import com.maizhiyu.yzt.entity.TxXzcRun;
@@ -11,7 +11,6 @@ import com.maizhiyu.yzt.service.ITeEquipService;
 import com.maizhiyu.yzt.service.ITeMaintainService;
 import com.maizhiyu.yzt.service.ITeWarnService;
 import com.maizhiyu.yzt.service.ITxXzcService;
-import com.maizhiyu.yzt.utils.MyDate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -111,12 +110,10 @@ public class TeEquipController {
     })
     @GetMapping("/getEquipList")
     public Result getEquipList(Long anencyId, Long customerId, Integer type, Long modelId, Integer status, String term,
-                                @RequestParam(defaultValue = "1") Integer pageNum,
-                                @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = equipService.getEquipList(anencyId, customerId, type, modelId, status, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+                               @RequestParam(defaultValue = "1") Integer pageNum,
+                               @RequestParam(defaultValue = "10") Integer pageSize) {
+        IPage<Map<String, Object>> list = equipService.getEquipList(new Page(pageNum, pageSize), anencyId, customerId, type, modelId, status, term);
+        return Result.success(list);
     }
 
 
@@ -132,12 +129,10 @@ public class TeEquipController {
     })
     @GetMapping("/getMaintainList")
     public Result getMaintainList(Long customerId, Long equipId, Integer type, String startDate, String endDate,
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = maintainService.getMaintainList(customerId, equipId, type, startDate, endDate);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+                                  @RequestParam(defaultValue = "1") Integer pageNum,
+                                  @RequestParam(defaultValue = "10") Integer pageSize) {
+        IPage<Map<String, Object>> list = maintainService.getMaintainList(new Page(pageNum, pageSize), customerId, equipId, type, startDate, endDate);
+        return Result.success(list);
     }
 
 
@@ -153,12 +148,10 @@ public class TeEquipController {
     })
     @GetMapping("/getWarnList")
     public Result getWarnList(String date, Long anencyId, Long customerId, Integer type, Long modelId,
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = warnService.getWarnList(date, anencyId, customerId, type, modelId, null);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+                              @RequestParam(defaultValue = "1") Integer pageNum,
+                              @RequestParam(defaultValue = "10") Integer pageSize) {
+        IPage<Map<String, Object>> list = warnService.getWarnList(new Page(pageNum, pageSize), date, anencyId, customerId, type, modelId, null);
+        return Result.success(list);
     }
 
 
@@ -172,12 +165,10 @@ public class TeEquipController {
     })
     @GetMapping("/getRunList")
     public Result getRunList(String code, String startDate, String endDate,
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<TxXzcRun> list = xzcService.getRunList(code, startDate, endDate);
-        PageInfo<TxXzcRun> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+                             @RequestParam(defaultValue = "1") Integer pageNum,
+                             @RequestParam(defaultValue = "10") Integer pageSize) {
+        IPage<TxXzcRun> list = xzcService.getRunList(new Page(pageNum, pageSize), code, startDate, endDate);
+        return Result.success(list);
     }
 
 

@@ -1,7 +1,7 @@
 package com.maizhiyu.yzt.controller;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.HsRole;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IHsRoleService;
@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 @Api(tags = "角色接口")
@@ -93,11 +92,9 @@ public class HsRoleController {
     })
     @GetMapping("/getRoleList")
     public Result getRoleList(Long customerId, Integer status, String term,
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = service.getRoleList(customerId, status, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list);
-        return Result.success(pageInfo);
+                              @RequestParam(defaultValue = "1") Integer pageNum,
+                              @RequestParam(defaultValue = "10") Integer pageSize) {
+        IPage<Map<String, Object>> list = service.getRoleList(new Page(pageNum, pageSize), customerId, status, term);
+        return Result.success(list);
     }
 }

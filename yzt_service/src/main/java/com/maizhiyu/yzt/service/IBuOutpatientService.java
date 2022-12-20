@@ -1,9 +1,10 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.BuOutpatient;
 
-import java.util.List;
 import java.util.Map;
 
 public interface IBuOutpatientService extends IService<BuOutpatient> {
@@ -56,11 +57,11 @@ public interface IBuOutpatientService extends IService<BuOutpatient> {
      * @param term
      * @return
      */
-    List<Map<String, Object>> getOutpatientList(
-            String createStartDate, String createEndDate,
-            String startDate, String endDate,
-            Long customerId, Long departmentId, Long doctorId, Long patientId,
-            Integer type, Integer status, String term);
+    IPage<Map<String, Object>> getOutpatientList(Page<Map<String, Object>> page,
+                                                 String createStartDate, String createEndDate,
+                                                 String startDate, String endDate,
+                                                 Long customerId, Long departmentId, Long doctorId, Long patientId,
+                                                 Integer type, Integer status, String term);
 
     /**
      * 以患者id获取门诊列表
@@ -71,5 +72,5 @@ public interface IBuOutpatientService extends IService<BuOutpatient> {
      * @param status
      * @return
      */
-    List<Map<String, Object>> getPsUserOutpatientList(Long userId, Long patientId, Integer type, Integer status);
+    IPage<Map<String, Object>> getPsUserOutpatientList(Page page,Long userId, Long patientId, Integer type, Integer status);
 }

@@ -2,10 +2,10 @@ package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.maizhiyu.yzt.entity.MsExaminationPaper;
 import com.maizhiyu.yzt.entity.TsSytechItem;
 import com.maizhiyu.yzt.mapper.TsSytechItemMapper;
 import com.maizhiyu.yzt.service.ITsSytechItemService;
@@ -17,8 +17,8 @@ import java.util.List;
 
 
 @Service
-@Transactional(rollbackFor=Exception.class)
-public class TsSytechItemService extends ServiceImpl<TsSytechItemMapper,TsSytechItem> implements ITsSytechItemService {
+@Transactional(rollbackFor = Exception.class)
+public class TsSytechItemService extends ServiceImpl<TsSytechItemMapper, TsSytechItem> implements ITsSytechItemService {
 
     @Autowired
     private TsSytechItemMapper mapper;
@@ -52,14 +52,10 @@ public class TsSytechItemService extends ServiceImpl<TsSytechItemMapper,TsSytech
     }
 
     @Override
-    public PageInfo<TsSytechItem> getSytechItemList(Long examinationPaperId, Integer pageNum, Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<TsSytechItem> list = mapper.selectList(
-//                Wrappers.<MsExaminationPaper>lambdaQuery()
-//                .eq(sytechId != null, MsExaminationPaper::getSytechId,sytechId);
-                new LambdaQueryWrapper<TsSytechItem>().eq(examinationPaperId != null, TsSytechItem::getExaminationPaperId, examinationPaperId));
-        PageInfo<TsSytechItem> pageInfo = new PageInfo<>(list, pageSize);
-
-        return pageInfo;
+    public IPage<TsSytechItem> getSytechItemList(Long examinationPaperId, Long pageNum, Long pageSize) {
+        LambdaQueryWrapper<TsSytechItem> wrapper= Wrappers.lambdaQuery();
+        wrapper.eq(examinationPaperId != null, TsSytechItem::getExaminationPaperId, examinationPaperId);
+        IPage pages = mapper.selectPage(new Page(pageNum, pageSize),wrapper);
+        return pages;
     }
 }

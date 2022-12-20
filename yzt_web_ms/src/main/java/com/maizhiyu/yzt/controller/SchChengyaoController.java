@@ -1,8 +1,8 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.SchChengyao;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.ISchChengyaoService;
@@ -14,7 +14,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -41,8 +40,8 @@ public class SchChengyaoController {
         }
         // 如果无辨证ID则查询疾病对应的所有辨证ID，每个辨证增加一条记录
         else {
-            List<Map<String, Object>> list = syndromeService.getSyndromeList(chengyao.getDiseaseId(), null, null);
-            for (Map<String, Object> map : list) {
+            IPage<Map<String, Object>> pages = syndromeService.getSyndromeList(null, chengyao.getDiseaseId(), null, null);
+            for (Map<String, Object> map : pages.getRecords()) {
                 chengyao.setStatus(1);
                 chengyao.setSyndromeId((Long) map.get("id"));
                 Integer res = service.addChengyao(chengyao);
@@ -107,12 +106,10 @@ public class SchChengyaoController {
     })
     @GetMapping("/getChengyaoList")
     public Result getChengyaoList(Long diseaseId, Integer status, String term,
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = service.getChengyaoList(diseaseId, status, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+                                  @RequestParam(defaultValue = "1") Integer pageNum,
+                                  @RequestParam(defaultValue = "10") Integer pageSize) {
+        IPage<Map<String, Object>> pages = service.getChengyaoList(new Page(pageNum, pageSize), diseaseId, status, term);
+        return Result.success(pages);
     }
 
 }

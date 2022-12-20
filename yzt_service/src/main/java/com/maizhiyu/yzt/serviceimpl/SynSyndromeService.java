@@ -1,7 +1,8 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.maizhiyu.yzt.entity.DictDisease;
 import com.maizhiyu.yzt.entity.SynSyndrome;
 import com.maizhiyu.yzt.mapper.DictDiseaseMapper;
 import com.maizhiyu.yzt.mapper.SynSyndromeMapper;
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -47,14 +47,14 @@ public class SynSyndromeService extends ServiceImpl<SynSyndromeMapper,SynSyndrom
     }
 
     @Override
-    public List<Map<String, Object>> getSyndromeList(Long diseaseId, Integer status, String term) {
-        List<Map<String, Object>> list = mapper.selectSyndromeList(diseaseId, null, status, term);
+    public IPage<Map<String, Object>> getSyndromeList(Page page, Long diseaseId, Integer status, String term) {
+        IPage<Map<String, Object>> list = mapper.selectSyndromeList(page,diseaseId, null, status, term);
         return list;
     }
 
     @Override
-    public List<Map<String, Object>> getSyndromeList(String diseaseName, Integer status, String term) {
-        List<Map<String, Object>> list = mapper.selectSyndromeList(null, diseaseName, status, term);
-        return list;
+    public IPage<Map<String, Object>> getSyndromeList(Page page,String diseaseName, Integer status, String term) {
+        IPage<Map<String, Object>> pages = mapper.selectSyndromeList(page,null, diseaseName, status, term);
+        return pages;
     }
 }

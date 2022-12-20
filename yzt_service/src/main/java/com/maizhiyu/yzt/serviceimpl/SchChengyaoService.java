@@ -1,5 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.SchChengyao;
 import com.maizhiyu.yzt.mapper.SchChengyaoMapper;
@@ -40,8 +42,8 @@ public class SchChengyaoService extends ServiceImpl<SchChengyaoMapper,SchChengya
     }
 
     @Override
-    public List<Map<String, Object>> getChengyaoList(Long diseaseId, Integer status, String term) {
-        List<Map<String, Object>> list = mapper.selectChengyaoList(diseaseId, status, term);
+    public IPage<Map<String, Object>> getChengyaoList(Page page, Long diseaseId, Integer status, String term) {
+        IPage<Map<String, Object>> list = mapper.selectChengyaoList(page,diseaseId, status, term);
         return list;
     }
 }

@@ -1,6 +1,6 @@
 package com.maizhiyu.yzt.controller;
 
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.maizhiyu.yzt.base.BaseController;
 import com.maizhiyu.yzt.entity.HsCustomerHerbs;
 import com.maizhiyu.yzt.result.Result;
@@ -33,7 +33,7 @@ public class HsCustomerHerbsController extends BaseController {
     private IHsCustomerHerbsService customerHerbsService;
 
     @ApiOperation(value = "增加客户药材设置", notes = "增加客户药材设置")
-    @ApiImplicitParam(value = "鉴权token",name = "token",paramType  = "header", dataType = "String", required=true)
+    @ApiImplicitParam(value = "鉴权token", name = "token", paramType = "header", dataType = "String", required = true)
     @PostMapping("/addHsCustomerHerbs")
     public Result addHsCustomerHerbs(@RequestBody HsCustomerHerbs item) {
         Long customerId = ((Number) getClaims().get("customerId")).longValue();
@@ -54,7 +54,7 @@ public class HsCustomerHerbsController extends BaseController {
 //    }
 
     @ApiOperation(value = "修改客户药材设置", notes = "修改客户药材设置")
-    @ApiImplicitParam(value = "鉴权token",name = "token",paramType  = "header", dataType = "String", required=true)
+    @ApiImplicitParam(value = "鉴权token", name = "token", paramType = "header", dataType = "String", required = true)
     @PostMapping("/setHsCustomerHerbs")
     public Result setMsHerbs(@RequestBody HsCustomerHerbs item) {
         Long customerId = ((Number) getClaims().get("customerId")).longValue();
@@ -68,12 +68,12 @@ public class HsCustomerHerbsController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "客户药材ID", required = true)
     })
-    @ApiImplicitParam(value = "鉴权token",name = "token",paramType  = "header", dataType = "String", required=true)
+    @ApiImplicitParam(value = "鉴权token", name = "token", paramType = "header", dataType = "String", required = true)
     @GetMapping("/getHsCustomerHerbs")
     public Result getMsHerbs(@RequestParam Long id) {
 
         Long customerId = ((Number) getClaims().get("customerId")).longValue();
-        CustomerHerbsVO item = customerHerbsService.getHsCustomerHerbs(customerId,id);
+        CustomerHerbsVO item = customerHerbsService.getHsCustomerHerbs(customerId, id);
         return item != null ? Result.success(item) : Result.failure();
     }
 
@@ -83,7 +83,7 @@ public class HsCustomerHerbsController extends BaseController {
             @ApiImplicitParam(name = "pageNum", value = "开始页数", required = false),
             @ApiImplicitParam(name = "pageSize", value = "每页大小", required = false)
     })
-    @ApiImplicitParam(value = "鉴权token",name = "token",paramType  = "header", dataType = "String", required=true)
+    @ApiImplicitParam(value = "鉴权token", name = "token", paramType = "header", dataType = "String", required = true)
     @GetMapping("/getHsCustomerHerbsList")
     public Result getMsHerbsList(HttpServletRequest request, String herbsName,
                                  @RequestParam(defaultValue = "1") Integer pageNum,
@@ -91,7 +91,7 @@ public class HsCustomerHerbsController extends BaseController {
 
 
         Long customerId = ((Number) getClaims().get("customerId")).longValue();
-        PageInfo<CustomerHerbsVO> paperList = customerHerbsService.getHsCustomerHerbsList(customerId,herbsName,pageNum,pageSize);
+        IPage<CustomerHerbsVO> paperList = customerHerbsService.getHsCustomerHerbsList(customerId, herbsName, pageNum, pageSize);
         return Result.success(paperList);
     }
 

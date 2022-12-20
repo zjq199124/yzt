@@ -1,6 +1,8 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.BuMedicant;
 import com.maizhiyu.yzt.mapper.BuMedicantMapper;
@@ -49,12 +51,12 @@ public class BuMedicantService extends ServiceImpl<BuMedicantMapper,BuMedicant> 
     }
 
     @Override
-    public List<BuMedicant> getMedicantList(String term) {
+    public IPage<BuMedicant> getMedicantList(Page page, String term) {
         QueryWrapper<BuMedicant> wrapper = new QueryWrapper<>();
         wrapper.like("name", term)
                 .or().like("pinyin", term)
                 .or().like("abbr", term);
-        return mapper.selectList(wrapper);
+        return mapper.selectPage(page,wrapper);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.BuOutpatient;
 import com.maizhiyu.yzt.mapper.BuOutpatientMapper;
@@ -56,12 +58,12 @@ public class BuOutpatientService extends ServiceImpl<BuOutpatientMapper, BuOutpa
     }
 
     @Override
-    public List<Map<String, Object>> getOutpatientList(String createStartDate, String createEndDate, String startDate, String endDate, Long customerId, Long departmentId, Long doctorId, Long patientId, Integer type, Integer status, String term) {
-        return mapper.selectOutpatientList(createStartDate, createEndDate, startDate, endDate, customerId, departmentId, doctorId, patientId, type, status, term);
+    public IPage<Map<String, Object>> getOutpatientList(Page<Map<String,Object>> page, String createStartDate, String createEndDate, String startDate, String endDate, Long customerId, Long departmentId, Long doctorId, Long patientId, Integer type, Integer status, String term) {
+        return mapper.selectOutpatientList(page,createStartDate, createEndDate, startDate, endDate, customerId, departmentId, doctorId, patientId, type, status, term);
     }
 
     @Override
-    public List<Map<String, Object>> getPsUserOutpatientList(Long userId, Long patientId, Integer type, Integer status) {
-        return mapper.selectPsUserOutpatientList(userId, patientId, type, status);
+    public IPage<Map<String, Object>> getPsUserOutpatientList(Page page,Long userId, Long patientId, Integer type, Integer status) {
+        return mapper.selectPsUserOutpatientList(page,userId, patientId, type, status);
     }
 }

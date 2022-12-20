@@ -98,7 +98,7 @@ public class ExistCheckAspect {
                 }
 
                 // 查询数据库
-                int count = mapper.selectCount(wrapper);
+                Long count = mapper.selectCount(wrapper);
 
                 // 数据重复(抛出异常)
                 if (count > 0) {
