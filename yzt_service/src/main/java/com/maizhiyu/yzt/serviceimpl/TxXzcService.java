@@ -1,9 +1,12 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.Update;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.maizhiyu.yzt.entity.*;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.maizhiyu.yzt.entity.TxXzcCmd;
+import com.maizhiyu.yzt.entity.TxXzcData;
+import com.maizhiyu.yzt.entity.TxXzcRun;
 import com.maizhiyu.yzt.mapper.TxXzcCmdMapper;
 import com.maizhiyu.yzt.mapper.TxXzcDataMapper;
 import com.maizhiyu.yzt.mapper.TxXzcRunMapper;
@@ -111,7 +114,7 @@ public class TxXzcService implements ITxXzcService {
     }
 
     @Override
-    public List<TxXzcRun> getRunList(String code, String startDate, String endDate) {
+    public IPage<TxXzcRun> getRunList(Page page, String code, String startDate, String endDate) {
         QueryWrapper<TxXzcRun> wrapper = new QueryWrapper<>();
         wrapper.eq("code", code);
         wrapper.orderByDesc("start_time");
@@ -123,7 +126,7 @@ public class TxXzcService implements ITxXzcService {
             // startDate/endDate表示的是，设备开始运行的时间，在startDate和endDate之间
             wrapper.le("start_time", endDate);
         }
-        List<TxXzcRun> list = runMapper.selectList(wrapper);
+        IPage<TxXzcRun> list = runMapper.selectPage(page,wrapper);
         return list;
     }
 

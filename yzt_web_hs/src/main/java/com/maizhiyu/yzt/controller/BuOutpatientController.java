@@ -1,10 +1,9 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.BuOutpatient;
-import com.maizhiyu.yzt.entity.BuTreatment;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IBuOutpatientService;
 import io.swagger.annotations.Api;
@@ -15,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 
 @Api(tags = "门诊预约接口")
@@ -90,11 +87,9 @@ public class BuOutpatientController {
             Integer type, Integer status, String term,
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "100") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = service.getOutpatientList(
+        IPage list = service.getOutpatientList(new Page(pageNum, pageSize),
                 createStartDate, createEndDate, startDate, endDate, customerId, departmentId, doctorId, patientId, type, status, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+        return Result.success(list);
     }
 
 }

@@ -1,9 +1,10 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.BuPatientScan;
 
-import java.util.List;
 import java.util.Map;
 
 public interface IBuPatientScanService extends IService<BuPatientScan> {
@@ -14,6 +15,6 @@ public interface IBuPatientScanService extends IService<BuPatientScan> {
 
     BuPatientScan getPatientScan(Long id);
 
-    List<Map<String, Object>> getPatientScanList(Long customerId, String term);
+    IPage<Map<String, Object>> getPatientScanList(Page page, Long customerId, String term);
 
 }

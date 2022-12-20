@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.BuDiagnose;
+import com.maizhiyu.yzt.entity.BuPrescription;
 import com.maizhiyu.yzt.entity.DictDisease;
 import com.maizhiyu.yzt.mapper.BuRecommendMapper;
 import com.maizhiyu.yzt.mapper.DictDiseaseMapper;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class BuRecommendService extends ServiceImpl<BuRecommendMapper,Object> implements IBuRecommendService {
+public class BuRecommendService extends ServiceImpl<BuRecommendMapper, Object> implements IBuRecommendService {
 
     @Autowired
     private BuRecommendMapper buRecommendMapper;
@@ -45,6 +46,9 @@ public class BuRecommendService extends ServiceImpl<BuRecommendMapper,Object> im
 
     @Resource
     private BuDiagnoseService buDiagnoseService;
+
+    @Resource
+    private BuPrescriptionService buPrescriptionService;
 
 
     @Override
@@ -196,8 +200,18 @@ public class BuRecommendService extends ServiceImpl<BuRecommendMapper,Object> im
                 ro.setSyndromeIdList(syndromeIdList);
             }
         }
-
         List<BuDiagnoseVO.ShiyiVO> sytechList = buRecommendMapper.getRecommendSytech(ro.getSyndromeIdList(), ro.getDiseaseId(), ro.getSytechId(), ro.getCustomerName());
+        //查询是否保存处方
+        LambdaQueryWrapper<BuPrescription> prescriptionQueryWrapper = new LambdaQueryWrapper<>();
+        prescriptionQueryWrapper.eq(BuPrescription::getPatientId, ro.getPatientId())
+                .eq(BuPrescription::getOutpatientId, ro.getOutpatientId())
+                .orderByDesc(BuPrescription::getUpdateTime)
+                .last("limit 1");
+        BuPrescription buPrescription = buPrescriptionService.getOne(prescriptionQueryWrapper);
+        if (buPrescription != null) {
+            resultMap.put("yptPrescriptionId", buPrescription.getId());
+            resultMap.put("yptPrescription", buPrescription);
+        }
         // 整合数据
         BuDiagnoseVO.GetRecommendVO vo = new BuDiagnoseVO.GetRecommendVO();
         vo.setZhongyaoList(Collections.emptyList());
@@ -206,8 +220,7 @@ public class BuRecommendService extends ServiceImpl<BuRecommendMapper,Object> im
         vo.setShiyiList(sytechList);
         resultMap.put("shiyiList", vo.getShiyiList());
         resultMap.put("yptDiagnoseId", null);
-        resultMap.put("yptPrescriptionId", null);
-        resultMap.put("yptPrescription", null);
+
         resultMap.put("prescriptionItemList", Collections.emptyList());
         //云平台中医诊断名称
         resultMap.put("yptDiseaseName", disease.getName());

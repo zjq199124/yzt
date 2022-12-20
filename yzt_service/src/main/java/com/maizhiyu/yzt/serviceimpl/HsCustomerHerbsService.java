@@ -1,9 +1,9 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.maizhiyu.yzt.entity.HsCustomerHerbs;
 import com.maizhiyu.yzt.entity.MsHerbs;
 import com.maizhiyu.yzt.mapper.HsCustomerHerbsMapper;
@@ -73,8 +73,7 @@ public class HsCustomerHerbsService extends ServiceImpl<HsCustomerHerbsMapper,Hs
     }
 
     @Override
-    public PageInfo<CustomerHerbsVO> getHsCustomerHerbsList(Long customerId, String herbsName, Integer pageNum, Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
+    public IPage<CustomerHerbsVO> getHsCustomerHerbsList(Long customerId, String herbsName, Integer pageNum, Integer pageSize) {
         List<MsHerbs> list = msHerbsMapper.selectList(
                 Wrappers.<MsHerbs>lambdaQuery().ge(MsHerbs::getFlag,0).like(StringUtils.isNotBlank(herbsName),MsHerbs::getHerbsName,herbsName));
         List<CustomerHerbsVO> list2 = new ArrayList<>();
@@ -102,7 +101,6 @@ public class HsCustomerHerbsService extends ServiceImpl<HsCustomerHerbsMapper,Hs
             }
 
         }
-
-        return new PageInfo<>(list2, pageSize);
+        return new Page().setRecords(list2);
     }
 }

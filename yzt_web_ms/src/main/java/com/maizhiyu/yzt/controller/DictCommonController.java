@@ -1,7 +1,7 @@
 package com.maizhiyu.yzt.controller;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.DictCommon;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IDictCommonService;
@@ -77,12 +77,10 @@ public class DictCommonController {
     })
     @GetMapping("/getItemList")
     public Result getItemList(String cate, Integer status, String term,
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = service.getItemList(cate, status, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list);
-        return Result.success(pageInfo);
+                              @RequestParam(defaultValue = "1") Integer pageNum,
+                              @RequestParam(defaultValue = "10") Integer pageSize) {
+        IPage<DictCommon> list = service.getItemList(new Page(pageNum, pageSize), cate, status, term);
+        return Result.success(list);
     }
 
 

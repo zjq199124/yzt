@@ -2,6 +2,8 @@ package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.TeBgq;
 import com.maizhiyu.yzt.exception.BusinessException;
@@ -56,13 +58,13 @@ public class TeBgqService extends ServiceImpl<TeBgqMapper,TeBgq> implements ITeB
     }
 
     @Override
-    public List<TeBgq> getBgqList(Long agencyId, Long customerId, Integer status, String term) {
+    public IPage<TeBgq> getBgqList(Page page, Long agencyId, Long customerId, Integer status, String term) {
         QueryWrapper<TeBgq> wrapper = new QueryWrapper<>();
         if (agencyId != null) wrapper.eq("agency_id", agencyId);
         if (customerId != null) wrapper.eq("customer_id", customerId);
         if (status != null) wrapper.eq("status", status);
         if (term != null) wrapper.like("term", term);
-        return mapper.selectList(wrapper);
+        return mapper.selectPage(page,wrapper);
     }
 
     @Override

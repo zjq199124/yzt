@@ -1,5 +1,7 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.MsCustomer;
 
@@ -16,9 +18,9 @@ public interface IMsCustomerService extends IService<MsCustomer> {
 
     Map<String, Object> getCustomer(Long id);
 
-    List<Map<String, Object>> getCustomerList(Long agencyId, Integer status, String term);
+    IPage<Map<String, Object>> getCustomerList(Page page,Long agencyId, Integer status, String term);
 
-    List<Map<String, Object>> getCustomerList(String province, String city, String term);
+    IPage<Map<String, Object>> getCustomerList(Page page, String province, String city, String term);
 
     List<String> getCustomerTimeslotList(Long id);
 

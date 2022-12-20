@@ -1,6 +1,8 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.HsRole;
 import com.maizhiyu.yzt.entity.HsRoleResource;
@@ -86,8 +88,8 @@ public class HsRoleService extends ServiceImpl<HsRoleMapper,HsRole> implements I
     }
 
     @Override
-    public List<Map<String, Object>> getRoleList(Long customerId, Integer status, String term) {
-        List<Map<String, Object>> list = roleMapper.selectRoleList(customerId, status, term);
+    public IPage<Map<String, Object>> getRoleList(Page page, Long customerId, Integer status, String term) {
+        IPage<Map<String, Object>> list = roleMapper.selectRoleList(page,customerId, status, term);
         return list;
     }
 }

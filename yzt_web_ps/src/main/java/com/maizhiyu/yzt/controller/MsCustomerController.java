@@ -1,8 +1,8 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IHsDepartmentService;
 import com.maizhiyu.yzt.service.IMsCustomerService;
@@ -11,7 +11,10 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
@@ -39,12 +42,10 @@ public class MsCustomerController {
     })
     @GetMapping("/getCustomerList")
     public Result getCustomerList(String province, String city, String term,
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = customerService.getCustomerList(province, city, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+                                  @RequestParam(defaultValue = "1") Integer pageNum,
+                                  @RequestParam(defaultValue = "10") Integer pageSize) {
+        IPage<Map<String, Object>> list = customerService.getCustomerList(new Page(pageSize, pageSize), province, city, term);
+        return Result.success(list);
     }
 
 
@@ -54,8 +55,8 @@ public class MsCustomerController {
     })
     @GetMapping("/getCustomerDepartmentList")
     public Result getCustomerDepartmentList(Long customerId) {
-        List<Map<String, Object>> list = departmentService.getDepartmentList(customerId, 1, null);
-        return Result.success(list);
+        IPage<Map<String, Object>> pages = departmentService.getDepartmentList(null, customerId, 1, null);
+        return Result.success(pages.getRecords());
     }
 
 

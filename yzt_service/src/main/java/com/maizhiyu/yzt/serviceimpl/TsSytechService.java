@@ -1,6 +1,8 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.TsSytech;
 import com.maizhiyu.yzt.mapper.TsSytechMapper;
@@ -49,7 +51,7 @@ public class TsSytechService extends ServiceImpl<TsSytechMapper,TsSytech> implem
 
 
     @Override
-    public List<TsSytech> getSytechList(Integer status, String term, Integer display) {
+    public IPage<TsSytech> getSytechList(Page page, Integer status, String term, Integer display) {
         QueryWrapper<TsSytech> wrapper = new QueryWrapper<>();
         if (status != null) {
             wrapper.eq("status", status);
@@ -60,7 +62,7 @@ public class TsSytechService extends ServiceImpl<TsSytechMapper,TsSytech> implem
         if (display != null) {
             wrapper.eq("display", display);
         }
-        List<TsSytech> list = mapper.selectList(wrapper);
+        IPage<TsSytech> list = mapper.selectPage(page,wrapper);
         return list;
     }
 

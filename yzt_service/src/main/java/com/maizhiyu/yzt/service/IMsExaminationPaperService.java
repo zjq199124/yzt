@@ -1,9 +1,8 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.github.pagehelper.PageInfo;
 import com.maizhiyu.yzt.entity.MsExaminationPaper;
-import com.maizhiyu.yzt.entity.TsSytechItem;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ public interface IMsExaminationPaperService extends IService<MsExaminationPaper>
 
     MsExaminationPaper getMsExaminationPaper(Long id);
 
-    PageInfo<MsExaminationPaper> getMsExaminationPaperList(Long sytechId, Integer pageNum, Integer pageSize);
+    IPage<MsExaminationPaper> getMsExaminationPaperList(Long sytechId, Integer pageNum, Integer pageSize);
 
     List<MsExaminationPaper> getMsExaminationPaperListBySytechId(Long sytechId);
 }

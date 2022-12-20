@@ -1,7 +1,5 @@
 package com.maizhiyu.yzt.controller;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.maizhiyu.yzt.entity.BuPrescription;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IBuPrescriptionService;

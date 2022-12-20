@@ -1,6 +1,8 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.BuTemplate;
 import com.maizhiyu.yzt.mapper.BuTemplateMapper;
@@ -8,8 +10,6 @@ import com.maizhiyu.yzt.service.IBuTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 
 @Service
@@ -40,9 +40,9 @@ public class BuTemplateService extends ServiceImpl<BuTemplateMapper,BuTemplate> 
     }
 
     @Override
-    public List<BuTemplate> getTemplateList(Long doctocId) {
+    public IPage<BuTemplate> getTemplateList(Page page, Long doctocId) {
         QueryWrapper<BuTemplate> wrapper = new QueryWrapper<>();
         wrapper.eq("doctor_id", doctocId);
-        return mapper.selectList(wrapper);
+        return mapper.selectPage(page,wrapper);
     }
 }

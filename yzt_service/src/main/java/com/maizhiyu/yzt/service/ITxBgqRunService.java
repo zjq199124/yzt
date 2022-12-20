@@ -1,9 +1,9 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.TxBgqRun;
-
-import java.util.List;
 
 public interface ITxBgqRunService extends IService<TxBgqRun> {
 
@@ -11,6 +11,6 @@ public interface ITxBgqRunService extends IService<TxBgqRun> {
 
     Integer setBgqRun(TxBgqRun run);
 
-    List<TxBgqRun> getBgqRunList(String code, String startDate, String endDate);
+    IPage<TxBgqRun> getBgqRunList(Page page, String code, String startDate, String endDate);
 
 }

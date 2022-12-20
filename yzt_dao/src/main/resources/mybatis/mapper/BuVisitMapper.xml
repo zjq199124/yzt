@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.BuVisitMapper">
+
+    <resultMap type="com.maizhiyu.yzt.entity.BuVisit" id="BuVisitMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="cureId" column="cure_id" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="result" column="result" jdbcType="INTEGER"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+    </resultMap>
+    <!--随访分页列表查询-->
+    <select id="getPage" resultType="com.maizhiyu.yzt.vo.VisitVO" parameterType="com.maizhiyu.yzt.ro.VisitRO">
+        SELECT bv.id,
+        bp.NAME,
+        bp.phone,
+        bp.sex,
+        bp.nl,
+        bo.create_time diagnose_time,
+        bd.disease diagnose_name,
+        bpi.NAME sytech_name,
+        hu.realname doctor_name,
+        hus.realname cure_user_name
+        FROM bu_visit bv
+        LEFT JOIN bu_cure bc ON bv.cure_id = bc.id
+        LEFT JOIN bu_signature bs ON bc.signature_id = bs.id
+        LEFT JOIN bu_outpatient bo ON bc.out_patient_id = bo.id
+        LEFT JOIN bu_patient bp ON bp.id = bo.patient_id
+        LEFT JOIN bu_diagnose bd ON bd.outpatient_id = bo.id
+        LEFT JOIN bu_prescription_item bpi ON bpi.id = bs.prescription_item_id
+        LEFT JOIN hs_user hu ON hu.id = bd.doctor_id
+        LEFT JOIN hs_user hus ON hus.id = bc.cure_user_id
+        <where>
+            <if test="query.date != null">
+                AND cc.create_date <![CDATA[ >= ]]> #{query.startDate}
+            </if>
+            <if test="query.name != null and query.name != ''">
+                AND bp.name LIKE CONCAT('%',#{query.name},'%')
+            </if>
+            <if test="query.phone != null and query.phone != ''">
+                AND bp.phone LIKE CONCAT('%',#{query.phone},'%')
+            </if>
+            <if test="query.status != null and query.status != ''">
+                AND bv.status=#{query.status}
+            </if>
+        </where>
+        GROUP BY bv.id
+    </select>
+
+
+</mapper>

@@ -1,9 +1,8 @@
 package com.maizhiyu.yzt.controller;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.base.BaseController;
-import com.maizhiyu.yzt.entity.BuPrescription;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.*;
 import com.maizhiyu.yzt.vo.CustomerHerbsVO;
@@ -12,11 +11,11 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 
@@ -48,8 +47,8 @@ public class BuSchemeController extends BaseController {
     @GetMapping("/getHsCustomerHerbsList")
     public Result getMsHerbsList(String herbsName) {
         Long customerId = ((Number) getClaims().get("customerId")).longValue();
-        PageInfo<CustomerHerbsVO> paperList = customerHerbsService.getHsCustomerHerbsList(customerId,herbsName,1,999999);
-        return Result.success(paperList.getList());
+        IPage<CustomerHerbsVO> paperList = customerHerbsService.getHsCustomerHerbsList(customerId, herbsName, 1, 999999);
+        return Result.success(paperList.getRecords());
     }
 
 
@@ -66,10 +65,8 @@ public class BuSchemeController extends BaseController {
                                         @RequestParam(defaultValue = "10") Integer pageSize) {
 
 //        Long customerId = ((Number) getClaims().get("customerId")).longValue();
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = zhongyaoService.getZhongyaoList(null, null, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+        IPage<Map<String, Object>> list = zhongyaoService.getZhongyaoList(new Page(pageNum, pageSize), null, null, term);
+        return Result.success(list);
     }
 
 
@@ -81,12 +78,10 @@ public class BuSchemeController extends BaseController {
     })
     @GetMapping("/getChengyaoSchemeList")
     public Result getChengyaoSchemeList(String term,
-                                  @RequestParam(defaultValue = "1") Integer pageNum,
-                                  @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = chengyaoService.getChengyaoList(null, null, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+                                        @RequestParam(defaultValue = "1") Integer pageNum,
+                                        @RequestParam(defaultValue = "10") Integer pageSize) {
+        IPage<Map<String, Object>> list = chengyaoService.getChengyaoList(new Page(pageNum, pageSize), null, null, term);
+        return Result.success(list);
     }
 
 
@@ -98,12 +93,10 @@ public class BuSchemeController extends BaseController {
     })
     @GetMapping("/getXiedingSchemeList")
     public Result getXiedingSchemeList(String term,
-                                 @RequestParam(defaultValue = "1") Integer pageNum,
-                                 @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = xiedingService.getXiedingList(null, null, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+                                       @RequestParam(defaultValue = "1") Integer pageNum,
+                                       @RequestParam(defaultValue = "10") Integer pageSize) {
+        IPage<Map<String, Object>> list = xiedingService.getXiedingList(new Page(pageNum, pageSize), null, null, term);
+        return Result.success(list);
     }
 
 
@@ -115,11 +108,9 @@ public class BuSchemeController extends BaseController {
     })
     @GetMapping("/getSytechSchemeList")
     public Result getSytechSchemeList(String term,
-                                @RequestParam(defaultValue = "1") Integer pageNum,
-                                @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = sytechService.getSytechList(null,null, null, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+                                      @RequestParam(defaultValue = "1") Integer pageNum,
+                                      @RequestParam(defaultValue = "10") Integer pageSize) {
+        IPage<Map<String, Object>> list = sytechService.getSytechList(new Page(pageNum, pageSize), null, null, null, term);
+        return Result.success(list);
     }
 }

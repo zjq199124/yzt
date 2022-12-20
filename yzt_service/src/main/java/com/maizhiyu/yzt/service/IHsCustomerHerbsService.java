@@ -1,7 +1,7 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.github.pagehelper.PageInfo;
 import com.maizhiyu.yzt.entity.HsCustomerHerbs;
 import com.maizhiyu.yzt.vo.CustomerHerbsVO;
 
@@ -20,5 +20,5 @@ public interface IHsCustomerHerbsService extends IService<HsCustomerHerbs> {
 
     CustomerHerbsVO getHsCustomerHerbs(Long customerId,Long id);
 
-    PageInfo<CustomerHerbsVO> getHsCustomerHerbsList(Long customerId,String herbsName, Integer pageNum, Integer pageSize);
+    IPage<CustomerHerbsVO> getHsCustomerHerbsList(Long customerId, String herbsName, Integer pageNum, Integer pageSize);
 }

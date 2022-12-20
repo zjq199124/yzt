@@ -1,5 +1,7 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.TeBgq;
 
@@ -16,7 +18,7 @@ public interface ITeBgqService extends IService<TeBgq> {
 
     TeBgq getBgq(Long id);
 
-    List<TeBgq> getBgqList(Long agencyId, Long customId, Integer status, String term);
+    IPage<TeBgq> getBgqList(Page page, Long agencyId, Long customerId, Integer status, String term);
 
     List<Map<String, Object>> getBgqListWithRunData(Long agencyId, Long customId, Integer status, String term);
 }

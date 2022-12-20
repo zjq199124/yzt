@@ -1,5 +1,7 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.BuPatient;
 
@@ -26,9 +28,9 @@ public interface IBuPatientService extends IService<BuPatient> {
 
     List<BuPatient> getPatientListByPsuser(Long userId);
 
-    List<Map<String, Object>> getPatientListByDoctor(Long doctorId, String term);
+    IPage<Map<String, Object>> getPatientListByDoctor(Page page,Long doctorId, String term);
 
-    List<Map<String, Object>> getPatientListByTherapist(Long TherapistId, Integer type, String term);
+    IPage<Map<String, Object>> getPatientListByTherapist(Page page,Long TherapistId, Integer type, String term);
 
     List<Map<String, Object>> getPatientPrescriptionList(Long patientId, Integer type);
 }

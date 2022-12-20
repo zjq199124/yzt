@@ -1,7 +1,7 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.github.pagehelper.PageInfo;
 import com.maizhiyu.yzt.entity.MsHerbs;
 
 /**
@@ -21,5 +21,5 @@ public interface IMsHerbsService extends IService<MsHerbs> {
 
     MsHerbs getMsHerbs(Long id);
 
-    PageInfo<MsHerbs> getMsHerbsList(String herbsName, Integer pageNum, Integer pageSize, Long zyId);
+    IPage<MsHerbs> getMsHerbsList(String herbsName, Integer pageNum, Integer pageSize, Long zyId);
 }

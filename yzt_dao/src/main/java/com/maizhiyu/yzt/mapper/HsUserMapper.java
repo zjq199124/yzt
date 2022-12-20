@@ -1,12 +1,13 @@
 package com.maizhiyu.yzt.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.HsUser;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -20,7 +21,8 @@ public interface HsUserMapper extends BaseMapper<HsUser> {
     Map<String, Object> selectUser(
             @Param("id") Long id);
 
-    List<Map<String,Object>> selectUserList(
+    IPage<Map<String,Object>> selectUserList(
+            @Param("page") Page page,
             @Param("customerId") Long customerId,
             @Param("departmentId") Long departmentId,
             @Param("roleId") Long roleId,

@@ -1,12 +1,13 @@
 package com.maizhiyu.yzt.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.TeWarn;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +16,8 @@ import java.util.Map;
 @Repository
 public interface TeWarnMapper extends BaseMapper<TeWarn> {
 
-    List<Map<String,Object>> selectWarnList(
+    IPage<Map<String,Object>> selectWarnList(
+            @Param("page") Page page,
             @Param("date") String datetime,
             @Param("agencyId") Long agencyId,
             @Param("customerId") Long customerId,

@@ -1,9 +1,10 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.MsRole;
 
-import java.util.List;
 import java.util.Map;
 
 public interface IMsRoleService extends IService<MsRole> {
@@ -18,5 +19,5 @@ public interface IMsRoleService extends IService<MsRole> {
 
     MsRole getRole(Long id);
 
-    List<Map<String, Object>> getRoleList(Integer status, String term);
+    IPage<Map<String, Object>> getRoleList(Page page, Integer status, String term);
 }

@@ -1,5 +1,7 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.BuMedicant;
 
@@ -17,7 +19,7 @@ public interface IBuMedicantService extends IService<BuMedicant> {
 
     BuMedicant getMedicantByName(String name);
 
-    List<BuMedicant> getMedicantList(String term);
+    IPage<BuMedicant> getMedicantList(Page page, String term);
 
     List<BuMedicant> getMedicantListByNameList(List<String> namelist);
 }

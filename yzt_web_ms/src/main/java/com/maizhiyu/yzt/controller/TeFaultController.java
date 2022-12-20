@@ -1,8 +1,8 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.TeFault;
 import com.maizhiyu.yzt.entity.TeFaultSolution;
 import com.maizhiyu.yzt.result.Result;
@@ -79,10 +79,8 @@ public class TeFaultController {
     public Result getFaultList(Long customerId, Integer status, String code,
                                 @RequestParam(defaultValue = "1") Integer pageNum,
                                 @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = service.getFaultList(customerId, status, code);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+        IPage<Map<String, Object>> list = service.getFaultList(new Page(pageNum,pageSize),customerId, status, code);
+        return Result.success(list);
     }
 
 

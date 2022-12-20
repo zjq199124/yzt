@@ -1,8 +1,8 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.MsHerbs;
 import com.maizhiyu.yzt.entity.MsZhongyaoHerbs;
 import com.maizhiyu.yzt.entity.SchZhongyao;
@@ -12,7 +12,6 @@ import com.maizhiyu.yzt.service.IMsHerbsService;
 import com.maizhiyu.yzt.service.IMsZhongyaoHerbsService;
 import com.maizhiyu.yzt.service.ISchZhongyaoService;
 import com.maizhiyu.yzt.service.ISynSyndromeService;
-import com.maizhiyu.yzt.serviceimpl.MsZhongyaoHerbsService;
 import com.maizhiyu.yzt.vo.SchZhongyaoHerbsVO;
 import com.maizhiyu.yzt.vo.SchZhongyaoVO;
 import io.swagger.annotations.Api;
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @Api(tags = "中药方案接口")
@@ -57,8 +55,8 @@ public class SchZhongyaoController {
         }
         // 如果无辨证ID则查询疾病对应的所有辨证ID，每个辨证增加一条记录
         else {
-            List<Map<String, Object>> list = syndromeService.getSyndromeList(zhongyao.getDiseaseId(), null, null);
-            for (Map<String, Object> map : list) {
+            IPage<Map<String, Object>> pages = syndromeService.getSyndromeList(null, zhongyao.getDiseaseId(), null, null);
+            for (Map<String, Object> map : pages.getRecords()) {
                 zhongyao.setStatus(1);
                 zhongyao.setSyndromeId((Long) map.get("id"));
                 Integer res = service.addZhongyao(zhongyao);
@@ -102,13 +100,12 @@ public class SchZhongyaoController {
         List<MsZhongyaoHerbs> list1 = new ArrayList<>();
         list.stream().forEach(item -> {
             MsZhongyaoHerbs msZhongyaoHerbs = new MsZhongyaoHerbs();
-            BeanUtils.copyProperties(item,msZhongyaoHerbs);
+            BeanUtils.copyProperties(item, msZhongyaoHerbs);
             list1.add(msZhongyaoHerbs);
         });
         msZhongyaoHerbsService.adds(list1);
         return Result.success();
     }
-
 
 
     @ApiOperation(value = "修改中药方案状态", notes = "修改中药方案状态")
@@ -134,7 +131,7 @@ public class SchZhongyaoController {
     public Result getZhongyao(Long id) {
         SchZhongyao zhongyao = service.getZhongyao(id);
         SchZhongyaoVO schZhongyaoVO = new SchZhongyaoVO();
-        BeanUtils.copyProperties(zhongyao,schZhongyaoVO);
+        BeanUtils.copyProperties(zhongyao, schZhongyaoVO);
         List<SchZhongyaoHerbsVO> list = msZhongyaoHerbsService.getMsZhongyaoHerbsListBySchZhongyaoId(id);
         schZhongyaoVO.setList(list);
         return Result.success(schZhongyaoVO);
@@ -151,15 +148,11 @@ public class SchZhongyaoController {
     })
     @GetMapping("/getZhongyaoList")
     public Result getZhongyaoList(Long diseaseId, Integer status, String term,
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = service.getZhongyaoList(diseaseId, status, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+                                  @RequestParam(defaultValue = "1") Integer pageNum,
+                                  @RequestParam(defaultValue = "10") Integer pageSize) {
+        IPage<Map<String, Object>> list = service.getZhongyaoList(new Page(pageNum, pageSize), diseaseId, status, term);
+        return Result.success(list);
     }
-
-
 
 
     @ApiOperation(value = "获取药材列表", notes = "获取药材列表")
@@ -170,13 +163,12 @@ public class SchZhongyaoController {
             @ApiImplicitParam(name = "pageSize", value = "每页大小", required = false)
     })
     @GetMapping("/getMsHerbsList")
-    public Result getMsHerbsList(@RequestParam  Long zyId,String herbsName,
+    public Result getMsHerbsList(@RequestParam Long zyId, String herbsName,
                                  @RequestParam(defaultValue = "1") Integer pageNum,
                                  @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageInfo<MsHerbs> paperList = msHerbsService.getMsHerbsList(herbsName,pageNum,pageSize,zyId);
+        IPage<MsHerbs> paperList = msHerbsService.getMsHerbsList(herbsName, pageNum, pageSize, zyId);
         return Result.success(paperList);
     }
-
 
 
 }

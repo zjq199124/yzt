@@ -4,8 +4,8 @@ package com.maizhiyu.yzt.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.MsExaminationPaper;
 import com.maizhiyu.yzt.entity.TsAssess;
 import com.maizhiyu.yzt.entity.TsProblemRecord;
@@ -56,7 +56,7 @@ public class TsAssessController {
     @ApiOperation(value = "增加考核", notes = "增加考核")
     @PostMapping("/addAssess")
     public Result addAssess(@RequestBody TsAssess assess) {
-        if(assess.getExaminationPaperId() == null) {
+        if (assess.getExaminationPaperId() == null) {
             throw new BusinessException("试卷id不能为空");
         }
         assess.setStatus(0);
@@ -82,11 +82,9 @@ public class TsAssessController {
     })
     @PostMapping("/getTsSytechItems")
     public Result getTsSytechItems(@RequestParam Long msExaminationPaperId) {
-        PageInfo<TsSytechItem> sytechItemList = tsSytechItemService.getSytechItemList(msExaminationPaperId, 1, 999999);
-        return Result.success(sytechItemList.getList());
+        IPage<TsSytechItem> sytechItemList = tsSytechItemService.getSytechItemList(msExaminationPaperId, -1L, 0L);
+        return Result.success(sytechItemList.getRecords());
     }
-
-
 
 
     @ApiOperation(value = "答题提交", notes = "答题提交")
@@ -104,16 +102,16 @@ public class TsAssessController {
         tsProblemRecord.setAssessId(tsProblemRecordRequest.getAssessId());
         tsProblemRecord.setProblemList(tsProblemRecordRequest.getProblemList());
         TsAssess assess = tsAssessService.getAssess(tsProblemRecord.getAssessId());
-        if(assess == null) {
+        if (assess == null) {
             throw new BusinessException("技术考核记录找不到");
         }
         MsExaminationPaper msExaminationPaper = msExaminationPaperService.getMsExaminationPaper(assess.getExaminationPaperId());
 
-        if(msExaminationPaper == null) {
+        if (msExaminationPaper == null) {
             throw new BusinessException("考核试卷找不到");
         }
         tsProblemRecord.setPassConditionJson(JSON.toJSONString(msExaminationPaper));
-        getResults(msExaminationPaper,tsProblemRecord);
+        getResults(msExaminationPaper, tsProblemRecord);
         tsProblemRecord.setTime(new Date());
         tsProblemRecordService.addTsProblemRecord(tsProblemRecord);
 
@@ -139,7 +137,7 @@ public class TsAssessController {
             JSONObject jo = array.getJSONObject(i);
             problemRquest.setTsSytechItemId(((Number) jo.get("tsSytechItemId")).longValue());
             problemRquest.setType((Integer) jo.get("type"));
-            problemRquest.setTitle((String)jo.get("title"));
+            problemRquest.setTitle((String) jo.get("title"));
             problemList.add(problemRquest);
         }
 
@@ -151,8 +149,6 @@ public class TsAssessController {
 
         return Result.success(tsProblemRecord);
     }
-
-
 
 
 //    @ApiOperation(value = "修改考核信息", notes = "修改考核信息")
@@ -186,48 +182,54 @@ public class TsAssessController {
     })
     @GetMapping("/getAssessList")
     public Result getAssessList(Long customerId, Long sytechId, String startDate, String endDate, String term,
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
+                                @RequestParam(defaultValue = "1") Integer pageNum,
+                                @RequestParam(defaultValue = "10") Integer pageSize) {
         if (startDate == null || startDate.length() == 0) {
             startDate = MyDate.getTodayStr();
         }
         if (endDate == null || endDate.length() == 0) {
             endDate = MyDate.getTomorrowStr();
         }
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = service.getAssessList(customerId, sytechId, startDate, endDate, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list, pageSize);
-        return Result.success(pageInfo);
+        IPage<Map<String, Object>> list = service.getAssessList(new Page(pageNum, pageSize), customerId, sytechId, startDate, endDate, term);
+        return Result.success(list);
     }
 
 
-    public void getResults(MsExaminationPaper msExaminationPaper,TsProblemRecord tsProblemRecord) {
+    public void getResults(MsExaminationPaper msExaminationPaper, TsProblemRecord tsProblemRecord) {
         int a = msExaminationPaper.getA() == null ? 0 : msExaminationPaper.getA();
         int b = msExaminationPaper.getB() == null ? 0 : msExaminationPaper.getB();
         int c = msExaminationPaper.getC() == null ? 0 : msExaminationPaper.getC();
 
         List<ProblemRquest> problemList = tsProblemRecord.getProblemList();
 
-        int results = 0 ;
+        int results = 0;
 
         for (ProblemRquest problem : problemList) {
             switch (problem.getType()) {
-                case 1: results += 5; break;
-                case 2: results += 4; break;
-                case 3: results += 2; break;
-                case 4: results += 1; break;
+                case 1:
+                    results += 5;
+                    break;
+                case 2:
+                    results += 4;
+                    break;
+                case 3:
+                    results += 2;
+                    break;
+                case 4:
+                    results += 1;
+                    break;
             }
         }
 
         tsProblemRecord.setResults(results);
 
-        if(results >= a) {
+        if (results >= a) {
             tsProblemRecord.setEvaluation("a");
-        }else if(results >= b) {
+        } else if (results >= b) {
             tsProblemRecord.setEvaluation("b");
-        }else if(results >= c) {
+        } else if (results >= c) {
             tsProblemRecord.setEvaluation("c");
-        }else{
+        } else {
             tsProblemRecord.setEvaluation("d");
         }
 

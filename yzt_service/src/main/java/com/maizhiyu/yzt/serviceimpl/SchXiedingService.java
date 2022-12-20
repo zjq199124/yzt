@@ -1,5 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.SchXieding;
 import com.maizhiyu.yzt.mapper.SchXiedingMapper;
@@ -42,8 +44,8 @@ public class SchXiedingService extends ServiceImpl<SchXiedingMapper,SchXieding> 
     }
 
     @Override
-    public List<Map<String, Object>> getXiedingList(Long diseaseId, Integer status, String term) {
-        List<Map<String, Object>> list = mapper.selectXiedingList(status, diseaseId, term);
+    public IPage<Map<String, Object>> getXiedingList(Page page, Long diseaseId, Integer status, String term) {
+        IPage<Map<String, Object>> list = mapper.selectXiedingList(page,status, diseaseId, term);
         return list;
     }
 }

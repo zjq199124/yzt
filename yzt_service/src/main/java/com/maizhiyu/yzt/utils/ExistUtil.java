@@ -22,7 +22,7 @@ public class ExistUtil {
     public static <T> boolean checkExist(BaseMapper mapper, T t, String field, Object value, String message) {
         QueryWrapper<T> wrapper = new QueryWrapper<>();
         wrapper.eq(field, value);
-        Integer count = mapper.selectCount(wrapper);
+        Long count = mapper.selectCount(wrapper);
         if (count > 0) {
             throw new BusinessException(message);
         }

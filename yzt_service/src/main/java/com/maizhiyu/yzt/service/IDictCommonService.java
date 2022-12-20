@@ -1,5 +1,7 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.DictCommon;
 
@@ -29,7 +31,7 @@ public interface IDictCommonService extends IService<DictCommon> {
 
     DictCommon getItem(Long id);
 
-    List<Map<String,Object>> getItemList(String cate, Integer status, String term);
+    IPage<DictCommon> getItemList(Page page, String cate, Integer status, String term);
 
 
     // 业务相关接口

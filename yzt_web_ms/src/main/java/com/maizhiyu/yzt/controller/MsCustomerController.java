@@ -1,8 +1,8 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.HsUser;
 import com.maizhiyu.yzt.entity.MsCustomer;
 import com.maizhiyu.yzt.result.Result;
@@ -108,12 +108,10 @@ public class MsCustomerController {
     })
     @GetMapping("/getCustomerList")
     public Result getCustomerList(Long agencyId, Integer status, String term,
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "20") Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Map<String, Object>> list = service.getCustomerList(agencyId, status, term);
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list);
-        return Result.success(pageInfo);
+                                  @RequestParam(defaultValue = "1") Integer pageNum,
+                                  @RequestParam(defaultValue = "20") Integer pageSize) {
+        IPage<Map<String, Object>> list = service.getCustomerList(new Page(pageNum, pageSize), agencyId, status, term);
+        return Result.success(list);
     }
 
 

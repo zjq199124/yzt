@@ -1,6 +1,8 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.HsDepartment;
 import com.maizhiyu.yzt.mapper.HsDepartmentMapper;
@@ -41,7 +43,7 @@ public class HsDepartmentService extends ServiceImpl<HsDepartmentMapper,HsDepart
     }
 
     @Override
-    public List<Map<String, Object>> getDepartmentList(Long customerId, Integer status, String term) {
+    public IPage<Map<String, Object>> getDepartmentList(Page page, Long customerId, Integer status, String term) {
         QueryWrapper<HsDepartment> wrapper = new QueryWrapper<>();
         wrapper.select("id", "status", "dname", "descrip",
                 "DATE_FORMAT(update_time, '%Y-%m-%d %T') update_time",
@@ -53,7 +55,7 @@ public class HsDepartmentService extends ServiceImpl<HsDepartmentMapper,HsDepart
         if (term != null) {
             wrapper.like("dname", term);
         }
-        List<Map<String, Object>> list = mapper.selectMaps(wrapper);
+        IPage<Map<String, Object>> list = mapper.selectMapsPage(page,wrapper);
         return list;
     }
 }

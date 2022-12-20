@@ -1,7 +1,8 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.TeWarn;
 import com.maizhiyu.yzt.mapper.TeWarnMapper;
@@ -37,8 +38,8 @@ public class TeWarnService extends ServiceImpl<TeWarnMapper,TeWarn> implements I
     }
 
     @Override
-    public List<Map<String, Object>> getWarnList(String date, Long agencyId, Long customId, Integer type, Long modelId, Long equipId) {
-        List<Map<String, Object>> list = mapper.selectWarnList(date, agencyId, customId, type, modelId, equipId);
+    public IPage<Map<String, Object>> getWarnList(Page page, String date, Long agencyId, Long customId, Integer type, Long modelId, Long equipId) {
+        IPage<Map<String, Object>> list = mapper.selectWarnList(page,date, agencyId, customId, type, modelId, equipId);
         return list;
     }
 

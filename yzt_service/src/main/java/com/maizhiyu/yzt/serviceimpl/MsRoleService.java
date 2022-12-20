@@ -1,12 +1,11 @@
 package com.maizhiyu.yzt.serviceimpl;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.maizhiyu.yzt.entity.MsResource;
 import com.maizhiyu.yzt.entity.MsRole;
 import com.maizhiyu.yzt.entity.MsRoleResource;
-import com.maizhiyu.yzt.mapper.MsResourceMapper;
 import com.maizhiyu.yzt.mapper.MsRoleMapper;
 import com.maizhiyu.yzt.mapper.MsRoleResourceMapper;
 import com.maizhiyu.yzt.service.IMsRoleService;
@@ -15,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -89,8 +90,8 @@ public class MsRoleService extends ServiceImpl<MsRoleMapper,MsRole> implements I
     }
 
     @Override
-    public List<Map<String, Object>> getRoleList(Integer status, String term) {
-        List<Map<String, Object>> list = roleMapper.selectRoleList(status, term);
+    public IPage<Map<String, Object>> getRoleList(Page page, Integer status, String term) {
+        IPage<Map<String, Object>> list = roleMapper.selectRoleList(page,status, term);
         return list;
     }
 }

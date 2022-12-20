@@ -1,6 +1,8 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.HsCustomerHerbs;
 import com.maizhiyu.yzt.entity.MsCustomer;
@@ -75,14 +77,14 @@ public class MsCustomerService extends ServiceImpl<MsCustomerMapper,MsCustomer> 
     }
 
     @Override
-    public List<Map<String, Object>> getCustomerList(Long agencyId, Integer status, String term) {
-        List<Map<String, Object>> list = mapper.selectCustomerList(agencyId, status, term);
+    public IPage<Map<String, Object>> getCustomerList(Page page,Long agencyId, Integer status, String term) {
+        IPage<Map<String, Object>> list = mapper.selectCustomerList(page,agencyId, status, term);
         return list;
     }
 
     @Override
-    public List<Map<String, Object>> getCustomerList(String province, String city, String term) {
-        List<Map<String, Object>> list = mapper.selectCustomerListByLocation(province, city, term);
+    public IPage<Map<String, Object>> getCustomerList(Page page, String province, String city, String term) {
+        IPage<Map<String, Object>> list = mapper.selectCustomerListByLocation(page,province, city, term);
         return list;
     }
 

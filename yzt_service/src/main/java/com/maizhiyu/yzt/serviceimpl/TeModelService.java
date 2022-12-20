@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.TeModel;
 import com.maizhiyu.yzt.mapper.TeModelMapper;
@@ -41,8 +42,8 @@ public class TeModelService extends ServiceImpl<TeModelMapper,TeModel> implement
     }
 
     @Override
-    public List<Map<String, Object>> getModelList(Integer status, Integer type, String term) {
-        return mapper.selectModelList(status, type, term);
+    public IPage<Map<String, Object>> getModelList(Page page, Integer status, Integer type, String term) {
+        return mapper.selectModelList(page,status, type, term);
 //        QueryWrapper<TeModel> wrapper = new QueryWrapper<>();
 //        if (status != null) {
 //            wrapper.eq("status", status);

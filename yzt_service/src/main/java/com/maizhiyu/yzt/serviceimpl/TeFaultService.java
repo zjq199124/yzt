@@ -1,6 +1,8 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.TeFault;
 import com.maizhiyu.yzt.entity.TeFaultSolution;
@@ -47,8 +49,8 @@ public class TeFaultService extends ServiceImpl<TeFaultMapper,TeFault> implement
     }
 
     @Override
-    public List<Map<String, Object>> getFaultList(Long customerId, Integer status, String code) {
-        List<Map<String, Object>> list = mapper.selectFaultList(customerId, status, code);
+    public IPage<Map<String, Object>> getFaultList(Page page, Long customerId, Integer status, String code) {
+        IPage<Map<String, Object>> list = mapper.selectFaultList(page,customerId, status, code);
         return list;
     }
 

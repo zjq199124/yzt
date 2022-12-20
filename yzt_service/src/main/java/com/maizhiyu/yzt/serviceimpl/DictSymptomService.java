@@ -1,6 +1,8 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.DictSymptom;
 import com.maizhiyu.yzt.mapper.DictSymptomMapper;
@@ -48,7 +50,7 @@ public class DictSymptomService extends ServiceImpl<DictSymptomMapper,DictSympto
     }
 
     @Override
-    public List<Map<String, Object>> getSymptomList(Integer status, String term) {
+    public IPage<Map<String, Object>> getSymptomList(Page page, Integer status, String term) {
         QueryWrapper<DictSymptom> wrapper = new QueryWrapper<>();
         wrapper.select("*");
         if (status != null) {
@@ -57,7 +59,7 @@ public class DictSymptomService extends ServiceImpl<DictSymptomMapper,DictSympto
         if (term != null) {
             wrapper.like("content", term);
         }
-        List<Map<String, Object>> list = mapper.selectMaps(wrapper);
+        IPage<Map<String, Object>> list = mapper.selectMapsPage(page,wrapper);
         return list;
     }
 

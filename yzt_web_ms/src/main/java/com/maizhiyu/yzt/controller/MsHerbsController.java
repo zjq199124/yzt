@@ -1,6 +1,6 @@
 package com.maizhiyu.yzt.controller;
 
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.maizhiyu.yzt.entity.MsHerbs;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IMsHerbsService;
@@ -75,7 +75,7 @@ public class MsHerbsController {
     public Result getMsHerbsList(String herbsName,
                                           @RequestParam(defaultValue = "1") Integer pageNum,
                                           @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageInfo<MsHerbs> paperList = msHerbsService.getMsHerbsList(herbsName,pageNum,pageSize,null);
+        IPage<MsHerbs> paperList = msHerbsService.getMsHerbsList(herbsName,pageNum,pageSize,null);
         return Result.success(paperList);
     }
 

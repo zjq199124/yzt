@@ -1,6 +1,8 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.BuPatient;
 import com.maizhiyu.yzt.entity.PsUserPatient;
@@ -20,7 +22,7 @@ import java.util.UUID;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class BuPatientService extends ServiceImpl<BuPatientMapper,BuPatient> implements IBuPatientService {
+public class BuPatientService extends ServiceImpl<BuPatientMapper, BuPatient> implements IBuPatientService {
 
     @Autowired
     private BuPatientMapper patientMapper;
@@ -33,7 +35,7 @@ public class BuPatientService extends ServiceImpl<BuPatientMapper,BuPatient> imp
     @ExistCheck(clazz = BuPatient.class, fname = "name|phone", message = "患者已存在")
     public Integer addPatient(BuPatient patient) {
         if (patient.getCode() == null) {
-            String code = UUID.randomUUID().toString().replace("-", "").substring(0,20);
+            String code = UUID.randomUUID().toString().replace("-", "").substring(0, 20);
             patient.setCode(code);
         }
         return patientMapper.insert(patient);
@@ -47,7 +49,7 @@ public class BuPatientService extends ServiceImpl<BuPatientMapper,BuPatient> imp
         // 患者不存在则新增
         if (list == null || list.size() == 0) {
             // 添加患者信息
-            String code = UUID.randomUUID().toString().replace("-", "").substring(0,20);
+            String code = UUID.randomUUID().toString().replace("-", "").substring(0, 20);
             patient.setCode(code);
             patientMapper.insert(patient);
         }
@@ -126,13 +128,13 @@ public class BuPatientService extends ServiceImpl<BuPatientMapper,BuPatient> imp
     }
 
     @Override
-    public List<Map<String, Object>> getPatientListByDoctor(Long doctorId, String term) {
-        return patientMapper.selectPatientListByDoctor(doctorId, term);
+    public IPage<Map<String, Object>> getPatientListByDoctor(Page page, Long doctorId, String term) {
+        return patientMapper.selectPatientListByDoctor(page, doctorId, term);
     }
 
     @Override
-    public List<Map<String, Object>> getPatientListByTherapist(Long therapistId, Integer type, String term) {
-        return patientMapper.selectPatientListByTherapist(therapistId, type, term);
+    public IPage<Map<String, Object>> getPatientListByTherapist(Page page, Long therapistId, Integer type, String term) {
+        return patientMapper.selectPatientListByTherapist(page, therapistId, type, term);
     }
 
     @Override

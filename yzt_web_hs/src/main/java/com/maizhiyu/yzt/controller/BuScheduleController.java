@@ -1,8 +1,6 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.maizhiyu.yzt.entity.BuSchedule;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IBuScheduleService;

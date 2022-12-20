@@ -1,6 +1,8 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.DictCommon;
 import com.maizhiyu.yzt.exception.BusinessException;
@@ -31,7 +33,7 @@ public class DictCommonService extends ServiceImpl<DictCommonMapper,DictCommon> 
     public Integer delCate(Long id) {
         QueryWrapper<DictCommon> wrapper = new QueryWrapper<>();
         wrapper.eq("parent", id);
-        Integer cnt = mapper.selectCount(wrapper);
+        Long cnt = mapper.selectCount(wrapper);
         if (cnt > 0) {
             throw new BusinessException("该类别下还有条目存在，无法删除！");
         }
@@ -94,7 +96,7 @@ public class DictCommonService extends ServiceImpl<DictCommonMapper,DictCommon> 
     }
 
     @Override
-    public List<Map<String, Object>> getItemList(String cate, Integer status, String term) {
+    public IPage<DictCommon> getItemList(Page page, String cate, Integer status, String term) {
         QueryWrapper<DictCommon> wrapper = new QueryWrapper<>();
         wrapper.ne("parent", 0);
         if (cate != null) {
@@ -106,7 +108,7 @@ public class DictCommonService extends ServiceImpl<DictCommonMapper,DictCommon> 
         if (term != null) {
             wrapper.like("content", term);
         }
-        return mapper.selectMaps(wrapper);
+        return mapper.selectPage(page,wrapper);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.TsAssess;
 import com.maizhiyu.yzt.mapper.TsAssessMapper;
@@ -8,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,8 +42,8 @@ public class TsAssessService extends ServiceImpl<TsAssessMapper,TsAssess> implem
     }
 
     @Override
-    public List<Map<String,Object>> getAssessList(Long customerId, Long sytechId, String startDate, String endDate, String term) {
-        List<Map<String, Object>> list = mapper.selectAssessList(customerId, sytechId, startDate, endDate, term);
+    public IPage<Map<String,Object>> getAssessList(Page page, Long customerId, Long sytechId, String startDate, String endDate, String term) {
+        IPage<Map<String, Object>> list = mapper.selectAssessList(page,customerId, sytechId, startDate, endDate, term);
         return list;
     }
 }

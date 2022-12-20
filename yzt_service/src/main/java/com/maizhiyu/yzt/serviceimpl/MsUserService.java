@@ -1,8 +1,9 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.maizhiyu.yzt.entity.MsDepartment;
 import com.maizhiyu.yzt.entity.MsUser;
 import com.maizhiyu.yzt.entity.MsUserDepartment;
 import com.maizhiyu.yzt.entity.MsUserRole;
@@ -88,8 +89,8 @@ public class MsUserService extends ServiceImpl<MsUserMapper,MsUser> implements I
     }
 
     @Override
-    public List<Map<String, Object>> getUserList(Long departmentId, Long roleId, Integer status, String term) {
-        List<Map<String, Object>> list = userMapper.selectUserList(departmentId, roleId, status, term);
+    public IPage<Map<String, Object>> getUserList(Page page, Long departmentId, Long roleId, Integer status, String term) {
+        IPage<Map<String, Object>> list = userMapper.selectUserList(page,departmentId, roleId, status, term);
         return list;
     }
 

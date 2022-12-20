@@ -1,6 +1,8 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.TxBgqRun;
 import com.maizhiyu.yzt.mapper.TxBgqRunMapper;
@@ -11,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 
 
@@ -38,7 +39,7 @@ public class TxBgqRunService extends ServiceImpl<TxBgqRunMapper,TxBgqRun> implem
     }
 
     @Override
-    public List<TxBgqRun> getBgqRunList(String code, String startDate, String endDate) {
+    public IPage<TxBgqRun> getBgqRunList(Page page, String code, String startDate, String endDate) {
         QueryWrapper<TxBgqRun> wrapper = new QueryWrapper<>();
         wrapper.eq("code", code);
         wrapper.orderByDesc("start_time");
@@ -50,7 +51,7 @@ public class TxBgqRunService extends ServiceImpl<TxBgqRunMapper,TxBgqRun> implem
             // startDate/endDate表示的是，设备开始运行的时间，在startDate和endDate之间
             wrapper.le("start_time", endDate);
         }
-        List<TxBgqRun> list = runMapper.selectList(wrapper);
+        IPage<TxBgqRun> list = runMapper.selectPage(page,wrapper);
         return list;
     }
 

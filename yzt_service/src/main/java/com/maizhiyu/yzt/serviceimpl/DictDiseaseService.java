@@ -1,6 +1,8 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.DictDisease;
 import com.maizhiyu.yzt.mapper.DictDiseaseMapper;
@@ -10,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -43,7 +44,7 @@ public class DictDiseaseService extends ServiceImpl<DictDiseaseMapper,DictDiseas
     }
 
     @Override
-    public List<Map<String, Object>> getDiseaseList(Integer status, String term) {
+    public IPage<Map<String, Object>> getDiseaseList(Page page, Integer status, String term) {
         QueryWrapper<DictDisease> wrapper = new QueryWrapper<>();
         wrapper.select("*");
         if (status != null) {
@@ -52,7 +53,7 @@ public class DictDiseaseService extends ServiceImpl<DictDiseaseMapper,DictDiseas
         if (term != null) {
             wrapper.like("name", term);
         }
-        List<Map<String, Object>> list = mapper.selectMaps(wrapper);
+        IPage list = mapper.selectMapsPage(page,wrapper);
         return list;
     }
 }
