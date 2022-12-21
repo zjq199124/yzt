@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.TsAssOperationMapper">
+
+
+    <resultMap id="TsAssOperationMap" type="com.maizhiyu.yzt.entity.TsAssOperation">
+    <id column="id" property="id" />
+    <result column="sytech_id" property="sytechId" />
+    <result column="operation_id" property="operationId" />
+    <result column="operation_name" property="operationName" />
+    <result column="create_time" property="createTime" />
+    <result column="update_time" property="updateTime" />
+    <result column="is_del" property="isDel" />
+        <collection property="tsAssOperationDetailList" ofType="TsAssOperationDetail">
+            <id column="detail_id" property="id" />
+            <result column="operation_id" property="operationId" />
+            <result column="detail" property="detail" />
+            <result column="score" property="score" />
+            <result column="create_time" property="createTime" />
+            <result column="update_time" property="updateTime" />
+            <result column="is_del" property="isDel" />
+        </collection>
+    </resultMap>
+
+    <select id="selectAssDetail" resultMap="TsAssOperationMap">
+        SELECT
+        ass.*,de.id as detail_id,de.detail,de.score
+        FROM
+        ts_ass_operation  ass
+        LEFT JOIN ts_ass_operation_detail  de ON de.operation_id = ass.operation_id
+        LEFT JOIN ts_sytech  sy ON sy.id = ass.sytech_id
+        <where>
+            <if test="sytechId != null">
+                and ass.sytech_id = #{sytechId}
+            </if>
+        </where>
+    </select>
+
+</mapper>

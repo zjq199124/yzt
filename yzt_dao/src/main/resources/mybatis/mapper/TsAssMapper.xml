@@ -2,7 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.maizhiyu.yzt.mapper.TsAssMapper">
 
-    <select id="selectAsslist" resultType="hashmap">
+
+    <resultMap id="TsAssMap" type="com.maizhiyu.yzt.entity.TsAss">
+    <id column="id" property="id" />
+    <result column="sytech_id" property="sytechId" />
+    <result column="examiner_id" property="examinerId" />
+    <result column="therapist_id" property="therapistId" />
+    <result column="status" property="status" />
+    <result column="create_time" property="createTime" />
+    <result column="update_time" property="updateTime" />
+    <result column="is_del" property="isDel" />
+    </resultMap>
+
+
+    <select id="selectAsslist" resultType="com.maizhiyu.yzt.entity.TsAss">
         select
             X.*,
             A.name tname,
@@ -16,16 +29,34 @@
             join hs_user C on X.therapist_id = C.id
         <where>
             <if test="sytechId != null">
-                and X.sytech_id = #{sytechId}
+                and X.sytech_id = #{therapistId}
             </if>
             <if test="startDate != null">
-                and X.creat_time > #{startDate}
+                and X.create_time > #{createTime}
             </if>
             <if test="endDate != null">
-                and X.end_time &lt; #{endDate}
+                and X.update_time &lt; #{updateTime}TsAssMapper.xmlTsAssMapper.xml
             </if>
             <if test="term != null">
                 and C.realname like concat(concat('%',#{term}),'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectAssDetail" resultType="com.maizhiyu.yzt.entity.TsAss">
+        SELECT
+        sy.NAME name,
+        de.operation_id id,
+        de.detail detail,
+        de.score sco
+        FROM
+        ts_ass AS ass
+        LEFT JOIN ts_ass_operation AS op ON op.sytech_id = ass.sytech_id
+        LEFT JOIN ts_ass_operation_detail AS de ON de.operation_id = op.id
+        LEFT JOIN ts_sytech AS sy ON sy.id = ass.sytech_id
+        <where>
+            <if test="sytechId != null">
+                and ass.sytech_id = #{sytechId}
             </if>
         </where>
     </select>

@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.entity;
 
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -9,12 +10,14 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Accessors(chain=true)
-@TableName("ts_ass")
-@ApiModel(description="操作考核表")
-public class TsAss {
+@TableName("ts_ass_operation")
+@ApiModel(description="操作步骤表")
+public class TsAssOperation {
+
     @ApiModelProperty(value="ID")
     @TableId(type = IdType.AUTO)
     private Long id;
@@ -22,23 +25,22 @@ public class TsAss {
     @ApiModelProperty(value="适宜技术ID")
     private Long sytechId;
 
-    @ApiModelProperty(value="考官ID")
-    private Long examinerId;
+    @ApiModelProperty(value="具体考核操作ID")
+    private Long operationId;
 
-    @ApiModelProperty(value="考核对象ID")
-    private Long therapistId;
+    @ApiModelProperty(value="具体考核操作名称")
+    private String operationName;
 
-    @ApiModelProperty(value = "考核状态(0:未开始 1:考核中 3:考核结束)")
-    private Integer status;
-
-    @ApiModelProperty(value="考核时间")
+    @ApiModelProperty(value="创建时间")
     private Date createTime;
 
     @ApiModelProperty(value="更新时间")
     private Date updateTime;
 
-    @ApiModelProperty(value="是否删除（0：否 1：是）")
+    @ApiModelProperty(value="是否删除")
     private Integer isDel;
 
+    @ApiModelProperty(value = "细节")
+    private List<TsAssOperationDetail> tsAssOperationDetailList;
 
 }

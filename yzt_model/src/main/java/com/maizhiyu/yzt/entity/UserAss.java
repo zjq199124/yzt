@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.entity;
 
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -12,33 +13,32 @@ import java.util.Date;
 
 @Data
 @Accessors(chain=true)
-@TableName("ts_ass")
-@ApiModel(description="操作考核表")
-public class TsAss {
+@TableName("user_ass")
+@ApiModel(description="用户考核记录表")
+public class UserAss {
+
     @ApiModelProperty(value="ID")
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty(value="适宜技术ID")
-    private Long sytechId;
+    @ApiModelProperty(value = "考核记录ID")
+    private Long assId;
 
-    @ApiModelProperty(value="考官ID")
-    private Long examinerId;
+    @ApiModelProperty(value="具体考核操作步骤ID")
+    private Long detailId;
 
-    @ApiModelProperty(value="考核对象ID")
-    private Long therapistId;
+    @ApiModelProperty(value="实得分")
+    private Integer score;
 
-    @ApiModelProperty(value = "考核状态(0:未开始 1:考核中 3:考核结束)")
-    private Integer status;
+    @ApiModelProperty(value="扣分点")
+    private String  deduct;
 
-    @ApiModelProperty(value="考核时间")
+    @ApiModelProperty(value="创建时间")
     private Date createTime;
 
     @ApiModelProperty(value="更新时间")
     private Date updateTime;
 
-    @ApiModelProperty(value="是否删除（0：否 1：是）")
+    @ApiModelProperty(value="是否删除 0:未删除 1:已删除")
     private Integer isDel;
-
-
 }

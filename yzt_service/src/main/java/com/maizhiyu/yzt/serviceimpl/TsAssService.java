@@ -1,12 +1,13 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.TsAss;
-import com.maizhiyu.yzt.entity.TsAssess;
 import com.maizhiyu.yzt.mapper.TsAssMapper;
 import com.maizhiyu.yzt.service.ITsAssService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,11 +23,31 @@ public class TsAssService extends ServiceImpl<TsAssMapper, TsAss> implements ITs
     private TsAssMapper tsAssMapper;
 
     @Override
-    public List<Map<String,Object>> getAsslist(Long therapistId, Long sytechId, String createTime, String endTime,
-                                               String term){
-        List<Map<String,Object>>  list = tsAssMapper.selectAsslist(therapistId,sytechId,createTime,endTime,term);
+    public List<Map<String ,Object>> getAssItem(Long id){
+        List<Map<String,Object>> list = tsAssMapper.selectAssItem(id);
         return list;
     }
+
+
+    @Override
+    public IPage<TsAss> getAsslist(Page page){
+        QueryWrapper<TsAss> wrapper=new QueryWrapper<>();
+        //时间升序排序
+        wrapper.lambda().orderByAsc(TsAss::getCreateTime);
+        return tsAssMapper.selectPage(page,wrapper);
+    }
+
+    @Override
+    public List<TsAss> getAssBytherapistId(Long therapistId){
+        QueryWrapper<TsAss> wrapper=new QueryWrapper<>();
+        wrapper.eq("therapist_id",therapistId);
+        List<TsAss> list = tsAssMapper.selectList(wrapper);
+        return list;
+    }
+
+
+
+
 
 
 
