@@ -21,4 +21,6 @@ public interface BuVisitService extends IService<BuVisit> {
      */
     IPage<VisitVO> getPage(Page page, VisitRO visitRO);
 
+    VisitVO getInfoById(Long id);
+
 }

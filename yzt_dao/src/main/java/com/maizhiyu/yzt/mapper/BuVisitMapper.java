@@ -28,4 +28,13 @@ public interface BuVisitMapper extends BaseMapper<BuVisit> {
      */
     IPage<VisitVO> getPage(@Param("page") Page page, @Param("query") VisitRO query);
 
+    /**
+     * 以随访id获取随访详情
+     *
+     * @param id
+     * @return
+     */
+    VisitVO getInfoById(Long id);
+
+
 }

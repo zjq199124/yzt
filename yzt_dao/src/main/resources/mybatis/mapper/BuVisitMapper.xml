@@ -12,7 +12,9 @@
     </resultMap>
     <!--随访分页列表查询-->
     <select id="getPage" resultType="com.maizhiyu.yzt.vo.VisitVO" parameterType="com.maizhiyu.yzt.ro.VisitRO">
-        SELECT bv.id,
+        SELECT
+        bv.id,
+        bc.id cure_id,
         bp.NAME,
         bp.phone,
         bp.sex,
@@ -20,20 +22,19 @@
         bo.create_time diagnose_time,
         bd.disease diagnose_name,
         bpi.NAME sytech_name,
-        hu.realname doctor_name,
-        hus.realname cure_user_name
-        FROM bu_visit bv
-        LEFT JOIN bu_cure bc ON bv.cure_id = bc.id
-        LEFT JOIN bu_signature bs ON bc.signature_id = bs.id
+        (select realname from hs_user where id=bd.doctor_id) doctor_name,
+        (select realname from hs_user where id=bc.cure_user_id ) cure_user_name
+        FROM
+        bu_cure bc
+        LEFT JOIN bu_visit bv ON bv.cure_id = bc.id
         LEFT JOIN bu_outpatient bo ON bc.out_patient_id = bo.id
         LEFT JOIN bu_patient bp ON bp.id = bo.patient_id
         LEFT JOIN bu_diagnose bd ON bd.outpatient_id = bo.id
-        LEFT JOIN bu_prescription_item bpi ON bpi.id = bs.prescription_item_id
-        LEFT JOIN hs_user hu ON hu.id = bd.doctor_id
-        LEFT JOIN hs_user hus ON hus.id = bc.cure_user_id
+        LEFT JOIN bu_prescription_item bpi ON bpi.id = bc.prescription_item_id
         <where>
+            bc.create_time <![CDATA[ < ]]> DATE_SUB(NOW(),INTERVAL 7 day)
             <if test="query.date != null">
-                AND cc.create_date <![CDATA[ >= ]]> #{query.startDate}
+                AND bo.create_time <![CDATA[ >= ]]> #{query.date}
             </if>
             <if test="query.name != null and query.name != ''">
                 AND bp.name LIKE CONCAT('%',#{query.name},'%')
@@ -45,7 +46,31 @@
                 AND bv.status=#{query.status}
             </if>
         </where>
-        GROUP BY bv.id
+    </select>
+
+    <!--以随访id查询随访详情-->
+    <select id="getInfoById" resultType="com.maizhiyu.yzt.vo.VisitVO">
+        SELECT bv.*,
+        bc.id cure_id,
+        bp.NAME,
+        bp.phone,
+        bp.sex,
+        bp.nl,
+        bo.create_time diagnose_time,
+        bd.disease diagnose_name,
+        bpi.NAME sytech_name,
+        (select realname from hs_user where id = bd.doctor_id) doctor_name,
+        (select realname from hs_user where id = bc.cure_user_id) cure_user_name
+        FROM bu_visit bv
+        LEFT JOIN bu_cure bc ON bv.cure_id = bc.id
+        LEFT JOIN bu_outpatient bo ON bc.out_patient_id = bo.id
+        LEFT JOIN bu_patient bp ON bp.id = bo.patient_id
+        LEFT JOIN bu_diagnose bd ON bd.outpatient_id = bo.id
+        LEFT JOIN bu_prescription_item bpi ON bpi.id = bc.prescription_item_id
+        <where>
+            bv.id=#{id}
+        </where>
+
     </select>
 
 

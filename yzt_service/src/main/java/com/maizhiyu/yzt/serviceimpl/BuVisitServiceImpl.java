@@ -26,6 +26,11 @@ public class BuVisitServiceImpl extends ServiceImpl<BuVisitMapper, BuVisit> impl
 
     @Override
     public IPage<VisitVO> getPage(Page page, VisitRO visitRO) {
-        return baseMapper.getPage(page,visitRO);
+        return baseMapper.getPage(page, visitRO);
+    }
+
+    @Override
+    public VisitVO getInfoById(Long id) {
+        return baseMapper.getInfoById(id);
     }
 }

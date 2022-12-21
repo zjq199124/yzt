@@ -3,12 +3,10 @@ package com.maizhiyu.yzt.tasks;
 
 import com.maizhiyu.yzt.feign.FeignToken;
 import com.maizhiyu.yzt.feign.FeignYptClient;
-import com.maizhiyu.yzt.service.IHisDoctorService;
 import feign.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -42,6 +40,7 @@ public class AuthorizationTask {
         log.info("更新token");
         // 登录
         Response response = yptClient.login(customer, secretkey);
+
         // 获取头
         Collection<String> collection = response.headers().get("Authorization");
         // 判断头

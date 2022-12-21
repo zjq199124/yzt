@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.maizhiyu.yzt.entity.BuVisit;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.VisitRO;
 import com.maizhiyu.yzt.service.BuVisitService;
@@ -34,9 +35,21 @@ public class BuVisitController {
 
     @ApiOperation(value = "查询随访列表", notes = "随访-列表")
     @GetMapping("/getPage")
-    public Result getPage(Page page,VisitRO visitRO) {
+    public Result getPage(Page page, VisitRO visitRO) {
         IPage<VisitVO> result = buVisitService.getPage(page, visitRO);
         return Result.success(result);
+    }
+
+    @ApiOperation(value = "以id查询随访详情", notes = "随访-详情")
+    @GetMapping("/getInfoById")
+    public Result getInfoById(Long id) {
+        return Result.success(buVisitService.getInfoById(id));
+    }
+
+    @ApiOperation(value = "新增或修改随访内容", notes = "随访-新增或修改")
+    @GetMapping("/updateOrInsert")
+    public Result updateOrInsert(BuVisit buVisit) {
+        return Result.success(buVisitService.saveOrUpdate(buVisit));
     }
 
 }

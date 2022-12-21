@@ -1,6 +1,6 @@
 package com.maizhiyu.yzt.vo;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.maizhiyu.yzt.entity.BuVisit;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,9 +11,7 @@ import java.util.Date;
 @Data
 @Accessors(chain = true)
 @ApiModel(description = "随访列表")
-public class VisitVO extends Page {
-    @ApiModelProperty(value = "随访ID")
-    private Long id;
+public class VisitVO extends BuVisit {
 
     @ApiModelProperty(value = "患者姓名")
     private String name;

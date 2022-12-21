@@ -10,8 +10,8 @@ import com.maizhiyu.yzt.mapper.BuOutpatientAppointmentMapper;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentItemMapper;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentMapper;
 import com.maizhiyu.yzt.service.IBuPrescriptionItemAppointmentItemService;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -19,7 +19,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-@Mapper
+@Service
+@Transactional(rollbackFor = Exception.class)
 public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<BuPrescriptionItemAppointmentItemMapper, BuPrescriptionItemAppointmentItem> implements IBuPrescriptionItemAppointmentItemService {
 
     @Resource

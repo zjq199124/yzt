@@ -28,9 +28,9 @@ public interface IBuPatientService extends IService<BuPatient> {
 
     List<BuPatient> getPatientListByPsuser(Long userId);
 
-    IPage<Map<String, Object>> getPatientListByDoctor(Page page,Long doctorId, String term);
+    IPage<Map<String, Object>> getPatientListByDoctor(Page page, Long doctorId, String term);
 
-    IPage<Map<String, Object>> getPatientListByTherapist(Page page,Long TherapistId, Integer type, String term);
+    IPage<Map<String, Object>> getPatientListByTherapist(Page page, Long TherapistId, Integer type, String term);
 
     List<Map<String, Object>> getPatientPrescriptionList(Long patientId, Integer type);
 }
