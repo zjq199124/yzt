@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.bean.aci;
 
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.bean.aro.YptMedicantRO;
 import com.maizhiyu.yzt.bean.avo.YptMedicantVO;
 import com.maizhiyu.yzt.entity.YptMedicant;
@@ -18,6 +19,6 @@ public interface YptMedicantCI {
 
     YptMedicantVO.GetMedicantVO invertGetMedicantVO(YptMedicant medicant);
 
-    PageInfo<YptMedicantVO.GetMedicantListVO> invertGetMedicantListVO(PageInfo<YptMedicant> pageInfo);
+    Page<YptMedicantVO.GetMedicantListVO> invertGetMedicantListVO(IPage<YptMedicant> pageInfo);
 
 }

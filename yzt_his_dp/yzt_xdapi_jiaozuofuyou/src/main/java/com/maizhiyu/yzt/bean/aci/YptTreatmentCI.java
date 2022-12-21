@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.bean.aci;
 
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.bean.aro.YptTreatmentRO;
 import com.maizhiyu.yzt.bean.avo.YptTreatmentVO;
 import com.maizhiyu.yzt.entity.YptTreatment;
@@ -18,6 +19,6 @@ public interface YptTreatmentCI {
 
     YptTreatmentVO.GetTreatmentVO invertGetTreatmentVO(YptTreatment treatment);
 
-    PageInfo<YptTreatmentVO.GetTreatmentListVO> invertGetTreatmentListVO(PageInfo<YptTreatment> pageInfo);
+    Page<YptTreatmentVO.GetTreatmentListVO> invertGetTreatmentListVO(IPage<YptTreatment> pageInfo);
 
 }

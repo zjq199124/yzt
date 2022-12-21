@@ -1,8 +1,7 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.bean.aci.YptMedicantCI;
 import com.maizhiyu.yzt.bean.aro.YptMedicantRO;
 import com.maizhiyu.yzt.bean.avo.YptMedicantVO;
@@ -25,7 +24,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
 
 
 @Slf4j
@@ -77,10 +75,10 @@ public class YptMedicantController {
 
     @ApiOperation(value = "获取药材列表", notes = "获取药材列表")
     @PostMapping("/getMedicantList")
-    public Result<PageInfo<YptMedicantVO.GetMedicantListVO>> getMedicantList(@RequestBody @Valid YptMedicantRO.GetMedicantListRO ro) {
-        PageHelper.startPage(ro.getPageNum(), ro.getPageSize());
-        List<YptMedicant> list = service.getMedicantList(ro.getTerm());
-        PageInfo<YptMedicantVO.GetMedicantListVO> pageInfo = YptMedicantCI.INSTANCE.invertGetMedicantListVO(new PageInfo<>(list));
+    public Result<Page<YptMedicantVO.GetMedicantListVO>> getMedicantList(@RequestBody @Valid YptMedicantRO.GetMedicantListRO ro) {
+        Page page = new Page(ro.getPageNum(), ro.getPageSize());
+        Page<YptMedicant> list = service.getMedicantList(page,ro.getTerm());
+        Page<YptMedicantVO.GetMedicantListVO> pageInfo = YptMedicantCI.INSTANCE.invertGetMedicantListVO(list);
         return Result.success(pageInfo);
     }
 

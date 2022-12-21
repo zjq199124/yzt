@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.YptMedicant;
 
 import java.util.List;
@@ -18,6 +19,6 @@ public interface IYptMedicantService {
 
     YptMedicant getMedicantByName(String name);
 
-    List<YptMedicant> getMedicantList(String term);
+    Page<YptMedicant> getMedicantList(Page page,String term);
 
 }

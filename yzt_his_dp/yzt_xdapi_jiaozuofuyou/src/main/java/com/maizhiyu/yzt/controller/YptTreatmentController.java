@@ -1,8 +1,7 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.bean.aci.YptTreatmentCI;
 import com.maizhiyu.yzt.bean.aro.YptTreatmentRO;
 import com.maizhiyu.yzt.bean.avo.YptTreatmentVO;
@@ -25,7 +24,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
 
 
 @Slf4j
@@ -77,10 +75,10 @@ public class YptTreatmentController {
 
     @ApiOperation(value = "获取治疗列表", notes = "获取治疗列表")
     @PostMapping("/getTreatmentList")
-    public Result<PageInfo<YptTreatmentVO.GetTreatmentListVO>> getTreatmentList(@RequestBody @Valid YptTreatmentRO.GetTreatmentListRO ro) {
-        PageHelper.startPage(ro.getPageNum(), ro.getPageSize());
-        List<YptTreatment> list = service.getTreatmentList(ro.getTerm());
-        PageInfo<YptTreatmentVO.GetTreatmentListVO> pageInfo = YptTreatmentCI.INSTANCE.invertGetTreatmentListVO(new PageInfo<>(list));
+    public Result<Page<YptTreatmentVO.GetTreatmentListVO>> getTreatmentList(@RequestBody @Valid YptTreatmentRO.GetTreatmentListRO ro) {
+        Page page = new Page(ro.getPageNum(), ro.getPageSize());
+        Page<YptTreatment> list = service.getTreatmentList(page,ro.getTerm());
+        Page<YptTreatmentVO.GetTreatmentListVO> pageInfo = YptTreatmentCI.INSTANCE.invertGetTreatmentListVO(list);
         return Result.success(pageInfo);
     }
 
