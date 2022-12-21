@@ -11,4 +11,6 @@ import java.util.List;
 @Mapper
 public interface BuPrescriptionItemAppointmentMapper extends BaseMapper<BuPrescriptionItemAppointment> {
     List<BuPrescriptionItemAppointment> selectByDiagnoseIdList(@Param("diagnoseIdList") List<Long> diagnoseIdList);
+
+    List<BuPrescriptionItemAppointment> selectByOutpatientAppointmentId(@Param("outpatientAppointmentId") Long outpatientAppointmentId);
 }

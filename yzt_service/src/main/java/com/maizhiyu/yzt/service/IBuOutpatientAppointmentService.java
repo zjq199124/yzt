@@ -11,4 +11,11 @@ public interface IBuOutpatientAppointmentService extends IService<BuOutpatientAp
     BuOutpatientAppointment insert(BuOutpatientAppointment buOutpatientAppointment);
 
     BuOutpatientAppointment selectByDiagnoseId(Long diagnoseId);
+
+    /**
+     * 查询当前诊断下的所有适宜技术的预约信息
+     * @param id
+     * @return
+     */
+    BuOutpatientAppointment appointmentDetail(Long id);
 }

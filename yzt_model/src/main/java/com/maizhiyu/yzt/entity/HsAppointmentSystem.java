@@ -2,11 +2,11 @@ package com.maizhiyu.yzt.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.maizhiyu.yzt.vo.TimeSlotInfoVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.codehaus.jettison.json.JSONString;
 
 import java.util.Date;
 
@@ -48,7 +48,7 @@ public class HsAppointmentSystem extends Model<HsAppointmentSystem> {
 
     @ApiModelProperty("时段信息对象")
     @TableField(exist = false)
-    private TimeSlotInfo timeSlotInformation;
+    private TimeSlotInfoVo timeSlotInformationVo;
 }
 
 

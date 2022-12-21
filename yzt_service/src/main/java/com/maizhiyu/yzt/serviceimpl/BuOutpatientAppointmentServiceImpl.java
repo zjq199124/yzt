@@ -3,9 +3,12 @@ package com.maizhiyu.yzt.serviceimpl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.base.Preconditions;
 import com.maizhiyu.yzt.entity.BuOutpatientAppointment;
 import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointment;
+import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem;
 import com.maizhiyu.yzt.mapper.BuOutpatientAppointmentMapper;
+import com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentItemMapper;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentMapper;
 import com.maizhiyu.yzt.ro.OutpatientAppointmentRo;
 import com.maizhiyu.yzt.service.IBuOutpatientAppointmentService;
@@ -14,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -28,6 +32,9 @@ public class BuOutpatientAppointmentServiceImpl extends ServiceImpl<BuOutpatient
 
     @Resource
     private BuPrescriptionItemAppointmentMapper buPrescriptionItemAppointmentMapper;
+
+    @Resource
+    private BuPrescriptionItemAppointmentItemMapper buPrescriptionItemAppointmentItemMapper;
 
     @Override
     public Page<BuOutpatientAppointment> list(OutpatientAppointmentRo outpatientAppointmentRo) {
@@ -72,5 +79,30 @@ public class BuOutpatientAppointmentServiceImpl extends ServiceImpl<BuOutpatient
                 .eq(BuOutpatientAppointment::getIsDel, 0)
                 .last("limit 1");
         return buOutpatientAppointmentMapper.selectOne(queryWrapper);
+    }
+
+    @Override
+    public BuOutpatientAppointment appointmentDetail(Long id) {
+        BuOutpatientAppointment buOutpatientAppointment = buOutpatientAppointmentMapper.selectById(id);
+        Preconditions.checkArgument(Objects.nonNull(buOutpatientAppointment), "id错误!");
+
+        List<BuPrescriptionItemAppointment> list = buPrescriptionItemAppointmentMapper.selectByOutpatientAppointmentId(buOutpatientAppointment.getId());
+        buOutpatientAppointment.setBuPrescriptionItemAppointmentList(list);
+
+        if(CollectionUtils.isEmpty(list))
+            return buOutpatientAppointment;
+
+        List<Long> prescriptionItemAppointmentIdList = list.stream().map(BuPrescriptionItemAppointment::getId).collect(Collectors.toList());
+        List<BuPrescriptionItemAppointmentItem> buPrescriptionItemAppointmentItemList = buPrescriptionItemAppointmentItemMapper.selectByPrescriptionItemAppointmentIdList(prescriptionItemAppointmentIdList);
+
+        if(CollectionUtils.isEmpty(buPrescriptionItemAppointmentItemList))
+            return buOutpatientAppointment;
+
+        Map<Long, List<BuPrescriptionItemAppointmentItem>> prescriptionItemAppointmentIdMap = buPrescriptionItemAppointmentItemList.stream().collect(Collectors.groupingBy(BuPrescriptionItemAppointmentItem::getPrescriptionItemAppointmentId));
+
+        list.forEach(item -> {
+            item.setBuPrescriptionItemAppointmentItemList(prescriptionItemAppointmentIdMap.get(item.getId()));
+        });
+        return buOutpatientAppointment;
     }
 }

@@ -35,6 +35,15 @@
             #{item}
         </foreach>
     </select>
+    <select id="selectByOutpatientAppointmentId" resultType="com.maizhiyu.yzt.entity.BuPrescriptionItemAppointment">
+        SELECT
+        bpia.*,
+        ts.name AS tsName
+        FROM bu_prescription_item_appointment bpia
+        LEFT JOIN ts_sytech ts ON bpia.entity_id = ts.id
+        WHERE bpia.is_del = 0
+        AND outpatient_appointment_id = #{outpatientAppointmentId}
+    </select>
 </mapper>
 
 

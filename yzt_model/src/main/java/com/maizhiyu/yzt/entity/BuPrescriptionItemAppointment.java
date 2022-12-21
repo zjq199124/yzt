@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Accessors(chain=true)
@@ -80,4 +81,8 @@ public class BuPrescriptionItemAppointment extends Model<BuPrescriptionItemAppoi
     @TableField(exist = false)
     @ApiModelProperty(value = "适宜技术的名称")
     private String tsName;
+
+    @TableField(exist = false)
+    @ApiModelProperty("预约数据")
+    List<BuPrescriptionItemAppointmentItem> buPrescriptionItemAppointmentItemList;
 }

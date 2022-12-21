@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentItemMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem">
+        <id column="id" property="id" />
+        <result column="prescription_item_appointment_id" property="prescriptionItemAppointmentId" />
+        <result column="patient_id" property="patientId" />
+        <result column="outpatient_id" property="outpatientId" />
+        <result column="customer_id" property="customerId" />
+        <result column="appointment_date" property="appointmentDate" />
+        <result column="time_slot" property="timeSlot" />
+        <result column="weekday" property="weekday" />
+        <result column="state" property="state" />
+        <result column="is_del" property="isDel" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="remark" property="remark" />
+    </resultMap>
+    <select id="selectByPrescriptionItemAppointmentIdList"
+            resultType="com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem">
+        select prescription_item_appointment_id,appointment_date,time_slot from bu_prescription_item_appointment_item
+        where is_del = 0 and appointment_date &gt; NOW()
+        and prescription_item_appointment_id in
+        <foreach collection="prescriptionItemAppointmentIdList" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="selectByTimeSlot"
+            resultType="com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem">
+        select * from bu_prescription_item_appointment_item bpiai
+        inner join bu_prescription_item_appointment bpia on bpiai.prescription_item_appointment_id = bpia.id and bpia.is_del = 0
+        <if test="outpatientAppointmentId != null and outpatientAppointmentId != ''">
+            inner join bu_outpatient_appointment boa on bpia.outpatient_appointment_id = boa.id and boa.is_del = 0
+        </if>
+        where
+              bpiai.is_del = 0
+          and bpiai.customer_id = #{customerId}
+          and appointment_date = #{date}
+          <if test="outpatientAppointmentId != null and outpatientAppointmentId != ''">
+              and boa.id = #{outpatientAppointmentId}
+          </if>
+          and bpiai.time_slot in
+            <foreach collection="morningTimeSlotList" item="item" open="(" separator="," close=")">
+            #{item}
+            </foreach>
+
+    </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

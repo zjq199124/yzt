@@ -9,7 +9,7 @@
         <result column="has_holidays" property="hasHolidays" />
         <result column="effect_time" property="effectTime" />
         <result column="end_time" property="endTime" />
-        <result column="time_slot_info" property="timeSlotInfo" />
+        <result column="time_slot_info" property="timeSlotInfoVo" />
         <result column="is_del" property="isDel" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
@@ -22,14 +22,14 @@
         and customer_id = #{customerId}
         and effect_time &lt;= #{date}
         and (end_time is null or (end_time &gt;= #{date}))
-        order by create_time desc
+        order by effect_time desc
         limit 1
     </select>
     <select id="selectTobeEffective" resultType="com.maizhiyu.yzt.entity.HsAppointmentSystem">
         select * from hs_appointment_system
         where is_del = 0
           and customer_id = #{customerId}
-          and effect_time &gt;= #{date}
+          and effect_time = #{effective}
           order by create_time desc
           limit 1
     </select>

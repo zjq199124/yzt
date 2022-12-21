@@ -10,7 +10,13 @@ import java.util.Date;
 @Mapper
 public interface HsAppointmentSystemMapper extends BaseMapper<HsAppointmentSystem> {
 
-    HsAppointmentSystem selectTobeEffective(@Param("customerId") Long customerId, @Param("date") Date date);
+    /**
+     * 查询某一客户在制定时间是否设置了预约时段
+     * @param customerId
+     * @param effective
+     * @return
+     */
+    HsAppointmentSystem selectTobeEffective(@Param("customerId") Long customerId, @Param("effective") Date effective);
 
     HsAppointmentSystem selectNow(@Param("customerId") Long customerId, @Param("date") Date date);
 }
