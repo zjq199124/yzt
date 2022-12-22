@@ -32,16 +32,16 @@ public class HsUser implements Serializable {
     private Integer status;
 
     @ApiModelProperty(value="用户名称")
-    private String username;
+    private String userName;
 
     @ApiModelProperty(value="用户密码")
     private String password;
 
     @ApiModelProperty(value="用户昵称")
-    private String nickname;
+    private String nickName;
 
     @ApiModelProperty(value="用户真名")
-    private String realname;
+    private String realName;
 
     @ApiModelProperty(value="用户手机")
     private String phone;
@@ -53,10 +53,10 @@ public class HsUser implements Serializable {
     private String avatar;
 
     @ApiModelProperty(value="是否医生")
-    private Integer isdoctor;
+    private Integer isDoctor;
 
     @ApiModelProperty(value="是否治疗师")
-    private Integer istherapist;
+    private Integer isTherapist;
 
     @ApiModelProperty(value="更新时间")
     private Date updateTime;
