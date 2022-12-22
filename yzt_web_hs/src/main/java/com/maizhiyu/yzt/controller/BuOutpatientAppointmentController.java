@@ -59,6 +59,14 @@ public class BuOutpatientAppointmentController extends BaseController {
         Boolean result = buPrescriptionItemAppointmentItemService.makeAppointment(buPrescriptionItemAppointmentItem);
         return Result.success(result);
     }
+
+    @ApiOperation(value = "删除预约")
+    @GetMapping("/deleteAppointment")
+    @ApiImplicitParam(name = "buPrescriptionItemAppointmentItemId",value = "适宜技术小项目预约详情数据主键id",required = true)
+    public Result<Boolean> deleteAppointment(Long buPrescriptionItemAppointmentItemId) {
+        Boolean result = buPrescriptionItemAppointmentItemService.deleteAppointment(buPrescriptionItemAppointmentItemId);
+        return Result.success(result);
+    }
 }
 
 

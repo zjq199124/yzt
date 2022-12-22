@@ -75,4 +75,7 @@ public class BuDiagnose implements Serializable {
     @ApiModelProperty(value="创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
     private Date createTime;
+
+    @ApiModelProperty("是否删除；1是，0否")
+    private Integer isDel;
 }

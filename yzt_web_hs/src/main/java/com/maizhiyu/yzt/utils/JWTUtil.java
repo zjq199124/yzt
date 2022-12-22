@@ -50,7 +50,7 @@ public class JWTUtil {
          String token = Jwts.builder()
                  .setSubject(SUBJECT)
                  .claim("id", hsUserDetails.getId())
-                 .claim("name", hsUserDetails.getNickname())
+                 .claim("name", hsUserDetails.getNickName())
                  .claim("username", hsUserDetails.getUsername())
                  .claim("customerId", hsUserDetails.getCustomerId())
                  .setIssuedAt(new Date())

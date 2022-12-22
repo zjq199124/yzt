@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -18,7 +19,7 @@ import java.util.Date;
 @Accessors(chain=true)
 @TableName("bu_prescription_item")
 @ApiModel(description="处方条目表")
-public class BuPrescriptionItem implements Serializable {
+public class BuPrescriptionItem extends Model<BuPrescriptionItem> {
 
     @ApiModelProperty(value="条目ID")
     @TableId(type = IdType.AUTO)

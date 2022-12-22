@@ -34,7 +34,7 @@ public class HsAppointmentSystemController extends BaseController {
     }
 
     @ApiOperation("查询当前正在使用的预约时段信息")
-    @PostMapping("/getNowTimeSlot")
+    @GetMapping("/getNowTimeSlot")
     public Result getNowTimeSlot() {
         HsUserDetails hsUserDetails = getHsUserDetails();
         HsAppointmentSystem hsAppointmentSystem = hsAppointmentSystemService.getNowTimeSlot(hsUserDetails.getCustomerId());
@@ -42,7 +42,7 @@ public class HsAppointmentSystemController extends BaseController {
     }
 
     @ApiOperation("查询最后的一条预约时段信息")
-    @PostMapping("/getLastNowTimeSlot")
+    @GetMapping("/getLastNowTimeSlot")
     public Result getLastNowTimeSlot() {
         HsUserDetails hsUserDetails = getHsUserDetails();
         HsAppointmentSystem hsAppointmentSystem = hsAppointmentSystemService.getLastNowTimeSlot(hsUserDetails.getCustomerId());

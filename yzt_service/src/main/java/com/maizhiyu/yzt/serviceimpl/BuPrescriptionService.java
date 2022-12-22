@@ -106,7 +106,7 @@ public class BuPrescriptionService extends ServiceImpl<BuPrescriptionMapper, BuP
         // 获取医生
         HsUser user = hsUserMapper.selectById(prescription.getDoctorId());
         // 获取处方项
-        prescription.setDoctorName(user.getRealname());
+        prescription.setDoctorName(user.getRealName());
         prescription.setItemList(getItems(id));
         // 返回结果
         return prescription;

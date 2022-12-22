@@ -6,6 +6,7 @@
     <resultMap id="BaseResultMap" type="com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem">
         <id column="id" property="id" />
         <result column="prescription_item_appointment_id" property="prescriptionItemAppointmentId" />
+        <result column="prescription_item_id" property="prescriptionItemId" />
         <result column="patient_id" property="patientId" />
         <result column="outpatient_id" property="outpatientId" />
         <result column="customer_id" property="customerId" />

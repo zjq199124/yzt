@@ -150,8 +150,10 @@ public class HsAppointmentSystemServiceImpl extends ServiceImpl<HsAppointmentSys
         if (!CollectionUtils.isEmpty(buPrescriptionItemAppointmentItemList)) {
             Map<String, BuPrescriptionItemAppointmentItem> timeSlotMap = buPrescriptionItemAppointmentItemList.stream().collect(Collectors.toMap(BuPrescriptionItemAppointmentItem::getTimeSlot, Function.identity(), (k1, k2) -> k1));
             timeSlotDetailVoList.forEach(item -> {
-                int hasAppointment = Objects.nonNull(timeSlotMap.get(item.getTimeSlot())) ? 1 : 0;
+                BuPrescriptionItemAppointmentItem buPrescriptionItemAppointmentItem = timeSlotMap.get(item.getTimeSlot());
+                int hasAppointment = Objects.nonNull(buPrescriptionItemAppointmentItem) ? 1 : 0;
                 item.setHasAppointment(hasAppointment);
+                item.setBuPrescriptionItemAppointmentItemId(buPrescriptionItemAppointmentItem.getId());
             });
         }
 

@@ -19,7 +19,7 @@ public class HsUserDetailsService implements UserDetailsService {
 
         // 查询条件（根据用户名查询）
         QueryWrapper<HsUserDetails> wrapper = new QueryWrapper<>();
-        wrapper.eq("username", username);
+        wrapper.eq("user_name", username);
 
         // 查询用户
         HsUserDetails user = mapper.selectOne(wrapper);

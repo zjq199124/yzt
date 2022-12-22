@@ -20,6 +20,7 @@
         <result column="dname" property="dname"/>
         <result column="disease" property="disease"/>
         <result column="gender" property="gender"/>
+        <result column="age" property="age"/>
     </resultMap>
     <select id="list" resultType="com.maizhiyu.yzt.entity.BuOutpatientAppointment">
         SELECT
@@ -31,7 +32,8 @@
         ELSE '未知'
         END AS gender,
         bd.disease,
-        hd.dname
+        hd.dname,
+        TIMESTAMPDIFF(YEAR,bp.birthday,CURDATE()) as age
         FROM
         `bu_outpatient_appointment` boa
         LEFT JOIN bu_patient bp ON boa.patient_id = bp.id

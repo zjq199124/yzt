@@ -26,14 +26,14 @@ public class HsUserDetails implements UserDetails {
 
     private Integer status;
 
-    private String username;
+    private String userName;
 
     @JsonIgnore
     private String password;
 
-    private String nickname;
+    private String nickName;
 
-    private String realname;
+    private String realName;
 
     private String phone;
 
@@ -41,9 +41,9 @@ public class HsUserDetails implements UserDetails {
 
     private String avatar;
 
-    private Integer isdoctor;
+    private Integer isDoctor;
 
-    private Integer istherapist;
+    private Integer isTherapist;
 
     private Date updateTime;
 
@@ -68,7 +68,7 @@ public class HsUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return userName;
     }
 
     @JsonIgnore

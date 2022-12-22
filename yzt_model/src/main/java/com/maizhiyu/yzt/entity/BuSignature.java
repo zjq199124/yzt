@@ -34,9 +34,18 @@ public class BuSignature extends Model<BuSignature> implements Serializable {
              
     @ApiModelProperty("处方项id")
     private Long prescriptionItemId;
+
+    @ApiModelProperty("客户id")
+    private Long customerId;
+
+    @ApiModelProperty("科室id")
+    private Long departmentId;
              
     @ApiModelProperty("登记人id(pad端用户id)")
     private Long registrantId;
+
+    @ApiModelProperty("治疗状态：0：未开始；1：治疗中；2：治疗已结束")
+    private Integer treatmentStatus;
              
     @ApiModelProperty("$column.comment")
     private Integer isDel;

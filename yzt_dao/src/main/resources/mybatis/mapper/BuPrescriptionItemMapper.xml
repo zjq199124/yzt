@@ -2,5 +2,127 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.maizhiyu.yzt.mapper.BuPrescriptionItemMapper">
 
-
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.maizhiyu.yzt.entity.BuPrescriptionItem">
+        <id column="id" property="id" />
+        <result column="type" property="type" />
+        <result column="customer_id" property="customerId" />
+        <result column="doctor_id" property="doctorId" />
+        <result column="patient_id" property="patientId" />
+        <result column="outpatient_id" property="outpatientId" />
+        <result column="prescription_id" property="prescriptionId" />
+        <result column="entity_id" property="entityId" />
+        <result column="name" property="name" />
+        <result column="detail" property="detail" />
+        <result column="operation" property="operation" />
+        <result column="usage" property="usage" />
+        <result column="unit" property="unit" />
+        <result column="dosage" property="dosage" />
+        <result column="frequency" property="frequency" />
+        <result column="days" property="days" />
+        <result column="quantity" property="quantity" />
+        <result column="price" property="price" />
+        <result column="note" property="note" />
+        <result column="customer_herbs_id" property="customerHerbsId" />
+        <result column="herbs_id" property="herbsId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="is_del" property="isDel" />
+    </resultMap>
+    <resultMap id="WaitSignatureMap" type="com.maizhiyu.yzt.vo.WaitSignatureVo">
+        <result column="prescriptionItemId" property="prescriptionItemId" />
+        <result column="outpatient_id" property="outpatientId" />
+        <result column="name" property="name" />
+        <result column="gender" property="gender" />
+        <result column="age" property="age" />
+        <result column="dname" property="dname" />
+        <result column="appointment_date" property="appointmentDate" />
+        <result column="time_slot" property="timeSlot" />
+        <result column="disease" property="disease" />
+        <result column="tsName" property="tsName" />
+        <result column="quantity" property="quantity" />
+        <result column="treatment_quantity" property="treatmentQuantity" />
+    </resultMap>
+    <select id="selectWaitSignatureList" resultType="com.maizhiyu.yzt.vo.WaitSignatureVo">
+        SELECT
+        bpi.id as prescriptionItemId,
+        bpi.outpatient_id
+        bp.name,
+        CASE
+        WHEN bp.sex = 1 THEN '男'
+        WHEN bp.sex = 0 THEN '女'
+        ELSE '未知'
+        END AS gender,
+        TIMESTAMPDIFF(YEAR,bp.birthday,CURDATE()) as age,
+        hd.dname,
+        bpiai.appointment_date,
+        bpiai.time_slot
+        FROM
+        bu_prescription_item bpi
+        INNER JOIN bu_outpatient bo ON bpi.outpatient_id = bo.id
+        AND bo.is_del = 0
+        LEFT JOIN bu_patient bp ON bpi.patient_id = bp.id
+        AND bp.is_del = 0
+        LEFT JOIN hs_department hd ON bpi.department_id = hd.id
+        AND hd.is_del = 0
+        LEFT JOIN bu_prescription_item_appointment_item bpiai ON bpi.id = bpiai.prescription_item_id
+        AND bpiai.is_del = 0
+        LEFT JOIN bu_cure bc ON bpi.id = bc.prescription_item_id
+        AND bc.is_del = 0
+        WHERE
+        bpi.is_del = 0
+        AND bc.STATUS != 1
+        AND bpi.customer_id = #{waitSignatureRo.customerId}
+        <if test="waitSignatureRo.departmentId != null">
+            AND bpi.department_id = #{waitSignatureRo.departmentId}
+        </if>
+        <if test="waitSignatureRo.visitStartDate != null and waitSignatureRo.visitEndDate != null">
+            AND (bo.create_time BETWEEN #{waitSignatureRo.visitStartDate} AND #{waitSignatureRo.visitEndDate}
+        </if>
+        <if test="waitSignatureRo.search != null and waitSignatureRo.search != ''">
+            AND (bp.name LIKE concat('%',#{waitSignatureRo.search},'%') OR bp.phone LIKE concat('%',#{waitSignatureRo.search},'%'))
+        </if>
+        ORDER BY
+        IF(ISNULL( bpiai.id ), 0, 1) DESC,
+        bpi.create_time DESC
+    </select>
+    <select id="selectWaitSignatureInfo" resultType="com.maizhiyu.yzt.vo.WaitSignatureVo">
+        SELECT
+        bpi.id as prescriptionItemId,
+        bd.disease,
+        ts.NAME AS tsName,
+        bpia.treatment_quantity,
+        bpia.quantity
+        FROM
+        bu_diagnose bd
+        LEFT JOIN bu_prescription_item bpi ON bd.outpatient_id = bpi.outpatient_id
+        AND bpi.is_del = 0
+        LEFT JOIN bu_prescription_item_appointment bpia ON bpi.id = bpia.prescription_item_id
+        AND bpia.is_del = 0
+        LEFT JOIN ts_sytech ts ON bpi.entity_id = ts.id
+        AND ts.is_del = 0
+        AND bd.outpatient_id IN
+        <foreach collection="outpatientIdList" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
 </mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

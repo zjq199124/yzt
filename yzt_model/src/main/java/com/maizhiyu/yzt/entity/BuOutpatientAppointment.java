@@ -81,6 +81,10 @@ public class BuOutpatientAppointment extends Model<BuOutpatientAppointment> {
     private String dname;
 
     @TableField(exist = false)
+    @ApiModelProperty("年龄")
+    private Integer age;
+
+    @TableField(exist = false)
     @ApiModelProperty("适宜技术预约状况list")
     private List<BuPrescriptionItemAppointment> buPrescriptionItemAppointmentList;
 }

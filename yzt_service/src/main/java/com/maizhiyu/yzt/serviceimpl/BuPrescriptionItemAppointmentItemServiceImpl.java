@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.base.Preconditions;
 import com.maizhiyu.yzt.entity.BuOutpatientAppointment;
@@ -112,5 +113,14 @@ public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<Bu
             }
         }
         return insert > 0 && update > 0 && result > 0;
+    }
+
+    @Override
+    public Boolean deleteAppointment(Long buPrescriptionItemAppointmentItemId) {
+        LambdaUpdateWrapper<BuPrescriptionItemAppointmentItem> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.set(BuPrescriptionItemAppointmentItem::getIsDel, 1)
+                .eq(BuPrescriptionItemAppointmentItem::getId, buPrescriptionItemAppointmentItemId);
+        int update = buPrescriptionItemAppointmentItemMapper.update(null, updateWrapper);
+        return update > 0;
     }
 }

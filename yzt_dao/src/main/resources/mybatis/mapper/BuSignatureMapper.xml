@@ -3,14 +3,58 @@
 <mapper namespace="com.maizhiyu.yzt.mapper.BuSignatureMapper">
 
     <resultMap type="com.maizhiyu.yzt.entity.BuSignature" id="BuSignatureMap">
-        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="id" column="id" jdbcType="BIGINT"/>
         <result property="patientId" column="patient_id" jdbcType="INTEGER"/>
         <result property="outpatientId" column="outpatient_id" jdbcType="INTEGER"/>
         <result property="prescriptionItemId" column="prescription_item_id" jdbcType="INTEGER"/>
+        <result property="customerId" column="customer_id" jdbcType="BIGINT"/>
+        <result property="departmentId" column="department_id" jdbcType="BIGINT"/>
         <result property="registrantId" column="registrant_id" jdbcType="INTEGER"/>
+        <result property="treatmentStatus" column="treatment_status" jdbcType="INTEGER"/>
         <result property="isDel" column="is_del" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
+    <select id="selectWaitTreatmentList" resultType="com.maizhiyu.yzt.entity.BuSignature">
+        SELECT
+            bp.name,
+            CASE
+                WHEN bp.sex = 1 THEN '男'
+                WHEN bp.sex = 0 THEN '女'
+                ELSE '未知'
+                END AS gender,
+            TIMESTAMPDIFF(YEAR,bp.birthday,CURDATE()) as age,
+            hd.dname,
+            bd.disease,
+            ts.name tsName,
+            bpia.quantity,
+            bpia.treatment_quantity,
+            bo.create_time as outpatient_time,
+            bs.create_time as signature_time
+        FROM
+            bu_signature bs
+                LEFT JOIN bu_patient bp ON bs.patient_id = bp.id
+                AND bp.is_del = 0
+                LEFT JOIN hs_department hd ON bs.department_id = hd.id
+                AND hd.is_del = 0
+                LEFT JOIN bu_outpatient bo ON bs.outpatient_id = bo.id
+                AND bo.is_del = 0
+                LEFT JOIN bu_prescription_item_appointment bpia ON bs.prescription_item_id = bpia.prescription_item_id
+                AND bpia.is_del = 0
+                LEFT JOIN ts_sytech ts ON bpia.entity_id = ts.id
+                AND ts.is_del = 0
+                LEFT JOIN bu_diagnose bd ON bs.outpatient_id = bd.outpatient_id
+        WHERE
+            bs.is_del = 0
+            AND bs.treatment_status = 0
+            <if test="waitTreatmentRo.search != null and waitTreatmentRo.search != ''">
+                and (bp.name like concat('%',#{waitTreatmentRo.search},'%') or bp.phone like concat('%',#{waitTreatmentRo.search},'%'))
+            </if>
+            <if test="waitTreatmentRo.departmentId != null">
+            and bs.department_id = #{waitTreatmentRo.departmentId}
+            </if>
+        ORDER BY
+            bs.create_time
+    </select>
 
 </mapper>

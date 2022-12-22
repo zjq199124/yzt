@@ -1,11 +1,12 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.maizhiyu.yzt.entity.BuPrescription;
 import com.maizhiyu.yzt.entity.BuPrescriptionItem;
+import com.maizhiyu.yzt.ro.WaitSignatureRo;
+import com.maizhiyu.yzt.vo.WaitSignatureVo;
 
 import java.util.List;
-import java.util.Map;
 
 public interface IBuPrescriptionItemService extends IService<BuPrescriptionItem> {
 
@@ -18,4 +19,7 @@ public interface IBuPrescriptionItemService extends IService<BuPrescriptionItem>
     List<BuPrescriptionItem> getPrescriptionItemList(Long prescriptionId);
 
     void deleteByIdList(List<Long> deleteIdList);
+
+    Page<WaitSignatureVo> selectWaitSignatureList(WaitSignatureRo waitSignatureRo);
 }
+
