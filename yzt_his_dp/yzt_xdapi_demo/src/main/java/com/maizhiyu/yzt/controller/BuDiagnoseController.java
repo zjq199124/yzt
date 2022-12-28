@@ -72,7 +72,7 @@ public class BuDiagnoseController {
                 .last("limit 1");
         HisOutpatient outpatient = outpatientMapper.selectOne(queryWrapper);
         if (Objects.nonNull(outpatient)) {
-            ro.setOutpatientId(Long.parseLong(outpatient.getCode()));
+            ro.setOutpatientId(Long.parseLong(outpatient.getId()));
         }
         // 调用开放接口获取诊断推荐
         Result result=yptClient.getRecommend(ro);

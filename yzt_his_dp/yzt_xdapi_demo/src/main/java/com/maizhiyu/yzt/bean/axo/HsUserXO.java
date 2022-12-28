@@ -12,14 +12,11 @@ public class HsUserXO {
     @Validated
     public static class AddUserXO {
 
-        @ApiModelProperty(value="用户名称")
-        private String username;
-
         @ApiModelProperty(value="用户密码")
         private String password;
 
         @ApiModelProperty(value="用户真名")
-        private String realname;
+        private String realName;
 
         @ApiModelProperty(value="用户昵称")
         private String nickName;

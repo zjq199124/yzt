@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.entity;
 
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -20,13 +21,15 @@ import java.util.Date;
 public class HisDoctor implements Serializable {
     @TableId
     @ApiModelProperty(value="his端医生账号(hisDoctorId)")
-    private String username;
+    private String id;
 
     @ApiModelProperty(value="his端医生昵称")
-    private String nickname;
+    @TableField("nickname")
+    private String nickName;
 
     @ApiModelProperty(value="his端医生姓名")
-    private String realname;
+    @TableField("realname")
+    private String realName;
 
 //    @ApiModelProperty(value="医生性别")
 //    private Integer sex;

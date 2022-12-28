@@ -41,7 +41,7 @@ public class HsUserController {
         HsUser user = HsUserCI.INSTANCE.convert(ro);
         user.setCustomerId(customerId);
         user.setStatus(1);
-        user.setIsdoctor(1);
+        user.setIsDoctor(1);
         // 查询医生是否存在
         HsUser oldUser = service.getUserByHisId(customerId, Long.valueOf(ro.getHisId()));
         // 不存在则插入

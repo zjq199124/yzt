@@ -15,31 +15,31 @@ public class HsUserRO {
     @Validated
     public static class AddUserRO {
 
-        @NotBlank
-        @ApiModelProperty(value="用户名称")
-        private String username;
+//        @NotBlank
+//        @ApiModelProperty(value="用户名称")
+//        private String userName;
 
-        @ApiModelProperty(value="用户密码")
+        @ApiModelProperty(value = "用户密码")
         private String password;
 
         @NotBlank
-        @ApiModelProperty(value="用户真名")
-        private String realname;
+        @ApiModelProperty(value = "用户真名")
+        private String realName;
 
-        @ApiModelProperty(value="用户昵称，his登录账户")
-        private String nickname;
+        @ApiModelProperty(value = "用户昵称，his登录账户")
+        private String nickName;
 
-        @ApiModelProperty(value="用户手机")
+        @ApiModelProperty(value = "用户手机")
         private String phone;
 
-        @ApiModelProperty(value="用户性别(0:女，1:男)")
+        @ApiModelProperty(value = "用户性别(0:女，1:男)")
         private Integer sex;
 
         @NotBlank
-        @ApiModelProperty(value="HIS内医生ID")
+        @ApiModelProperty(value = "HIS内医生ID")
         private String hisId;
 
-        @ApiModelProperty(value="HIS内附加数据")
+        @ApiModelProperty(value = "HIS内附加数据")
         private String hisExtra;
     }
 }

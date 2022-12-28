@@ -113,8 +113,44 @@ public class BuPrescriptionController {
         return result;
     }
 
-    //TODO 这里是对接his的数据保存到云平台，内嵌页面的保存应当按照我们的处方保存接口接收数据保存数据
     @ApiOperation(value = "新增处方(适宜)", notes = "新增处方(适宜)")
+    @PostMapping("/addPrescriptionToShiYi")
+    public Result addPrescriptionToShiYi(@RequestBody @Valid BuPrescriptionRO.AddPrescriptionShiyi ro) {
+//        ro.setPatientId(ro.getOutpatientId());  // 使用outpatientId作为患者ID（HIS就这么给的，每次挂号都会新增患者）
+        Long yptDoctorId = processDoctor(String.valueOf(ro.getBaseInfo().getDoctorId()));
+        Long yptPatientId = processPatient(String.valueOf(ro.getBaseInfo().getPatientId()));
+        Long yptOutpatientId = processOutpatient(String.valueOf(ro.getBaseInfo().getOutpatientId()), yptDoctorId, yptPatientId);
+
+        ro.getBaseInfo().setDoctorId(yptDoctorId);
+        ro.getBaseInfo().setPatientId(yptPatientId);
+        ro.getBaseInfo().setOutpatientId(yptOutpatientId);
+        // 适宜技术映射(name code 修改前是his内数据，修改后是ypt内数据)
+        for (BuPrescriptionRO.BuPrescriptionItemShiyi item : ro.getItemList()) {
+            try {
+                TreatmentMapping treatment = null;
+                // 先按code映射
+                if (item.getCode() != null && item.getCode().length() > 0) {
+                    treatment = treatmentMappingService.getTreatmentByHisCode(item.getCode());
+                }
+                // 再按name映射
+                if (treatment == null) {
+                    treatment = treatmentMappingService.getTreatmentByHisName(item.getName());
+                }
+                // 修改为映射后的数据
+                item.setCode(treatment.getCode());
+                item.setName(treatment.getName());
+                log.info("映射后适宜技术信息: " + item);
+            } catch (Exception e) {
+                log.warn("获取适宜技术映射异常 " + item + " - " + e.getMessage());
+            }
+        }
+        Result<Boolean> result = yptClient.addPrescriptionShiyi(ro);
+        return result;
+    }
+
+
+    //TODO 这里是对接his的数据保存到云平台，内嵌页面的保存应当按照我们的处方保存接口接收数据保存数据
+    @ApiOperation(value = "嵌入页面诊断与处置保存", notes = "嵌入页面诊断与处置保存")
     @PostMapping("/addPrescriptionShiyi")
     public Result addPrescriptionShiyi(@RequestBody @Valid BuPrescriptionRO.AddPrescriptionShiyi ro) throws IOException {
         Assert.notNull(ro, "处方数据不能为空!");
@@ -128,19 +164,24 @@ public class BuPrescriptionController {
         //ro中的outpatientId是视图中的registration_id,要换成code才是我们这边所说的his中medical_record_id对应云平台的his中的outpatientId
         YptOutpatient yptOutpatient = getYptOutpatientById(yptOutpatientId);
         ro.getBaseInfo().setOutpatientId(yptOutpatient.getHisId());
-        //保存诊断信息
         ro.getDiagnoseInfo().setCustomerName(customerName);
         //讲patientId,outPatientId,doctorId替换成云平台对应的数据
         ro.getBaseInfo().setDoctorId(yptDoctorId);
         ro.getBaseInfo().setPatientId(yptPatientId);
         ro.getBaseInfo().setOutpatientId(yptOutpatientId);
-        yptClient.addDiagnose(ro);
 
-        if (CollectionUtils.isEmpty(ro.getItemList()))
-            return Result.success();
+        //将诊断与处置推送给his
+        if (Objects.nonNull(ro) && !CollectionUtils.isEmpty(ro.getItemList())) {
+            savePrescriptionShiyiToHis(ro);
+        }
 
-        Result<Boolean> result = yptClient.addPrescriptionShiyi(ro);
-        return Result.success(result.getData());
+        Result<Boolean> result = yptClient.addDiagnose(ro);
+        if (result.getCode().equals(0) && !CollectionUtils.isEmpty(ro.getItemList())) {
+            Result<Boolean> res = yptClient.addPrescriptionShiyi(ro);
+            return Result.success(res.getData());
+        } else {
+            return Result.success(result.getData());
+        }
     }
 
     private void savePrescriptionShiyiToHis(BuPrescriptionRO.AddPrescriptionShiyi ro) throws IOException {
@@ -255,7 +296,7 @@ public class BuPrescriptionController {
 
     private Long processOutpatient(String outpatientId, Long yptDoctorId, Long yptPatientId) {
         LambdaQueryWrapper<HisOutpatient> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(HisOutpatient::getRegistrationId, outpatientId)
+        queryWrapper.eq(HisOutpatient::getId, outpatientId)
                 .last("limit 1");
         HisOutpatient outpatient = outpatientMapper.selectOne(queryWrapper);
         if (outpatient == null) {

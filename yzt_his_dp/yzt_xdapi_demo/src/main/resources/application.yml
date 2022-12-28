@@ -9,5 +9,5 @@ server:
   session:
     timeout: 7200
   servlet:
-    context-path: /yzt
+    context-path: /hs/yzt
 
