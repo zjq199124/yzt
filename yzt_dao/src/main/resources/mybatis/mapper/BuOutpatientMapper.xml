@@ -9,9 +9,9 @@
         DATE_FORMAT(X.update_time, '%Y-%m-%d %T') update_time,
         DATE_FORMAT(X.create_time, '%Y-%m-%d %T') create_time,
         A.id customer_id, A.name customer_name,
-        B.id department_id, B.dname department_name,
-        C.id doctor_id, C.realname doctor_name,
-        D.id patient_id, D.name patient_name, D.sex patient_sex, D.phone patient_phone, nl age
+        B.id department_id, B.dname departmentName,
+        C.id doctor_id, C.real_name doctor_name,
+        D.id patient_id, D.name patientName, D.sex patientSex, D.phone patientPhone, D.nl age ,D.birthday patientBirthday
         from
         bu_outpatient X
         left join ms_customer A on A.id = X.customer_id

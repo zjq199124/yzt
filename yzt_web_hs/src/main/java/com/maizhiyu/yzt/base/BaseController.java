@@ -50,7 +50,6 @@ public class BaseController {
         if (Objects.isNull(hsUserDetails)) {
             throw new BusinessException("认证信息获取失败");
         }
-
         return hsUserDetails;
     }
 }

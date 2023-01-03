@@ -59,8 +59,8 @@
         bo.create_time diagnose_time,
         bd.disease diagnose_name,
         bpi.NAME sytech_name,
-        (select realname from hs_user where id = bd.doctor_id) doctor_name,
-        (select realname from hs_user where id = bc.cure_user_id) cure_user_name
+        (select real_name from hs_user where id = bd.doctor_id) doctor_name,
+        (select real_name from hs_user where id = bc.cure_user_id) cure_user_name
         FROM bu_visit bv
         LEFT JOIN bu_cure bc ON bv.cure_id = bc.id
         LEFT JOIN bu_outpatient bo ON bc.out_patient_id = bo.id

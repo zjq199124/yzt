@@ -3,16 +3,24 @@
 <mapper namespace="com.maizhiyu.yzt.mapper.DictSymptomMapper">
 
     <resultMap id="BaseResultMap" type="com.maizhiyu.yzt.entity.DictSymptom">
-        <id column="id" property="id" />
-        <result column="status" property="status" />
-        <result column="cate" property="cate" />
-        <result column="content" property="content" />
-        <result column="note" property="note" />
+        <id column="id" property="id"/>
+        <result column="status" property="status"/>
+        <result column="cate" property="cate"/>
+        <result column="content" property="content"/>
+        <result column="note" property="note"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="isDel" column="is_del" jdbcType="INTEGER"/>
     </resultMap>
+
     <select id="selectByDiseaseId" resultType="com.maizhiyu.yzt.entity.DictSymptom" parameterType="java.lang.Long">
-        SELECT ds.*, count(ds.id) AS total FROM dict_symptom ds
+        SELECT ds.*, count(ds.id) AS total
+        FROM dict_symptom ds
         INNER JOIN rel_syndrome_symptom rss ON ds.id = rss.symptom_id
-        WHERE  rss.disease_id = #{diseaseId} AND ds.status = 1
+        <where>
+            rss.disease_id = #{diseaseId}
+            AND ds.status = 1
+        </where>
         GROUP BY ds.id
         ORDER BY total
 

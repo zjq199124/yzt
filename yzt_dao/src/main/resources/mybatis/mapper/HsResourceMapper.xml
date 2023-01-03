@@ -11,29 +11,33 @@
         <result property="title" column="title" jdbcType="VARCHAR"/>
         <result property="value" column="value" jdbcType="VARCHAR"/>
         <result property="descrip" column="descrip" jdbcType="VARCHAR"/>
+        <result property="icon" column="icon" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="isDel" column="is_del" jdbcType="INTEGER"/>
     </resultMap>
 
     <!--查询角色资源列表-->
     <select id="selectRoleResourceList" resultMap="HsResourceMap">
-        select
-            R.*
-        from
-            hs_resource R
-            join hs_role_resource X on X.resource_id = R.id
-        where
+        select R.*
+        from hs_resource R
+        join hs_role_resource X on X.resource_id = R.id
+        <where>
+            R.is_del=0 and
             X.role_id = #{roleId}
+        </where>
     </select>
 
     <!--查询用户资源列表-->
     <select id="selectUserResourceList" resultMap="HsResourceMap">
-        select
-            R.*
-        from
-            hs_resource R
-            join hs_role_resource X on X.resource_id = R.id
-            join hs_user_role Y on X.role_id = Y.role_id
-        where
+        select R.*
+        from hs_resource R
+        join hs_role_resource X on X.resource_id = R.id
+        join hs_user_role Y on X.role_id = Y.role_id
+        <where>
+            R.is_del=0 and
             Y.user_id = #{userId}
+        </where>
     </select>
 
 </mapper>

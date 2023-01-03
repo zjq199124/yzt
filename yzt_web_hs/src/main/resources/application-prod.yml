@@ -78,26 +78,6 @@ spring:
     store-type: redis
 
 
-
-### mybatis ###
-#mybatis:
-#  # mybatis配置文件所在路径
-#  config-location: classpath:mybatis/mybatis.cfg.xml
-#  # 所有Entity别名类所在包
-#  type-aliases-package: com.maizhiyu.yzt.entity
-#  mapper-locations:
-#    # mapper映射文件
-#    - classpath:mybatis/mapper/*.xml
-mybatis-plus:
-  type-aliases-package: com.maizhiyu.yzt.entity
-  mapper-locations: classpath*:/mybatis/mapper/*.xml
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-
-
-
 ### swagger ###（生产环境时需要关闭）
 swagger:
   enable: true

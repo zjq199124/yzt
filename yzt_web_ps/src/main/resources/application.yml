@@ -11,3 +11,10 @@ server:
   servlet:
     context-path: /ps/api
 #env: stg
+
+mybatis-plus:
+  type-aliases-package: com.maizhiyu.yzt.entity
+  mapper-locations: classpath*:/mybatis/mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

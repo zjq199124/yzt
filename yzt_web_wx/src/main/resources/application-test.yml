@@ -70,6 +70,7 @@ spring:
     store-type: redis
 
 
+
 mybatis-plus:
   type-aliases-package: com.maizhiyu.yzt.entity
   mapper-locations: classpath*:/mybatis/mapper/*.xml

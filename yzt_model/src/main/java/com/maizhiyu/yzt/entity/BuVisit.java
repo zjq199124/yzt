@@ -6,7 +6,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
- 
+
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
  
 /**
@@ -26,17 +27,22 @@ public class BuVisit extends Model<BuVisit> implements Serializable {
     private Long id;
              
     @ApiModelProperty("治疗id")
+    @NotNull
     private Long cureId;
              
     @ApiModelProperty("随访状态(1-正常，2-失访，3-死亡）")
+    @NotNull
     private Integer status;
              
     @ApiModelProperty("疗效评定(1-治愈，2-好转，3-未愈)")
+    @NotNull
     private Integer result;
              
     @ApiModelProperty("随访类型")
+    @NotNull
     private Integer type;
              
     @ApiModelProperty("随访详情")
+    @NotNull
     private String content;
 }

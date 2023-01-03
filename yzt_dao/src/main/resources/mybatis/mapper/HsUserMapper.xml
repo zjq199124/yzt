@@ -6,15 +6,15 @@
         <result property="id" column="id" jdbcType="BIGINT"/>
         <result property="customerId" column="customer_id" jdbcType="BIGINT"/>
         <result property="status" column="status" jdbcType="INTEGER"/>
-        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
         <result property="password" column="password" jdbcType="VARCHAR"/>
-        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
-        <result property="realname" column="realname" jdbcType="VARCHAR"/>
+        <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
+        <result property="realName" column="real_name" jdbcType="VARCHAR"/>
         <result property="phone" column="phone" jdbcType="VARCHAR"/>
         <result property="sex" column="sex" jdbcType="INTEGER"/>
         <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
-        <result property="isdoctor" column="isdoctor" jdbcType="INTEGER"/>
-        <result property="istherapist" column="istherapist" jdbcType="INTEGER"/>
+        <result property="isDoctor" column="is_doctor" jdbcType="INTEGER"/>
+        <result property="isTherapist" column="is_therapist" jdbcType="INTEGER"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
     </resultMap>
@@ -22,9 +22,9 @@
     <!--查询用户信息，所属部门，所属角色-->
     <select id="selectUserList" resultType="hashmap">
         select
-            U.id, U.status, U.username, U.nickname, U.realname, U.phone, U.sex,
-            DATE_FORMAT(U.create_time, '%Y-%m-%d %T') create_time,
-            D.id department_id, D.dname department_name, D.descrip department_desc,
+            U.id, U.status, U.user_name userName, U.nick_name nickName, U.real_name realName, U.phone, U.sex,
+            DATE_FORMAT(U.create_time, '%Y-%m-%d %T') createTime,
+            D.id department_id, D.dname departmentName, D.descrip department_desc,
             R.id role_id, R.rolename rolename, R.descrip role_desc
         from
             hs_user U
@@ -44,23 +44,23 @@
                 and U.status = #{status}
             </if>
             <if test="term != null and term != ''">
-                and (U.username like concat(concat('%',#{term}),'%')
-                    or U.nickname like concat(concat('%',#{term}),'%')
-                    or U.realname like concat(concat('%',#{term}),'%')
+                and (U.user_name like concat(concat('%',#{term}),'%')
+                    or U.nick_name like concat(concat('%',#{term}),'%')
+                    or U.real_name like concat(concat('%',#{term}),'%')
                     or U.phone like concat(concat('%',#{term}),'%'))
             </if>
             <if test="isdoctor != null">
-                and U.isdoctor = #{isdoctor}
+                and U.is_doctor = #{isdoctor}
             </if>
             <if test="istherapist != null">
-                and U.istherapist = #{istherapist}
+                and U.is_therapist = #{istherapist}
             </if>
         </where>
     </select>
 
     <select id="selectUser" resultType="hashmap">
         select
-            U.id, U.customer_id, U.status, U.username, U.nickname, U.realname, U.phone, U.sex, U.avatar, U.isdoctor, U.istherapist,
+            U.id, U.customer_id customerId, U.status, U.user_name userName, U.nick_name nickName, U.real_name realName, U.phone, U.sex, U.avatar, U.is_doctor isDoctor, U.is_therapist isTherapist,
             DATE_FORMAT(U.create_time, '%Y-%m-%d %T') create_time,
             C.name customerName,
             D.id department_id, D.dname department_name, D.descrip department_desc,

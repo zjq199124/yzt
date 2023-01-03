@@ -54,7 +54,7 @@ public class BuOutpatientAppointmentController extends BaseController {
     public Result<Boolean> makeAppointment(@RequestBody BuPrescriptionItemAppointmentItemRo buPrescriptionItemAppointmentItemRo) {
         HsUserDetails hsUserDetails = getHsUserDetails();
         BuPrescriptionItemAppointmentItem buPrescriptionItemAppointmentItem = new BuPrescriptionItemAppointmentItem();
-        BeanUtil.copyProperties(buPrescriptionItemAppointmentItemRo,buPrescriptionItemAppointmentItem);
+        BeanUtil.copyProperties(buPrescriptionItemAppointmentItemRo, buPrescriptionItemAppointmentItem);
         buPrescriptionItemAppointmentItem.setCustomerId(hsUserDetails.getCustomerId());
         Boolean result = buPrescriptionItemAppointmentItemService.makeAppointment(buPrescriptionItemAppointmentItem);
         return Result.success(result);
@@ -62,7 +62,7 @@ public class BuOutpatientAppointmentController extends BaseController {
 
     @ApiOperation(value = "删除预约")
     @GetMapping("/deleteAppointment")
-    @ApiImplicitParam(name = "buPrescriptionItemAppointmentItemId",value = "适宜技术小项目预约详情数据主键id",required = true)
+    @ApiImplicitParam(name = "buPrescriptionItemAppointmentItemId", value = "适宜技术小项目预约详情数据主键id", required = true)
     public Result<Boolean> deleteAppointment(Long buPrescriptionItemAppointmentItemId) {
         Boolean result = buPrescriptionItemAppointmentItemService.deleteAppointment(buPrescriptionItemAppointmentItemId);
         return Result.success(result);

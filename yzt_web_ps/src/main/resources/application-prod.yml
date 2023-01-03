@@ -74,11 +74,6 @@ spring:
     port: 6379
     password: MZY1qaz@WSX
     timeout: 86400
-  # rabbitMQ 配置
-  #  rabbitmq:
-  #    host: 119.3.230.227
-  #    username: admin
-  #    password: admin
   session:
     store-type: redis
   mvc:

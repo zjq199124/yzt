@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface FeignLocationClient {
 
     @GetMapping(value = "${weixin.location_path}?key=${weixin.location_key}")
-    String getLocation(
-            @RequestParam("location") String location);
+    String getLocation(@RequestParam("location") String location);
 
 }

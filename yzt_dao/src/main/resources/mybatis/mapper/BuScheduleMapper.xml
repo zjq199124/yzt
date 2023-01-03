@@ -23,7 +23,7 @@
 
     <select id="selectScheduleAppointmentList" resultType="hashmap">
         select
-            X.*, Y.total, U.realname
+            X.*, Y.total, U.real_name
         from
             (
                 select *

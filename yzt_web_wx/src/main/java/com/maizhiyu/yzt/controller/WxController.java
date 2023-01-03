@@ -180,7 +180,7 @@ public class WxController {
     @GetMapping("/onClick")
     public void onClick(HttpServletResponse response) throws IOException {
         String authorizeUrl = AUTHORIZE_URL;
-        String redirectUri = REDIRECT_URL;
+        String redirectUri = "https://ypt.yztyun.com/wx/api/wx/onCallback";//REDIRECT_URL;
         String responseType = "code";
         String scope = AUTHORIZE_SCOPE;
         String state = "STATE";

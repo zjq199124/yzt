@@ -1,19 +1,10 @@
-
-
-
 ### spring ###
 spring:
-  application:
-    name: yizhentang
-  http:
-    multipart:
-      max-file-size: 2000Mb      # Max file size，默认1M
-      max-request-size: 2500Mb   # Max request size，默认10M
   datasource:
     # 当前数据源操作类型
     type: com.alibaba.druid.pool.DruidDataSource
     #     mysql驱动包
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://192.168.0.90:3306/yztdev?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
     username: root
     password: yzt123456
@@ -76,22 +67,13 @@ spring:
   session:
     store-type: redis
 
-
-mybatis-plus:
-  type-aliases-package: com.maizhiyu.yzt.entity
-  mapper-locations: classpath*:/mybatis/mapper/*.xml
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-
-### 分页插件 ###
-pagehelper:
-  auto-dialect: mysql
-  reasonable: true
-  support-methods-arguments: true
-  page-size-zero: true
-  params: count=countSql
+#### 分页插件 ###
+#pagehelper:
+#  auto-dialect: mysql
+#  reasonable: true
+#  support-methods-arguments: true
+#  page-size-zero: true
+#  params: count=countSql
 
 
 # 微信公众号配置
@@ -101,13 +83,13 @@ weixin:
   crontab: "0 0 */1 * * ?"
   # 微信基础信息
   # 公众号脉之语
-#  appid: wx770c893ff4f74c9a
-#  appsecret: ad183550a3205ffb22c9bf805263c0ad
-#  token: mzy18ljf61gk2801cgy451zsw3452by4
+  #  appid: wx770c893ff4f74c9a
+  #  appsecret: ad183550a3205ffb22c9bf805263c0ad
+  #  token: mzy18ljf61gk2801cgy451zsw3452by4
   # 公众号中医真知
-#  appid: wxbbf7c24f3dc46277
-#  appsecret: f8c2b9d05197df61ec28b12c43d0229c
-#  token: mzy18ljf61gk2801cgy451zsw3452by4
+  #  appid: wxbbf7c24f3dc46277
+  #  appsecret: f8c2b9d05197df61ec28b12c43d0229c
+  #  token: mzy18ljf61gk2801cgy451zsw3452by4
   # 公众号测试账号
   appid: wx201279a7616325aa
   appsecret: 9d92acd5a15f2f6a2fc3e36a1883e238

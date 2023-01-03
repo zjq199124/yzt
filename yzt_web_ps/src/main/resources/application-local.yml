@@ -1,7 +1,3 @@
-
-
-
-
 ### spring ###
 spring:
   application:
@@ -63,52 +59,16 @@ spring:
 
   # redis 配置
   redis:
-    #    host: 39.105.85.64
     host: 127.0.0.1
     port: 6379
-    #    password: zhanshen@
     timeout: 86400
     password: 123456
-  # rabbitMQ 配置
-  #  rabbitmq:
-  #    host: 119.3.230.227
-  #    username: admin
-  #    password: admin
   session:
     store-type: redis
-
-
-
-### mybatis ###
-#mybatis:
-#  # mybatis配置文件所在路径
-#  config-location: classpath:mybatis/mybatis.cfg.xml
-#  # 所有Entity别名类所在包
-#  type-aliases-package: com.maizhiyu.yzt.entity
-#  mapper-locations:
-#    # mapper映射文件
-#    - classpath:mybatis/mapper/*.xml
-mybatis-plus:
-  type-aliases-package: com.maizhiyu.yzt.entity
-  mapper-locations: classpath*:/mybatis/mapper/*.xml
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-
-### 分页插件 ###
-pagehelper:
-  auto-dialect: mysql
-  reasonable: true
-  support-methods-arguments: true
-  page-size-zero: true
-  params: count=countSql
-
 
 ### swagger ###（生产环境时需要关闭）
 swagger:
   enable: true
-
 
 ### 业务配置 ###
 file:

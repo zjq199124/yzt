@@ -1,7 +1,16 @@
+### spring ###
 spring:
+  application:
+    name: yizhentang
+  http:
+    multipart:
+      max-file-size: 2000Mb      # Max file size，默认1M
+      max-request-size: 2500Mb   # Max request size，默认10M
   profiles:
     active: @profiles.active@
-#    active: prod,utils-prod
+  mvc:
+    servlet:
+      load-on-startup: 1
 
 ### 服务配置 ###
 server:
@@ -10,4 +19,11 @@ server:
     timeout: 7200
   servlet:
     context-path: /wx/api
-#env: stg
+
+
+mybatis-plus:
+  type-aliases-package: com.maizhiyu.yzt.entity
+  mapper-locations: classpath*:/mybatis/mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

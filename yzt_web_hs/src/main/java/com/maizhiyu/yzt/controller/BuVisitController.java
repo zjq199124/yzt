@@ -48,7 +48,7 @@ public class BuVisitController {
 
     @ApiOperation(value = "新增或修改随访内容", notes = "随访-新增或修改")
     @GetMapping("/updateOrInsert")
-    public Result updateOrInsert(BuVisit buVisit) {
+    public Result updateOrInsert(@Validated BuVisit buVisit) {
         return Result.success(buVisitService.saveOrUpdate(buVisit));
     }
 

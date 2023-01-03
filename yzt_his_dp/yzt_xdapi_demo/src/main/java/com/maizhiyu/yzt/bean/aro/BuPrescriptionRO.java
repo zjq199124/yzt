@@ -37,6 +37,10 @@ public class BuPrescriptionRO implements Serializable {
         @ApiModelProperty(value="HIS中门诊ID")
         private String outpatientId;
 
+        @NotBlank
+        @ApiModelProperty(value="HIS中科室ID")
+        private String departmentId;
+
         @ApiModelProperty(value="注意事项")
         private String attention;
 
@@ -80,6 +84,10 @@ public class BuPrescriptionRO implements Serializable {
         @ApiModelProperty(value="HIS中门诊ID")
         private String outpatientId;
 
+        @NotBlank
+        @ApiModelProperty(value="HIS中科室ID")
+        private String departmentId;
+
         @ApiModelProperty(value="注意事项")
         private String attention;
 
@@ -107,6 +115,10 @@ public class BuPrescriptionRO implements Serializable {
         @NotBlank
         @ApiModelProperty(value="HIS中门诊ID")
         private String outpatientId;
+
+        @NotBlank
+        @ApiModelProperty(value="HIS中科室ID")
+        private String departmentId;
 
         @NotNull
         @ApiModelProperty(value="次数")
@@ -163,6 +175,10 @@ public class BuPrescriptionRO implements Serializable {
             @NotBlank
             @ApiModelProperty(value="HIS中门诊ID")
             private Long outpatientId;
+
+            @NotBlank
+            @ApiModelProperty(value="HIS中科室ID")
+            private String departmentId;
         }
 
         @Data

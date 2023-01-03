@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.ro;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,9 +29,11 @@ public class OutpatientAppointmentRo extends BaseRo implements Serializable {
     private Long customerId;
 
     @ApiModelProperty("查询起始时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
     private Date startDate;
 
     @ApiModelProperty("查询结束时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
     private Date endDate;
 }
 

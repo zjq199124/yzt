@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.gson.Gson;
+import com.maizhiyu.yzt.bean.aci.HisDepartmentCI;
 import com.maizhiyu.yzt.bean.aci.HisDoctorCI;
 import com.maizhiyu.yzt.bean.aci.HisOutpatientCI;
 import com.maizhiyu.yzt.bean.aci.HisPatientCI;
@@ -14,11 +15,13 @@ import com.maizhiyu.yzt.bean.aro.TreatmentItemsRo;
 import com.maizhiyu.yzt.bean.aro.TreatmentRo;
 import com.maizhiyu.yzt.bean.axo.BuOutpatientXO;
 import com.maizhiyu.yzt.bean.axo.BuPatientXO;
+import com.maizhiyu.yzt.bean.axo.HsDepartmentXO;
 import com.maizhiyu.yzt.bean.axo.HsUserXO;
 import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.exception.HisException;
 import com.maizhiyu.yzt.feign.FeignYptClient;
 import com.maizhiyu.yzt.his.HisApi;
+import com.maizhiyu.yzt.mapperhis.HisDepartmentMapper;
 import com.maizhiyu.yzt.mapperhis.HisDoctorMapper;
 import com.maizhiyu.yzt.mapperhis.HisOutpatientMapper;
 import com.maizhiyu.yzt.mapperhis.HisPatientMapper;
@@ -67,6 +70,9 @@ public class BuPrescriptionController {
 
     @Autowired
     private HisOutpatientMapper outpatientMapper;
+
+    @Resource
+    private HisDepartmentMapper departmentMapper;
 
     @Autowired
     private YptTreatmentService treatmentService;
@@ -296,7 +302,7 @@ public class BuPrescriptionController {
 
     private Long processOutpatient(String outpatientId, Long yptDoctorId, Long yptPatientId) {
         LambdaQueryWrapper<HisOutpatient> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(HisOutpatient::getId, outpatientId)
+        queryWrapper.eq(HisOutpatient::getRegistrationId, outpatientId)
                 .last("limit 1");
         HisOutpatient outpatient = outpatientMapper.selectOne(queryWrapper);
         if (outpatient == null) {
@@ -307,6 +313,24 @@ public class BuPrescriptionController {
             xo.setPatientId(yptPatientId.toString());
             Result<Long> result = yptClient.addOutpatient(xo);
             if (result.getCode() == 0) {
+                log.info("添加预约成功：" + result);
+                return result.getData();
+            } else {
+                log.warn("添加预约失败：" + result + " - " + xo);
+                throw new HisException("添加预约失败: " + result);
+            }
+        }
+    }
+
+    private Boolean processDepartment(String customerId, Long departmentId) {
+
+        HisDepartment department = departmentMapper.selectById(departmentId);
+        if (department == null) {
+            throw new HisException("获取科室信息失败:" + department);
+        } else {
+            HsDepartmentXO.AddDepartmentXO xo = HisDepartmentCI.INSTANCE.toAddDepartmentXO(department);
+            Result<Boolean> result = yptClient.addDepartmentHis(xo);
+            if (result.getData().equals("true")) {
                 log.info("添加预约成功：" + result);
                 return result.getData();
             } else {

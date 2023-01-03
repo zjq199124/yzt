@@ -8,6 +8,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.Date;
+
 @Data
 @Accessors(chain = true)
 @TableName("dict_symptom")
@@ -29,4 +31,13 @@ public class DictSymptom {
 
     @ApiModelProperty(value="备注说明")
     private String note;
+
+    @ApiModelProperty(value="更新时间")
+    private Date updateTime;
+
+    @ApiModelProperty(value="创建时间")
+    private Date createTime;
+
+    @ApiModelProperty(value="是否删除")
+    private Integer isDel;
 }

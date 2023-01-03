@@ -12,7 +12,7 @@
             DATE_FORMAT(X.followup_time, '%Y-%m-%d %T') followup_time,
             A.id customer_id, A.name customer_name,
             B.id department_id, B.dname department_name,
-            C.id therapist_id, C.realname therapist_name,
+            C.id therapist_id, C.real_name therapist_name,
             D.id patient_id, D.code patient_code, D.name patient_name, D.sex patient_sex,
              D.phone patient_phone, D.idcard patient_idcard,
             T.id project_id, T.name project_name

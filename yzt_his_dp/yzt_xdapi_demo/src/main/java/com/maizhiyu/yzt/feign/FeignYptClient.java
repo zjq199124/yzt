@@ -7,6 +7,7 @@ import com.maizhiyu.yzt.bean.avo.DictSyndromeVo;
 import com.maizhiyu.yzt.bean.avo.RelSyndromeSymptomVo;
 import com.maizhiyu.yzt.bean.axo.BuOutpatientXO;
 import com.maizhiyu.yzt.bean.axo.BuPatientXO;
+import com.maizhiyu.yzt.bean.axo.HsDepartmentXO;
 import com.maizhiyu.yzt.bean.axo.HsUserXO;
 import com.maizhiyu.yzt.result.Result;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -85,6 +86,15 @@ public interface FeignYptClient {
 
     @PostMapping(value = "/outpatient/getYptOutpatientById")
     Result<Object> getYptOutpatientById(@RequestParam(value = "outpatientId") Long outpatientId);
+
+    /**
+     * 新增科室
+     *
+     * @param xo
+     * @return
+     */
+    @PostMapping(value = "/department/addDepartmentHis")
+    Result<Boolean> addDepartmentHis(@RequestBody HsDepartmentXO.AddDepartmentXO xo);
 }
 
 
