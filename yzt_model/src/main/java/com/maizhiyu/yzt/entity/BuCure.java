@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,6 +19,7 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel(description = "")
+@TableName("bu_cure")
 @SuppressWarnings("serial")
 public class BuCure extends Model<BuCure> implements Serializable {
     private static final long serialVersionUID = -23941013044417057L;

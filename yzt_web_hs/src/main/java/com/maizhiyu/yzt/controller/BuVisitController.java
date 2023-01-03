@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,8 +47,9 @@ public class BuVisitController {
         return Result.success(buVisitService.getInfoById(id));
     }
 
+
     @ApiOperation(value = "新增或修改随访内容", notes = "随访-新增或修改")
-    @GetMapping("/updateOrInsert")
+    @PostMapping("/updateOrInsert")
     public Result updateOrInsert(@Validated BuVisit buVisit) {
         return Result.success(buVisitService.saveOrUpdate(buVisit));
     }

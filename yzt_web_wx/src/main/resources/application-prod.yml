@@ -86,12 +86,12 @@ mybatis-plus:
 
 
 ### 分页插件 ###
-pagehelper:
-  auto-dialect: mysql
-  reasonable: true
-  support-methods-arguments: true
-  page-size-zero: true
-  params: count=countSql
+#pagehelper:
+#  auto-dialect: mysql
+#  reasonable: true
+#  support-methods-arguments: true
+#  page-size-zero: true
+#  params: count=countSql
 
 
 # 微信公众号配置
