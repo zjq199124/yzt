@@ -17,8 +17,14 @@ public class BuPrescriptionItemAppointmentItemRo implements Serializable {
 
     private static final long serialVersionUID = -1L;
 
+    @ApiModelProperty("主键id")
+    private Long id;
+
     @ApiModelProperty(value="处方技术明细预约表id")
     private Long prescriptionItemAppointmentId;
+
+    @ApiModelProperty(value="此次门诊预约数据id")
+    private Long outpatientAppointmentId;
 
     @ApiModelProperty(value="患者ID")
     private Long patientId;

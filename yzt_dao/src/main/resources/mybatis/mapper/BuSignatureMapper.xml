@@ -14,6 +14,16 @@
         <result property="isDel" column="is_del" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+
+        <result column="name" property="name"/>
+        <result column="gender" property="gender"/>
+        <result column="age" property="age"/>
+        <result column="dname" property="dname"/>
+        <result column="disease" property="disease"/>
+        <result column="tsName" property="tsName"/>
+        <result column="quantity" property="quantity"/>
+        <result column="treatment_quantity" property="treatmentQuantity"/>
+        <result column="outpatient_time" property="outpatientTime"/>
     </resultMap>
     <select id="selectWaitTreatmentList" resultType="com.maizhiyu.yzt.entity.BuSignature">
         SELECT
@@ -30,7 +40,7 @@
             bpia.quantity,
             bpia.treatment_quantity,
             bo.create_time as outpatient_time,
-            bs.create_time as signature_time
+            bs.create_time
         FROM
             bu_signature bs
                 LEFT JOIN bu_patient bp ON bs.patient_id = bp.id
@@ -54,7 +64,7 @@
             and bs.department_id = #{waitTreatmentRo.departmentId}
             </if>
         ORDER BY
-            bs.create_time
+            bs.create_time desc
     </select>
 
 </mapper>

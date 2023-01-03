@@ -21,5 +21,7 @@ public interface IBuPrescriptionItemService extends IService<BuPrescriptionItem>
     void deleteByIdList(List<Long> deleteIdList);
 
     Page<WaitSignatureVo> selectWaitSignatureList(WaitSignatureRo waitSignatureRo);
+
+    List<BuPrescriptionItem> getPrescriptionItemListByDiagnoseId(Long diagnoseId);
 }
 

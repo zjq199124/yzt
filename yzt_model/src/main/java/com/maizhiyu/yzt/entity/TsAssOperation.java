@@ -31,6 +31,9 @@ public class TsAssOperation {
     @ApiModelProperty(value="具体考核操作名称")
     private String operationName;
 
+    @ApiModelProperty(value="总分值")
+    private Integer score;
+
     @ApiModelProperty(value="创建时间")
     private Date createTime;
 

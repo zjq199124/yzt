@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem;
+import com.maizhiyu.yzt.ro.AppointmentRo;
 
 public interface IBuPrescriptionItemAppointmentItemService extends IService<BuPrescriptionItemAppointmentItem> {
     /**
@@ -17,4 +18,11 @@ public interface IBuPrescriptionItemAppointmentItemService extends IService<BuPr
      * @return
      */
     Boolean deleteAppointment(Long buPrescriptionItemAppointmentItemId);
+
+    /**
+     * 批量预约接口
+     * @param appointmentRo
+     * @return
+     */
+    Boolean appointment(AppointmentRo appointmentRo);
 }

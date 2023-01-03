@@ -172,4 +172,10 @@ public class HsUserService extends ServiceImpl<HsUserMapper,HsUser> implements I
         userDepartmentWrapper.eq("user_id", userId);
         userDepartmentMapper.delete(userDepartmentWrapper);
     }
+
+    public IPage<HsUser> getTherapist(Page page,Long isTherapist){
+        QueryWrapper<HsUser> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.eq("status",1).eq("is_therapist",isTherapist);
+        return  userMapper.selectPage(page,userQueryWrapper);
+    }
 }

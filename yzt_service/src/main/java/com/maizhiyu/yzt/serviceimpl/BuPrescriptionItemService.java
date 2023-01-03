@@ -1,12 +1,16 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import cn.hutool.core.map.MapUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.base.Preconditions;
+import com.maizhiyu.yzt.entity.BuPrescription;
 import com.maizhiyu.yzt.entity.BuPrescriptionItem;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemMapper;
+import com.maizhiyu.yzt.mapper.BuPrescriptionMapper;
 import com.maizhiyu.yzt.ro.WaitSignatureRo;
 import com.maizhiyu.yzt.service.IBuPrescriptionItemService;
 import com.maizhiyu.yzt.vo.WaitSignatureVo;
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -28,6 +33,9 @@ public class BuPrescriptionItemService extends ServiceImpl<BuPrescriptionItemMap
 
     @Autowired
     private BuPrescriptionItemMapper mapper;
+
+    @Resource
+    private BuPrescriptionMapper buPrescriptionMapper;
 
     @Override
     public Integer addPrescriptionItem(BuPrescriptionItem item) {
@@ -86,11 +94,28 @@ public class BuPrescriptionItemService extends ServiceImpl<BuPrescriptionItemMap
                 return;
 
             item.setDisease(waitSignatureVo.getDisease());
-            item.setQuantity(waitSignatureVo.getQuantity());
-            item.setTreatmentQuantity(waitSignatureVo.getTreatmentQuantity());
             item.setTsName(waitSignatureVo.getTsName());
         });
 
         return pageResult;
+    }
+
+    @Override
+    public List<BuPrescriptionItem> getPrescriptionItemListByDiagnoseId(Long diagnoseId) {
+        LambdaQueryWrapper<BuPrescription> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(BuPrescription::getIsDel, 0)
+                .eq(BuPrescription::getDiagnoseId, diagnoseId)
+                .orderByDesc(BuPrescription::getId)
+                .last(" limit 1");
+
+        BuPrescription buPrescription = buPrescriptionMapper.selectOne(queryWrapper);
+        Preconditions.checkArgument(Objects.nonNull(buPrescription), "该诊断下尚未开具适宜技术!");
+
+        LambdaQueryWrapper<BuPrescriptionItem> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(BuPrescriptionItem::getIsDel, 0)
+                .eq(BuPrescriptionItem::getPrescriptionId, buPrescription.getId());
+
+        List<BuPrescriptionItem> buPrescriptionItems = mapper.selectList(wrapper);
+        return buPrescriptionItems;
     }
 }

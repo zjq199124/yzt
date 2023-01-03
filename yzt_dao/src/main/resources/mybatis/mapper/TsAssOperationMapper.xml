@@ -8,6 +8,7 @@
     <result column="sytech_id" property="sytechId" />
     <result column="operation_id" property="operationId" />
     <result column="operation_name" property="operationName" />
+    <result column="score" property="score" />
     <result column="create_time" property="createTime" />
     <result column="update_time" property="updateTime" />
     <result column="is_del" property="isDel" />
@@ -15,7 +16,8 @@
             <id column="detail_id" property="id" />
             <result column="operation_id" property="operationId" />
             <result column="detail" property="detail" />
-            <result column="score" property="score" />
+            <result column="mark" property="mark" />
+            <result column="grade" property="grade" />
             <result column="create_time" property="createTime" />
             <result column="update_time" property="updateTime" />
             <result column="is_del" property="isDel" />
@@ -24,7 +26,7 @@
 
     <select id="selectAssDetail" resultMap="TsAssOperationMap">
         SELECT
-        ass.*,de.id as detail_id,de.detail,de.score
+        ass.*,de.id as detail_id,de.detail,de.mark,de.grade
         FROM
         ts_ass_operation  ass
         LEFT JOIN ts_ass_operation_detail  de ON de.operation_id = ass.operation_id

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.HsUser;
 
+import java.util.List;
 import java.util.Map;
 
 public interface IHsUserService extends IService<HsUser> {
@@ -32,4 +33,6 @@ public interface IHsUserService extends IService<HsUser> {
     IPage<Map<String, Object>> getDoctorList(Page page,Long customerId, Long departmentId, Integer status, String term);
 
     IPage<Map<String, Object>> getTherapistList(Page page,Long customerId, Long departmentId, Integer status, String term);
+
+    IPage<HsUser> getTherapist(Page page,Long isTherapist);
 }
