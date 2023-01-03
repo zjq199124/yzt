@@ -13,4 +13,23 @@
     <result column="update_time" property="updateTime" jdbcType="DATE"/>
     <result column="is_del" property="isDel" jdbcType="INTEGER"/>
     </resultMap>
+
+    <select id="selectUserGrade" resultType="hashmap">
+        SELECT
+            a.ass_id id,tao.operation_name name,tao.score tscore,sum(a.score) score
+        FROM user_ass a
+                 INNER JOIN ts_ass_operation_detail td on a.detail_id = td.id
+                 INNER JOIN ts_ass_operation tao on td.operation_id = tao.id
+                 INNER JOIN ts_ass ta ON ta.id=a.ass_id
+        <where>
+            <if test="assId != null">
+                and a.ass_id = #{assId}
+            </if>
+        </where>
+        GROUP BY tao.operation_name
+    </select>
+
+
+
+
 </mapper>

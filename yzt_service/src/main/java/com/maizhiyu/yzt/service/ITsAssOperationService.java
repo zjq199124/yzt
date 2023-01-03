@@ -8,5 +8,5 @@ import java.util.Map;
 
 public interface ITsAssOperationService extends IService<TsAssOperation> {
 
-    public List<Map<String,Object>> getAssDetail(Long sytechId);
+    public List<TsAssOperation> getAssDetail(Long sytechId);
 }

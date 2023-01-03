@@ -27,8 +27,12 @@ public class TsAssOperationDetail {
     @ApiModelProperty(value="具体考核操作步骤")
     private String detail;
 
-    @ApiModelProperty(value="总分值")
-    private Integer score;
+
+    @ApiModelProperty(value = "评分说明")
+    private String mark;
+
+    @ApiModelProperty(value = "评分等级")
+    private String grade;
 
     @ApiModelProperty(value="创建时间")
     private Date createTime;

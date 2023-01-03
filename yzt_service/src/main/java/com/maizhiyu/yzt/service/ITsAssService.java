@@ -14,9 +14,9 @@ public interface ITsAssService extends IService<TsAss> {
 
     public List<Map<String,Object>> getAssItem(Long id);
 
-    public IPage<TsAss> getAsslist(Page page);
+    public IPage<TsAss> getAsslist(Page page,TsAss tsAss);
 
-    public List<TsAss> getAssBytherapistId(Long therapistId);
+//    public List<TsAss> getAssBytherapistId(Long therapistId);
 
 
 }

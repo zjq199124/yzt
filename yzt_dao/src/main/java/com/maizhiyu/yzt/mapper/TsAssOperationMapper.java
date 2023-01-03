@@ -13,7 +13,7 @@ import java.util.Map;
 @Mapper
 @Repository
 public interface TsAssOperationMapper extends BaseMapper<TsAssOperation> {
-    List<Map<String,Object>> selectAssDetail(
+    List<TsAssOperation> selectAssDetail(
             @Param("sytechId")  Long sytechId);
 
 }

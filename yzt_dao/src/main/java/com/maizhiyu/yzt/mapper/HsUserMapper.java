@@ -31,4 +31,6 @@ public interface HsUserMapper extends BaseMapper<HsUser> {
             @Param("isdoctor") Integer isdoctor,
             @Param("istherapist") Integer istherapist);
 
+
+
 }
