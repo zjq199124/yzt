@@ -21,7 +21,7 @@
     </resultMap>
     <select id="selectByPrescriptionItemAppointmentIdList"
             resultType="com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem">
-        select prescription_item_appointment_id,appointment_date,time_slot from bu_prescription_item_appointment_item
+        select id,           prescription_item_appointment_id,appointment_date,time_slot from bu_prescription_item_appointment_item
         where is_del = 0 and appointment_date &gt; NOW()
         and prescription_item_appointment_id in
         <foreach collection="prescriptionItemAppointmentIdList" item="item" open="(" separator="," close=")">
