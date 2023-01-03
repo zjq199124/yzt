@@ -22,12 +22,12 @@
         bo.create_time diagnose_time,
         bd.disease diagnose_name,
         bpi.NAME sytech_name,
-        (select realname from hs_user where id=bd.doctor_id) doctor_name,
-        (select realname from hs_user where id=bc.cure_user_id ) cure_user_name
+        (select real_name from hs_user where id=bd.doctor_id) doctor_name,
+        (select real_name from hs_user where id=bc.cure_user_id ) cure_user_name
         FROM
         bu_cure bc
         LEFT JOIN bu_visit bv ON bv.cure_id = bc.id
-        LEFT JOIN bu_outpatient bo ON bc.out_patient_id = bo.id
+        LEFT JOIN bu_outpatient bo ON bc.outpatient_id = bo.id
         LEFT JOIN bu_patient bp ON bp.id = bo.patient_id
         LEFT JOIN bu_diagnose bd ON bd.outpatient_id = bo.id
         LEFT JOIN bu_prescription_item bpi ON bpi.id = bc.prescription_item_id
