@@ -5,13 +5,73 @@
     <resultMap type="com.maizhiyu.yzt.entity.BuCure" id="BuCureMap">
         <result property="id" column="id" jdbcType="BIGINT"/>
         <result property="outPatientId" column="out_patient_id" jdbcType="BIGINT"/>
+        <result property="patientId" column="patient_id" jdbcType="BIGINT"/>
         <result property="signatureId" column="signature_id" jdbcType="BIGINT"/>
+        <result property="customerId" column="customer_id" jdbcType="BIGINT"/>
+        <result property="departmentId" column="department_id" jdbcType="BIGINT"/>
         <result property="registrantId" column="registrant_id" jdbcType="BIGINT"/>
         <result property="cureUserId" column="cure_user_id" jdbcType="BIGINT"/>
+        <result property="entityId" column="entity_id" jdbcType="BIGINT"/>
+        <result property="tsName" column="ts_name" jdbcType="VARCHAR"/>
+        <result property="tsDescription" column="ts_description" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
         <result property="isDel" column="is_del" jdbcType="INTEGER"/>
-    </resultMap>
+        <result property="prescriptionItemId" column="prescription_item_id" jdbcType="BIGINT"/>
 
- 
+        <result column="name" property="name"/>
+        <result column="gender" property="gender"/>
+        <result column="age" property="age"/>
+        <result column="dname" property="dname"/>
+        <result column="disease" property="disease"/>
+        <result column="quantity" property="quantity"/>
+        <result column="treatment_quantity" property="treatmentQuantity"/>
+        <result column="outpatient_time" property="outpatientTime"/>
+
+    </resultMap>
+    <select id="selectTreatmentList" resultType="com.maizhiyu.yzt.entity.BuCure">
+        SELECT
+        bp.name,
+        CASE
+        WHEN bp.sex = 1 THEN '男'
+        WHEN bp.sex = 0 THEN '女'
+        ELSE '未知'
+        END AS gender,
+        TIMESTAMPDIFF(YEAR,bp.birthday,CURDATE()) as age,
+        hd.dname,
+        bd.disease,
+        bpia.quantity,
+        bpia.treatment_quantity,
+        bo.create_time as outpatient_time,
+        bc.create_time,
+        bc.ts_name
+        FROM
+        bu_cure bc
+        LEFT JOIN bu_patient bp ON bc.patient_id = bp.id
+        AND bp.is_del = 0
+        LEFT JOIN hs_department hd ON bc.department_id = hd.id
+        AND hd.is_del = 0
+        LEFT JOIN bu_outpatient bo ON bc.outpatient_id = bo.id
+        AND bo.is_del = 0
+        LEFT JOIN bu_prescription_item_appointment bpia ON bc.prescription_item_id = bpia.prescription_item_id
+        AND bpia.is_del = 0
+        LEFT JOIN bu_diagnose bd ON bc.outpatient_id = bd.outpatient_id
+        WHERE
+            bc.is_del = 0
+            AND bc.status = 2
+        <if test="buCureSearchRO.search != null and buCureSearchRO.search != ''">
+            AND (bp.name LIKE concat('%',#{buCureSearchRO.search},'%') OR bp.phone LIKE concat('%',#{buCureSearchRO.search},'%'))
+        </if>
+        <if test="buCureSearchRO.departmentId != null">
+            AND bc.department_id = #{buCureSearchRO.departmentId}
+        </if>
+        <if test="buCureSearchRO.cureStartDate != null and buCureSearchRO.cureEndDate != null">
+            AND (bc.create_time between #{buCureSearchRO.cureStartDate} AND {buCureSearchRO.cureEndDate})
+        </if>
+        ORDER BY
+        bs.create_time DESC
+    </select>
+
+
 </mapper>

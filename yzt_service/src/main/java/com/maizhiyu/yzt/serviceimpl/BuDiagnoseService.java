@@ -268,6 +268,12 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
         return resultMap;
     }
 
+    @Override
+    public List<BuDiagnose> selectDiagnoseList(Long customerId, String term) {
+        List<BuDiagnose> buDiagnoseList = buDiagnoseMapper.selectDiagnoseList(customerId, term);
+        return null;
+    }
+
     private List<Long> getSymptomIdList(BuDiagnose buDiagnose) {
         if (StringUtils.isBlank(buDiagnose.getSymptomIds()))
             return Collections.emptyList();

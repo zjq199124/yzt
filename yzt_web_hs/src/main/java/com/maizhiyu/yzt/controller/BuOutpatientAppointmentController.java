@@ -6,6 +6,7 @@ import com.maizhiyu.yzt.base.BaseController;
 import com.maizhiyu.yzt.entity.BuOutpatientAppointment;
 import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem;
 import com.maizhiyu.yzt.result.Result;
+import com.maizhiyu.yzt.ro.AppointmentRo;
 import com.maizhiyu.yzt.ro.BuPrescriptionItemAppointmentItemRo;
 import com.maizhiyu.yzt.ro.OutpatientAppointmentRo;
 import com.maizhiyu.yzt.security.HsUserDetails;
@@ -20,7 +21,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 
-@Api(tags = "门诊预约接口")
+@Api(tags = "2.1门诊预约接口")
 @RestController
 @RequestMapping("/outpatientAppointment")
 public class BuOutpatientAppointmentController extends BaseController {
@@ -65,6 +66,15 @@ public class BuOutpatientAppointmentController extends BaseController {
     @ApiImplicitParam(name = "buPrescriptionItemAppointmentItemId", value = "适宜技术小项目预约详情数据主键id", required = true)
     public Result<Boolean> deleteAppointment(Long buPrescriptionItemAppointmentItemId) {
         Boolean result = buPrescriptionItemAppointmentItemService.deleteAppointment(buPrescriptionItemAppointmentItemId);
+        return Result.success(result);
+    }
+
+    @ApiOperation(value = "批量预约操作")
+    @PostMapping("/appointment")
+    public Result<Boolean> appointment(@RequestBody AppointmentRo appointmentRo) {
+        HsUserDetails hsUserDetails = getHsUserDetails();
+        appointmentRo.setCustomerId(hsUserDetails.getCustomerId());
+        Boolean result = buPrescriptionItemAppointmentItemService.appointment(appointmentRo);
         return Result.success(result);
     }
 }

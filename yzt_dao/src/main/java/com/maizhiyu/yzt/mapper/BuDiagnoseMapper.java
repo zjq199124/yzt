@@ -13,6 +13,7 @@ import java.util.Map;
 @Mapper
 @Repository
 public interface BuDiagnoseMapper extends BaseMapper<BuDiagnose> {
+    List<BuDiagnose> selectDiagnoseList(Long customerId, String term);
 //
 //    List<Map<String, Object>> selectDiagnoseItemSummary(
 //            @Param("prescriptionId") Long prescriptionId);

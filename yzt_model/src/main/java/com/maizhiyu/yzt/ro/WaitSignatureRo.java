@@ -22,6 +22,9 @@ public class WaitSignatureRo implements Serializable {
     @ApiModelProperty("科室id")
     private Long departmentId;
 
+    @ApiModelProperty("预约状态：1：未预约；2:已预约")
+    private Integer state;
+
     @ApiModelProperty("客户id")
     private Long customerId;
 
