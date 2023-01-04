@@ -35,8 +35,8 @@ public class BuOutpatientAppointmentController extends BaseController {
     @ApiOperation(value = "查询门诊预约列表")
     @PostMapping("/list")
     public Result<List<BuOutpatientAppointment>> outpatientAppointmentList(@RequestBody OutpatientAppointmentRo outpatientAppointmentRo) {
-        HsUserDetails hsUserDetails = getHsUserDetails();
-        outpatientAppointmentRo.setCustomerId(hsUserDetails.getCustomerId());
+        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+        outpatientAppointmentRo.setCustomerId(customerId);
         Page<BuOutpatientAppointment> page = buOutpatientAppointmentService.list(outpatientAppointmentRo);
         return Result.success(page);
     }
@@ -53,10 +53,10 @@ public class BuOutpatientAppointmentController extends BaseController {
     @ApiOperation(value = "预约")
     @PostMapping("/makeAppointment")
     public Result<Boolean> makeAppointment(@RequestBody BuPrescriptionItemAppointmentItemRo buPrescriptionItemAppointmentItemRo) {
-        HsUserDetails hsUserDetails = getHsUserDetails();
+        Long customerId = ((Number) getClaims().get("customerId")).longValue();
         BuPrescriptionItemAppointmentItem buPrescriptionItemAppointmentItem = new BuPrescriptionItemAppointmentItem();
         BeanUtil.copyProperties(buPrescriptionItemAppointmentItemRo, buPrescriptionItemAppointmentItem);
-        buPrescriptionItemAppointmentItem.setCustomerId(hsUserDetails.getCustomerId());
+        buPrescriptionItemAppointmentItem.setCustomerId(customerId);
         Boolean result = buPrescriptionItemAppointmentItemService.makeAppointment(buPrescriptionItemAppointmentItem);
         return Result.success(result);
     }
@@ -72,8 +72,8 @@ public class BuOutpatientAppointmentController extends BaseController {
     @ApiOperation(value = "批量预约操作")
     @PostMapping("/appointment")
     public Result<Boolean> appointment(@RequestBody AppointmentRo appointmentRo) {
-        HsUserDetails hsUserDetails = getHsUserDetails();
-        appointmentRo.setCustomerId(hsUserDetails.getCustomerId());
+        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+        appointmentRo.setCustomerId(customerId);
         Boolean result = buPrescriptionItemAppointmentItemService.appointment(appointmentRo);
         return Result.success(result);
     }

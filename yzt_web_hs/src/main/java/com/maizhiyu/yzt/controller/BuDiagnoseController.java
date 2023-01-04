@@ -106,8 +106,8 @@ public class BuDiagnoseController extends BaseController {
     @ApiImplicitParam(name = "term", value = "搜索字段", required = true)
     @PostMapping("/selectDiagnoseList")
     public Result<List<BuDiagnose>> selectDiagnoseList(String term) {
-        HsUserDetails hsUserDetails = getHsUserDetails();
-        List<BuDiagnose> list = diagnoseService.selectDiagnoseList(hsUserDetails.getCustomerId(),term);
+        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+        List<BuDiagnose> list = diagnoseService.selectDiagnoseList(customerId,term);
         return Result.success(list);
     }
 }
