@@ -12,6 +12,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 患者随访表(BuVisit)表实体类
@@ -50,4 +51,9 @@ public class BuVisit extends Model<BuVisit> implements Serializable {
     @ApiModelProperty("随访详情")
     @NotNull
     private String content;
+
+    @ApiModelProperty("随访时间")
+    @NotNull
+    private Date visitTime;
+
 }
