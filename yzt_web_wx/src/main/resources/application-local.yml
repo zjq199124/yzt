@@ -59,22 +59,8 @@ spring:
     #    password: zhanshen@
     timeout: 86400
     password: 123456
-  # rabbitMQ 配置
-  #  rabbitmq:
-  #    host: 119.3.230.227
-  #    username: admin
-  #    password: admin
   session:
     store-type: redis
-
-#### 分页插件 ###
-#pagehelper:
-#  auto-dialect: mysql
-#  reasonable: true
-#  support-methods-arguments: true
-#  page-size-zero: true
-#  params: count=countSql
-
 
 # 微信公众号配置
 weixin:
@@ -82,18 +68,10 @@ weixin:
   enable: true
   crontab: "0 0 */1 * * ?"
   # 微信基础信息
-  # 公众号脉之语
-  #  appid: wx770c893ff4f74c9a
-  #  appsecret: ad183550a3205ffb22c9bf805263c0ad
-  #  token: mzy18ljf61gk2801cgy451zsw3452by4
-  # 公众号中医真知
-  #  appid: wxbbf7c24f3dc46277
-  #  appsecret: f8c2b9d05197df61ec28b12c43d0229c
-  #  token: mzy18ljf61gk2801cgy451zsw3452by4
-  # 公众号测试账号
+  # 公众号测试账号(王莫庆)
   token: huhutech
   appid: wx6faa533b7e79713a
-  appsecret: 8000f480455968f657c2cf85381560dc
+  appsecret: 15bfd95735ee18f83e82316dc4a6b5a2
   # 授权相关信息
   auth_scope: snsapi_userinfo   # scope: snsapi_base
   api_domain: https://api.weixin.qq.com
@@ -105,7 +83,6 @@ weixin:
   location_domain: https://apis.map.qq.com
   location_path: /ws/geocoder/v1
   location_key: UZIBZ-E3CWK-O7GJ5-AZ5QE-5CFP7-ORFNL
-
 
 ### swagger ###（生产环境时需要关闭）
 swagger:

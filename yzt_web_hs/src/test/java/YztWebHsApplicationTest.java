@@ -1,4 +1,5 @@
 import com.maizhiyu.yzt.YztWebHsApplication;
+import com.maizhiyu.yzt.utils.RedisUtils;
 import com.maizhiyu.yzt.utils.ossKit.AliOssUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,9 @@ import java.io.FileNotFoundException;
 public class YztWebHsApplicationTest {
     @Resource
     AliOssUtil aliOssUtil;
+
+    @Resource
+    RedisUtils redisUtils;
 
     /**
      * oss 文件上传测试
@@ -41,5 +45,10 @@ public class YztWebHsApplicationTest {
     public void getOSSFile(){
         String a = aliOssUtil.generatePresignedUrl("曹迪_红外热健康中医报告2022-07-14-13.11.11.pdf");
         System.out.println(a);
+    }
+
+    @Test
+    public void testRedis(){
+        redisUtils.set("test","test");
     }
 }

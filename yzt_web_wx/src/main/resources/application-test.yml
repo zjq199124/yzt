@@ -61,32 +61,8 @@ spring:
     port: 6300
     password: yzt123456
     timeout: 86400
-  # rabbitMQ 配置
-  #  rabbitmq:
-  #    host: 119.3.230.227
-  #    username: admin
-  #    password: admin
   session:
     store-type: redis
-
-
-
-mybatis-plus:
-  type-aliases-package: com.maizhiyu.yzt.entity
-  mapper-locations: classpath*:/mybatis/mapper/*.xml
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-
-### 分页插件 ###
-pagehelper:
-  auto-dialect: mysql
-  reasonable: true
-  support-methods-arguments: true
-  page-size-zero: true
-  params: count=countSql
-
 
 # 微信公众号配置
 weixin:
