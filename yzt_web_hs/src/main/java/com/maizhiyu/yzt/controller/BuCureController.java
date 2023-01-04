@@ -42,8 +42,8 @@ public class BuCureController extends BaseController {
     @PostMapping("/saveOrUpdate")
     public Result<Boolean> saveOrUpdate(@RequestBody BuCureRO buCureRO) {
         Assert.notNull(buCureRO.getSignatureId(), "签到id不能为空!");
-        HsUserDetails hsUserDetails = getHsUserDetails();
-        buCureRO.setCustomerId(hsUserDetails.getCustomerId());
+        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+        buCureRO.setCustomerId(customerId);
         BuCure buCure = new BuCure();
         BeanUtils.copyProperties(buCureRO, buCure);
         boolean res = buCureService.saveOrUpdateBuCure(buCure);
@@ -62,8 +62,8 @@ public class BuCureController extends BaseController {
     @ApiOperation("治疗列表接口")
     @PostMapping("/treatmentList")
     public Result<Page<BuCure>> treatmentList(@RequestBody BuCureSearchRO buCureSearchRO) {
-        HsUserDetails hsUserDetails = getHsUserDetails();
-        buCureSearchRO.setCustomerId(hsUserDetails.getCustomerId());
+        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+        buCureSearchRO.setCustomerId(customerId);
         Page<BuCure> resultPage = buCureService.treatmentList(buCureSearchRO);
         return Result.success(resultPage);
     }
