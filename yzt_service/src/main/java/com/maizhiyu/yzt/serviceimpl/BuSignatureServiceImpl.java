@@ -7,6 +7,7 @@ import com.maizhiyu.yzt.mapper.BuSignatureMapper;
 import com.maizhiyu.yzt.ro.WaitTreatmentRo;
 import com.maizhiyu.yzt.service.BuSignatureService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -18,6 +19,7 @@ import java.util.Date;
  * @since 2022-12-19 19:05:36
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class BuSignatureServiceImpl extends ServiceImpl<BuSignatureMapper, BuSignature> implements BuSignatureService {
 
     @Resource

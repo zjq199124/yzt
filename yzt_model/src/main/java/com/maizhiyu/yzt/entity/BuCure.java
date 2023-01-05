@@ -29,7 +29,7 @@ public class BuCure extends Model<BuCure> implements Serializable {
     private Long id;
              
     @ApiModelProperty("门诊id")
-    private Long outPatientId;
+    private Long outpatientId;
 
     @ApiModelProperty("患者id")
     private Long patientId;
@@ -105,6 +105,10 @@ public class BuCure extends Model<BuCure> implements Serializable {
     @ApiModelProperty("就诊时间")
     @TableField(exist = false)
     private Date outpatientTime;
+
+    @ApiModelProperty("星期")
+    @TableField(exist = false)
+    private Integer weekDay;
 }
 
 

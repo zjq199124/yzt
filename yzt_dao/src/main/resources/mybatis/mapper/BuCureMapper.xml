@@ -4,7 +4,7 @@
  
     <resultMap type="com.maizhiyu.yzt.entity.BuCure" id="BuCureMap">
         <result property="id" column="id" jdbcType="BIGINT"/>
-        <result property="outPatientId" column="out_patient_id" jdbcType="BIGINT"/>
+        <result property="outpatientId" column="outpatient_id" jdbcType="BIGINT"/>
         <result property="patientId" column="patient_id" jdbcType="BIGINT"/>
         <result property="signatureId" column="signature_id" jdbcType="BIGINT"/>
         <result property="customerId" column="customer_id" jdbcType="BIGINT"/>

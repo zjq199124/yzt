@@ -1,12 +1,16 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.Week;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.base.Preconditions;
+import com.maizhiyu.yzt.entity.BuCure;
 import com.maizhiyu.yzt.entity.BuOutpatientAppointment;
 import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointment;
 import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem;
+import com.maizhiyu.yzt.mapper.BuCureMapper;
 import com.maizhiyu.yzt.mapper.BuOutpatientAppointmentMapper;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentItemMapper;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentMapper;
@@ -35,6 +39,9 @@ public class BuOutpatientAppointmentServiceImpl extends ServiceImpl<BuOutpatient
 
     @Resource
     private BuPrescriptionItemAppointmentItemMapper buPrescriptionItemAppointmentItemMapper;
+
+    @Resource
+    private BuCureMapper buCureMapper;
 
     @Override
     public Page<BuOutpatientAppointment> list(OutpatientAppointmentRo outpatientAppointmentRo) {
@@ -100,8 +107,33 @@ public class BuOutpatientAppointmentServiceImpl extends ServiceImpl<BuOutpatient
 
         Map<Long, List<BuPrescriptionItemAppointmentItem>> prescriptionItemAppointmentIdMap = buPrescriptionItemAppointmentItemList.stream().collect(Collectors.groupingBy(BuPrescriptionItemAppointmentItem::getPrescriptionItemAppointmentId));
 
+        //设置已预约详情
         list.forEach(item -> {
             item.setBuPrescriptionItemAppointmentItemList(prescriptionItemAppointmentIdMap.get(item.getId()));
+        });
+
+
+        //查询处方的每一个条目的具体治疗记录
+        List<Long> prescriptionItemIdList = list.stream().map(BuPrescriptionItemAppointment::getPrescriptionItemId).collect(Collectors.toList());
+        LambdaQueryWrapper<BuCure> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(BuCure::getIsDel, 0)
+                .in(BuCure::getPrescriptionItemId, prescriptionItemIdList);
+        List<BuCure> buCureList = buCureMapper.selectList(queryWrapper);
+
+        if(CollectionUtils.isEmpty(buCureList))
+            return buOutpatientAppointment;
+
+        Map<Long, List<BuCure>> prescriptionItemIdMap = buCureList.stream().collect(Collectors.groupingBy(BuCure::getPrescriptionItemId));
+
+        //设置已预约详情
+        list.forEach(item -> {
+            item.setBuCureList(prescriptionItemIdMap.get(item.getPrescriptionItemId()));
+            if (!CollectionUtils.isEmpty(item.getBuCureList())) {
+                item.getBuCureList().forEach(buCure -> {
+                    Week week = DateUtil.dayOfWeekEnum(item.getCreateTime());
+                    buCure.setWeekDay(week.getValue());
+                });
+            }
         });
         return buOutpatientAppointment;
     }

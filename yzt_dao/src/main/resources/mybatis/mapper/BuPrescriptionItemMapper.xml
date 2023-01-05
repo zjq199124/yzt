@@ -33,6 +33,7 @@
         <result column="prescriptionItemId" property="prescriptionItemId" />
         <result column="outpatient_id" property="outpatientId" />
         <result column="name" property="name" />
+        <result column="phone" property="phone" />
         <result column="gender" property="gender" />
         <result column="age" property="age" />
         <result column="dname" property="dname" />
@@ -48,6 +49,7 @@
         bpi.id as prescriptionItemId,
         bpi.outpatient_id,
         bp.name,
+        bp.phone,
         CASE
         WHEN bp.sex = 1 THEN '男'
         WHEN bp.sex = 0 THEN '女'
