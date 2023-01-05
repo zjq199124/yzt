@@ -1,9 +1,12 @@
 package com.maizhiyu.yzt.bean.axo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.Date;
 
 public class BuPatientXO {
 
@@ -18,9 +21,9 @@ public class BuPatientXO {
         @ApiModelProperty(value="患者性别")
         private Integer sex;
 
-//        @ApiModelProperty(value="出生日期")
-//        @JsonFormat(pattern = "yyyy-MM-dd",timezone="Asia/Shanghai")
-//        private Date birthday;
+        @ApiModelProperty(value="出生日期")
+        @JsonFormat(pattern = "yyyy-MM-dd",timezone="Asia/Shanghai")
+        private Date birthday;
 
         @ApiModelProperty(value="患者手机")
         private String phone;

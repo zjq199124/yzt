@@ -61,4 +61,6 @@ public interface IBuDiagnoseService extends IService<BuDiagnose> {
      * @throws Exception
      */
     Map<String, Object> getDetails(BuDiagnoseRO.GetRecommendRO ro) throws Exception;
+
+    List<BuDiagnose> selectDiagnoseList(Long customerId, String term);
 }

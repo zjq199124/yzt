@@ -1,34 +1,34 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE configuration
-		PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
-		"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!--<?xml version="1.0" encoding="UTF-8" ?>-->
+<!--<!DOCTYPE configuration-->
+<!--		PUBLIC "-//mybatis.org//DTD Config 3.0//EN"-->
+<!--		"http://mybatis.org/dtd/mybatis-3-config.dtd">-->
 
-<configuration>
+<!--<configuration>-->
 
-	<settings>
-		<!-- 开启驼峰命名规则 -->
-		<setting name="mapUnderscoreToCamelCase" value="true"/>
-		<!-- 设置关联对象加载的形态，此处为按需加载字段(加载字段由SQL指 定)，不会加载关联表的所有字段，以提高性能 -->
-		<setting name="aggressiveLazyLoading" value="true" />
-		<!-- 打印sql语句 -->
-<!--		<setting name="logImpl" value="STDOUT_LOGGING" />-->
-		<!-- 开启二级缓存，默认是false -->
-		<setting name="cacheEnabled" value="false"/>
-	</settings>
-	<!-- 定义别名 -->
-	<typeAliases>
-		<package name="com.maizhiyu.yzt.entity"/>
-	</typeAliases>
-	<!-- 配置分页插件 -->
-	<plugins>
-		<plugin interceptor="com.github.pagehelper.PageInterceptor">
-			<!--分页参数合理化，启用合理化时，如果pageNum<1会查询第一页，
-			如果pageNum>pages会查询最后一页； 禁用合理化时，
-			如果pageNum<1或pageNum>pages会返回空数据。  -->
-			<property name="helperDialect" value="mysql"/>
-			<property name="supportMethodsArguments" value="true"/>
-			<property name="reasonable" value="true"/>
-		</plugin>
-	</plugins>
-</configuration>
+<!--	<settings>-->
+<!--		&lt;!&ndash; 开启驼峰命名规则 &ndash;&gt;-->
+<!--		<setting name="mapUnderscoreToCamelCase" value="true"/>-->
+<!--		&lt;!&ndash; 设置关联对象加载的形态，此处为按需加载字段(加载字段由SQL指 定)，不会加载关联表的所有字段，以提高性能 &ndash;&gt;-->
+<!--		<setting name="aggressiveLazyLoading" value="true" />-->
+<!--		&lt;!&ndash; 打印sql语句 &ndash;&gt;-->
+<!--&lt;!&ndash;		<setting name="logImpl" value="STDOUT_LOGGING" />&ndash;&gt;-->
+<!--		&lt;!&ndash; 开启二级缓存，默认是false &ndash;&gt;-->
+<!--		<setting name="cacheEnabled" value="false"/>-->
+<!--	</settings>-->
+<!--	&lt;!&ndash; 定义别名 &ndash;&gt;-->
+<!--	<typeAliases>-->
+<!--		<package name="com.maizhiyu.yzt.entity"/>-->
+<!--	</typeAliases>-->
+<!--	&lt;!&ndash; 配置分页插件 &ndash;&gt;-->
+<!--	<plugins>-->
+<!--		<plugin interceptor="com.github.pagehelper.PageInterceptor">-->
+<!--			&lt;!&ndash;分页参数合理化，启用合理化时，如果pageNum<1会查询第一页，-->
+<!--			如果pageNum>pages会查询最后一页； 禁用合理化时，-->
+<!--			如果pageNum<1或pageNum>pages会返回空数据。  &ndash;&gt;-->
+<!--			<property name="helperDialect" value="mysql"/>-->
+<!--			<property name="supportMethodsArguments" value="true"/>-->
+<!--			<property name="reasonable" value="true"/>-->
+<!--		</plugin>-->
+<!--	</plugins>-->
+<!--</configuration>-->
 

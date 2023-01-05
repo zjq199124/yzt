@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
 @Data
 @ApiModel("随访列表查询入参")
 @Validated
-public class VisitRO extends Page {
+public class VisitRO {
     /**
      * 日期
      */
@@ -22,14 +22,9 @@ public class VisitRO extends Page {
     /**
      * 患者姓名
      */
-    @ApiModelProperty(value = "患者姓名")
-    private String name;
+    @ApiModelProperty(value = "搜索字段")
+    private String term;
 
-    /**
-     * 患者手机号
-     */
-    @ApiModelProperty(value = "患者手机号")
-    private String phone;
 
     /**
      * 随访状态(1-正常，2-失访，3-死亡）

@@ -27,8 +27,8 @@ public class HsAppointmentSystemController extends BaseController {
     @ApiOperation("增加预约时段配置信息")
     @PostMapping("/add")
     public Result addAppointmentTimeSlot(@RequestBody HsAppointmentSystem hsAppointmentSystem) {
-        HsUserDetails hsUserDetails = getHsUserDetails();
-        hsAppointmentSystem.setCustomerId(hsUserDetails.getCustomerId());
+        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+        hsAppointmentSystem.setCustomerId(customerId);
         Boolean result = hsAppointmentSystemService.add(hsAppointmentSystem);
         return Result.success(result);
     }
@@ -36,24 +36,24 @@ public class HsAppointmentSystemController extends BaseController {
     @ApiOperation("查询当前正在使用的预约时段信息")
     @GetMapping("/getNowTimeSlot")
     public Result getNowTimeSlot() {
-        HsUserDetails hsUserDetails = getHsUserDetails();
-        HsAppointmentSystem hsAppointmentSystem = hsAppointmentSystemService.getNowTimeSlot(hsUserDetails.getCustomerId());
+        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+        HsAppointmentSystem hsAppointmentSystem = hsAppointmentSystemService.getNowTimeSlot(customerId);
         return Result.success(hsAppointmentSystem);
     }
 
     @ApiOperation("查询最后的一条预约时段信息")
     @GetMapping("/getLastNowTimeSlot")
     public Result getLastNowTimeSlot() {
-        HsUserDetails hsUserDetails = getHsUserDetails();
-        HsAppointmentSystem hsAppointmentSystem = hsAppointmentSystemService.getLastNowTimeSlot(hsUserDetails.getCustomerId());
+        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+        HsAppointmentSystem hsAppointmentSystem = hsAppointmentSystemService.getLastNowTimeSlot(customerId);
         return Result.success(hsAppointmentSystem);
     }
 
     @ApiOperation("展示预约时段")
     @GetMapping("/getTimeSlotByDate")
     public Result getTimeSlotByDate(@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date date, Long outpatientAppointmentId) {
-        HsUserDetails hsUserDetails = getHsUserDetails();
-        List<TimeSlotDetailVo> resultList = hsAppointmentSystemService.getTimeSlotByDate(hsUserDetails.getCustomerId(), outpatientAppointmentId, date);
+        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+        List<TimeSlotDetailVo> resultList = hsAppointmentSystemService.getTimeSlotByDate(customerId, outpatientAppointmentId, date);
         return Result.success(resultList);
     }
 }

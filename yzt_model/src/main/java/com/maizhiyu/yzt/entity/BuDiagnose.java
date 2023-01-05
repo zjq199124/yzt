@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.entity;
 
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -78,4 +79,12 @@ public class BuDiagnose implements Serializable {
 
     @ApiModelProperty("是否删除；1是，0否")
     private Integer isDel;
+
+    @ApiModelProperty("姓名")
+    @TableField(exist = false)
+    private String name;
+
+    @ApiModelProperty("手机号")
+    @TableField(exist = false)
+    private String phone;
 }

@@ -100,3 +100,24 @@ public class HsDepartmentController {
         return Result.success(list);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

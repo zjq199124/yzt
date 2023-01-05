@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -10,6 +11,8 @@ import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem;
 import com.maizhiyu.yzt.mapper.BuOutpatientAppointmentMapper;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentItemMapper;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentMapper;
+import com.maizhiyu.yzt.ro.AppointmentRo;
+import com.maizhiyu.yzt.ro.BuPrescriptionItemAppointmentItemRo;
 import com.maizhiyu.yzt.service.IBuPrescriptionItemAppointmentItemService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +22,7 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -117,10 +121,90 @@ public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<Bu
 
     @Override
     public Boolean deleteAppointment(Long buPrescriptionItemAppointmentItemId) {
-        LambdaUpdateWrapper<BuPrescriptionItemAppointmentItem> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.set(BuPrescriptionItemAppointmentItem::getIsDel, 1)
-                .eq(BuPrescriptionItemAppointmentItem::getId, buPrescriptionItemAppointmentItemId);
-        int update = buPrescriptionItemAppointmentItemMapper.update(null, updateWrapper);
-        return update > 0;
+        int del = 0;
+        int update = 0;
+        int result = 0;
+        BuPrescriptionItemAppointmentItem buPrescriptionItemAppointmentItem = buPrescriptionItemAppointmentItemMapper.selectById(buPrescriptionItemAppointmentItemId);
+        Preconditions.checkArgument(Objects.nonNull(buPrescriptionItemAppointmentItem), "处方明细适宜技术具体预约数据id错误!");
+
+        if (buPrescriptionItemAppointmentItem.getIsDel() == 1) {
+            //该预约数据已经删除成功了
+            return true;
+        }
+        buPrescriptionItemAppointmentItem.setIsDel(1);
+        buPrescriptionItemAppointmentItem.setUpdateTime(new Date());
+        del = buPrescriptionItemAppointmentItemMapper.updateById(buPrescriptionItemAppointmentItem);
+        if (del > 0) {
+            //对应的适宜技术小项目中的预约数据要-1，剩余预约次数要+1
+            BuPrescriptionItemAppointment buPrescriptionItemAppointment = buPrescriptionItemAppointmentMapper.selectById(buPrescriptionItemAppointmentItem.getPrescriptionItemAppointmentId());
+            Preconditions.checkArgument(Objects.nonNull(buPrescriptionItemAppointmentItem), "处方明细适宜技术预约汇总数据错误!");
+
+            buPrescriptionItemAppointment.setAppointmentQuantity(buPrescriptionItemAppointment.getAppointmentQuantity() - 1);
+            buPrescriptionItemAppointment.setSurplusQuantity(buPrescriptionItemAppointment.getSurplusQuantity() + 1);
+            if (buPrescriptionItemAppointment.getSurplusQuantity() == buPrescriptionItemAppointment.getQuantity()) {
+                //剩余预约次数和开单次数相等，改为未预约
+                buPrescriptionItemAppointment.setState(1);
+            } else {
+                //预约状态改成预约中
+                buPrescriptionItemAppointment.setState(2);
+            }
+            buPrescriptionItemAppointment.setUpdateTime(new Date());
+            update = buPrescriptionItemAppointmentMapper.updateById(buPrescriptionItemAppointment);
+            if (update > 0) {
+                //更改所有的门诊下的预约数据的预约状态
+                //查询该诊断下的适宜技术的预约数据是否还有不是未预约的数据
+                LambdaQueryWrapper<BuPrescriptionItemAppointment> buPrescriptionItemAppointmentQueryWrapper = new LambdaQueryWrapper<>();
+                buPrescriptionItemAppointmentQueryWrapper.eq(BuPrescriptionItemAppointment::getIsDel, 0)
+                        .eq(BuPrescriptionItemAppointment::getOutpatientAppointmentId, buPrescriptionItemAppointment.getOutpatientAppointmentId())
+                        .eq(BuPrescriptionItemAppointment::getCustomerId, buPrescriptionItemAppointment.getCustomerId())
+                        .eq(BuPrescriptionItemAppointment::getPatientId, buPrescriptionItemAppointment.getPatientId())
+                        .eq(BuPrescriptionItemAppointment::getOutpatientId, buPrescriptionItemAppointment.getOutpatientId())
+                        .ne(BuPrescriptionItemAppointment::getState, 1);//不是未预约的数据，就是处于预约中和预约已完成的数据
+
+                List<BuPrescriptionItemAppointment> list = buPrescriptionItemAppointmentMapper.selectList(buPrescriptionItemAppointmentQueryWrapper);
+
+                LambdaUpdateWrapper<BuOutpatientAppointment> updateWrapper = new LambdaUpdateWrapper<>();
+                updateWrapper.eq(BuOutpatientAppointment::getIsDel, 0)
+                        .eq(BuOutpatientAppointment::getId, buPrescriptionItemAppointment.getOutpatientAppointmentId());
+                if (CollectionUtils.isEmpty(list)) {
+                    //没有查到不是未预约状态的子项(所以该门诊下的所有技术项目都未预约)
+                    updateWrapper.set(BuOutpatientAppointment::getState,1);
+                } else {
+                    //删除了一个预约数据，所以总的门诊下的预约数据一定有未完成的，所以总的不可能是预约完成，现在只能是预约中了
+                    updateWrapper.set(BuOutpatientAppointment::getState,2);
+                }
+                result = buOutpatientAppointmentMapper.update(null,updateWrapper);
+            }
+        }
+        return del > 0 && update > 0 && result > 0;
+    }
+
+    @Override
+    public Boolean appointment(AppointmentRo appointmentRo) {
+        //取出现有要保存或编辑的预约数据的id
+        List<Long> idList = appointmentRo.getBuPrescriptionItemAppointmentItemRoList().stream().filter(item -> Objects.nonNull(item.getId())).map(BuPrescriptionItemAppointmentItemRo::getId).collect(Collectors.toList());
+
+        //查询出之前在，这次没有的id，表明这些预约数据要删除
+        List<Long> deleteIdList = appointmentRo.getPreItemIdList().stream().filter(item -> !idList.contains(item)).collect(Collectors.toList());
+
+        if (!CollectionUtils.isEmpty(deleteIdList)) {
+            deleteIdList.forEach(item -> {
+                deleteAppointment(item);
+            });
+        }
+        //查询出id为null的数据出来这表示是新加上的数据
+        List<BuPrescriptionItemAppointmentItem> insertList = appointmentRo.getBuPrescriptionItemAppointmentItemRoList().stream().filter(item -> Objects.isNull(item.getId())).map(obj -> {
+            BuPrescriptionItemAppointmentItem buPrescriptionItemAppointmentItem = new BuPrescriptionItemAppointmentItem();
+            BeanUtil.copyProperties(obj, buPrescriptionItemAppointmentItem);
+            buPrescriptionItemAppointmentItem.setCustomerId(appointmentRo.getCustomerId());
+            return buPrescriptionItemAppointmentItem;
+        }).collect(Collectors.toList());
+
+        if (!CollectionUtils.isEmpty(insertList)) {
+            insertList.forEach(item -> {
+                makeAppointment(item);
+            });
+        }
+        return true;
     }
 }

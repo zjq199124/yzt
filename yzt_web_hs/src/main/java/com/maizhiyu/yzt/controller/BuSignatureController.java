@@ -36,8 +36,8 @@ public class BuSignatureController extends BaseController {
     @ApiOperation("待签到列表")
     @PostMapping("/waitSignatureList")
     public Result<Page<WaitSignatureVo>> waitSignatureList(@RequestBody WaitSignatureRo waitSignatureRo) {
-        HsUserDetails hsUserDetails = getHsUserDetails();
-        waitSignatureRo.setCustomerId(hsUserDetails.getCustomerId());
+        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+        waitSignatureRo.setCustomerId(customerId);
         Page<WaitSignatureVo> page = buPrescriptionItemService.selectWaitSignatureList(waitSignatureRo);
         return Result.success(page);
     }
@@ -56,8 +56,8 @@ public class BuSignatureController extends BaseController {
     @ApiOperation("待治疗列表")
     @PostMapping("/waitTreatmentList")
     public Result<Page<BuSignature>> waitTreatmentList(@RequestBody WaitTreatmentRo waitTreatmentRo) {
-        HsUserDetails hsUserDetails = getHsUserDetails();
-        waitTreatmentRo.setCustomerId(hsUserDetails.getCustomerId());
+        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+        waitTreatmentRo.setCustomerId(customerId);
         Page<BuSignature> pageResult = buSignatureService.waitTreatmentList(waitTreatmentRo);
         return Result.success(pageResult);
     }

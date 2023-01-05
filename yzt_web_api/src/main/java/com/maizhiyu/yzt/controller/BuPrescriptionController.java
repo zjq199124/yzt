@@ -199,6 +199,7 @@ public class BuPrescriptionController {
         prescription.setDoctorId(ro.getBaseInfo().getDoctorId());
         prescription.setPatientId(ro.getBaseInfo().getPatientId());
         prescription.setOutpatientId(ro.getBaseInfo().getOutpatientId());
+        prescription.setDiagnoseId(ro.getDiagnoseInfo().getId());
         prescription.setAttention(ro.getAttention());
         prescription.setCreateTime(new Date());
         prescription.setUpdateTime(prescription.getCreateTime());
@@ -277,26 +278,31 @@ public class BuPrescriptionController {
         prescription.getItemList().forEach(item -> {
             //查询是否生成技术小项目的预约数据是否生成
             BuPrescriptionItemAppointment buPrescriptionItemAppointment = buPrescriptionItemAppointmentService.selectByAppointmentIdAndItemId(finalOutpatientAppointmentId, item.getId());
-            if (Objects.nonNull(buPrescriptionItemAppointment))
-                return;
+            if (Objects.nonNull(buPrescriptionItemAppointment)) {
 
-            BuPrescriptionItemAppointment insert = new BuPrescriptionItemAppointment();
-            insert.setOutpatientAppointmentId(finalOutpatientAppointmentId);
-            insert.setPrescriptionItemId(item.getId());
-            insert.setCustomerId(prescription.getCustomerId());
-            insert.setPatientId(prescription.getPatientId());
-            insert.setOutpatientId(prescription.getOutpatientId());
-            insert.setEntityId(item.getEntityId());
-            insert.setPrescriptionId(prescription.getId());
-            insert.setDiagnoseId(prescription.getDiagnoseId());
-            insert.setState(1);
-            insert.setQuantity(item.getQuantity().intValue());
-            insert.setTreatmentQuantity(0);
-            insert.setAppointmentQuantity(0);
-            insert.setSurplusQuantity(insert.getQuantity());
-            insert.setCreateTime(new Date());
-            insert.setUpdateTime(insert.getCreateTime());
-            buPrescriptionItemAppointmentService.save(insert);
+                buPrescriptionItemAppointment.setQuantity(item.getQuantity().intValue());
+                buPrescriptionItemAppointment.setSurplusQuantity(item.getQuantity().intValue() - buPrescriptionItemAppointment.getTreatmentQuantity() - buPrescriptionItemAppointment.getAppointmentQuantity());
+                buPrescriptionItemAppointment.setUpdateTime(new Date());
+                buPrescriptionItemAppointmentService.updateById(buPrescriptionItemAppointment);
+            } else {
+                BuPrescriptionItemAppointment insert = new BuPrescriptionItemAppointment();
+                insert.setOutpatientAppointmentId(finalOutpatientAppointmentId);
+                insert.setPrescriptionItemId(item.getId());
+                insert.setCustomerId(prescription.getCustomerId());
+                insert.setPatientId(prescription.getPatientId());
+                insert.setOutpatientId(prescription.getOutpatientId());
+                insert.setEntityId(item.getEntityId());
+                insert.setPrescriptionId(prescription.getId());
+                insert.setDiagnoseId(prescription.getDiagnoseId());
+                insert.setState(1);
+                insert.setQuantity(item.getQuantity().intValue());
+                insert.setTreatmentQuantity(0);
+                insert.setAppointmentQuantity(0);
+                insert.setSurplusQuantity(insert.getQuantity());
+                insert.setCreateTime(new Date());
+                insert.setUpdateTime(insert.getCreateTime());
+                buPrescriptionItemAppointmentService.save(insert);
+            }
         });
     }
 }

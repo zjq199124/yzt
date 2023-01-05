@@ -4,6 +4,7 @@ import com.maizhiyu.yzt.base.BaseController;
 import com.maizhiyu.yzt.entity.BuDiagnose;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.BuDiagnoseRO;
+import com.maizhiyu.yzt.security.HsUserDetails;
 import com.maizhiyu.yzt.service.IBuDiagnoseService;
 import com.maizhiyu.yzt.service.IBuRecommendService;
 import io.swagger.annotations.Api;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 
@@ -96,5 +98,16 @@ public class BuDiagnoseController extends BaseController {
     public Result getRecommendBySymptom(@RequestBody BuDiagnose diagnose) {
         Map<String, Object> map = recommendService.getRecommendBySymptom(diagnose);
         return Result.success(map);
+    }
+
+    //通过姓名手机号身份证号码查询诊断信息
+
+    @ApiOperation(value = "通过姓名手机号身份证号码查询诊断信息")
+    @ApiImplicitParam(name = "term", value = "搜索字段", required = true)
+    @PostMapping("/selectDiagnoseList")
+    public Result<List<BuDiagnose>> selectDiagnoseList(String term) {
+        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+        List<BuDiagnose> list = diagnoseService.selectDiagnoseList(customerId,term);
+        return Result.success(list);
     }
 }

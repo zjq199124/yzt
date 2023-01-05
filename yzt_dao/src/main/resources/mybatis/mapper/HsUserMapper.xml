@@ -22,16 +22,16 @@
     <!--查询用户信息，所属部门，所属角色-->
     <select id="selectUserList" resultType="hashmap">
         select
-            U.id, U.status, U.user_name userName, U.nick_name nickName, U.real_name realName, U.phone, U.sex,
-            DATE_FORMAT(U.create_time, '%Y-%m-%d %T') createTime,
-            D.id department_id, D.dname departmentName, D.descrip department_desc,
-            R.id role_id, R.rolename rolename, R.descrip role_desc
+        U.id, U.status, U.user_name userName, U.nick_name nickName, U.real_name realName, U.phone, U.sex,
+        DATE_FORMAT(U.create_time, '%Y-%m-%d %T') createTime,
+        D.id department_id, D.dname departmentName, D.descrip department_desc,
+        R.id role_id, R.rolename rolename, R.descrip role_desc
         from
-            hs_user U
-            left join hs_user_department X on X.user_id = U.id
-            left join hs_department D on X.department_id = D.id
-            left join hs_user_role Y on Y.user_id = U.id
-            left join hs_role R on Y.role_id = R.id
+        hs_user U
+        left join hs_user_department X on X.user_id = U.id
+        left join hs_department D on X.department_id = D.id
+        left join hs_user_role Y on Y.user_id = U.id
+        left join hs_role R on Y.role_id = R.id
         <where>
             U.customer_id = #{customerId}
             <if test="departmentId != null and departmentId != 0">
@@ -45,9 +45,9 @@
             </if>
             <if test="term != null and term != ''">
                 and (U.user_name like concat(concat('%',#{term}),'%')
-                    or U.nick_name like concat(concat('%',#{term}),'%')
-                    or U.real_name like concat(concat('%',#{term}),'%')
-                    or U.phone like concat(concat('%',#{term}),'%'))
+                or U.nick_name like concat(concat('%',#{term}),'%')
+                or U.real_name like concat(concat('%',#{term}),'%')
+                or U.phone like concat(concat('%',#{term}),'%'))
             </if>
             <if test="isdoctor != null">
                 and U.is_doctor = #{isdoctor}
@@ -59,35 +59,42 @@
     </select>
 
     <select id="selectUser" resultType="hashmap">
-        select
-            U.id, U.customer_id customerId, U.status, U.user_name userName, U.nick_name nickName, U.real_name realName, U.phone, U.sex, U.avatar, U.is_doctor isDoctor, U.is_therapist isTherapist,
-            DATE_FORMAT(U.create_time, '%Y-%m-%d %T') create_time,
-            C.name customerName,
-            D.id department_id, D.dname department_name, D.descrip department_desc,
-            R.id role_id, R.rolename role_name, R.descrip role_desc
-        from
-            hs_user U
-            left join ms_customer C on U.customer_id = C.id
-            left join hs_user_department X on X.user_id = U.id
-            left join hs_department D on X.department_id = D.id
-            left join hs_user_role Y on Y.user_id = U.id
-            left join hs_role R on Y.role_id = R.id
-        where
-            U.id = #{id}
+        select U.id,
+               U.customer_id                             customerId,
+               U.status,
+               U.user_name                               userName,
+               U.nick_name                               nickName,
+               U.real_name                               realName,
+               U.phone,
+               U.sex,
+               U.avatar,
+               U.is_doctor                               isDoctor,
+               U.is_therapist                            isTherapist,
+               DATE_FORMAT(U.create_time, '%Y-%m-%d %T') create_time,
+               C.name                                    customerName,
+               D.id                                      department_id,
+               D.dname                                   department_name,
+               D.descrip                                 department_desc,
+               R.id                                      role_id,
+               R.rolename                                role_name,
+               R.descrip                                 role_desc
+        from hs_user U
+                 left join ms_customer C on U.customer_id = C.id
+                 left join hs_user_department X on X.user_id = U.id
+                 left join hs_department D on X.department_id = D.id
+                 left join hs_user_role Y on Y.user_id = U.id
+                 left join hs_role R on Y.role_id = R.id
+        where U.id = #{id}
     </select>
 
     <!--查询管理员信息-->
     <select id="selectAdmin" resultMap="UserMap">
-        select
-            U.*
-        from
-            hs_user U
-            join hs_user_role X on X.user_id = U.id
-            join hs_role R on X.role_id = R.id
-        where
-            U.customer_id = #{customerId}
-            and R.customer_id = 0
-        limit 1
+        select U.*
+        from hs_user U
+                 join hs_user_role X on X.user_id = U.id
+                 join hs_role R on X.role_id = R.id
+        where U.customer_id = #{customerId}
+          and R.customer_id = 0 limit 1
     </select>
 
 </mapper>
