@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.HsDepartment;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IHsDepartmentService;
+import com.maizhiyu.yzt.serviceimpl.HsDepartmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -12,6 +13,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.print.attribute.standard.PagesPerMinute;
 import java.util.Date;
 import java.util.Map;
 
@@ -21,6 +24,9 @@ import java.util.Map;
 public class HsDepartmentController {
 
     @Autowired
+    private HsDepartmentService hsDepartmentService;
+
+    @Resource
     private IHsDepartmentService service;
 
 
@@ -84,17 +90,13 @@ public class HsDepartmentController {
 
     @ApiOperation(value = "获取科室列表", notes = "获取科室列表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "customerId", value = "客户ID", required = true),
+            @ApiImplicitParam(name = "customerId", value = "客户ID", required = false),
             @ApiImplicitParam(name = "status", value = "状态", required = false),
             @ApiImplicitParam(name = "term", value = "搜索词", required = false),
-            @ApiImplicitParam(name = "pageNum", value = "开始页数(默认1)", required = false),
-            @ApiImplicitParam(name = "pageSize", value = "每页大小(默认10)", required = false),
     })
     @GetMapping(value = "/getDepartmentList")
-    public Result getDepartmentList(Long customerId, Integer status, String term,
-                                    @RequestParam(defaultValue = "1") Integer pageNum,
-                                    @RequestParam(defaultValue = "10") Integer pageSize) {
-        IPage<Map<String, Object>> list = service.getDepartmentList(new Page(pageNum, pageSize), customerId, status, term);
+    public Result getDepartmentList(Page page,Long customerId, Integer status, String term) {
+        IPage<Map<String, Object>> list = service.getDepartmentList(page, customerId, status, term);
         return Result.success(list);
     }
 }

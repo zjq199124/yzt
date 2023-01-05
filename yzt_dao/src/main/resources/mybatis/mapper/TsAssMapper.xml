@@ -15,30 +15,34 @@
     </resultMap>
 
 
-    <select id="selectAsslist" resultType="com.maizhiyu.yzt.entity.TsAss">
-        select
-            X.*,
-            A.name tname,
-            A.descrip tdescrip,
-            B.realname examiner_name,
-            C.realname therapist_name
-        from
-            ts_ass X
-            join ts_sytech A on X.sytech_id = A.id
-            join hs_user B on X.examiner_id = B.id
-            join hs_user C on X.therapist_id = C.id
+    <select id="selectAsslist" resultType="hashmap">
+        SELECT
+        DATE_FORMAT(X.create_time, '%Y-%m-%d %T') createTime,X.total_score totalScore,
+        A.NAME sytechName,
+        B.real_name examinerName,
+        B.phone,
+        C.real_name therapistName,
+        D.dname departmentName
+        FROM
+        ts_ass X
+        JOIN ts_sytech A ON X.sytech_id = A.id
+        JOIN hs_user B ON X.examiner_id = B.id
+        JOIN hs_user C ON X.therapist_id = C.id
+        JOIN hs_user_department HD ON B.id = HD.user_id
+        JOIN hs_department D ON D.id = HD.department_id
         <where>
-            <if test="sytechId != null">
-                and X.sytech_id = #{therapistId}
+            <if test="status != null and status != ''">
+                and X.status = #{status}
             </if>
-            <if test="startDate != null">
-                and X.create_time > #{createTime}
+            <if test="examinerName != null and examinerName != ''">
+                and B.real_name like concat(concat('%' ,#{examinerName}),'%')
             </if>
-            <if test="endDate != null">
-                and X.update_time &lt; #{updateTime}TsAssMapper.xmlTsAssMapper.xml
+            <if test="phoneOrtherapistName != null and phoneOrtherapistName != ''">
+                and (C.real_name like concat(concat('%' ,#{phoneOrtherapistName}),'%') or
+                    B.phone like concat(concat('%') ,#{phoneOrtherapistName},'%'))
             </if>
-            <if test="term != null">
-                and C.realname like concat(concat('%',#{term}),'%')
+            <if test="department != null and department != ''">
+                and D.dname like concat(concat('%' ,#{department}),'%')
             </if>
         </where>
     </select>

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.TsAss;
+import com.maizhiyu.yzt.ro.BatchAddUserRO;
 
 import java.util.List;
 import java.util.Map;
@@ -14,9 +15,11 @@ public interface ITsAssService extends IService<TsAss> {
 
     public List<Map<String,Object>> getAssItem(Long id);
 
-    public IPage<TsAss> getAsslist(Page page,TsAss tsAss);
+    IPage<Map<String, Object>> getAsslist(Page page,String phoneOrtherapistName,String examinerName,
+                                        String department,Integer status);
 
-//    public List<TsAss> getAssBytherapistId(Long therapistId);
+    List<TsAss> addBatch(BatchAddUserRO batchAddUserRO);
+
 
 
 }

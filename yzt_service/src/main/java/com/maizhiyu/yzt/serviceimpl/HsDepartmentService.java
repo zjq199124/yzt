@@ -45,10 +45,9 @@ public class HsDepartmentService extends ServiceImpl<HsDepartmentMapper,HsDepart
     @Override
     public IPage<Map<String, Object>> getDepartmentList(Page page, Long customerId, Integer status, String term) {
         QueryWrapper<HsDepartment> wrapper = new QueryWrapper<>();
-        wrapper.select("id", "status", "dname", "descrip",
+        wrapper.select("id", "status", "dname",
                 "DATE_FORMAT(update_time, '%Y-%m-%d %T') update_time",
                 "DATE_FORMAT(create_time, '%Y-%m-%d %T') create_time");
-        wrapper.eq("customer_id", customerId);
         if (status != null) {
             wrapper.eq("status", status);
         }
