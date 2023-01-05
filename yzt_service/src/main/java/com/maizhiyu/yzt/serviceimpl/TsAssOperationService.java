@@ -33,7 +33,7 @@ public class TsAssOperationService extends ServiceImpl<TsAssOperationMapper , Ts
 //            });
 //            return e;
 //        });
-        return list;
+      return list;
 
     }
 }

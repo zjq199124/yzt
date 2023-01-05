@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.entity;
 
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
@@ -44,6 +45,7 @@ public class TsAssOperation {
     private Integer isDel;
 
     @ApiModelProperty(value = "细节")
+    @TableField(exist = false)
     private List<TsAssOperationDetail> tsAssOperationDetailList;
 
 }

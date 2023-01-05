@@ -175,7 +175,8 @@ public class HsUserService extends ServiceImpl<HsUserMapper,HsUser> implements I
 
     public IPage<HsUser> getTherapist(Page page,Long isTherapist){
         QueryWrapper<HsUser> userQueryWrapper = new QueryWrapper<>();
-        userQueryWrapper.eq("status",1).eq("is_therapist",isTherapist);
+        userQueryWrapper.eq("status",1).eq("is_therapist",isTherapist).select(HsUser.class,info ->
+                !info.getColumn().equals("create_time")&& !info.getColumn().equals("update_time")&& !info.getColumn().equals("password"));
         return  userMapper.selectPage(page,userQueryWrapper);
     }
 }

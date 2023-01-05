@@ -261,6 +261,7 @@ public class WxController {
 
     private PsUser addUser(String openid) {
         // 获取用户微信信息
+        logger.info("### token: " + accessToken);
         String jsonstr = wxClient.getUserInfo(accessToken, openid);
         JSONObject jsonobj = JSON.parseObject(jsonstr);
         logger.info("### user: " + jsonstr);

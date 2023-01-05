@@ -8,10 +8,12 @@ import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.exception.BusinessException;
 import com.maizhiyu.yzt.mapper.TsSytechMapper;
 import com.maizhiyu.yzt.result.Result;
+import com.maizhiyu.yzt.ro.BatchAddUserRO;
 import com.maizhiyu.yzt.serviceimpl.HsUserService;
 import com.maizhiyu.yzt.serviceimpl.TsAssOperationService;
 import com.maizhiyu.yzt.serviceimpl.TsAssService;
 import com.maizhiyu.yzt.serviceimpl.UserAssService;
+import com.maizhiyu.yzt.vo.TssAssVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -58,7 +60,7 @@ public class TsAssController {
 
 
 
-    @ApiOperation(value = "增加或修改考核", notes = "增加或修改考核")
+    @ApiOperation(value = "修改考核", notes = "增加或修改考核")
     @PostMapping("/addOrupdateAss")
 
     public Result addOrupdateAss(@RequestBody TsAss ass) {
@@ -69,10 +71,9 @@ public class TsAssController {
 
     @ApiOperation(value = "批量新增考核" , notes = "批量新增考核")
     @PostMapping("addBatch")
-
-    public Result addBatch(@RequestBody List<TsAss> listAss){
-        Boolean res = tsAssService.saveBatch(listAss);
-        return Result.success(res);
+    public Result addBatch(@RequestBody BatchAddUserRO batchAddUserRO){
+        List<TsAss> list = tsAssService.addBatch(batchAddUserRO);
+        return Result.success(list);
     }
 
 
@@ -87,12 +88,20 @@ public class TsAssController {
     }
 
 
-    @ApiOperation(value = "获取考核列表" , notes = "获取考核列表")
-    @ApiImplicitParams({
+   @ApiOperation(value = "获取考核列表" , notes = "获取考核列表")
+       @ApiImplicitParams({
+            @ApiImplicitParam(name = "examinerName" , value = "考核人",required = false),
+            @ApiImplicitParam(name = "phoneOrtherapistName" , value = "治疗师/电话号码",required = false),
+            @ApiImplicitParam(name = "department" , value = "部门",required = false),
+            @ApiImplicitParam(name = "status" , value = "状态(0:未开始 1:考核中 2:考核结束)",required = false),
     })
     @GetMapping("/getAssList")
-    public Result getAssList(Page page,TsAss tsAss){
-        IPage<TsAss> list =  tsAssService.getAsslist(page,tsAss);
+    public Result getAssList( Page page,String phoneOrtherapistName,
+                              String examinerName,
+                              String department,
+                              Integer status
+                             ){
+       IPage<Map<String, Object>> list =  tsAssService.getAsslist(page,phoneOrtherapistName,examinerName,department,status);
         return Result.success(list);
     }
 
@@ -104,14 +113,14 @@ public class TsAssController {
 
     }
 
-    @ApiOperation(value = "查询最终成绩",notes = "查询最终成绩")
+    @ApiOperation(value = "查询用户成绩",notes = "查询最终成绩")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "assId",value = "考核ID",required = true),
     })
     @GetMapping("/selectAll")
     public Result selectAll(@RequestParam Long assId){
-        List<Map<String,Object>> list = userAssService.getUserGrade(assId);
-        return Result.success(list);
+        TssAssVO.OperationGradeVO operationDetail = userAssService.getUserGrade(assId);
+        return Result.success(operationDetail);
     }
 
 

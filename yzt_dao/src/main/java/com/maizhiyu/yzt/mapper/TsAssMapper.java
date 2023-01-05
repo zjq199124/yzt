@@ -22,12 +22,12 @@ public interface TsAssMapper extends BaseMapper<TsAss> {
             @Param("id") Long id
     );
 
-    List<Map<String,Object>> selectAsslist(
-            @Param("therapistId") Long therapistId,
-            @Param("sytechId") Long sytechId,
-            @Param("createTime") Date createTime,
-            @Param("updateTime") Date updateTime,
-            @Param("term") String term);
+    IPage<Map<String, Object>> selectAsslist(
+            @Param("page") Page page,
+            @Param("phoneOrtherapistName") String phoneOrtherapistName,
+            @Param("examinerName") String examinerName,
+            @Param("department") String department,
+            @Param("status") Integer status);
 
 
 
