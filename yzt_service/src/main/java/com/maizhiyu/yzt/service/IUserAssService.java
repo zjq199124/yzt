@@ -14,5 +14,5 @@ public interface IUserAssService extends IService<UserAss> {
 
     IPage<UserAss> getAssGrade(Page page, UserAss userAss);
 
-    List<TsAssOperationDetail> getUserGrade(Long assId);
+    TssAssVO.OperationGradeVO getUserGrade(Long assId);
 }

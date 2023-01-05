@@ -15,7 +15,7 @@ import java.util.Map;
 @Repository
 public interface UserAssMapper extends BaseMapper<UserAss> {
 
-    List<TssAssVO.operationGradeVO> selectUserGrade(
+    List<TssAssVO.OperationDetail> selectUserGrade(
             @Param("assId") Long assId);
 
 

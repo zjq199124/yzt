@@ -119,8 +119,8 @@ public class TsAssController {
     })
     @GetMapping("/selectAll")
     public Result selectAll(@RequestParam Long assId){
-        List<TsAssOperationDetail> list = userAssService.getUserGrade(assId);
-        return Result.success(list);
+        TssAssVO.OperationGradeVO operationDetail = userAssService.getUserGrade(assId);
+        return Result.success(operationDetail);
     }
 
 

@@ -44,4 +44,8 @@ public class TsAssOperation {
     @ApiModelProperty(value="是否删除")
     private Integer isDel;
 
+    @ApiModelProperty(value = "细节")
+    @TableField(exist = false)
+    private List<TsAssOperationDetail> tsAssOperationDetailList;
+
 }
