@@ -1,7 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import cn.hutool.core.lang.Assert;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -12,7 +11,6 @@ import com.maizhiyu.yzt.entity.TsAss;
 import com.maizhiyu.yzt.entity.TsAssOperation;
 import com.maizhiyu.yzt.entity.TsAssOperationDetail;
 import com.maizhiyu.yzt.entity.UserAss;
-import com.maizhiyu.yzt.mapper.TsAssMapper;
 import com.maizhiyu.yzt.mapper.UserAssMapper;
 import com.maizhiyu.yzt.service.IUserAssService;
 import com.maizhiyu.yzt.vo.TssAssVO;
@@ -21,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -83,20 +82,22 @@ public class UserAssService extends ServiceImpl<UserAssMapper, UserAss> implemen
             //当前考核项对应的人员考核成绩
             List<UserAss> userAsseGrade = userAsses.stream().filter(e -> list.contains(e.getDetailId())).collect(Collectors.toList());
             //人员考核项考核成绩值填充
+            AtomicReference<Integer> totalScore= new AtomicReference<>(0);
             userAsseGrade.stream().forEach(s -> {
                 TssAssVO.UserGrade grade = new TssAssVO.UserGrade();
                 grade.setDeduct(s.getDeduct());
                 grade.setGetScore(s.getScore());
                 Optional<TsAssOperationDetail> cc = operationDetails.stream().filter(e -> e.getId().equals(s.getDetailId())).findFirst();
                 grade.setOperationDetails(cc.get().getDetail());
+                totalScore.updateAndGet(v -> v + s.getScore());
                 gradeList.add(grade);
             });
             //填充考核项数据
             TssAssVO.OperationDetail operationDetail = new TssAssVO.OperationDetail();
             operationDetail.setOperationId(item.getId());
             operationDetail.setOperationName(item.getOperationName());
-            operationDetail.setGetOperationScore(item.getScore());
-            operationDetail.setOperationScore(8);
+            operationDetail.setGetOperationScore(totalScore.get().intValue());
+            operationDetail.setOperationScore(item.getScore());
             operationDetail.setUserGrades(gradeList);
             operationDetailList.add(operationDetail);
 
