@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.BuCure;
 import com.maizhiyu.yzt.ro.BuCureSearchRO;
+import com.maizhiyu.yzt.vo.BuCureVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -19,4 +20,6 @@ import org.springframework.stereotype.Repository;
 public interface BuCureMapper extends BaseMapper<BuCure>{
 
     Page<BuCure> selectTreatmentList(@Param("page") Page<BuCure> page, @Param("buCureSearchRO") BuCureSearchRO buCureSearchRO);
+
+    BuCureVo selectCureDetailBySignatureId(@Param("signatureId") Long signatureId);
 }

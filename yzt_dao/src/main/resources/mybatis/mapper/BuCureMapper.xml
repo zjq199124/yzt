@@ -28,7 +28,6 @@
         <result column="quantity" property="quantity"/>
         <result column="treatment_quantity" property="treatmentQuantity"/>
         <result column="outpatient_time" property="outpatientTime"/>
-
     </resultMap>
     <select id="selectTreatmentList" resultType="com.maizhiyu.yzt.entity.BuCure">
         SELECT
@@ -45,7 +44,17 @@
         bpia.treatment_quantity,
         bo.create_time as outpatient_time,
         bc.create_time,
-        bc.ts_name
+        bc.ts_name,
+        bc.id,
+        bc.patient_id,
+        bc.outpatient_id,
+        bc.entity_id,
+        bc.cure_user_id,
+        bc.registrant_id,
+        bc.signature_id,
+        bc.department_id,
+        bc.customer_id,
+        bc.ts_description
         FROM
         bu_cure bc
         LEFT JOIN bu_patient bp ON bc.patient_id = bp.id
@@ -70,7 +79,67 @@
             AND (bc.create_time between #{buCureSearchRO.cureStartDate} AND {buCureSearchRO.cureEndDate})
         </if>
         ORDER BY
-        bs.create_time DESC
+        bc.create_time DESC
+    </select>
+
+    <resultMap type="com.maizhiyu.yzt.vo.BuCureVo" id="BuCureVoMap">
+        <result property="name" column="name" />
+        <result property="gender" column="gender" />
+        <result property="age" column="age" />
+        <result property="disease" column="disease" />
+        <result property="syndrome" column="syndrome" />
+        <result property="prescriptionId" column="prescription_id"/>
+        <result property="outpatientTime" column="outpatient_time"/>
+        <result property="id" column="id" />
+        <result property="patientId" column="patient_id" />
+        <result property="outpatientId" column="outpatient_id" />
+        <result property="entityId" column="entity_id" />
+        <result property="cureUserId" column="cure_user_id" />
+        <result property="registrantId" column="registrant_id" />
+        <result property="signatureId" column="signature_id" />
+        <result property="tsDescription" column="ts_description" />
+        <result property="createTime" column="create_time" />
+        <result property="tsName" column="ts_name" />
+
+    </resultMap>
+
+    <select id="selectCureDetailBySignatureId" resultType="com.maizhiyu.yzt.vo.BuCureVo">
+        SELECT
+            bp.name,
+            CASE
+                WHEN bp.sex = 1 THEN '男'
+                WHEN bp.sex = 0 THEN '女'
+                ELSE '未知'
+                END AS gender,
+            TIMESTAMPDIFF(YEAR,bp.birthday,CURDATE()) as age,
+            bd.disease,
+            bd.syndrome,
+            bpi.prescription_id,
+            bo.create_time as outpatient_time,
+
+            bc.id,
+            bc.patient_id,
+            bc.outpatient_id,
+            bc.entity_id,
+            bc.cure_user_id,
+            bc.registrant_id,
+            bc.signature_id,
+            bc.ts_description,
+            bc.create_time,
+            bc.ts_name,
+            hu.user_name AS cureUserName
+        FROM
+            bu_cure bc
+                LEFT JOIN bu_patient bp ON bc.patient_id = bp.id
+                AND bp.is_del = 0
+                LEFT JOIN bu_outpatient bo ON bc.outpatient_id = bo.id
+                AND bo.is_del = 0
+                LEFT JOIN bu_prescription_item bpi ON bc.prescription_item_id = bpi.id
+                AND bpi.is_del = 0
+                LEFT JOIN bu_diagnose bd ON bc.outpatient_id = bd.outpatient_id
+                LEFT JOIN hs_user hu ON bc.cure_user_id = hu.id AND hu.is_del = 0
+        WHERE
+            bc.is_del = 0 and bc.signature_id = #{signatureId}
     </select>
 
 

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.BuCure;
 import com.maizhiyu.yzt.ro.BuCureSearchRO;
+import com.maizhiyu.yzt.vo.BuCureVo;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public interface BuCureService extends IService<BuCure>{
      * @param buCure
      * @return
      */
-    boolean saveOrUpdateBuCure(BuCure buCure);
+    boolean saveOrUpdate(BuCure buCure);
 
     /**
      * 结束治疗
@@ -30,4 +31,6 @@ public interface BuCureService extends IService<BuCure>{
     boolean endTreatment(Long id);
 
     Page<BuCure> treatmentList(BuCureSearchRO buCureSearchRO);
+
+    BuCureVo selectCureDetailBySignatureId(Long signatureId);
 }

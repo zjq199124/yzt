@@ -32,7 +32,10 @@
     <resultMap id="WaitSignatureMap" type="com.maizhiyu.yzt.vo.WaitSignatureVo">
         <result column="prescriptionItemId" property="prescriptionItemId" />
         <result column="outpatient_id" property="outpatientId" />
+        <result column="entity_id" property="entityId" />
+        <result column="patientId" property="patientId" />
         <result column="name" property="name" />
+        <result column="phone" property="phone" />
         <result column="gender" property="gender" />
         <result column="age" property="age" />
         <result column="dname" property="dname" />
@@ -42,12 +45,16 @@
         <result column="tsName" property="tsName" />
         <result column="quantity" property="quantity" />
         <result column="treatment_quantity" property="treatmentQuantity" />
+        <result column="outpatientTime" property="outpatientTime" />
     </resultMap>
     <select id="selectWaitSignatureList" resultType="com.maizhiyu.yzt.vo.WaitSignatureVo">
         SELECT
         bpi.id as prescriptionItemId,
         bpi.outpatient_id,
+        bpi.entity_id,
         bp.name,
+        bp.phone,
+        bp.id as patientId,
         CASE
         WHEN bp.sex = 1 THEN '男'
         WHEN bp.sex = 0 THEN '女'
@@ -100,7 +107,8 @@
         SELECT
         bpi.id as prescriptionItemId,
         bd.disease,
-        ts.NAME AS tsName
+        ts.NAME AS tsName,
+        ts.create_time AS outpatientTime
         FROM
         bu_diagnose bd
         LEFT JOIN bu_prescription_item bpi ON bd.outpatient_id = bpi.outpatient_id

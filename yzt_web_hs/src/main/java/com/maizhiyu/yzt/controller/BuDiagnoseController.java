@@ -104,7 +104,7 @@ public class BuDiagnoseController extends BaseController {
 
     @ApiOperation(value = "通过姓名手机号身份证号码查询诊断信息")
     @ApiImplicitParam(name = "term", value = "搜索字段", required = true)
-    @PostMapping("/selectDiagnoseList")
+    @GetMapping("/selectDiagnoseList")
     public Result<List<BuDiagnose>> selectDiagnoseList(String term) {
         Long customerId = ((Number) getClaims().get("customerId")).longValue();
         List<BuDiagnose> list = diagnoseService.selectDiagnoseList(customerId,term);

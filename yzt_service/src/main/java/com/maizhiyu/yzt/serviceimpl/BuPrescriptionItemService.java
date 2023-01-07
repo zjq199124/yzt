@@ -95,6 +95,7 @@ public class BuPrescriptionItemService extends ServiceImpl<BuPrescriptionItemMap
 
             item.setDisease(waitSignatureVo.getDisease());
             item.setTsName(waitSignatureVo.getTsName());
+            item.setOutpatientTime(waitSignatureVo.getOutpatientTime());
         });
 
         return pageResult;
