@@ -60,6 +60,9 @@ public class BuCureVo implements Serializable {
     @ApiModelProperty("适宜技术名称")
     private String tsName;
 
+    @ApiModelProperty("治疗状态1：进行中；2：已结束")
+    private Integer status;
+
     @ApiModelProperty("登记人id")
     private Long registrantId;
 
