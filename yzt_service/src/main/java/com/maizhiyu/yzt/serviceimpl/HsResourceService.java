@@ -25,7 +25,7 @@ public class HsResourceService extends ServiceImpl<HsResourceMapper,HsResource> 
     @Override
     public List<Map<String, Object>> getResourceList() {
         QueryWrapper<HsResource> wrapper = new QueryWrapper<>();
-        wrapper.eq("type", 1);
+//        wrapper.eq("type", 1);
         List<HsResource> list = mapper.selectList(wrapper);
         List<Map<String, Object>> result = formatResourceList(list);
         return result;

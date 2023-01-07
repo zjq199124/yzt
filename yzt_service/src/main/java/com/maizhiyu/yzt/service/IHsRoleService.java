@@ -13,7 +13,7 @@ public interface IHsRoleService extends IService<HsRole> {
 
     Integer delRole(Long id);
 
-    Integer setRole(HsRole role);
+    Boolean setRole(HsRole role);
 
     Integer setRoleStatus(HsRole role);
 

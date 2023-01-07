@@ -49,8 +49,7 @@ public class HsRoleController {
     @ApiOperation(value = "修改角色信息", notes = "修改角色信息")
     @PostMapping("/setRole")
     public Result setRole(@RequestBody HsRole role) {
-        role.setUpdateTime(new Date());
-        Integer res = service.setRole(role);
+        Boolean res = service.setRole(role);
         return Result.success(role);
     }
 
