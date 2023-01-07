@@ -25,7 +25,7 @@ public interface TsAssMapper extends BaseMapper<TsAss> {
     IPage<Map<String, Object>> selectAsslist(
             @Param("page") Page page,
             @Param("phoneOrtherapistName") String phoneOrtherapistName,
-            @Param("examinerName") String examinerName,
+            @Param("examinerId") Long examinerId,
             @Param("department") String department,
             @Param("status") Integer status);
 

@@ -64,7 +64,7 @@ public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<Bu
             //预约成功，要增加该适宜技术已预约的次数，扣减剩余预约的次数
             LambdaQueryWrapper<BuPrescriptionItemAppointment> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(BuPrescriptionItemAppointment::getIsDel, 0)
-                    .eq(BuPrescriptionItemAppointment::getId, buPrescriptionItemAppointmentItem.getPrescriptionItemAppointmentId())
+                    .eq(BuPrescriptionItemAppointment::getPrescriptionItemId, buPrescriptionItemAppointmentItem.getPrescriptionItemAppointmentId())
                     .orderByDesc(BuPrescriptionItemAppointment::getCreateTime)
                     .last("limit 1");
             BuPrescriptionItemAppointment buPrescriptionItemAppointment = buPrescriptionItemAppointmentMapper.selectOne(wrapper);
@@ -86,7 +86,7 @@ public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<Bu
                 query.eq(BuOutpatientAppointment::getIsDel, 0)
                         .eq(BuOutpatientAppointment::getCustomerId, buPrescriptionItemAppointment.getCustomerId())
                         .eq(BuOutpatientAppointment::getPatientId, buPrescriptionItemAppointment.getPatientId())
-                        .eq(BuOutpatientAppointment::getId, buPrescriptionItemAppointment.getOutpatientAppointmentId())
+                        .eq(BuOutpatientAppointment::getOutpatientId, buPrescriptionItemAppointment.getOutpatientAppointmentId())
                         .orderByDesc(BuOutpatientAppointment::getCreateTime)
                         .last("limit 1");
                 BuOutpatientAppointment buOutpatientAppointment = buOutpatientAppointmentMapper.selectOne(query);
@@ -112,8 +112,8 @@ public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<Bu
                     } else {
                         buOutpatientAppointment.setState(2);
                     }
+                    result = buOutpatientAppointmentMapper.updateById(buOutpatientAppointment);
                 }
-                result = buOutpatientAppointmentMapper.updateById(buOutpatientAppointment);
             }
         }
         return insert > 0 && update > 0 && result > 0;
@@ -185,14 +185,12 @@ public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<Bu
         List<Long> idList = appointmentRo.getBuPrescriptionItemAppointmentItemRoList().stream().filter(item -> Objects.nonNull(item.getId())).map(BuPrescriptionItemAppointmentItemRo::getId).collect(Collectors.toList());
 
         //查询出之前在，这次没有的id，表明这些预约数据要删除
-        if (!CollectionUtils.isEmpty(appointmentRo.getPreItemIdList())) {
-            List<Long> deleteIdList = appointmentRo.getPreItemIdList().stream().filter(item -> !idList.contains(item)).collect(Collectors.toList());
+        List<Long> deleteIdList = appointmentRo.getPreItemIdList().stream().filter(item -> !idList.contains(item)).collect(Collectors.toList());
 
-            if (!CollectionUtils.isEmpty(deleteIdList)) {
-                deleteIdList.forEach(item -> {
-                    deleteAppointment(item);
-                });
-            }
+        if (!CollectionUtils.isEmpty(deleteIdList)) {
+            deleteIdList.forEach(item -> {
+                deleteAppointment(item);
+            });
         }
         //查询出id为null的数据出来这表示是新加上的数据
         List<BuPrescriptionItemAppointmentItem> insertList = appointmentRo.getBuPrescriptionItemAppointmentItemRoList().stream().filter(item -> Objects.isNull(item.getId())).map(obj -> {

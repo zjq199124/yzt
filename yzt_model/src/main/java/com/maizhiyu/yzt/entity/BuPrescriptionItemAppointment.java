@@ -85,8 +85,4 @@ public class BuPrescriptionItemAppointment extends Model<BuPrescriptionItemAppoi
     @TableField(exist = false)
     @ApiModelProperty("预约数据")
     List<BuPrescriptionItemAppointmentItem> buPrescriptionItemAppointmentItemList;
-
-    @TableField(exist = false)
-    @ApiModelProperty("适宜技术治疗list")
-    private List<BuCure> buCureList;
 }

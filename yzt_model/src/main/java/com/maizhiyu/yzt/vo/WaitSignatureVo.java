@@ -22,9 +22,6 @@ public class WaitSignatureVo implements Serializable {
     @ApiModelProperty("患者姓名")
     private String name;
 
-    @ApiModelProperty("患者手机号")
-    private String phone;
-
     @ApiModelProperty("性别")
     private String gender;
 

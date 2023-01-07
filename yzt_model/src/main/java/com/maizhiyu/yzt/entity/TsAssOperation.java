@@ -48,4 +48,6 @@ public class TsAssOperation {
     @TableField(exist = false)
     private List<TsAssOperationDetail> tsAssOperationDetailList;
 
+
+
 }

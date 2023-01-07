@@ -15,14 +15,13 @@ import java.util.Date;
 @TableName("ps_article")
 @ApiModel(description="文章宣教表")
 public class PsArticle {
-
     @ApiModelProperty(value="ID")
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty(value = "作者")
-    @TableField("auth")
-    private String auth;
+    @ApiModelProperty(value = "作者信息")
+    @TableField("authinfo")
+    private String authinfo;
 
     @ApiModelProperty(value = "标题")
     @TableField("title")
@@ -32,15 +31,32 @@ public class PsArticle {
     @TableField("text")
     private String text;
 
-    @ApiModelProperty(value = "文章链接")
-    @TableField("link")
-    private String link;
+    @ApiModelProperty(value = "文章分类")
+    @TableField("kind")
+    private Integer  kind;
 
-    @ApiModelProperty(value="考核时间")
+    @ApiModelProperty(value = "封面地址")
+    @TableField("cover")
+    private String cover;
+
+    @ApiModelProperty(value = "是否轮播展示(0:不展示 1:展示)")
+    @TableField("isCarousel")
+    private Integer  isCarousel;
+
+    @ApiModelProperty(value = "是否推荐展示(0:不展示 1:展示)")
+    @TableField("isRecommend")
+    private Integer  isRecommend;
+
+    @ApiModelProperty(value = "阅读量")
+    @TableField("read_count")
+    private Long  readCount;
+
+
+    @ApiModelProperty(value="创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "Asia/Shanghai")
     private Date createTime;
 
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(value="更新时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "Asia/Shanghai")
     private Date updateTime;
 
