@@ -17,8 +17,13 @@
 
     <select id="selectAsslist" resultType="hashmap">
         SELECT
-        DATE_FORMAT(X.create_time, '%Y-%m-%d %T') createTime,X.total_score totalScore,
+        X.id assId,
+        DATE_FORMAT( X.create_time, '%Y-%m-%d %T' ) createTime,
+        X.total_score totalScore,
+        X.examiner_id examinerId,
         A.NAME sytechName,
+        X.sytech_id sytechId,
+        X.STATUS,
         B.real_name examinerName,
         B.phone,
         C.real_name therapistName,
@@ -28,14 +33,14 @@
         JOIN ts_sytech A ON X.sytech_id = A.id
         JOIN hs_user B ON X.examiner_id = B.id
         JOIN hs_user C ON X.therapist_id = C.id
-        JOIN hs_user_department HD ON B.id = HD.user_id
+        JOIN hs_user_department HD ON (X.examiner_id = B.id AND X.therapist_id = C.id)
         JOIN hs_department D ON D.id = HD.department_id
         <where>
             <if test="status != null and status != ''">
                 and X.status = #{status}
             </if>
-            <if test="examinerName != null and examinerName != ''">
-                and B.real_name like concat(concat('%' ,#{examinerName}),'%')
+            <if test="examinerId != null and examinerId != ''">
+                and X.examiner_id = #{examinerId}
             </if>
             <if test="phoneOrtherapistName != null and phoneOrtherapistName != ''">
                 and (C.real_name like concat(concat('%' ,#{phoneOrtherapistName}),'%') or

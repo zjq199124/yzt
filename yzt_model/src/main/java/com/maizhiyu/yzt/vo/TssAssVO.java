@@ -1,5 +1,7 @@
 package com.maizhiyu.yzt.vo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.maizhiyu.yzt.entity.TsAssOperation;
 import com.maizhiyu.yzt.entity.TsAssOperationDetail;
 import io.swagger.annotations.ApiModel;
@@ -31,30 +33,34 @@ public class TssAssVO {
     @ApiModel
     public static class OperationDetail {
 
-        @ApiModelProperty(value = "操作ID")
+        @ApiModelProperty(value="ID")
+        private Long id;
+
+        @ApiModelProperty(value="适宜技术ID")
+        private Long sytechId;
+
+        @ApiModelProperty(value="具体考核操作ID")
         private Long operationId;
 
-        @ApiModelProperty(value = "操作名称")
+        @ApiModelProperty(value="具体考核操作名称")
         private String operationName;
+
+        @ApiModelProperty(value="总分值")
+        private Integer score;
 
         @ApiModelProperty(value = "操作得分")
         private Integer getOperationScore;
 
-        @ApiModelProperty(value = "操作总分")
-        private Integer OperationScore;
 
         @ApiModelProperty(value = "考核类别项列表")
-        private List<UserGrade> userGrades;
+        private List<tsAssOperationDetailList> tsAssOperationDetailList;
 
     }
 
 
     @Data
     @ApiModel
-    public static class UserGrade {
-
-        @ApiModelProperty(value = "扣分细节")
-        private String operationDetails;
+    public static class tsAssOperationDetailList extends TsAssOperationDetail{
 
         @ApiModelProperty(value = "细节得分")
         private Integer getScore;

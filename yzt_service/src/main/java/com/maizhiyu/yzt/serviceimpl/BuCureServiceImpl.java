@@ -56,7 +56,7 @@ public class BuCureServiceImpl extends ServiceImpl<BuCureMapper, BuCure> impleme
             LambdaQueryWrapper<BuCure> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(BuCure::getSignatureId, buCure.getSignatureId())
                     .eq(BuCure::getCustomerId, buCure.getCustomerId())
-                    .eq(BuCure::getOutpatientId, buCure.getOutpatientId())
+                    .eq(BuCure::getOutPatientId, buCure.getOutPatientId())
                     .eq(BuCure::getIsDel, 0)
                     .last("limit 1");
             BuCure select = buCureMapper.selectOne(queryWrapper);

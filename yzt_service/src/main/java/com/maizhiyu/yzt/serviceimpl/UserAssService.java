@@ -76,7 +76,7 @@ public class UserAssService extends ServiceImpl<UserAssMapper, UserAss> implemen
         //循环考核类别
         operations.stream().forEach(item -> {
             //获取用户考核项的考核结果
-            List<TssAssVO.UserGrade> gradeList = new ArrayList<>();
+            List<TssAssVO.tsAssOperationDetailList> gradeList = new ArrayList<>();
             //当前考核类别下的的考核项列表
             List<Long> list = operationDetails.stream().filter(e -> e.getOperationId().equals(item.getId())).map(TsAssOperationDetail::getId).collect(Collectors.toList());
             //当前考核项对应的人员考核成绩
@@ -84,11 +84,16 @@ public class UserAssService extends ServiceImpl<UserAssMapper, UserAss> implemen
             //人员考核项考核成绩值填充
             AtomicReference<Integer> totalScore= new AtomicReference<>(0);
             userAsseGrade.stream().forEach(s -> {
-                TssAssVO.UserGrade grade = new TssAssVO.UserGrade();
+                TssAssVO.tsAssOperationDetailList grade = new TssAssVO.tsAssOperationDetailList();
                 grade.setDeduct(s.getDeduct());
                 grade.setGetScore(s.getScore());
+
                 Optional<TsAssOperationDetail> cc = operationDetails.stream().filter(e -> e.getId().equals(s.getDetailId())).findFirst();
-                grade.setOperationDetails(cc.get().getDetail());
+                grade.setDetail(cc.get().getDetail());
+                grade.setId(cc.get().getId());
+                grade.setOperationId(cc.get().getOperationId());
+                grade.setMark(cc.get().getMark());
+                grade.setGrade(cc.get().getGrade());
                 totalScore.updateAndGet(v -> v + s.getScore());
                 gradeList.add(grade);
             });
@@ -97,8 +102,10 @@ public class UserAssService extends ServiceImpl<UserAssMapper, UserAss> implemen
             operationDetail.setOperationId(item.getId());
             operationDetail.setOperationName(item.getOperationName());
             operationDetail.setGetOperationScore(totalScore.get().intValue());
-            operationDetail.setOperationScore(item.getScore());
-            operationDetail.setUserGrades(gradeList);
+            operationDetail.setScore(item.getScore());
+            operationDetail.setTsAssOperationDetailList(gradeList);
+            operationDetail.setSytechId(item.getSytechId());
+            operationDetail.setId(item.getId());
             operationDetailList.add(operationDetail);
 
         });

@@ -70,7 +70,7 @@ public class TsAssController {
     }
 
     @ApiOperation(value = "批量新增考核" , notes = "批量新增考核")
-    @PostMapping("addBatch")
+    @PostMapping("/addBatch")
     public Result addBatch(@RequestBody BatchAddUserRO batchAddUserRO){
         List<TsAss> list = tsAssService.addBatch(batchAddUserRO);
         return Result.success(list);
@@ -90,18 +90,18 @@ public class TsAssController {
 
    @ApiOperation(value = "获取考核列表" , notes = "获取考核列表")
        @ApiImplicitParams({
-            @ApiImplicitParam(name = "examinerName" , value = "考核人",required = false),
+            @ApiImplicitParam(name = "examinerId" , value = "考核人Id",required = false),
             @ApiImplicitParam(name = "phoneOrtherapistName" , value = "治疗师/电话号码",required = false),
             @ApiImplicitParam(name = "department" , value = "部门",required = false),
             @ApiImplicitParam(name = "status" , value = "状态(0:未开始 1:考核中 2:考核结束)",required = false),
     })
     @GetMapping("/getAssList")
     public Result getAssList( Page page,String phoneOrtherapistName,
-                              String examinerName,
+                              Long examinerId,
                               String department,
                               Integer status
                              ){
-       IPage<Map<String, Object>> list =  tsAssService.getAsslist(page,phoneOrtherapistName,examinerName,department,status);
+       IPage<Map<String, Object>> list =  tsAssService.getAsslist(page,phoneOrtherapistName,examinerId,department,status);
         return Result.success(list);
     }
 
@@ -109,7 +109,10 @@ public class TsAssController {
     @PostMapping("/saveAssList")
     public Result saveAss(@RequestBody List<UserAss> userAsslist){
         Boolean res = userAssService.saveBatch(userAsslist);
-        return Result.success(res);
+        TsAss tsAss = tsAssService.getById(userAsslist.get(0).getAssId());
+        tsAss.setStatus(2);
+        Boolean a = tsAssService.saveOrUpdate(tsAss);
+        return Result.success(a);
 
     }
 
@@ -129,8 +132,11 @@ public class TsAssController {
             @ApiImplicitParam(name = "sytechId", value = "适宜技术id",required = true),
     })
     @GetMapping("/selectAssBySytech")
-    public Result selectAssBySytch(@RequestParam Long sytechId){
+    public Result selectAssBySytch(@RequestParam Long sytechId,Long assId){
         List<TsAssOperation> list = tsAssOperationService.getAssDetail(sytechId);
+        TsAss tsAss = tsAssService.getById(assId);
+        tsAss.setStatus(1);
+        Boolean res = tsAssService.saveOrUpdate(tsAss);
         return Result.success(list);
     }
 
