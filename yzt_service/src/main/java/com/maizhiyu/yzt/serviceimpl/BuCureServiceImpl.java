@@ -2,15 +2,21 @@ package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.Update;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.base.Preconditions;
 import com.maizhiyu.yzt.entity.BuCure;
+import com.maizhiyu.yzt.entity.BuPrescriptionItem;
 import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointment;
+import com.maizhiyu.yzt.entity.BuSignature;
 import com.maizhiyu.yzt.mapper.BuCureMapper;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentMapper;
+import com.maizhiyu.yzt.mapper.BuPrescriptionItemMapper;
+import com.maizhiyu.yzt.mapper.BuSignatureMapper;
 import com.maizhiyu.yzt.ro.BuCureSearchRO;
 import com.maizhiyu.yzt.service.BuCureService;
+import com.maizhiyu.yzt.vo.BuCureVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,10 +41,16 @@ public class BuCureServiceImpl extends ServiceImpl<BuCureMapper, BuCure> impleme
     private BuCureMapper buCureMapper;
 
     @Resource
+    private BuSignatureMapper buSignatureMapper;
+
+    @Resource
     private BuPrescriptionItemAppointmentMapper buPrescriptionItemAppointmentMapper;
 
+    @Resource
+    private BuPrescriptionItemMapper buPrescriptionItemMapper;
+
     @Override
-    public boolean saveOrUpdateBuCure(BuCure buCure) {
+    public boolean saveOrUpdate(BuCure buCure) {
         if (Objects.isNull(buCure.getId())) {
             //先判断同一个签到的数据是否已经生成了治疗记录
             LambdaQueryWrapper<BuCure> queryWrapper = new LambdaQueryWrapper<>();
@@ -54,7 +66,16 @@ public class BuCureServiceImpl extends ServiceImpl<BuCureMapper, BuCure> impleme
             buCure.setCreateTime(new Date());
             buCure.setUpdateTime(buCure.getCreateTime());
             int insert = buCureMapper.insert(buCure);
-            return insert > 0;
+            int update = 0;
+            if (insert > 0) {
+                //已经开始治疗了将签到的那条数据改成治疗中
+                LambdaUpdateWrapper<BuSignature> updateWrapper = new LambdaUpdateWrapper<>();
+                updateWrapper.eq(BuSignature::getId, buCure.getSignatureId())
+                        .set(BuSignature::getTreatmentStatus, 1)
+                        .set(BuSignature::getUpdateTime, new Date());
+                update = buSignatureMapper.update(null, updateWrapper);
+            }
+            return insert > 0 && update > 0;
         } else {
             buCure.setUpdateTime(new Date());
             int update = buCureMapper.updateById(buCure);
@@ -72,13 +93,23 @@ public class BuCureServiceImpl extends ServiceImpl<BuCureMapper, BuCure> impleme
 
         int update = buCureMapper.updateById(buCure);
         if (update > 0) {
-            //增加已治疗次数
-            LambdaUpdateWrapper<BuPrescriptionItemAppointment> updateWrapper = new LambdaUpdateWrapper<>();
-            updateWrapper.eq(BuPrescriptionItemAppointment::getPrescriptionItemId, buCure.getPrescriptionItemId())
-                    .eq(BuPrescriptionItemAppointment::getIsDel, 0)
-                    .setSql("treatment_quantity = treatment_quantity + 1");
+            //将这次治疗对应的签到数据的状态改成治疗完成
+            LambdaUpdateWrapper<BuSignature> signatureUpdateWrapper = new LambdaUpdateWrapper<>();
+            signatureUpdateWrapper.eq(BuSignature::getId, buCure.getSignatureId())
+                    .set(BuSignature::getTreatmentStatus, 2)
+                    .set(BuSignature::getUpdateTime, new Date());
 
-            update = buPrescriptionItemAppointmentMapper.update(null, updateWrapper);
+            update = buSignatureMapper.update(null, signatureUpdateWrapper);
+
+            if (update > 0) {
+                //增加已治疗次数
+                LambdaUpdateWrapper<BuPrescriptionItemAppointment> updateWrapper = new LambdaUpdateWrapper<>();
+                updateWrapper.eq(BuPrescriptionItemAppointment::getPrescriptionItemId, buCure.getPrescriptionItemId())
+                        .eq(BuPrescriptionItemAppointment::getIsDel, 0)
+                        .setSql("treatment_quantity = treatment_quantity + 1");
+
+                update = buPrescriptionItemAppointmentMapper.update(null, updateWrapper);
+            }
         }
         return update > 0;
     }
@@ -88,5 +119,23 @@ public class BuCureServiceImpl extends ServiceImpl<BuCureMapper, BuCure> impleme
         Page<BuCure> page = new Page<>(buCureSearchRO.getCurrentPage(), buCureSearchRO.getPageSize());
         Page<BuCure> resultPage = buCureMapper.selectTreatmentList(page, buCureSearchRO);
         return resultPage;
+    }
+
+    @Override
+    public BuCureVo selectCureDetailBySignatureId(Long signatureId) {
+        LambdaQueryWrapper<BuCure> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(BuCure::getSignatureId, signatureId)
+                .orderByDesc(BuCure::getCreateTime)
+                .last("limit 1");
+        BuCureVo buCureVo = buCureMapper.selectCureDetailBySignatureId(signatureId);
+        Preconditions.checkArgument(Objects.nonNull(buCureVo),"签到id错误!");
+
+        LambdaQueryWrapper<BuPrescriptionItem> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(BuPrescriptionItem::getPrescriptionId, buCureVo.getPrescriptionId())
+                .eq(BuPrescriptionItem::getIsDel, 0);
+
+        List<BuPrescriptionItem> buPrescriptionItems = buPrescriptionItemMapper.selectList(wrapper);
+        buCureVo.setBuPrescriptionItemList(buPrescriptionItems);
+        return buCureVo;
     }
 }

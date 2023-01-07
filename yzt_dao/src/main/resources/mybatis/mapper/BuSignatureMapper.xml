@@ -10,6 +10,8 @@
         <result property="customerId" column="customer_id" jdbcType="BIGINT"/>
         <result property="departmentId" column="department_id" jdbcType="BIGINT"/>
         <result property="registrantId" column="registrant_id" jdbcType="INTEGER"/>
+        <result property="entityId" column="entity_id" jdbcType="INTEGER"/>
+        <result property="tsName" column="ts_name" jdbcType="VARCHAR"/>
         <result property="treatmentStatus" column="treatment_status" jdbcType="INTEGER"/>
         <result property="isDel" column="is_del" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -20,9 +22,9 @@
         <result column="age" property="age"/>
         <result column="dname" property="dname"/>
         <result column="disease" property="disease"/>
-        <result column="tsName" property="tsName"/>
         <result column="quantity" property="quantity"/>
         <result column="treatment_quantity" property="treatmentQuantity"/>
+        <result column="outpatient_time" property="outpatientTime"/>
         <result column="outpatient_time" property="outpatientTime"/>
     </resultMap>
     <select id="selectWaitTreatmentList" resultType="com.maizhiyu.yzt.entity.BuSignature">
@@ -36,11 +38,20 @@
             TIMESTAMPDIFF(YEAR,bp.birthday,CURDATE()) as age,
             hd.dname,
             bd.disease,
-            ts.name tsName,
             bpia.quantity,
             bpia.treatment_quantity,
             bo.create_time as outpatient_time,
-            bs.create_time
+            bs.create_time,
+            bs.patient_id,
+            bs.outpatient_id,
+            bs.customer_id,
+            bs.prescription_item_id,
+            bs.ts_name,
+            bs.treatment_status,
+            bs.id,
+            bs.entity_id,
+            bs.registrant_id,
+            bpi.detail AS ts_description
         FROM
             bu_signature bs
                 LEFT JOIN bu_patient bp ON bs.patient_id = bp.id
@@ -51,12 +62,11 @@
                 AND bo.is_del = 0
                 LEFT JOIN bu_prescription_item_appointment bpia ON bs.prescription_item_id = bpia.prescription_item_id
                 AND bpia.is_del = 0
-                LEFT JOIN ts_sytech ts ON bpia.entity_id = ts.id
-                AND ts.is_del = 0
                 LEFT JOIN bu_diagnose bd ON bs.outpatient_id = bd.outpatient_id
+                LEFT JOIN bu_prescription_item bpi ON bs.prescription_item_id = bpi.id and bpi.is_del = 0
         WHERE
             bs.is_del = 0
-            AND bs.treatment_status = 0
+            AND (bs.treatment_status = 0 OR bs.treatment_status = 1)
             <if test="waitTreatmentRo.search != null and waitTreatmentRo.search != ''">
                 and (bp.name like concat('%',#{waitTreatmentRo.search},'%') or bp.phone like concat('%',#{waitTreatmentRo.search},'%'))
             </if>

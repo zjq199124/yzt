@@ -63,7 +63,6 @@ public class BuSignatureController extends BaseController {
     public Result<Boolean> signature(@RequestBody BuSignature buSignature) {
         HsUserDetails hsUserDetails = getHsUserDetails();
         buSignature.setCustomerId(hsUserDetails.getCustomerId());
-        buSignature.setRegistrantId(hsUserDetails.getId());
         Boolean result = buSignatureService.addSignature(buSignature);
         return Result.success(result);
     }

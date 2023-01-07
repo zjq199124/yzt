@@ -3,6 +3,7 @@ package com.maizhiyu.yzt.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -45,6 +46,12 @@ public class BuSignature extends Model<BuSignature> implements Serializable {
     @ApiModelProperty("登记人id(pad端用户id)")
     private Long registrantId;
 
+    @ApiModelProperty("适宜技术id")
+    private Long entityId;
+
+    @ApiModelProperty("适宜技术名称")
+    private String tsName;
+
     @ApiModelProperty("治疗状态：0：未开始；1：治疗中；2：治疗已结束")
     private Integer treatmentStatus;
              
@@ -52,9 +59,11 @@ public class BuSignature extends Model<BuSignature> implements Serializable {
     private Integer isDel;
              
     @ApiModelProperty("创建时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
     private Date createTime;
              
     @ApiModelProperty("更新时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
     private Date updateTime;
 
     @ApiModelProperty("患者名称")
@@ -77,10 +86,6 @@ public class BuSignature extends Model<BuSignature> implements Serializable {
     @TableField(exist = false)
     private String disease;
 
-    @ApiModelProperty("适宜技术名称")
-    @TableField(exist = false)
-    private String tsName;
-
     @ApiModelProperty("开单次数")
     @TableField(exist = false)
     private Integer quantity;
@@ -92,6 +97,10 @@ public class BuSignature extends Model<BuSignature> implements Serializable {
     @ApiModelProperty("就诊时间")
     @TableField(exist = false)
     private Date outpatientTime;
+
+    @ApiModelProperty("技术详情")
+    @TableField(exist = false)
+    private String tsDescription;
 }
 
 

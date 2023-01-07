@@ -19,6 +19,12 @@ public class WaitSignatureVo implements Serializable {
     @ApiModelProperty("门诊id")
     private Long outpatientId;
 
+    @ApiModelProperty("处方子项适宜技术id")
+    private Long entityId;
+
+    @ApiModelProperty("患者id")
+    private Long patientId;
+
     @ApiModelProperty("患者姓名")
     private String name;
 
@@ -51,4 +57,7 @@ public class WaitSignatureVo implements Serializable {
 
     @ApiModelProperty("已治疗次数")
     private Integer treatmentQuantity;
+
+    @ApiModelProperty("就诊时间")
+    private Date outpatientTime;
 }

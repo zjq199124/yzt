@@ -26,7 +26,7 @@ public class BuCureRO implements Serializable {
     private Long entityId;
 
     @ApiModelProperty("适宜技术名称")
-    private Long tsName;
+    private String tsName;
 
     @ApiModelProperty("适宜技术详情")
     private String tsDescription;
@@ -42,5 +42,8 @@ public class BuCureRO implements Serializable {
 
     @ApiModelProperty("治疗负责人")
     private Long cureUserId;
+
+    @ApiModelProperty("处方子项目id")
+    private Long prescriptionItemId;
 
 }

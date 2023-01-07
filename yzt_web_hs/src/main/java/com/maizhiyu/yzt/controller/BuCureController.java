@@ -9,15 +9,14 @@ import com.maizhiyu.yzt.ro.BuCureRO;
 import com.maizhiyu.yzt.ro.BuCureSearchRO;
 import com.maizhiyu.yzt.security.HsUserDetails;
 import com.maizhiyu.yzt.service.BuCureService;
+import com.maizhiyu.yzt.vo.BuCureVo;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -46,7 +45,7 @@ public class BuCureController extends BaseController {
         buCureRO.setCustomerId(customerId);
         BuCure buCure = new BuCure();
         BeanUtils.copyProperties(buCureRO, buCure);
-        boolean res = buCureService.saveOrUpdateBuCure(buCure);
+        boolean res = buCureService.saveOrUpdate(buCure);
         return Result.success(res);
     }
 
@@ -66,6 +65,14 @@ public class BuCureController extends BaseController {
         buCureSearchRO.setCustomerId(customerId);
         Page<BuCure> resultPage = buCureService.treatmentList(buCureSearchRO);
         return Result.success(resultPage);
+    }
+
+    @ApiOperation("治疗记录详情")
+    @GetMapping("/treatmentRecordDetail")
+    @ApiImplicitParam(name = "signatureId", value = "签到id")
+    public Result<BuCureVo> selectCureDetailBySignatureId(Long signatureId) {
+        BuCureVo buCureVo = buCureService.selectCureDetailBySignatureId(signatureId);
+        return Result.success(buCureVo);
     }
 }
 
