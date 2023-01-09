@@ -90,7 +90,9 @@ public class PsArticleController {
     })
     public void getComment(@RequestParam Long articleId){
         //获取一级评论
-        List<PsArticleComment> firstComments = psArticleCommentService.getFirstComment(articleId);
+        List<PsArticleComment> firstComments = psArticleCommentService.getComment(articleId);
+        //获取二级评论
+
 
 
     }
