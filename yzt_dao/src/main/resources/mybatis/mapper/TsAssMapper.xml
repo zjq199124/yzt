@@ -23,7 +23,7 @@
         X.examiner_id examinerId,
         A.NAME sytechName,
         X.sytech_id sytechId,
-        X.STATUS,
+        X.status ,
         B.real_name examinerName,
         B.phone,
         C.real_name therapistName,

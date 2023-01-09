@@ -26,13 +26,6 @@ public class TsAssOperationService extends ServiceImpl<TsAssOperationMapper , Ts
     @Override
     public List<TsAssOperation> getAssDetail(Long sytechId) {
         List<TsAssOperation> list = tsAssOperationMapper.selectAssDetail(sytechId);
-//        list.stream().map(e->{
-//            e.getTsAssOperationDetailList().stream().map(item->{
-//                item.setGrade(item.getGrade().split(","));
-//                return item;
-//            });
-//            return e;
-//        });
       return list;
 
     }
