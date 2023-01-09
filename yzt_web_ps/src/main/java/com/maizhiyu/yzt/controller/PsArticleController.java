@@ -37,7 +37,7 @@ public class PsArticleController {
     @ApiOperation(value = "新增或修改文章" , notes = "新增或修改文章")
     @PostMapping("/addArticle")
     public Result addArticle(@RequestBody PsArticle psArticle){
-        Boolean res = psArticleService.saveOrUpdateA(psArticle);
+        Boolean res = psArticleService.save(psArticle);
         return Result.success(res);
     }
 
@@ -84,18 +84,18 @@ public class PsArticleController {
         return  Result.success(res);
     }
 
-    @ApiOperation(value = "获取评论详情" ,notes = "获取评论详情")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "articleId" , value = "文章id" ,required = true)
-    })
-    public void getComment(@RequestParam Long articleId){
-        //获取一级评论
-        List<PsArticleComment> firstComments = psArticleCommentService.getComment(articleId);
-        //获取二级评论
-
-
-
-    }
+//    @ApiOperation(value = "获取评论详情" ,notes = "获取评论详情")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "articleId" , value = "文章id" ,required = true)
+//    })
+//    public void getComment(@RequestParam Long articleId){
+//        //获取一级评论
+//        List<PsArticleComment> firstComments = psArticleCommentService.getComment(articleId);
+//        //获取二级评论
+//
+//
+//
+//    }
 
 
 
