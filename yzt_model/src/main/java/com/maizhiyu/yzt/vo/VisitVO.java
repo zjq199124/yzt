@@ -1,10 +1,12 @@
 package com.maizhiyu.yzt.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.maizhiyu.yzt.entity.BuVisit;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -28,6 +30,7 @@ public class VisitVO extends BuVisit {
     private String phone;
 
     @ApiModelProperty(value = "就诊时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "Asia/Shanghai")
     private Date diagnoseTime;
 
     @ApiModelProperty(value = "诊断")
