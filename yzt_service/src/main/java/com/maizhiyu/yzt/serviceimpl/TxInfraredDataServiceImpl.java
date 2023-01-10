@@ -9,6 +9,7 @@ import com.maizhiyu.yzt.entity.BuCheck;
 import com.maizhiyu.yzt.entity.SysMultimedia;
 import com.maizhiyu.yzt.entity.TxInfraredData;
 import com.maizhiyu.yzt.entity.TxInfraredImage;
+import com.maizhiyu.yzt.enums.FileTypeEnum;
 import com.maizhiyu.yzt.enums.InfraredImageEnum;
 import com.maizhiyu.yzt.enums.OSSCatalogEnum;
 import com.maizhiyu.yzt.mapper.TxInfraredDataMapper;
@@ -44,7 +45,7 @@ public class TxInfraredDataServiceImpl extends ServiceImpl<TxInfraredDataMapper,
 
     @Override
     public TxInfraredData saveTxInfrareData(TxInfraredData txInfraredData, InputStream inputStream, String fileName) {
-        SysMultimedia sysMultimedia = sysMultimediaService.saveMultimedia(inputStream, fileName, OSSCatalogEnum.INFRARED.getPath(), true, OSSCatalogEnum.INFRARED.getRemark());
+        SysMultimedia sysMultimedia = sysMultimediaService.saveMultimedia(inputStream, fileName, OSSCatalogEnum.INFRARED.getPath(), true, OSSCatalogEnum.INFRARED.getRemark(), FileTypeEnum.FILE.getCode());
         txInfraredData.setMultimediaId(sysMultimedia.getId());
         save(txInfraredData);
         return txInfraredData;

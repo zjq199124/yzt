@@ -24,7 +24,7 @@ public interface SysMultimediaService extends IService<SysMultimedia> {
      * @param isPrivate 是否保存为私有
      * @return
      */
-    SysMultimedia saveMultimedia(MultipartFile file, String path, boolean isPrivate, String remark);
+    SysMultimedia saveMultimedia(MultipartFile file, String path, boolean isPrivate, String remark,Integer type);
 
     /**
      * 多媒体文件上传保存
@@ -34,7 +34,7 @@ public interface SysMultimediaService extends IService<SysMultimedia> {
      * @param isPrivate 是否保存为私有
      * @return
      */
-    SysMultimedia saveMultimedia(InputStream inputStream, String fileName, String path, boolean isPrivate, String remark);
+    SysMultimedia saveMultimedia(InputStream inputStream, String fileName, String path, boolean isPrivate, String remark,Integer type);
 
 
     /**
