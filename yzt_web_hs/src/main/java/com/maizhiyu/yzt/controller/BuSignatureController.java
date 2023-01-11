@@ -3,23 +3,18 @@ package com.maizhiyu.yzt.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.base.BaseController;
 import com.maizhiyu.yzt.entity.BuSignature;
-import com.maizhiyu.yzt.enums.SmsTemplateEnum;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.WaitSignatureRo;
 import com.maizhiyu.yzt.ro.WaitTreatmentRo;
 import com.maizhiyu.yzt.security.HsUserDetails;
 import com.maizhiyu.yzt.service.BuSignatureService;
 import com.maizhiyu.yzt.service.IBuPrescriptionItemService;
-import com.maizhiyu.yzt.service.ISmsService;
-import com.maizhiyu.yzt.serviceimpl.MsCustomerService;
-import com.maizhiyu.yzt.utils.sms.SendSmsUtil;
 import com.maizhiyu.yzt.vo.WaitSignatureVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,9 +24,8 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
-
-@Api(tags = "治疗签到接口")
 @Slf4j
+@Api(tags = "治疗签到接口")
 @RestController
 @RequestMapping("/signature")
 public class BuSignatureController extends BaseController {
@@ -41,12 +35,6 @@ public class BuSignatureController extends BaseController {
 
     @Resource
     private BuSignatureService buSignatureService;
-
-    @Resource
-    private MsCustomerService msCustomerService;
-
-    @Resource
-    private ISmsService smsService;
 
     @ApiOperation("待签到列表")
     @PostMapping("/waitSignatureList")
