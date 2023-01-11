@@ -110,6 +110,13 @@ public class BuDiagnoseController {
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
         ro.setCustomerId(customerId);
+        //查询云平台outpatient
+        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getOutpatientId());
+        //赋值为云平台数据
+        if (buOutpatient != null) {
+            ro.setOutpatientId(buOutpatient.getId());
+            ro.setPatientId(buOutpatient.getPatientId());
+        }
         Map<String, Object> result = diagnoseService.getDetails(ro);
         return Result.success(result);
     }

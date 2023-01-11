@@ -60,7 +60,7 @@ public class PsUserController {
     @ApiImplicitParams({})
     @PostMapping("/setUser")
     public Result setUser(@RequestBody PsUser user) {
-        user.setUpdateTime(new Date());
+            user.setUpdateTime(new Date());
         Integer res = service.setUser(user);
         return Result.success(user);
     }

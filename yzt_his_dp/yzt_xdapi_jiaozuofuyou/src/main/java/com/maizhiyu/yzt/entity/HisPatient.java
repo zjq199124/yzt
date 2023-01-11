@@ -23,7 +23,7 @@ public class HisPatient implements Serializable {
 
     @TableId
     @ApiModelProperty(value="his端患者ID(patientId)")
-    @TableField(value = "code")
+    //@TableField(value = "code")
     private String code;
 
     @ApiModelProperty(value="患者姓名")
