@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.controller;
 
 import cn.hutool.core.lang.Assert;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.maizhiyu.yzt.bean.aci.HisDoctorCI;
 import com.maizhiyu.yzt.bean.aci.HisOutpatientCI;
 import com.maizhiyu.yzt.bean.aci.HisPatientCI;
@@ -137,9 +138,15 @@ public class BuPrescriptionController {
         Assert.notNull(ro.getBaseInfo(), "基础信息不能为空!");
         BuPrescriptionRO.AddPrescriptionShiyi.BaseInfo baseInfo = ro.getBaseInfo();
 
-        processDoctor(baseInfo.getDoctorId().toString());
-        processPatient(baseInfo.getPatientId().toString());
-        processOutpatient(baseInfo.getOutpatientId().toString());
+        Long yptDoctorId = processDoctor(baseInfo.getDoctorId().toString());
+        Long yptPatientId = processPatient(baseInfo.getPatientId().toString());
+        Long yptOutpatientId = processOutpatient(baseInfo.getOutpatientId().toString());
+
+        //将patientId,outPatientId,doctorId替换成云平台对应的数据
+        ro.getBaseInfo().setDoctorId(yptDoctorId);
+        ro.getBaseInfo().setPatientId(yptPatientId);
+        ro.getBaseInfo().setOutpatientId(yptOutpatientId);
+
 
         if (Objects.nonNull(ro.getBaseInfo())) {
             ro.getDiagnoseInfo().setCustomerName(customerName);
@@ -149,19 +156,20 @@ public class BuPrescriptionController {
         if(CollectionUtils.isEmpty(ro.getItemList()))
             return Result.success();
 
-        Result<Integer> result = yptClient.addPrescriptionShiyi(ro);
+        Result<Boolean> result = yptClient.addPrescriptionShiyi(ro);
         return Result.success(result.getData());
     }
 
-    private void processDoctor(String doctorId) {
+    private Long processDoctor(String doctorId) {
         HisDoctor doctor = doctorMapper.selectById(doctorId);
         if (doctor == null) {
             throw new HisException("获取医生信息失败:" + doctorId);
         } else {
             HsUserXO.AddUserXO xo = HisDoctorCI.INSTANCE.toAddUserXO(doctor);
-            Result<Object> result = yptClient.addDoctor(xo);
+            Result<Long> result = yptClient.addDoctor(xo);
             if (result.getCode() == 0) {
                 log.info("添加医生成功：" + result);
+                return result.getData();
             } else {
                 log.warn("添加医生失败：" + result);
                 throw new HisException("添加医生失败: " + result);
@@ -169,16 +177,17 @@ public class BuPrescriptionController {
         }
     }
 
-    private void processPatient(String patientId) {
+    private Long processPatient(String patientId) {
         HisPatient patient = patientMapper.selectById(patientId);
         if (patient == null) {
             throw new HisException("获取患者信息失败:" + patientId);
         } else {
             BuPatientXO.AddPatientXO xo = HisPatientCI.INSTANCE.toAddPatientXO(patient);
             xo.setIdcard(patientId);    // 没有身份证信息使用挂号ID作为身份证（每次挂号都会产生新的患者）
-            Result<Object> result = yptClient.addPatient(xo);
+            Result<Long> result = yptClient.addPatient(xo);
             if (result.getCode() == 0) {
                 log.info("添加患者成功：" + result);
+                return result.getData();
             } else {
                 log.warn("添加患者失败：" + result);
                 throw new HisException("添加患者失败: " + result);
@@ -186,20 +195,20 @@ public class BuPrescriptionController {
         }
     }
 
-    private void processOutpatient(String outpatientId) {
+    private Long processOutpatient(String outpatientId) {
         HisOutpatient outpatient = outpatientMapper.selectById(outpatientId);
         if (outpatient == null) {
             throw new HisException("获取预约信息失败:" + outpatientId);
         } else {
             BuOutpatientXO.AddOutpatientXO xo = HisOutpatientCI.INSTANCE.toAddOutpatientXO(outpatient);
-            Result<Object> result = yptClient.addOutpatient(xo);
+            Result<Long> result = yptClient.addOutpatient(xo);
             if (result.getCode() == 0) {
                 log.info("添加预约成功：" + result);
+                return result.getData();
             } else {
                 log.warn("添加预约失败：" + result + " - " + xo);
                 throw new HisException("添加预约失败: " + result);
             }
         }
     }
-
 }

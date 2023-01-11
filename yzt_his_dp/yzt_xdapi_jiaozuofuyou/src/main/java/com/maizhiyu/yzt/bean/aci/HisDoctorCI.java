@@ -11,7 +11,7 @@ public interface HisDoctorCI {
 
     HisDoctorCI INSTANCE = Mappers.getMapper(HisDoctorCI.class);
 
-    @Mapping(source = "username", target = "username")
+    //@Mapping(source = "username", target = "username")
     @Mapping(source = "username", target = "hisId")
     HsUserXO.AddUserXO toAddUserXO(HisDoctor doctor);
 

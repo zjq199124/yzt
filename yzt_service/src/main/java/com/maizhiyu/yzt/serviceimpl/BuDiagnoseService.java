@@ -132,7 +132,6 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
         queryWrapper.eq(BuDiagnose::getPatientId, ro.getPatientId())
                 .eq(BuDiagnose::getOutpatientId, ro.getOutpatientId())
                 .eq(BuDiagnose::getDiseaseId, ro.getDiseaseId())
-                .eq(BuDiagnose::getDiseaseId, ro.getDiseaseId())
                 .eq(BuDiagnose::getStatus, 1)
                 .orderByDesc(BuDiagnose::getUpdateTime)
                 .last("limit 1");
@@ -141,7 +140,7 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
             return null;
         } else {
             //云平台中医疾病名称
-            resultMap.put("yptDiseaseName", ro.getDisease());
+            resultMap.put("yptDiseaseName", buDiagnose.getDisease());
             //云平台中医疾病Id
             resultMap.put("yptDiseaseId", buDiagnose.getDiseaseId());
             //云平台中诊断信息Id

@@ -29,13 +29,13 @@ public interface FeignYptClient {
     Result<BuDiagnoseVO.GetRecommendVO> getRecommend(@RequestBody BuDiagnoseRO.GetRecommendRO ro);
 
     @PostMapping(value = "/user/addUser")
-    Result<Object> addDoctor(@RequestBody HsUserXO.AddUserXO xo);
+    Result<Long> addDoctor(@RequestBody HsUserXO.AddUserXO xo);
 
     @PostMapping(value = "/patient/addPatientOrUpdate")
-    Result<Object> addPatient(@RequestBody BuPatientXO.AddPatientXO xo);
+    Result<Long> addPatient(@RequestBody BuPatientXO.AddPatientXO xo);
 
     @PostMapping(value = "/outpatient/addOutpatientHis")
-    Result<Object> addOutpatient(@RequestBody BuOutpatientXO.AddOutpatientXO xo);
+    Result<Long> addOutpatient(@RequestBody BuOutpatientXO.AddOutpatientXO xo);
 
     @PostMapping(value = "/prescription/addPrescriptionZhongyao")
     Result<Integer> addPrescriptionZhongyao(@RequestBody BuPrescriptionRO.AddPrescriptionZhongyao ro);
@@ -47,7 +47,7 @@ public interface FeignYptClient {
     Result<Integer> addPrescriptionXieding(@RequestBody BuPrescriptionRO.AddPrescriptionXieding ro);
 
     @PostMapping(value = "/prescription/addPrescriptionShiyi")
-    Result<Integer> addPrescriptionShiyi(@RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro);
+    Result<Boolean> addPrescriptionShiyi(@RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro);
 
     @GetMapping(value = "/dictSymptom/list")
     Result<List<DictSymptomVo>> selectDictSymptomList(@RequestParam(value = "diseaseId") Long diseaseId);
@@ -57,7 +57,7 @@ public interface FeignYptClient {
                                                                    @RequestParam(value = "search") String search);
 
     @PostMapping(value = "/dictSyndrome/selectBySymptom")
-    Result<List<DictSyndromeVo>> selectDictSyndromeBySymptomIdList(@RequestBody List<Long> symptomIdList);
+    Result<List<DictSyndromeVo>> selectDictSyndromeBySymptomIdList(@RequestParam(value = "diseaseId") Long diseaseId,@RequestBody List<Long> symptomIdList);
 
     @PostMapping(value = "/sytech/getRecommend")
     Result getSytechRecommend(@RequestParam(value = "diseaseId") Long diseaseId,@RequestParam(value = "syndromeId",required = false) Long syndromeId,@RequestParam(value = "term",required = false) String term);

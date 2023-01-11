@@ -6,6 +6,7 @@ import com.maizhiyu.yzt.entity.BuCheck;
 import com.maizhiyu.yzt.entity.BuOutpatient;
 import com.maizhiyu.yzt.entity.SysMultimedia;
 import com.maizhiyu.yzt.enums.CheckTypeEnum;
+import com.maizhiyu.yzt.enums.FileTypeEnum;
 import com.maizhiyu.yzt.enums.OSSCatalogEnum;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.SysMultimediaService;
@@ -43,7 +44,7 @@ public class TeJinLuoController {
     @PostMapping(value = "/receiveFile")
     public Result<String> receiveFile(@RequestParam MultipartFile file, String patientPhone) {
         try {
-            SysMultimedia sysMultimedia = sysMultimediaService.saveMultimedia(file, OSSCatalogEnum.MERIDIAN.getPath(), true, "红外检查报告");
+            SysMultimedia sysMultimedia = sysMultimediaService.saveMultimedia(file, OSSCatalogEnum.MERIDIAN.getPath(), true, "红外检查报告",FileTypeEnum.IMAGE.getCode());
             //保存患者检查数据
             BuCheck buCheck = new BuCheck();
             buCheck.setType(CheckTypeEnum.MERIDIAN.getCode());
@@ -51,7 +52,7 @@ public class TeJinLuoController {
             buCheck.setCreateTime(new Date());
             buCheck.setMobile(patientPhone);
             buCheckService.addCheck(buCheck);
-            return Result.success(sysMultimediaService.saveMultimedia(file, OSSCatalogEnum.MERIDIAN.getPath(), true, "红外检查报告"));
+            return Result.success(sysMultimediaService.saveMultimedia(file, OSSCatalogEnum.MERIDIAN.getPath(), true, "红外检查报告", FileTypeEnum.FILE.getCode()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

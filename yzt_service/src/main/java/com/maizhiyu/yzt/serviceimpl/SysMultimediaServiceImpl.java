@@ -33,11 +33,11 @@ public class SysMultimediaServiceImpl extends ServiceImpl<SysMultimediaMapper, S
     AliOssUtil aliOssUtil;
 
     @Override
-    public SysMultimedia saveMultimedia(MultipartFile file, String path, boolean isPrivate, String remark) {
+    public SysMultimedia saveMultimedia(MultipartFile file, String path, boolean isPrivate, String remark,Integer type) {
         // 获取文件名称
         String fileName = file.getOriginalFilename();                               // 获取文件名
         try {
-            return saveMultimedia(file.getInputStream(), fileName, path, isPrivate, remark);
+            return saveMultimedia(file.getInputStream(), fileName, path, isPrivate, remark,type);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -45,19 +45,21 @@ public class SysMultimediaServiceImpl extends ServiceImpl<SysMultimediaMapper, S
     }
 
     @Override
-    public SysMultimedia saveMultimedia(InputStream inputStream, String fileName, String path, boolean isPrivate, String remark) {
+    public SysMultimedia saveMultimedia(InputStream inputStream, String fileName, String path, boolean isPrivate, String remark, Integer type) {
         String suffixName = fileName.substring(fileName.lastIndexOf("."));      // 截取后缀名
         try {
             Long size = Long.valueOf(inputStream.available());
             String url = aliOssUtil.uploadInputStream(inputStream, path, fileName, isPrivate);
             int start = url.indexOf("//") > 0 ? url.indexOf("//") : 0;
-            int end = url.indexOf("?");
-            String saveUrl = url.substring(start, end);
+            int end = url.indexOf("?") >0 ? url.indexOf("?") : url.length() ;
+            String saveUrl = url.substring(start+2, end);
             SysMultimedia sysMultimedia = new SysMultimedia();
             sysMultimedia.setName(fileName);
             sysMultimedia.setMessage(remark);
-            sysMultimedia.setServicePath(saveUrl.substring(0, url.indexOf("/")));
-            sysMultimedia.setFilePath(saveUrl.substring(url.indexOf("/")));
+            sysMultimedia.setType(type);
+            int a = url.indexOf("/");
+            sysMultimedia.setServicePath(saveUrl.substring(0, saveUrl.indexOf("/")));
+            sysMultimedia.setFilePath(saveUrl.substring(saveUrl.indexOf("/")));
             sysMultimedia.setSize(size);
             sysMultimedia.setSaveType(isPrivate ? FileSaveTypeEnum.ALI_PRIVACY.getCode() : FileSaveTypeEnum.ALI_PUBLIC.getCode());
             sysMultimedia.setExtension(suffixName);
