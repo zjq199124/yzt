@@ -31,7 +31,7 @@ public class PsUserController {
 
     @ApiOperation(value = "获取用户信息", notes = "获取用户信息")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "用户ID", required = true),
+            @ApiImplicitParam(name = "id", value = "用户ID", required = false),
     })
     @GetMapping("/getUser")
     public Result getUser(Long id) {
