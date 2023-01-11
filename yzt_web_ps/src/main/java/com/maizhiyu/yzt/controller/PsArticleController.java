@@ -50,13 +50,13 @@ public class PsArticleController {
 
     @ApiOperation(value = "获取文章列表", notes = "获取文章列表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "articleId" , value = "文章ID" ,required = false),
             @ApiImplicitParam(name = "isRecommend", value = "是否推荐", required = false),
+            @ApiImplicitParam(name = "isCarousel", value = "是否轮播图", required = false),
             @ApiImplicitParam(name = "kind" ,value = "分类" ,required = false),
     })
     @GetMapping("/getArticleList")
-    public Result getArticleList(Page page,Long articleId ,Integer isRecommend ,Integer kind) {
-        IPage<PsArticle> list = psArticleService.getArticleList(page,articleId,isRecommend,kind);
+    public Result getArticleList(Page page,Integer isRecommend ,Integer isCarousel,String kind) {
+        IPage<PsArticle> list = psArticleService.getArticleList(page,isRecommend,isCarousel,kind);
         return Result.success(list);
     }
 
@@ -84,18 +84,28 @@ public class PsArticleController {
         return  Result.success(res);
     }
 
-//    @ApiOperation(value = "获取评论详情" ,notes = "获取评论详情")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "articleId" , value = "文章id" ,required = true)
-//    })
-//    public void getComment(@RequestParam Long articleId){
-//        //获取一级评论
-//        List<PsArticleComment> firstComments = psArticleCommentService.getComment(articleId);
-//        //获取二级评论
-//
-//
-//
-//    }
+    @ApiOperation(value = "获取评论详情" ,notes = "获取评论详情")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "articleId" , value = "文章id" ,required = true)
+    })
+    @GetMapping("/getComment")
+    public Result getComment(@RequestParam Long articleId){
+        //获取一级评论
+        List<PsArticleComment> comments = psArticleCommentService.getComment(articleId);
+        return Result.success(comments);
+
+    }
+
+    @ApiOperation(value = "获取文章详情" , notes = "虎丘文章详情")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "articleId" , value = "文章id" ,required = true)
+    })
+    @GetMapping("/getArticle")
+    public Result getArticle(@RequestParam Long articleId){
+        //根据id获取相应的文章数据
+        PsArticle article = psArticleService.getById(articleId);
+        return  Result.success(article);
+    }
 
 
 

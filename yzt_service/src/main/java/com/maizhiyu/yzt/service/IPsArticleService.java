@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface IPsArticleService extends IService<PsArticle> {
 
-    IPage<PsArticle> getArticleList(Page page,Long articleId,Integer isRcommend , Integer kind);
+    IPage<PsArticle> getArticleList(Page page,Integer isRcommend , Integer isCarousel,String kind);
 }

@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Accessors(chain=true)
@@ -47,4 +48,9 @@ public class PsArticleComment {
     @ApiModelProperty(value="是否删除（0：否 1：是）")
     @TableLogic
     private Integer isDel;
+
+    @ApiModelProperty(value = "下级评论")
+    @TableField(exist = false)
+    private List<PsArticleComment> children;
+
 }

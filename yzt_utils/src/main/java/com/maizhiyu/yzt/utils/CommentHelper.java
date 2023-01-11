@@ -22,7 +22,17 @@ public class CommentHelper {
     //从根节点进行递归查询，查询子节点
     //判断reply_id == id
     public static PsArticleComment findChildrens(PsArticleComment psArticleComment , List<PsArticleComment> commentList){
+        //数据初始化
+        psArticleComment.setChildren(new ArrayList<PsArticleComment>());
+        for (PsArticleComment it:commentList){
+            if (psArticleComment.getId()==Long.valueOf(it.getReplyId())) {
+                if (psArticleComment.getChildren()==null){
+                    psArticleComment.setChildren(new ArrayList<>());
+                }
+                psArticleComment.getChildren().add(findChildrens(it,commentList));
+            }
+        }
 
-        return null;
+        return psArticleComment;
     }
 }

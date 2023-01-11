@@ -33,7 +33,7 @@ public class PsArticle {
 
     @ApiModelProperty(value = "文章分类")
     @TableField("kind")
-    private Integer  kind;
+    private String  kind;
 
     @ApiModelProperty(value = "封面地址")
     @TableField("cover")

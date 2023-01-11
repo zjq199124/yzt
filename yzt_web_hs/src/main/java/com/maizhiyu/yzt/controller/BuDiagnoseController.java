@@ -110,4 +110,5 @@ public class BuDiagnoseController extends BaseController {
         List<BuDiagnose> list = diagnoseService.selectDiagnoseList(customerId,term);
         return Result.success(list);
     }
+
 }

@@ -26,11 +26,12 @@ public class PsArticleService extends ServiceImpl<PsArticleMapper, PsArticle> im
     private PsArticleService psArticleService;
 
     @Override
-    public IPage<PsArticle> getArticleList(Page page,Long articleId,Integer isRcommend , Integer kind){
+    public IPage<PsArticle> getArticleList(Page page,Integer isRcommend ,Integer isCarousel, String kind){
         LambdaQueryWrapper<PsArticle> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(isRcommend!=null,PsArticle::getIsRecommend, isRcommend)
                 .eq(kind!=null,PsArticle::getKind, kind)
-                .eq(articleId!=null,PsArticle::getId,articleId);
+                .eq(isCarousel!=null,PsArticle::getIsCarousel,isCarousel)
+                .select(PsArticle.class, e->!e.getColumn().equals("text") );
         IPage<PsArticle> list = psArticleService.page(page,wrapper);
         return list;
     }

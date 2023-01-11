@@ -8,6 +8,7 @@ import java.util.List;
 
 
 public interface IPsArticleCommentService extends IService<PsArticleComment> {
-//    List<PsArticleComment> getComment(Long articleId);
+
+    List<PsArticleComment> getComment(Long articleId);
 
 }
