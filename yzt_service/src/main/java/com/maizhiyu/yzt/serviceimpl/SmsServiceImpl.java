@@ -7,6 +7,7 @@ import com.maizhiyu.yzt.enums.SmsTemplateEnum;
 import com.maizhiyu.yzt.service.IBuSmsRecordService;
 import com.maizhiyu.yzt.service.ISmsService;
 import com.maizhiyu.yzt.utils.sms.SendSmsUtil;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class SmsServiceImpl implements ISmsService {
     private IBuSmsRecordService buSmsRecordService;
 
     @Override
-    public String sendSms(String templateCode, String phone, Map<String, String> map) {
+    public Boolean sendSms(String templateCode, String phone, Map<String, String> map) {
         String result = null;
         try {
             result = sendSmsUtil.sendSms(signName, SmsTemplateEnum.VERIFICATION_CODE.getCode(), phone, map);
@@ -47,11 +48,12 @@ public class SmsServiceImpl implements ISmsService {
             buSmsRecord.setResult("OK".equals(resultJson.get("code").toString()) ? 1 : 0);
             buSmsRecord.setRequestId(resultJson.get("requestId").toString());
             buSmsRecordService.save(buSmsRecord);
+            return true;
 
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("发送短信提醒失败 "  + e.getMessage());
+            log.error("发送短信验证码失败 "  + e.getMessage());
         }
-        return result;
+        return false;
     }
 }

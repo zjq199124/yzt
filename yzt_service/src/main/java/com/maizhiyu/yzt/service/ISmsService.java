@@ -1,5 +1,7 @@
 package com.maizhiyu.yzt.service;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import java.util.Map;
 
 public interface ISmsService {
@@ -11,6 +13,6 @@ public interface ISmsService {
      * @param map
      * @return
      */
-    public String sendSms(String templateCode, String phone, Map<String,String> map);
+    public Boolean sendSms(String templateCode, String phone, Map<String,String> map);
 
 }

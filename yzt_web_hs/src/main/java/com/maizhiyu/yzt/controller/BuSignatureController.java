@@ -83,19 +83,19 @@ public class BuSignatureController extends BaseController {
             @ApiImplicitParam(name = "phone",value = "手机号码", required = true),
             @ApiImplicitParam(name = "tsName",value = "适宜技术名称", required = true)
     })
-    public Result<String> smsNotify(String name,String phone,String tsName) {
+    public Result<Boolean> smsNotify(String name,String phone,String tsName) {
         Long customerId = ((Number) getClaims().get("customerId")).longValue();
         Map<String, Object> customer = msCustomerService.getCustomer(customerId);
         Map<String, String> map = new HashMap<>();
         map.put("code", "1234");
-        String result = null;
         try {
-            result = smsService.sendSms(SmsTemplateEnum.VERIFICATION_CODE.getCode(), phone, map);
+            Boolean res = smsService.sendSms(SmsTemplateEnum.VERIFICATION_CODE.getCode(), phone, map);
+            return Result.success(res);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("发送短信提醒失败 "  + e.getMessage());
         }
-        return Result.success(result);
+        return Result.success(false);
     }
 }
 
