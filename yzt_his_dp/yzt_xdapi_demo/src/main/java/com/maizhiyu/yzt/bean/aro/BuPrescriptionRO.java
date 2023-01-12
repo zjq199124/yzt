@@ -163,7 +163,9 @@ public class BuPrescriptionRO implements Serializable {
         @Data
         @ApiModel
         @Validated
-        public static class BaseInfo{
+        public static class BaseInfo implements Serializable{
+            private static final long serialVersionUID = 1L;
+
             @NotBlank
             @ApiModelProperty(value="HIS中医生ID")
             private Long doctorId;
@@ -184,7 +186,9 @@ public class BuPrescriptionRO implements Serializable {
         @Data
         @ApiModel
         @Validated
-        public static class DiagnoseInfo{
+        public static class DiagnoseInfo implements Serializable{
+            private static final long serialVersionUID = 1L;
+
             @ApiModelProperty("诊断主键id")
             private Long id;
 
@@ -306,7 +310,9 @@ public class BuPrescriptionRO implements Serializable {
     @Data
     @ApiModel
     @Validated
-    public static class BuPrescriptionItemShiyi {
+    public static class BuPrescriptionItemShiyi implements Serializable{
+        private static final long serialVersionUID = 1L;
+
         @ApiModelProperty("主键id")
         private Long id;
 
