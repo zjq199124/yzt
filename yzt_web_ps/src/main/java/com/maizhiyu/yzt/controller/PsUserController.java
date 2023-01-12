@@ -59,11 +59,12 @@ public class PsUserController {
     @PostMapping("/AuthCodeLogin")
     public Result AuthCodeLogin(@RequestParam("phone") String phone, @RequestParam("code") String code) {
         //以手机号查询code进行比较
-        Object o = redisUtils.get(phone);
-        Assert.isNull(o, "当前手机号不存在验证码!");
+        Object o = redisUtils.get(SmsSceneEnum.LOGIN_PREFIX.getCode() + "_" + phone);
+        Assert.notNull(o, "当前手机号不存在验证码!");
         String c = String.valueOf(o);
         Assert.isTrue(c.equals(code), "验证码错误!");
-        return Result.success(true);
+        PsUser psUser = service.getUserByPhone(phone);
+        return Result.success(psUser);
     }
 
 

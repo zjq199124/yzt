@@ -140,7 +140,7 @@ public class BuPrescriptionController {
 
         Long yptDoctorId = processDoctor(baseInfo.getDoctorId().toString());
         Long yptPatientId = processPatient(baseInfo.getPatientId().toString());
-        Long yptOutpatientId = processOutpatient(baseInfo.getOutpatientId().toString());
+        Long yptOutpatientId = processOutpatient(baseInfo.getOutpatientId().toString(),yptDoctorId,yptPatientId);
 
         //将patientId,outPatientId,doctorId替换成云平台对应的数据
         ro.getBaseInfo().setDoctorId(yptDoctorId);
@@ -195,12 +195,14 @@ public class BuPrescriptionController {
         }
     }
 
-    private Long processOutpatient(String outpatientId) {
+    private Long processOutpatient(String outpatientId,Long yptDoctorId, Long yptPatientId) {
         HisOutpatient outpatient = outpatientMapper.selectById(outpatientId);
         if (outpatient == null) {
             throw new HisException("获取预约信息失败:" + outpatientId);
         } else {
             BuOutpatientXO.AddOutpatientXO xo = HisOutpatientCI.INSTANCE.toAddOutpatientXO(outpatient);
+            xo.setDoctorId(yptDoctorId.toString());
+            xo.setPatientId(yptPatientId.toString());
             Result<Long> result = yptClient.addOutpatient(xo);
             if (result.getCode() == 0) {
                 log.info("添加预约成功：" + result);

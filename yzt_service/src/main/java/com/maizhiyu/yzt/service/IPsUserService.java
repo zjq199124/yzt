@@ -18,4 +18,5 @@ public interface IPsUserService extends IService<PsUser> {
 
     PsUser getUserByOpenid(String openid);
 
+    PsUser getUserByPhone(String phone);
 }

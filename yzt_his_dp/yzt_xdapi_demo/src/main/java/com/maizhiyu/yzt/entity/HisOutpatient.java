@@ -23,8 +23,8 @@ public class HisOutpatient implements Serializable {
 
     @TableId
     @ApiModelProperty(value="预约ID(outpatientId)")
-    @TableField(value = "id")
-    private String id;
+    @TableField(value = "code")
+    private String code;
 
     @ApiModelProperty(value="预约时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Shanghai")

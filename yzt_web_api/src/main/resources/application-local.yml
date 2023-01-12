@@ -105,3 +105,8 @@ oss:
   styleWatermark: "一真堂"
   styleMicro: "一真堂"
 
+sms:
+  endpoint: "dysmsapi.aliyuncs.com"
+  accessKeyId: "LTAI5tMFpwTnAJLCBNgxjAQ7"
+  accessKeySecret: "EZ0gRdDiP6QkvfGAfuJfxK57PEBr34"
+  signName: "杭州一真医疗器械"

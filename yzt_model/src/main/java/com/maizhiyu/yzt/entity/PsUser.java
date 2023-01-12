@@ -80,4 +80,6 @@ public class PsUser implements Serializable {
     @ApiModelProperty(value="创建时间")
     private Date createTime;
 
+    @ApiModelProperty(value="是否删除：1是；0否")
+    private Integer isDel;
 }

@@ -21,7 +21,7 @@ import java.util.Date;
 public class HisDoctor implements Serializable {
     @TableId
     @ApiModelProperty(value="his端医生账号(hisDoctorId)")
-    private String id;
+    private String username;
 
     @ApiModelProperty(value="his端医生昵称")
     @TableField("nickname")
