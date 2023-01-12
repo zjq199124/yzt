@@ -192,7 +192,7 @@ public class BuPrescriptionController {
 
     private void savePrescriptionShiyiToHis(BuPrescriptionRO.AddPrescriptionShiyi ro) throws IOException {
         //克隆出一个对象用来进行翻译操作
-        BuPrescriptionRO.AddPrescriptionShiyi clone = ObjectUtil.cloneIfPossible(ro);
+        BuPrescriptionRO.AddPrescriptionShiyi clone = ObjectUtil.clone(ro);
         for (BuPrescriptionRO.BuPrescriptionItemShiyi vo : clone.getItemList()) {
             try {
                 // 按code映射
