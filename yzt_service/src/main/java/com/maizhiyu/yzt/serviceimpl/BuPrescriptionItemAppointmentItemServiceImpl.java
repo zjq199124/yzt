@@ -64,7 +64,7 @@ public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<Bu
             //预约成功，要增加该适宜技术已预约的次数，扣减剩余预约的次数
             LambdaQueryWrapper<BuPrescriptionItemAppointment> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(BuPrescriptionItemAppointment::getIsDel, 0)
-                    .eq(BuPrescriptionItemAppointment::getPrescriptionItemId, buPrescriptionItemAppointmentItem.getPrescriptionItemAppointmentId())
+                    .eq(BuPrescriptionItemAppointment::getId, buPrescriptionItemAppointmentItem.getPrescriptionItemAppointmentId())
                     .orderByDesc(BuPrescriptionItemAppointment::getCreateTime)
                     .last("limit 1");
             BuPrescriptionItemAppointment buPrescriptionItemAppointment = buPrescriptionItemAppointmentMapper.selectOne(wrapper);
@@ -86,7 +86,7 @@ public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<Bu
                 query.eq(BuOutpatientAppointment::getIsDel, 0)
                         .eq(BuOutpatientAppointment::getCustomerId, buPrescriptionItemAppointment.getCustomerId())
                         .eq(BuOutpatientAppointment::getPatientId, buPrescriptionItemAppointment.getPatientId())
-                        .eq(BuOutpatientAppointment::getOutpatientId, buPrescriptionItemAppointment.getOutpatientAppointmentId())
+                        .eq(BuOutpatientAppointment::getId, buPrescriptionItemAppointment.getOutpatientAppointmentId())
                         .orderByDesc(BuOutpatientAppointment::getCreateTime)
                         .last("limit 1");
                 BuOutpatientAppointment buOutpatientAppointment = buOutpatientAppointmentMapper.selectOne(query);
