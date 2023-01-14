@@ -183,8 +183,9 @@ public class BuPrescriptionController {
         ro.getBaseInfo().setPatientId(yptPatientId);
         ro.getBaseInfo().setOutpatientId(yptOutpatientId);
 
-        Result<Boolean> result = yptClient.addDiagnose(ro);
+        Result<BuDiagnose> result = yptClient.addDiagnose(ro);
         if (result.getCode().equals(0) && !CollectionUtils.isEmpty(ro.getItemList())) {
+            ro.getDiagnoseInfo().setId(result.getData().getId());
             Result<Boolean> res = yptClient.addPrescriptionShiyi(ro);
             return Result.success(res.getData());
         } else {

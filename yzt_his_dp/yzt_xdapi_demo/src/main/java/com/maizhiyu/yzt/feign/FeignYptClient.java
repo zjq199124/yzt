@@ -9,6 +9,7 @@ import com.maizhiyu.yzt.bean.axo.BuOutpatientXO;
 import com.maizhiyu.yzt.bean.axo.BuPatientXO;
 import com.maizhiyu.yzt.bean.axo.HsDepartmentXO;
 import com.maizhiyu.yzt.bean.axo.HsUserXO;
+import com.maizhiyu.yzt.entity.BuDiagnose;
 import com.maizhiyu.yzt.result.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -66,7 +67,7 @@ public interface FeignYptClient {
     Result<List<RelSyndromeSymptomVo>> selectDictSymptomBySyndromeIdList(@RequestBody List<Long> syndromeIds);
 
     @PostMapping(value = "/diagnose/addDiagnoseInfo")
-    Result<Boolean> addDiagnose(@RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro);
+    Result<BuDiagnose> addDiagnose(@RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro);
 
     @PostMapping(value = "/diagnose/getDetail")
     Result getDetail(@RequestBody BuDiagnoseRO.GetRecommendRO ro);
