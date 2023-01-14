@@ -71,7 +71,7 @@ public class BuDiagnoseController {
 
     @ApiOperation(value = "保存诊断信息接口")
     @PostMapping(value = "/addDiagnoseInfo")
-    public Result<Boolean> addDiagnose(@RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro) throws Exception {
+    public Result<BuDiagnose> addDiagnose(@RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro) throws Exception {
         MsCustomer msCustomer = msCustomerService.getCustomerByName(ro.getDiagnoseInfo().getCustomerName());
         if (Objects.isNull(msCustomer))
             throw new Exception("不存在名称为：" + ro.getDiagnoseInfo().getCustomerName() + " 的客户!");
@@ -96,8 +96,8 @@ public class BuDiagnoseController {
         if (Objects.isNull(buDiagnose.getId())) {
             buDiagnose.setCreateTime(new Date());
         }
-        boolean isSave = diagnoseService.saveOrUpdate(buDiagnose);
-        return Result.success(isSave);
+        diagnoseService.saveOrUpdate(buDiagnose);
+        return Result.success(buDiagnose);
     }
 
 
