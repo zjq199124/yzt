@@ -28,6 +28,12 @@ public class OutpatientAppointmentRo extends BaseRo implements Serializable {
     @ApiModelProperty("客户id")
     private Long customerId;
 
+    @ApiModelProperty("PsUser主键id")
+    private Long psUserId;
+
+    @ApiModelProperty("患者id")
+    private Long patientId;
+
     @ApiModelProperty("查询起始时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
     private Date startDate;
