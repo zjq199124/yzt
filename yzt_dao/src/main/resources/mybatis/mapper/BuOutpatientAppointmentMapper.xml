@@ -42,7 +42,9 @@
         AND boa.customer_id = hd.customer_id
         WHERE
         boa.is_del = 0
-        and boa.customer_id = #{outpatientAppointmentRo.customerId}
+        <if test="outpatientAppointmentRo.customerId != null">
+            and boa.customer_id = #{outpatientAppointmentRo.customerId}
+        </if>
         <if test="outpatientAppointmentRo.search != null and outpatientAppointmentRo.search != ''">
             and ( bp.name like concat('%',#{outpatientAppointmentRo.search},'%') or bp.phone like
             concat('%',#{outpatientAppointmentRo.search},'%') )
@@ -56,6 +58,9 @@
         <if test="outpatientAppointmentRo.startDate != null and outpatientAppointmentRo.endDate != null">
             and (boa.outpatient_time between #{outpatientAppointmentRo.startDate} and
             #{outpatientAppointmentRo.endDate})
+        </if>
+        <if test="outpatientAppointmentRo.patientId != null">
+            and bp.id = #{outpatientAppointmentRo.patientId}
         </if>
     </select>
 </mapper>
