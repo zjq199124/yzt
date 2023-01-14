@@ -207,4 +207,16 @@ public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<Bu
         }
         return true;
     }
+
+    @Override
+    public List<BuPrescriptionItemAppointmentItem> selectRemindLatestAppointmentList(Date startDate, Date endDate) {
+        List<BuPrescriptionItemAppointmentItem> list = buPrescriptionItemAppointmentItemMapper.selectRemindLatestAppointmentList(startDate, endDate);
+        return list;
+    }
+
+    @Override
+    public List<BuPrescriptionItemAppointmentItem> selectTreatmentRemindList(Date startDate, Date endDate) {
+        List<BuPrescriptionItemAppointmentItem> list = buPrescriptionItemAppointmentItemMapper.selectTreatmentRemindList(startDate, endDate);
+        return list;
+    }
 }

@@ -20,6 +20,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -72,8 +73,17 @@ public class BuDiagnoseController {
                 .last("limit 1");
         HisOutpatient outpatient = outpatientMapper.selectOne(queryWrapper);
         if (Objects.nonNull(outpatient)) {
-            ro.setOutpatientId(Long.parseLong(outpatient.getRegistrationId()));
+            //内部his要转一下
+            ro.setOutpatientId(Long.parseLong(outpatient.getCode()));
         }
+
+        //在没有分型syndromeIdList以及没有症状集合symptomIdList先查询下这次挂号看病是否已经有保存诊断信息和治疗处方
+        if (CollectionUtils.isEmpty(ro.getSymptomIdList()) && CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
+            Result result = yptClient.getDetail(ro);
+            if(Objects.nonNull(result.getData()))
+                return result;
+        }
+
         // 调用开放接口获取诊断推荐
         Result result=yptClient.getRecommend(ro);
         return result;

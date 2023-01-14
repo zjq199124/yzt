@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.entity;
 
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
@@ -67,4 +68,16 @@ public class BuPrescriptionItemAppointmentItem extends Model<BuPrescriptionItemA
 
     @ApiModelProperty(value = "备注")
     private String remark;
+
+    @ApiModelProperty(value = "患者名称")
+    @TableField(exist = false)
+    private String name;
+
+    @ApiModelProperty(value = "适宜技术名称")
+    @TableField(exist = false)
+    private String tsName;
+
+    @ApiModelProperty(value = "手机号码")
+    @TableField(exist = false)
+    private String phone;
 }

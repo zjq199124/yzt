@@ -14,4 +14,8 @@ public interface BuPrescriptionItemAppointmentItemMapper extends BaseMapper<BuPr
     List<BuPrescriptionItemAppointmentItem> selectByPrescriptionItemAppointmentIdList(@Param("prescriptionItemAppointmentIdList") List<Long> prescriptionItemAppointmentIdList);
 
     List<BuPrescriptionItemAppointmentItem> selectByTimeSlot(@Param("customerId") Long customerId, @Param("outpatientAppointmentId") Long outpatientAppointmentId, @Param("date") Date date, @Param("morningTimeSlotList") List<String> morningTimeSlotList);
+
+    List<BuPrescriptionItemAppointmentItem> selectRemindLatestAppointmentList(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+    List<BuPrescriptionItemAppointmentItem> selectTreatmentRemindList(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 }

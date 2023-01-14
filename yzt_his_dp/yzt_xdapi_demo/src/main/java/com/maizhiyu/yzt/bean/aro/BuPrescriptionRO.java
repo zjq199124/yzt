@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.bean.aro;
 
+import cn.hutool.core.clone.CloneSupport;
 import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -13,9 +14,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class BuPrescriptionRO implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class BuPrescriptionRO  implements Serializable {
 
     @Data
     @ApiModel
