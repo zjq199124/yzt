@@ -16,7 +16,7 @@ public interface ITsAssService extends IService<TsAss> {
     public List<Map<String,Object>> getAssItem(Long id);
 
     IPage<Map<String, Object>> getAsslist(Page page,String phoneOrtherapistName,Long examinerId,
-                                        String department,Integer status);
+                                        Long sytechId ,Integer status);
 
     List<TsAss> addBatch(BatchAddUserRO batchAddUserRO);
 

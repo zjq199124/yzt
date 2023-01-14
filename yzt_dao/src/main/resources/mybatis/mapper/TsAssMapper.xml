@@ -46,8 +46,8 @@
                 and (C.real_name like concat(concat('%' ,#{phoneOrtherapistName}),'%') or
                     B.phone like concat(concat('%') ,#{phoneOrtherapistName},'%'))
             </if>
-            <if test="department != null and department != ''">
-                and D.dname like concat(concat('%' ,#{department}),'%')
+            <if test="sytechId != null and sytechId != ''">
+                and X.sytech_id = #{sytechId}
             </if>
         </where>
     </select>

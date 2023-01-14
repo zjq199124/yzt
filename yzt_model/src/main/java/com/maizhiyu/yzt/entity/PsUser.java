@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -39,6 +40,13 @@ public class PsUser implements Serializable {
 
     @ApiModelProperty(value="用户手机")
     private String phone;
+
+    @ApiModelProperty(value="身份证号码")
+    private String idCard;
+
+    @ApiModelProperty(value="用户出生日期")
+    @JsonFormat(pattern = "yyyy-MM-dd ", timezone = "Asia/Shanghai")
+    private Date birthday;
 
     @ApiModelProperty(value="用户性别(0:女，1:男)")
     private Integer sex;

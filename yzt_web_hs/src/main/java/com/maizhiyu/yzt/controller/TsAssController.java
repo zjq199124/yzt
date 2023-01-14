@@ -92,16 +92,16 @@ public class TsAssController {
        @ApiImplicitParams({
             @ApiImplicitParam(name = "examinerId" , value = "考核人Id",required = false),
             @ApiImplicitParam(name = "phoneOrtherapistName" , value = "治疗师/电话号码",required = false),
-            @ApiImplicitParam(name = "department" , value = "部门",required = false),
+            @ApiImplicitParam(name = "sytechId" , value = "适宜技术id",required = false),
             @ApiImplicitParam(name = "status" , value = "状态(0:未开始 1:考核中 2:考核结束)",required = false),
     })
     @GetMapping("/getAssList")
     public Result getAssList( Page page,String phoneOrtherapistName,
                               Long examinerId,
-                              String department,
+                              Long sytechId,
                               Integer status
                              ){
-       IPage<Map<String, Object>> list =  tsAssService.getAsslist(page,phoneOrtherapistName,examinerId,department,status);
+       IPage<Map<String, Object>> list =  tsAssService.getAsslist(page,phoneOrtherapistName,examinerId,sytechId,status);
         return Result.success(list);
     }
 

@@ -8,6 +8,7 @@ import com.maizhiyu.yzt.enums.SmsTemplateEnum;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IPsUserService;
 import com.maizhiyu.yzt.service.ISmsService;
+import com.maizhiyu.yzt.serviceimpl.PsUserService;
 import com.maizhiyu.yzt.utils.RedisUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -34,6 +35,9 @@ public class PsUserController {
     private IPsUserService service;
 
     @Resource
+    private PsUserService psUserService;
+
+    @Resource
     private RedisUtils redisUtils;
 
     @Resource
@@ -46,7 +50,7 @@ public class PsUserController {
     })
     @GetMapping("/getUser")
     public Result getUser(Long id) {
-        PsUser user = service.getUser(id);
+        PsUser user = psUserService.getById(id);
         return Result.success(user);
     }
 
@@ -72,9 +76,18 @@ public class PsUserController {
     @ApiImplicitParams({})
     @PostMapping("/setUser")
     public Result setUser(@RequestBody PsUser user) {
-            user.setUpdateTime(new Date());
-        Integer res = service.setUser(user);
-        return Result.success(user);
+        if(user.getPhone() != null){
+            if(user.getPhone().length()!=11){
+                return Result.failure("电话号码不符合位数要求");
+            }
+        }
+        if(user.getIdCard() != null){
+            if(user.getIdCard().length()!=18){
+                return Result.failure("身份证号码不符合位数要求");
+            }
+        }
+        boolean b = psUserService.saveOrUpdate(user);
+        return Result.success(b);
     }
 
     @ApiOperation(value = "发送验证码", notes = "发送验证码")

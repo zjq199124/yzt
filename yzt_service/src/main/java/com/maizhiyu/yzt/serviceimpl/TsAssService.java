@@ -50,9 +50,9 @@ public class TsAssService extends ServiceImpl<TsAssMapper, TsAss> implements ITs
 
     @Override
     public IPage<Map<String, Object>> getAsslist(Page page,String phoneOrtherapistName,Long examinerId,
-                                   String department,Integer status) {
+                                   Long sytechId,Integer status) {
         IPage<Map<String, Object>> list = tsAssMapper.selectAsslist(page,phoneOrtherapistName,examinerId
-        ,department,status);
+        ,sytechId,status);
         return list;
 
     }

@@ -26,7 +26,7 @@ public interface TsAssMapper extends BaseMapper<TsAss> {
             @Param("page") Page page,
             @Param("phoneOrtherapistName") String phoneOrtherapistName,
             @Param("examinerId") Long examinerId,
-            @Param("department") String department,
+            @Param("sytechId") Long sytechId,
             @Param("status") Integer status);
 
 
