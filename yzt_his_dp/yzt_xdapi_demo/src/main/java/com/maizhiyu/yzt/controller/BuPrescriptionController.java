@@ -167,19 +167,21 @@ public class BuPrescriptionController {
         Long yptDoctorId = processDoctor(baseInfo.getDoctorId().toString());
         Long yptPatientId = processPatient(baseInfo.getPatientId().toString());
         Long yptOutpatientId = processOutpatient(baseInfo.getOutpatientId().toString(), yptDoctorId, yptPatientId);
-        //ro中的outpatientId是视图中的registration_id,要换成code才是我们这边所说的his中medical_record_id对应云平台的his中的outpatientId
-        YptOutpatient yptOutpatient = getYptOutpatientById(yptOutpatientId);
-        ro.getBaseInfo().setOutpatientId(yptOutpatient.getHisId());
-        ro.getDiagnoseInfo().setCustomerName(customerName);
-        //讲patientId,outPatientId,doctorId替换成云平台对应的数据
-        ro.getBaseInfo().setDoctorId(yptDoctorId);
-        ro.getBaseInfo().setPatientId(yptPatientId);
-        ro.getBaseInfo().setOutpatientId(yptOutpatientId);
+
 
         //将诊断与处置推送给his
         if (Objects.nonNull(ro) && !CollectionUtils.isEmpty(ro.getItemList())) {
             savePrescriptionShiyiToHis(ro);
         }
+
+        //ro中的outpatientId是视图中的registration_id,要换成code才是我们这边所说的his中medical_record_id对应云平台的his中的outpatientId
+        YptOutpatient yptOutpatient = getYptOutpatientById(yptOutpatientId);
+        ro.getBaseInfo().setOutpatientId(yptOutpatient.getHisId());
+        ro.getDiagnoseInfo().setCustomerName(customerName);
+        //将patientId,outPatientId,doctorId替换成云平台对应的数据
+        ro.getBaseInfo().setDoctorId(yptDoctorId);
+        ro.getBaseInfo().setPatientId(yptPatientId);
+        ro.getBaseInfo().setOutpatientId(yptOutpatientId);
 
         Result<Boolean> result = yptClient.addDiagnose(ro);
         if (result.getCode().equals(0) && !CollectionUtils.isEmpty(ro.getItemList())) {
@@ -191,8 +193,12 @@ public class BuPrescriptionController {
     }
 
     private void savePrescriptionShiyiToHis(BuPrescriptionRO.AddPrescriptionShiyi ro) throws IOException {
+        Gson gson = new Gson();
         //克隆出一个对象用来进行翻译操作
-        BuPrescriptionRO.AddPrescriptionShiyi clone = ObjectUtil.clone(ro);
+        Object cloneObj = ObjectUtil.clone(ro);
+        JSONObject json = JSON.parseObject(gson.toJson(cloneObj));
+        BuPrescriptionRO.AddPrescriptionShiyi clone = JSON.toJavaObject(json, BuPrescriptionRO.AddPrescriptionShiyi.class);
+
         for (BuPrescriptionRO.BuPrescriptionItemShiyi vo : clone.getItemList()) {
             try {
                 // 按code映射
@@ -220,7 +226,6 @@ public class BuPrescriptionController {
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .build();
         HisApi hisApi = retrofit.create(HisApi.class);
-        Gson gson = new Gson();
 
         //his中处置id不为空的话那么先删除his中的处置
         if (Objects.nonNull(clone.getHisId())) {
@@ -235,7 +240,13 @@ public class BuPrescriptionController {
 
         TreatmentRo treatmentRo = new TreatmentRo();
         treatmentRo.setDoctorId(clone.getBaseInfo().getDoctorId().intValue());
-        treatmentRo.setMedicalRecordId(clone.getBaseInfo().getOutpatientId().intValue());
+
+        LambdaQueryWrapper<HisOutpatient> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(HisOutpatient::getRegistrationId, ro.getBaseInfo().getOutpatientId())
+                .last("limit 1");
+        HisOutpatient outpatient = outpatientMapper.selectOne(queryWrapper);
+
+        treatmentRo.setMedicalRecordId(Integer.parseInt(outpatient.getCode()));
 
         List<TreatmentItemsRo> treatmentItemsRoList = clone.getItemList().stream().map(item -> {
             TreatmentItemsRo treatmentItemsRo = new TreatmentItemsRo();
