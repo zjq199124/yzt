@@ -19,6 +19,7 @@
         SELECT
         X.id assId,
         DATE_FORMAT( X.create_time, '%Y-%m-%d %T' ) createTime,
+        DATE_FORMAT( X.start_time ,'%Y-%m-%d %T') startTime,
         X.total_score totalScore,
         X.examiner_id examinerId,
         A.NAME sytechName,
