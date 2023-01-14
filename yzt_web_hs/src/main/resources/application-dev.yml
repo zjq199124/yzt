@@ -125,3 +125,10 @@ oss:
 #oss.style_watermark: watermark
 #oss.style_micro: micro
 
+
+sms:
+  endpoint: "dysmsapi.aliyuncs.com"
+  accessKeyId: "LTAI5tMFpwTnAJLCBNgxjAQ7"
+  accessKeySecret: "EZ0gRdDiP6QkvfGAfuJfxK57PEBr34"
+  signName: "杭州一真医疗器械"
+

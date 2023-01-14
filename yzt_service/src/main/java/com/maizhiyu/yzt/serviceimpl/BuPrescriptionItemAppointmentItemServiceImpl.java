@@ -112,8 +112,8 @@ public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<Bu
                     } else {
                         buOutpatientAppointment.setState(2);
                     }
-                    result = buOutpatientAppointmentMapper.updateById(buOutpatientAppointment);
                 }
+                result = buOutpatientAppointmentMapper.updateById(buOutpatientAppointment);
             }
         }
         return insert > 0 && update > 0 && result > 0;
@@ -185,12 +185,14 @@ public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<Bu
         List<Long> idList = appointmentRo.getBuPrescriptionItemAppointmentItemRoList().stream().filter(item -> Objects.nonNull(item.getId())).map(BuPrescriptionItemAppointmentItemRo::getId).collect(Collectors.toList());
 
         //查询出之前在，这次没有的id，表明这些预约数据要删除
-        List<Long> deleteIdList = appointmentRo.getPreItemIdList().stream().filter(item -> !idList.contains(item)).collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(appointmentRo.getPreItemIdList())) {
+            List<Long> deleteIdList = appointmentRo.getPreItemIdList().stream().filter(item -> !idList.contains(item)).collect(Collectors.toList());
 
-        if (!CollectionUtils.isEmpty(deleteIdList)) {
-            deleteIdList.forEach(item -> {
-                deleteAppointment(item);
-            });
+            if (!CollectionUtils.isEmpty(deleteIdList)) {
+                deleteIdList.forEach(item -> {
+                    deleteAppointment(item);
+                });
+            }
         }
         //查询出id为null的数据出来这表示是新加上的数据
         List<BuPrescriptionItemAppointmentItem> insertList = appointmentRo.getBuPrescriptionItemAppointmentItemRoList().stream().filter(item -> Objects.isNull(item.getId())).map(obj -> {
