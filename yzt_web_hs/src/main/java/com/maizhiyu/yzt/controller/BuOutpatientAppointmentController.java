@@ -42,7 +42,7 @@ public class BuOutpatientAppointmentController extends BaseController {
     }
 
     @ApiOperation(value = "预约状况接口")
-    @GetMapping("/appointmentDetail")
+    @GetMapping("/appointment")
     @ApiImplicitParam(name = "outpatientAppointmentId", value = "当前诊断下的预约数据id", required = true)
     public Result<BuOutpatientAppointment> appointment(Long outpatientAppointmentId) {
         BuOutpatientAppointment buOutpatientAppointment = buOutpatientAppointmentService.appointmentDetail(outpatientAppointmentId);
