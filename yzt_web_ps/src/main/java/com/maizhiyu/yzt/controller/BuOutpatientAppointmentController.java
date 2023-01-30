@@ -46,7 +46,7 @@ public class BuOutpatientAppointmentController {
         return Result.success(page);
     }
 
-   /* @ApiOperation(value = "预约状况接口")
+    @ApiOperation(value = "预约状况接口")
     @GetMapping("/appointment")
     @ApiImplicitParam(name = "outpatientAppointmentId", value = "当前诊断下的预约数据id", required = true)
     public Result<BuOutpatientAppointment> appointment(Long outpatientAppointmentId) {
@@ -58,15 +58,13 @@ public class BuOutpatientAppointmentController {
     @ApiOperation(value = "预约")
     @PostMapping("/makeAppointment")
     public Result<Boolean> makeAppointment(@RequestBody BuPrescriptionItemAppointmentItemRo buPrescriptionItemAppointmentItemRo) {
-        Long customerId = ((Number) getClaims().get("customerId")).longValue();
         BuPrescriptionItemAppointmentItem buPrescriptionItemAppointmentItem = new BuPrescriptionItemAppointmentItem();
         BeanUtil.copyProperties(buPrescriptionItemAppointmentItemRo, buPrescriptionItemAppointmentItem);
-        buPrescriptionItemAppointmentItem.setCustomerId(customerId);
         Boolean result = buPrescriptionItemAppointmentItemService.makeAppointment(buPrescriptionItemAppointmentItem);
         return Result.success(result);
     }
 
-    @ApiOperation(value = "删除预约")
+   /* @ApiOperation(value = "删除预约")
     @GetMapping("/deleteAppointment")
     @ApiImplicitParam(name = "buPrescriptionItemAppointmentItemId", value = "适宜技术小项目预约详情数据主键id", required = true)
     public Result<Boolean> deleteAppointment(Long buPrescriptionItemAppointmentItemId) {

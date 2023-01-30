@@ -42,4 +42,7 @@ public class BuPrescriptionItemAppointmentItemRo implements Serializable {
     @ApiModelProperty("星期数")
     private Integer weekday;
 
+    @ApiModelProperty("客户id")
+    private Long customerId;
+
 }
