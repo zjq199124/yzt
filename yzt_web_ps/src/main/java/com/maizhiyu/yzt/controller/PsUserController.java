@@ -59,15 +59,18 @@ public class PsUserController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "code", value = "验证码", required = true),
             @ApiImplicitParam(name = "phone", value = "手机号", required = true),
+            @ApiImplicitParam(name = "openId", value = "openId", required = true),
     })
     @PostMapping("/AuthCodeLogin")
-    public Result AuthCodeLogin(@RequestParam("phone") String phone, @RequestParam("code") String code) {
+    public Result AuthCodeLogin(@RequestParam("phone") String phone, @RequestParam("code") String code, @RequestParam("openId") String openId) {
         //以手机号查询code进行比较
         Object o = redisUtils.get(SmsSceneEnum.LOGIN_PREFIX.getCode() + "_" + phone);
         Assert.notNull(o, "当前手机号不存在验证码!");
         String c = String.valueOf(o);
         Assert.isTrue(c.equals(code), "验证码错误!");
         PsUser psUser = service.getUserByPhone(phone);
+        psUser.setOpenid(openId);
+        service.updateById(psUser);
         return Result.success(psUser);
     }
 
@@ -76,13 +79,13 @@ public class PsUserController {
     @ApiImplicitParams({})
     @PostMapping("/setUser")
     public Result setUser(@RequestBody PsUser user) {
-        if(user.getPhone() != null){
-            if(user.getPhone().length()!=11){
+        if (user.getPhone() != null) {
+            if (user.getPhone().length() != 11) {
                 return Result.failure("电话号码不符合位数要求");
             }
         }
-        if(user.getIdCard() != null){
-            if(user.getIdCard().length()!=18){
+        if (user.getIdCard() != null) {
+            if (user.getIdCard().length() != 18) {
                 return Result.failure("身份证号码不符合位数要求");
             }
         }
@@ -95,7 +98,7 @@ public class PsUserController {
     @GetMapping("/sendVerificationCode")
     public Result sendVerificationCode(@RequestParam("phone") String phone) {
         Map<String, String> map = new HashMap<>();
-        String verificationCode =  getVerificationCode();
+        String verificationCode = getVerificationCode();
         map.put("code", verificationCode);
         String result = null;
         try {
@@ -105,7 +108,7 @@ public class PsUserController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("发送验证码失败 "  + e.getMessage());
+            log.error("发送验证码失败 " + e.getMessage());
         }
         return Result.success(result);
     }

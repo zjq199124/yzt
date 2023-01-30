@@ -3,14 +3,13 @@ spring:
   datasource:
     # 当前数据源操作类型
     type: com.alibaba.druid.pool.DruidDataSource
-
-    #     mysql驱动包
+    # mysql驱动包
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://rm-bp1xk4j7gsb2ylig3so.mysql.rds.aliyuncs.com:3306/yztpro?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
     username: yztp
     password: rootDB1sfdWSX
     druid:
-      #      数据库连接池的最小维持连接数
+      # 数据库连接池的最小维持连接数
       min-idle: 10
       #      初始化连接数
       initial-size: 20
