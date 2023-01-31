@@ -1,15 +1,3 @@
-
-
-# mybatis 配置
-mybatis:
-  # mybatis配置文件所在路径
-  config-location: classpath:mybatis/mybatis.cfg.xml
-  # 所有Entity别名类所在包
-  type-aliases-package: com.mtis.entity
-  mapper-locations:
-    # mapper映射文件
-    - classpath:mybatis/mapper/**/*.xml
-
 spring:
   application:
     name: mtis
@@ -82,7 +70,7 @@ spring:
 
 # swagger 配置（生产环境关闭）
 swagger:
-  enable: true
+  enable: false
 
 ### 业务配置 ###
 file:
