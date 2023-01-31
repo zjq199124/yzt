@@ -8,6 +8,7 @@ import com.maizhiyu.yzt.service.IBuPrescriptionItemAppointmentItemService;
 import com.maizhiyu.yzt.service.IBuPrescriptionItemAppointmentService;
 import com.maizhiyu.yzt.service.ISmsService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,6 +24,9 @@ import java.util.Map;
 @EnableScheduling
 @Slf4j
 public class AppointmentRemindTask {
+
+    @Value("${sms.signName}")
+    private String signName;
 
     @Resource
     private IBuPrescriptionItemAppointmentItemService buPrescriptionItemAppointmentItemService;
@@ -40,7 +44,7 @@ public class AppointmentRemindTask {
         map.put("code", "123456");
         if (!CollectionUtils.isEmpty(list)) {
             list.forEach(item -> {
-                smsService.sendSms(SmsTemplateEnum.VERIFICATION_CODE.getCode(), item.getPhone(), map);
+                smsService.sendSms(signName,SmsTemplateEnum.VERIFICATION_CODE.getCode(), item.getPhone(), map);
             });
         }
     }
@@ -57,7 +61,7 @@ public class AppointmentRemindTask {
         map.put("code", "123456");
         if (!CollectionUtils.isEmpty(list)) {
             list.forEach(item -> {
-                smsService.sendSms(SmsTemplateEnum.VERIFICATION_CODE.getCode(), item.getPhone(), map);
+                smsService.sendSms(signName,SmsTemplateEnum.VERIFICATION_CODE.getCode(), item.getPhone(), map);
             });
         }
     }

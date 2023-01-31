@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/signature")
 public class BuSignatureController extends BaseController {
+
+    @Value("${sms.signName}")
+    private String signName;
 
     @Resource
     private IBuPrescriptionItemService buPrescriptionItemService;
@@ -86,7 +90,7 @@ public class BuSignatureController extends BaseController {
         Map<String, String> map = new HashMap<>();
         map.put("code", "1234");
         try {
-            Boolean res = smsService.sendSms(SmsTemplateEnum.VERIFICATION_CODE.getCode(), phone, map);
+            Boolean res = smsService.sendSms(signName,SmsTemplateEnum.VERIFICATION_CODE.getCode(), phone, map);
             return Result.success(res);
         } catch (Exception e) {
             e.printStackTrace();

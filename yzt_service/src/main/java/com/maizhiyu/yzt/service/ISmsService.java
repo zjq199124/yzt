@@ -13,6 +13,6 @@ public interface ISmsService {
      * @param map
      * @return
      */
-    public Boolean sendSms(String templateCode, String phone, Map<String,String> map);
+    public Boolean sendSms(String signName,String templateCode, String phone, Map<String,String> map);
 
 }

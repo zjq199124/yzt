@@ -23,9 +23,6 @@ import java.util.Map;
 @Transactional(rollbackFor = Exception.class)
 public class SmsServiceImpl implements ISmsService {
 
-    @Value("${sms.signName}")
-    private String signName;
-
     @Resource
     private SendSmsUtil sendSmsUtil;
 
@@ -33,7 +30,7 @@ public class SmsServiceImpl implements ISmsService {
     private IBuSmsRecordService buSmsRecordService;
 
     @Override
-    public Boolean sendSms(String templateCode, String phone, Map<String, String> map) {
+    public Boolean sendSms(String signName,String templateCode, String phone, Map<String, String> map) {
         String result = null;
         try {
             result = sendSmsUtil.sendSms(signName, SmsTemplateEnum.VERIFICATION_CODE.getCode(), phone, map);

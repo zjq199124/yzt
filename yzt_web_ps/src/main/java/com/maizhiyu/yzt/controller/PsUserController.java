@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -30,6 +31,9 @@ import java.util.Random;
 @Slf4j
 @RequestMapping("/user")
 public class PsUserController {
+
+    @Value("${sms.signName}")
+    private String signName;
 
     @Autowired
     private IPsUserService service;
@@ -102,7 +106,7 @@ public class PsUserController {
         map.put("code", verificationCode);
         String result = null;
         try {
-            Boolean res = smsService.sendSms(SmsTemplateEnum.VERIFICATION_CODE.getCode(), phone, map);
+            Boolean res = smsService.sendSms(signName,SmsTemplateEnum.VERIFICATION_CODE.getCode(), phone, map);
             if (res) {
                 redisUtils.set(SmsSceneEnum.LOGIN_PREFIX.getCode() + "_" + phone, verificationCode, 120);
             }
