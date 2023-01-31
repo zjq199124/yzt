@@ -44,7 +44,7 @@ public class WaitSignatureVo implements Serializable {
     private Date appointmentDate;
 
     @ApiModelProperty("预约时段")
-    private Date timeSlot;
+    private String timeSlot;
 
     @ApiModelProperty("疾病名称")
     private String disease;
