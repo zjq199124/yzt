@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -18,11 +19,10 @@ public class PsUserPatientServiceImpl extends ServiceImpl<PsUserPatientMapper, P
     private PsUserPatientMapper psUserPatientMapper;
 
     @Override
-    public PsUserPatient selectByUserId(Long psUserId) {
+    public List<PsUserPatient> selectByUserId(Long psUserId) {
         LambdaQueryWrapper<PsUserPatient> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(PsUserPatient::getUserId, psUserId)
-                .last("limit 1");
-        PsUserPatient psUserPatient = psUserPatientMapper.selectOne(queryWrapper);
-        return psUserPatient;
+        queryWrapper.eq(PsUserPatient::getUserId, psUserId);
+        List<PsUserPatient> psUserPatientList = psUserPatientMapper.selectList(queryWrapper);
+        return psUserPatientList;
     }
 }

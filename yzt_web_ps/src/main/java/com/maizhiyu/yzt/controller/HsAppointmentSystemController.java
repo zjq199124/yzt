@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
-@Api(tags = "系统预约时段设置")
+@Api(tags = "患者端系统预约时段设置")
 @RestController
 @RequestMapping("/appointmentSystem")
 public class HsAppointmentSystemController {

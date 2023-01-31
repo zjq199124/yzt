@@ -1,31 +1,29 @@
 package com.maizhiyu.yzt.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.maizhiyu.yzt.entity.BuOutpatientAppointment;
-import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem;
-import com.maizhiyu.yzt.entity.PsUser;
-import com.maizhiyu.yzt.entity.PsUserPatient;
+import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.result.Result;
-import com.maizhiyu.yzt.ro.AppointmentRo;
 import com.maizhiyu.yzt.ro.BuPrescriptionItemAppointmentItemRo;
-import com.maizhiyu.yzt.ro.OutpatientAppointmentRo;
+import com.maizhiyu.yzt.ro.BuPrescriptionItemAppointmentRo;
 import com.maizhiyu.yzt.service.IBuOutpatientAppointmentService;
 import com.maizhiyu.yzt.service.IBuPrescriptionItemAppointmentItemService;
 import com.maizhiyu.yzt.service.IPsUserPatientService;
-import com.maizhiyu.yzt.serviceimpl.PsUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Api(tags = "患者端门诊预约接口")
 @RestController
-@RequestMapping("/outpatientAppointment")
+@RequestMapping("/prescriptionItemAppointment")
 public class BuOutpatientAppointmentController {
 
     @Resource
@@ -39,10 +37,14 @@ public class BuOutpatientAppointmentController {
 
     @ApiOperation(value = "查询门诊预约列表")
     @PostMapping("/list")
-    public Result<List<BuOutpatientAppointment>> outpatientAppointmentList(@RequestBody OutpatientAppointmentRo outpatientAppointmentRo) {
-        PsUserPatient psUserPatient = psUserPatientService.selectByUserId(outpatientAppointmentRo.getPsUserId());
-        outpatientAppointmentRo.setPatientId(psUserPatient.getPatientId());
-        Page<BuOutpatientAppointment> page = buOutpatientAppointmentService.list(outpatientAppointmentRo);
+    public Result<List<BuPrescriptionItemAppointment>> prescriptionItemAppointment(@RequestBody BuPrescriptionItemAppointmentRo buPrescriptionItemAppointmentRo) {
+        List<PsUserPatient> psUserPatientList = psUserPatientService.selectByUserId(buPrescriptionItemAppointmentRo.getPsUserId());
+        if(CollectionUtils.isEmpty(psUserPatientList))
+            return Result.success();
+
+        List<Long> patientIdList = psUserPatientList.stream().map(PsUserPatient::getPatientId).collect(Collectors.toList());
+        buPrescriptionItemAppointmentRo.setPatientIdList(patientIdList);
+        Page<BuPrescriptionItemAppointment> page = buPrescriptionItemAppointmentItemService.listPrescriptionItemAppointment(buPrescriptionItemAppointmentRo);
         return Result.success(page);
     }
 
@@ -55,8 +57,8 @@ public class BuOutpatientAppointmentController {
     }
 
 
-    @ApiOperation(value = "预约")
-    @PostMapping("/makeAppointment")
+    @ApiOperation(value = "编辑或保存预约")
+    @PostMapping("/saveOrUpdateAppointment")
     public Result<Boolean> makeAppointment(@RequestBody BuPrescriptionItemAppointmentItemRo buPrescriptionItemAppointmentItemRo) {
         BuPrescriptionItemAppointmentItem buPrescriptionItemAppointmentItem = new BuPrescriptionItemAppointmentItem();
         BeanUtil.copyProperties(buPrescriptionItemAppointmentItemRo, buPrescriptionItemAppointmentItem);

@@ -1,8 +1,11 @@
 package com.maizhiyu.yzt.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointment;
 import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem;
 import com.maizhiyu.yzt.ro.AppointmentRo;
+import com.maizhiyu.yzt.ro.BuPrescriptionItemAppointmentRo;
 
 import java.util.Date;
 import java.util.List;
@@ -44,4 +47,6 @@ public interface IBuPrescriptionItemAppointmentItemService extends IService<BuPr
      * @return
      */
     List<BuPrescriptionItemAppointmentItem> selectTreatmentRemindList(Date startDate, Date endDate);
+
+    Page<BuPrescriptionItemAppointment> listPrescriptionItemAppointment(BuPrescriptionItemAppointmentRo buPrescriptionItemAppointmentRo);
 }
