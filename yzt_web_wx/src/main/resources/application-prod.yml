@@ -75,8 +75,8 @@ weixin:
   api_domain: https://api.weixin.qq.com
   authorize_url: https://open.weixin.qq.com/connect/oauth2/authorize
   # 页面跳转信息
-  redirect_url: http://ypt.yztyun.com/wx/api/wx/onCallback
-  business_url: http://ypt.yztyun.com/ps/index.html#/home
+  redirect_url: https://ypt.yztyun.com/wx/api/wx/onCallback
+  business_url: https://ypt.yztyun.com/ps/pages/home/home
   # 腾讯位置服务
   location_domain: https://apis.map.qq.com
   location_path: /ws/geocoder/v1
