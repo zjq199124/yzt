@@ -82,7 +82,7 @@ spring:
 
 # swagger 配置（生产环境关闭）
 swagger:
-  enable: true
+  enable: false
 
 ### 业务配置 ###
 file:
