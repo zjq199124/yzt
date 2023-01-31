@@ -21,7 +21,7 @@ spring:
     # 当前数据源操作类型
     type: com.alibaba.druid.pool.DruidDataSource
     #     mysql驱动包
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://rm-bp1xk4j7gsb2ylig3so.mysql.rds.aliyuncs.com:3306/yztpro?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
     username: yztp
     password: rootDB1sfdWSX
@@ -84,19 +84,19 @@ spring:
 swagger:
   enable: true
 
-# 用户自定义配置
-custom:
-  security:
-    strategy: MODE_INHERITABLETHREADLOCAL
-    browser:
-      loginType: JSON
-      loginPageUrl: /login
-      logoutPageUrl: /login
-      session:
-        sessionInvalidUrl: /login
+### 业务配置 ###
+file:
+  upload-folder: /home/work/ypt/backend/upload/
+  static-access-path: /files/**
 
 # 微信公众号配置
 #weixin:
 #  token: maizhiyu
 #  appid: wx33df32715638a40a
 #  appsecret: c899dac94e7566ecd20fefb3e4905d58
+
+sms:
+  endpoint: "dysmsapi.aliyuncs.com"
+  accessKeyId: "LTAI5tMFpwTnAJLCBNgxjAQ7"
+  accessKeySecret: "EZ0gRdDiP6QkvfGAfuJfxK57PEBr34"
+  signName: "杭州一真医疗器械"

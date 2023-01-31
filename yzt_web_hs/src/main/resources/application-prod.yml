@@ -1,7 +1,3 @@
-
-
-
-
 ### spring ###
 spring:
   application:
@@ -84,8 +80,9 @@ swagger:
 
 
 ### 业务配置 ###
-
-
+file:
+  upload-folder: /home/work/ypt/backend/upload/
+  static-access-path: /files/**
 
 oss:
   endpoint: "oss-cn-hangzhou.aliyuncs.com"
