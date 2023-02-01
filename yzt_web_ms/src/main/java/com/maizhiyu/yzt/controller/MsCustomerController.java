@@ -129,7 +129,8 @@ public class MsCustomerController {
         user.setRoleList(list);
         user.setCreateTime(new Date());
         user.setUpdateTime(user.getCreateTime());
-        Integer res = hsUserService.addUser(user);
+        user.setUserName(user.getUserName());
+        Boolean res = hsUserService.saveOrUpdate(user);
         return Result.success(user);
     }
 
