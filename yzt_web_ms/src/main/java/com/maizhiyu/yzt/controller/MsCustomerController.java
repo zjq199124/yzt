@@ -103,14 +103,11 @@ public class MsCustomerController {
             @ApiImplicitParam(name = "agencyId", value = "代理商ID", required = false),
             @ApiImplicitParam(name = "status", value = "状态", required = false),
             @ApiImplicitParam(name = "term", value = "搜索词", required = false),
-            @ApiImplicitParam(name = "pageNum", value = "开始页数", required = false),
-            @ApiImplicitParam(name = "pageSize", value = "每页大小", required = false),
+
     })
     @GetMapping("/getCustomerList")
-    public Result getCustomerList(Long agencyId, Integer status, String term,
-                                  @RequestParam(defaultValue = "1") Integer pageNum,
-                                  @RequestParam(defaultValue = "20") Integer pageSize) {
-        IPage<Map<String, Object>> list = service.getCustomerList(new Page(pageNum, pageSize), agencyId, status, term);
+    public Result getCustomerList(Long agencyId, Integer status, String term,Page page) {
+        IPage<Map<String, Object>> list = service.getCustomerList(page, agencyId, status, term);
         return Result.success(list);
     }
 
