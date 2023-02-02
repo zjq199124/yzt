@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.websocket.server.PathParam;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -132,10 +134,11 @@ public class TsAssController {
             @ApiImplicitParam(name = "sytechId", value = "适宜技术id",required = true),
     })
     @GetMapping("/selectAssBySytech")
-    public Result selectAssBySytch(@RequestParam Long sytechId,Long assId){
+    public Result selectAssBySytch(@RequestParam Long sytechId,Long assId) throws ParseException {
         List<TsAssOperation> list = tsAssOperationService.getAssDetail(sytechId);
         TsAss tsAss = tsAssService.getById(assId);
         tsAss.setStatus(1);
+        tsAss.setStartTime(new Date());
         Boolean res = tsAssService.saveOrUpdate(tsAss);
         return Result.success(list);
     }
