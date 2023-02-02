@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.websocket.server.PathParam;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -107,7 +108,9 @@ public class TsAssController {
     public Result saveAss(@RequestBody List<UserAss> userAsslist){
         Boolean res = userAssService.saveBatch(userAsslist);
         TsAss tsAss = tsAssService.getById(userAsslist.get(0).getAssId());
+        int sum = userAsslist.stream().mapToInt(UserAss::getScore).sum();
         tsAss.setStatus(2);
+        tsAss.setTotalScore(sum);
         Boolean a = tsAssService.saveOrUpdate(tsAss);
         return Result.success(a);
 
