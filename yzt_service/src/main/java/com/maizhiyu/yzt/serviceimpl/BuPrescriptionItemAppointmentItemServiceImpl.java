@@ -9,18 +9,22 @@ import com.google.common.base.Preconditions;
 import com.maizhiyu.yzt.entity.BuOutpatientAppointment;
 import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointment;
 import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem;
+import com.maizhiyu.yzt.entity.BuPrescriptionItemTask;
 import com.maizhiyu.yzt.mapper.BuOutpatientAppointmentMapper;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentItemMapper;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentMapper;
+import com.maizhiyu.yzt.mapper.BuPrescriptionItemTaskMapper;
 import com.maizhiyu.yzt.ro.AppointmentRo;
-import com.maizhiyu.yzt.ro.BuPrescriptionItemAppointmentItemRo;
+import com.maizhiyu.yzt.ro.BuPrescriptionItemTaskRo;
 import com.maizhiyu.yzt.ro.BuPrescriptionItemAppointmentRo;
+import com.maizhiyu.yzt.service.BuPrescriptionItemTaskService;
 import com.maizhiyu.yzt.service.IBuPrescriptionItemAppointmentItemService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -38,6 +42,12 @@ public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<Bu
 
     @Resource
     private BuOutpatientAppointmentMapper buOutpatientAppointmentMapper;
+
+    @Resource
+    private BuPrescriptionItemTaskMapper buPrescriptionItemTaskMapper;
+
+    @Resource
+    private BuPrescriptionItemTaskService buPrescriptionItemTaskService;
 
     @Override
     public Boolean makeAppointment(BuPrescriptionItemAppointmentItem buPrescriptionItemAppointmentItem) {
@@ -128,24 +138,24 @@ public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<Bu
     }
 
     @Override
-    public Boolean deleteAppointment(Long buPrescriptionItemAppointmentItemId) {
+    public Boolean deleteAppointment(Long buPrescriptionItemTaskId) {
         int del = 0;
         int update = 0;
         int result = 0;
-        BuPrescriptionItemAppointmentItem buPrescriptionItemAppointmentItem = buPrescriptionItemAppointmentItemMapper.selectById(buPrescriptionItemAppointmentItemId);
-        Preconditions.checkArgument(Objects.nonNull(buPrescriptionItemAppointmentItem), "处方明细适宜技术具体预约数据id错误!");
+        BuPrescriptionItemTask buPrescriptionItemTask = buPrescriptionItemTaskMapper.selectById(buPrescriptionItemTaskId);
+        Preconditions.checkArgument(Objects.nonNull(buPrescriptionItemTask), "处方明细适宜技术具体任务id错误!");
 
-        if (buPrescriptionItemAppointmentItem.getIsDel() == 1) {
-            //该预约数据已经删除成功了
-            return true;
-        }
-        buPrescriptionItemAppointmentItem.setIsDel(1);
-        buPrescriptionItemAppointmentItem.setUpdateTime(new Date());
-        del = buPrescriptionItemAppointmentItemMapper.updateById(buPrescriptionItemAppointmentItem);
+        //清楚对应的预约数据
+        buPrescriptionItemTask.setAppointmentStatus(0);
+        buPrescriptionItemTask.setAppointmentDate(null);
+        buPrescriptionItemTask.setTimeSlot(null);
+        buPrescriptionItemTask.setWeekDay(null);
+        buPrescriptionItemTask.setUpdateTime(new Date());
+        del = buPrescriptionItemTaskMapper.updateById(buPrescriptionItemTask);
         if (del > 0) {
             //对应的适宜技术小项目中的预约数据要-1，剩余预约次数要+1
-            BuPrescriptionItemAppointment buPrescriptionItemAppointment = buPrescriptionItemAppointmentMapper.selectById(buPrescriptionItemAppointmentItem.getPrescriptionItemAppointmentId());
-            Preconditions.checkArgument(Objects.nonNull(buPrescriptionItemAppointmentItem), "处方明细适宜技术预约汇总数据错误!");
+            BuPrescriptionItemAppointment buPrescriptionItemAppointment = buPrescriptionItemAppointmentMapper.selectById(buPrescriptionItemTask.getPrescriptionItemAppointmentId());
+            Preconditions.checkArgument(Objects.nonNull(buPrescriptionItemAppointment), "处方明细适宜技术预约汇总数据错误!");
 
             buPrescriptionItemAppointment.setAppointmentQuantity(buPrescriptionItemAppointment.getAppointmentQuantity() - 1);
             buPrescriptionItemAppointment.setSurplusQuantity(buPrescriptionItemAppointment.getSurplusQuantity() + 1);
@@ -190,11 +200,11 @@ public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<Bu
     @Override
     public Boolean appointment(AppointmentRo appointmentRo) {
         //取出现有要保存或编辑的预约数据的id
-        List<Long> idList = appointmentRo.getBuPrescriptionItemAppointmentItemRoList().stream().filter(item -> Objects.nonNull(item.getId())).map(BuPrescriptionItemAppointmentItemRo::getId).collect(Collectors.toList());
+        List<Long> idList = appointmentRo.getBuPrescriptionItemTaskRoList().stream().filter(item -> Objects.nonNull(item.getId())).map(BuPrescriptionItemTaskRo::getId).collect(Collectors.toList());
 
         //查询出之前在，这次没有的id，表明这些预约数据要删除
-        if (!CollectionUtils.isEmpty(appointmentRo.getPreItemIdList())) {
-            List<Long> deleteIdList = appointmentRo.getPreItemIdList().stream().filter(item -> !idList.contains(item)).collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(appointmentRo.getPreTaskIdList())) {
+            List<Long> deleteIdList = appointmentRo.getPreTaskIdList().stream().filter(item -> !idList.contains(item)).collect(Collectors.toList());
 
             if (!CollectionUtils.isEmpty(deleteIdList)) {
                 deleteIdList.forEach(item -> {
@@ -202,18 +212,40 @@ public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<Bu
                 });
             }
         }
-        //查询出id为null的数据出来这表示是新加上的数据
-        List<BuPrescriptionItemAppointmentItem> insertList = appointmentRo.getBuPrescriptionItemAppointmentItemRoList().stream().filter(item -> Objects.isNull(item.getId())).map(obj -> {
-            BuPrescriptionItemAppointmentItem buPrescriptionItemAppointmentItem = new BuPrescriptionItemAppointmentItem();
-            BeanUtil.copyProperties(obj, buPrescriptionItemAppointmentItem);
-            buPrescriptionItemAppointmentItem.setCustomerId(appointmentRo.getCustomerId());
-            return buPrescriptionItemAppointmentItem;
-        }).collect(Collectors.toList());
+        //查询出id为null的数据出来这表示是新预约的数据
+        List<BuPrescriptionItemTask> buPrescriptionItemTaskList = new ArrayList<>();
+        for (BuPrescriptionItemTaskRo buPrescriptionItemTaskRo : appointmentRo.getBuPrescriptionItemTaskRoList()) {
+            if(Objects.nonNull(buPrescriptionItemTaskRo.getId()))
+                continue;
 
-        if (!CollectionUtils.isEmpty(insertList)) {
-            insertList.forEach(item -> {
-                makeAppointment(item);
-            });
+            LambdaQueryWrapper<BuPrescriptionItemTask> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(BuPrescriptionItemTask::getPatientId, buPrescriptionItemTaskRo.getPatientId());
+            queryWrapper.eq(BuPrescriptionItemTask::getOutpatientId, buPrescriptionItemTaskRo.getOutpatientId());
+            queryWrapper.eq(BuPrescriptionItemTask::getOutpatientAppointmentId, buPrescriptionItemTaskRo.getOutpatientAppointmentId());
+            queryWrapper.eq(BuPrescriptionItemTask::getPrescriptionItemAppointmentId, buPrescriptionItemTaskRo.getPrescriptionItemAppointmentId());
+            queryWrapper.eq(BuPrescriptionItemTask::getEntityId, buPrescriptionItemTaskRo.getEntityId());
+            queryWrapper.eq(BuPrescriptionItemTask::getCustomerId, buPrescriptionItemTaskRo.getCustomerId());
+            queryWrapper.eq(BuPrescriptionItemTask::getAppointmentStatus, 0);
+            queryWrapper.isNull(BuPrescriptionItemTask::getAppointmentDate);
+            queryWrapper.isNull(BuPrescriptionItemTask::getTimeSlot);
+            queryWrapper.isNull(BuPrescriptionItemTask::getWeekDay);
+            queryWrapper.orderByAsc(BuPrescriptionItemTask::getPrescriptionItemId);
+            queryWrapper.last("limit 1");
+            BuPrescriptionItemTask buPrescriptionItemTask = buPrescriptionItemTaskMapper.selectOne(queryWrapper);
+
+            if (Objects.nonNull(buPrescriptionItemTask)) {
+                buPrescriptionItemTask.setAppointmentDate(buPrescriptionItemTaskRo.getAppointmentDate());
+                buPrescriptionItemTask.setAppointmentStatus(1);
+                buPrescriptionItemTask.setWeekDay(buPrescriptionItemTaskRo.getWeekday());
+                buPrescriptionItemTask.setUpdateTime(new Date());
+                buPrescriptionItemTaskList.add(buPrescriptionItemTask);
+            }
+        }
+
+        if (!CollectionUtils.isEmpty(buPrescriptionItemTaskList)) {
+            //批量预约数据，就是修改设置任务上的预约时间
+            boolean res = buPrescriptionItemTaskService.saveBatch(buPrescriptionItemTaskList);
+            return res;
         }
         return true;
     }
