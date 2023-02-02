@@ -60,20 +60,16 @@ public class PsUserController {
 
 
     @ApiOperation(value = "验证码登录", notes = "验证码登录")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "code", value = "验证码", required = true),
-            @ApiImplicitParam(name = "phone", value = "手机号", required = true),
-            @ApiImplicitParam(name = "openId", value = "openId", required = true),
-    })
+    @ApiImplicitParam(name = "map", value = "验证参数map对象包含有 phone,code,openId 三个key", required = false)
     @PostMapping("/AuthCodeLogin")
-    public Result AuthCodeLogin(@RequestParam("phone") String phone, @RequestParam("code") String code, @RequestParam("openId") String openId) {
+    public Result AuthCodeLogin(@RequestBody Map<String,String> map) {
         //以手机号查询code进行比较
-        Object o = redisUtils.get(SmsSceneEnum.LOGIN_PREFIX.getCode() + "_" + phone);
+        Object o = redisUtils.get(SmsSceneEnum.LOGIN_PREFIX.getCode() + "_" + map.get("phone"));
         Assert.notNull(o, "当前手机号不存在验证码!");
         String c = String.valueOf(o);
-        Assert.isTrue(c.equals(code), "验证码错误!");
-        PsUser psUser = service.getUserByPhone(phone);
-        psUser.setOpenid(openId);
+        Assert.isTrue(c.equals(map.get("code")), "验证码错误!");
+        PsUser psUser = service.getUserByPhone(map.get("phone"));
+        psUser.setOpenid(map.get("openId"));
         service.updateById(psUser);
         return Result.success(psUser);
     }
@@ -108,7 +104,7 @@ public class PsUserController {
         try {
             Boolean res = smsService.sendSms(signName,SmsTemplateEnum.VERIFICATION_CODE.getCode(), phone, map);
             if (res) {
-                redisUtils.set(SmsSceneEnum.LOGIN_PREFIX.getCode() + "_" + phone, verificationCode, 120);
+                boolean ret = redisUtils.set(SmsSceneEnum.LOGIN_PREFIX.getCode() + "_" + phone, verificationCode, 120);
             }
         } catch (Exception e) {
             e.printStackTrace();
