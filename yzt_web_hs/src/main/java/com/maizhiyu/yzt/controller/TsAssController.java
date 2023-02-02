@@ -9,10 +9,7 @@ import com.maizhiyu.yzt.exception.BusinessException;
 import com.maizhiyu.yzt.mapper.TsSytechMapper;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.BatchAddUserRO;
-import com.maizhiyu.yzt.serviceimpl.HsUserService;
-import com.maizhiyu.yzt.serviceimpl.TsAssOperationService;
-import com.maizhiyu.yzt.serviceimpl.TsAssService;
-import com.maizhiyu.yzt.serviceimpl.UserAssService;
+import com.maizhiyu.yzt.serviceimpl.*;
 import com.maizhiyu.yzt.vo.TssAssVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -46,7 +43,7 @@ public class TsAssController {
     private HsUserService hsUserService;
 
     @Resource
-    private TsSytechMapper tsSytechMapper;
+    private TsSytechService tsSytechService;
 
     @ApiOperation(value = "获取用户列表" , notes = "获取用户列表")
     @ApiImplicitParams({
@@ -145,7 +142,7 @@ public class TsAssController {
     })
     @GetMapping("/selectSytech")
     public Result selectSytech(){
-        List<TsSytech> list = tsSytechMapper.selectList(null);
+        List<TsSytech> list = tsSytechService.query().eq("istest",1).list();
         return Result.success(list);
     }
 
