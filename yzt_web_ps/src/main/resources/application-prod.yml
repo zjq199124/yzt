@@ -60,7 +60,7 @@ spring:
   redis:
     host: 127.0.0.1
     port: 6379
-    password: 1qaz@WSX
+    #password: MZY1qaz@WSX
     timeout: 86400
   session:
     store-type: redis
