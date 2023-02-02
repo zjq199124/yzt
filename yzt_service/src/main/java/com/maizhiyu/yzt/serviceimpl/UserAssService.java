@@ -83,6 +83,7 @@ public class UserAssService extends ServiceImpl<UserAssMapper, UserAss> implemen
             List<UserAss> userAsseGrade = userAsses.stream().filter(e -> list.contains(e.getDetailId())).collect(Collectors.toList());
             //人员考核项考核成绩值填充
             AtomicReference<Integer> totalScore= new AtomicReference<>(0);
+            AtomicReference<Integer> score= new AtomicReference<>(0);
             userAsseGrade.stream().forEach(s -> {
                 TssAssVO.tsAssOperationDetailList grade = new TssAssVO.tsAssOperationDetailList();
                 grade.setDeduct(s.getDeduct());
@@ -94,7 +95,10 @@ public class UserAssService extends ServiceImpl<UserAssMapper, UserAss> implemen
                 grade.setOperationId(cc.get().getOperationId());
                 grade.setMark(cc.get().getMark());
                 grade.setGrade(cc.get().getGrade());
+                String[] gra = grade.getGrade().split(",");
+                Integer grad = Integer.valueOf(gra[0]);
                 totalScore.updateAndGet(v -> v + s.getScore());
+                score.updateAndGet(f -> f + grad);
                 gradeList.add(grade);
             });
             //填充考核项数据
@@ -102,7 +106,7 @@ public class UserAssService extends ServiceImpl<UserAssMapper, UserAss> implemen
             operationDetail.setOperationId(item.getId());
             operationDetail.setOperationName(item.getOperationName());
             operationDetail.setGetOperationScore(totalScore.get().intValue());
-            operationDetail.setScore(item.getScore());
+            operationDetail.setScore(score.get().intValue());
             operationDetail.setTsAssOperationDetailList(gradeList);
             operationDetail.setSytechId(item.getSytechId());
             operationDetail.setId(item.getId());
