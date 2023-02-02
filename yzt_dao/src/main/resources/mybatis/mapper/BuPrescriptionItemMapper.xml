@@ -108,7 +108,7 @@
         bpi.id as prescriptionItemId,
         bd.disease,
         ts.NAME AS tsName,
-        ts.create_time AS outpatientTime
+        bd.create_time AS outpatientTime
         FROM
         bu_diagnose bd
         LEFT JOIN bu_prescription_item bpi ON bd.outpatient_id = bpi.outpatient_id

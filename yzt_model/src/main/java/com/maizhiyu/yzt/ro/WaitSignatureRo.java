@@ -22,19 +22,19 @@ public class WaitSignatureRo implements Serializable {
     @ApiModelProperty("科室id")
     private Long departmentId;
 
-    @ApiModelProperty("预约状态：1：未预约；2:已预约")
-    private Integer state;
+    @ApiModelProperty("预约状态：0：未预约；1:已预约")
+    private Integer appointmentStatus;
 
     @ApiModelProperty("客户id")
     private Long customerId;
 
-    @ApiModelProperty("门诊开始时间")
+    @ApiModelProperty("开始时间")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Shanghai")
-    private Date visitStartDate;
+    private Date startDate;
 
-    @ApiModelProperty("门诊结束时间")
+    @ApiModelProperty("结束时间")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Shanghai")
-    private Date visitEndDate;
+    private Date endDate;
 
     @ApiModelProperty("当前页")
     private Integer currentPage = 1;

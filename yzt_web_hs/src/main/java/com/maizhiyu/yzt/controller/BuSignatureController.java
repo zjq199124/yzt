@@ -8,6 +8,7 @@ import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.WaitSignatureRo;
 import com.maizhiyu.yzt.ro.WaitTreatmentRo;
 import com.maizhiyu.yzt.security.HsUserDetails;
+import com.maizhiyu.yzt.service.BuPrescriptionItemTaskService;
 import com.maizhiyu.yzt.service.BuSignatureService;
 import com.maizhiyu.yzt.service.IBuPrescriptionItemService;
 import com.maizhiyu.yzt.service.ISmsService;
@@ -19,10 +20,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -47,6 +45,9 @@ public class BuSignatureController extends BaseController {
     private MsCustomerService msCustomerService;
 
     @Resource
+    private BuPrescriptionItemTaskService buPrescriptionItemTaskService;
+
+    @Resource
     private ISmsService smsService;
 
     @ApiOperation("待签到列表")
@@ -54,17 +55,16 @@ public class BuSignatureController extends BaseController {
     public Result<Page<WaitSignatureVo>> waitSignatureList(@RequestBody WaitSignatureRo waitSignatureRo) {
         Long customerId = ((Number) getClaims().get("customerId")).longValue();
         waitSignatureRo.setCustomerId(customerId);
-        Page<WaitSignatureVo> page = buPrescriptionItemService.selectWaitSignatureList(waitSignatureRo);
+        //Page<WaitSignatureVo> page = buPrescriptionItemService.selectWaitSignatureList(waitSignatureRo);
+        Page<WaitSignatureVo> page = buPrescriptionItemTaskService.selectWaitSignatureList(waitSignatureRo);
         return Result.success(page);
     }
 
 
     @ApiOperation("签到")
-    @PostMapping("/signature")
-    public Result<Boolean> signature(@RequestBody BuSignature buSignature) {
-        HsUserDetails hsUserDetails = getHsUserDetails();
-        buSignature.setCustomerId(hsUserDetails.getCustomerId());
-        Boolean result = buSignatureService.addSignature(buSignature);
+    @GetMapping("/signature")
+    public Result<Boolean> signature(Long prescriptionItemTaskId) {
+        Boolean result = buPrescriptionItemTaskService.signature(prescriptionItemTaskId);
         return Result.success(result);
     }
 

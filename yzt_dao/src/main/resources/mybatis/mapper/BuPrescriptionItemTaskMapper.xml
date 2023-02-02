@@ -7,7 +7,8 @@
         <result property="outpatientAppointmentId" column="outpatient_appointment_id" jdbcType="INTEGER"/>
         <result property="prescriptionItemAppointmentId" column="prescription_item_appointment_id" jdbcType="INTEGER"/>
         <result property="customerId" column="customer_id" jdbcType="INTEGER"/>
-        <result property="patientId" column="patient_id" jdbcType="INTEGER"/>
+        <result property="customerId" column="customer_id" jdbcType="INTEGER"/>
+        <result property="departmentId" column="department_id" jdbcType="INTEGER"/>
         <result property="outpatientId" column="outpatient_id" jdbcType="INTEGER"/>
         <result property="diagnoseId" column="diagnose_id" jdbcType="INTEGER"/>
         <result property="prescriptionId" column="prescription_id" jdbcType="INTEGER"/>
@@ -29,6 +30,99 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
+    <resultMap id="WaitSignatureMap" type="com.maizhiyu.yzt.vo.WaitSignatureVo">
+        <result column="prescriptionItemId" property="prescriptionItemId" />
+        <result column="outpatient_id" property="outpatientId" />
+        <result column="entity_id" property="entityId" />
+        <result column="patientId" property="patientId" />
+        <result column="name" property="name" />
+        <result column="phone" property="phone" />
+        <result column="gender" property="gender" />
+        <result column="age" property="age" />
+        <result column="dname" property="dname" />
+        <result column="appointment_date" property="appointmentDate" />
+        <result column="time_slot" property="timeSlot" />
+        <result column="disease" property="disease" />
+        <result column="tsName" property="tsName" />
+        <result column="quantity" property="quantity" />
+        <result column="treatment_quantity" property="treatmentQuantity" />
+        <result column="outpatientTime" property="outpatientTime" />
+    </resultMap>
+
+    <select id="selectWaitSignatureList" resultType="com.maizhiyu.yzt.vo.WaitSignatureVo">
+        SELECT
+            temp.id AS prescriptionItemTaskId,
+            temp.outpatient_id,
+            temp.entity_id,
+            bp.name,
+            bp.phone,
+            bp.id AS patientId,
+            CASE
+
+                WHEN bp.sex = 1 THEN
+                    '男'
+                WHEN bp.sex = 0 THEN
+                    '女' ELSE '未知'
+                END AS gender,
+            TIMESTAMPDIFF(
+                YEAR,
+                    bp.birthday,
+                    CURDATE()) AS age,
+            hd.dname,
+            temp.appointment_date,
+            temp.time_slot,
+            bpia.treatment_quantity,
+            bpia.quantity,
+            bd.disease,
+            ts.NAME AS tsName,
+            bd.create_time AS outpatientTime
+        FROM
+            (
+                SELECT
+                    *
+                FROM
+                    bu_prescription_item_task
+                WHERE
+                    appointment_status = 1 UNION
+                SELECT
+                    *
+                FROM
+                    bu_prescription_item_task
+                WHERE
+                    appointment_status = 0
+                GROUP BY
+                    prescription_item_id,
+                    entity_id
+                ORDER BY
+                    appointment_status DESC,
+                    time_slot ASC
+            ) temp
+                LEFT JOIN bu_patient bp ON temp.patient_id = bp.id
+                AND bp.is_del = 0
+                LEFT JOIN hs_department hd ON temp.department_id = hd.id
+                AND hd.is_del = 0
+                LEFT JOIN bu_prescription_item_appointment bpia ON temp.prescription_item_appointment_id = bpia.id
+                AND bpia.is_del = 0
+                LEFT JOIN bu_diagnose bd ON temp.diagnose_id = bd.id
+                AND bd.is_del = 0
+                LEFT JOIN ts_sytech ts ON temp.entity_id = ts.id
+                AND ts.is_del = 0
+        WHERE
+            temp.is_del = 0 AND temp.signature_status = 0
+            AND temp.customer_id = #{waitSignatureRo.customerId}
+            <if test="waitSignatureRo.search != null and waitSignatureRo.search !=''">
+                AND (bp.name LIKE CONCAT('%',#{waitSignatureRo.search},'%') OR bp.phone LIKE CONCAT('%',#{waitSignatureRo.search},'%'))
+            </if>
+            <if test="waitSignatureRo.departmentId != null">
+                AND temp.departmentId = #{waitSignatureRo.departmentId}
+            </if>
+            <if test="waitSignatureRo.status != null">
+                AND temp.appointment_status = #{waitSignatureRo.appointmentStatus}
+            </if>
+            <if test="waitSignatureRo.startDate != null and waitSignatureRo.endDate">
+                AND (bd.create_time BETWEEN #{waitSignatureRo.startDate} AND #{waitSignatureRo.endDate})
+            </if>
+    </select>
 
 </mapper>
 

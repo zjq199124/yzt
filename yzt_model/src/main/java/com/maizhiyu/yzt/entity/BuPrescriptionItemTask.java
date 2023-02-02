@@ -27,6 +27,8 @@ public class BuPrescriptionItemTask extends Model<BuPrescriptionItemTask> {
     private Long prescriptionItemAppointmentId;
     //客户id
     private Long customerId;
+    //客户id
+    private Long departmentId;
     //患者id
     private Long patientId;
     //门诊id
