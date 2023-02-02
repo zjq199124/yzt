@@ -13,7 +13,7 @@ import java.util.Date;
 @Data
 @ApiModel
 @Validated
-public class BuPrescriptionItemTaskRo implements Serializable {
+public class BuPrescriptionItemAppointmentItemRo implements Serializable {
 
     private static final long serialVersionUID = -1L;
 
@@ -44,8 +44,5 @@ public class BuPrescriptionItemTaskRo implements Serializable {
 
     @ApiModelProperty("客户id")
     private Long customerId;
-
-    @ApiModelProperty("适宜技术id")
-    private Long entityId;
 
 }

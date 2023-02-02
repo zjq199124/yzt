@@ -83,8 +83,8 @@ public class BuPrescriptionItemAppointment extends Model<BuPrescriptionItemAppoi
     private String tsName;
 
     @TableField(exist = false)
-    @ApiModelProperty("已预约的处置任务，（未签到，未治疗）")
-    List<BuPrescriptionItemTask> buPrescriptionItemTaskList;
+    @ApiModelProperty("预约数据")
+    List<BuPrescriptionItemAppointmentItem> buPrescriptionItemAppointmentItemList;
 
     @TableField(exist = false)
     @ApiModelProperty("适宜技术治疗list")

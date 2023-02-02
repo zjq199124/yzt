@@ -51,9 +51,6 @@ public class BuPrescriptionController {
     @Resource
     private IBuPrescriptionItemAppointmentService buPrescriptionItemAppointmentService;
 
-    @Resource
-    private BuPrescriptionItemTaskService buPrescriptionItemTaskService;
-
     @ApiOperation(value = "新增处方(中药)", notes = "新增处方(中药)")
     @PostMapping("/addPrescriptionZhongyao")
     public Result<Boolean> addPrescriptionZhongyao(HttpServletRequest request, @RequestBody BuPrescriptionRO.AddPrescriptionZhongyao ro) {
@@ -254,7 +251,7 @@ public class BuPrescriptionController {
 
     //开了处方之后添加预约数据
     private void addAppointmentInfo(BuPrescription prescription) {
-        // 1:先查询这次门诊是否有预约数据
+        // 先查询这次门诊是否有预约数据
         Long outpatientAppointmentId = null;
         BuOutpatientAppointment select = buOutpatientAppointmentService.selectByDiagnoseId(prescription.getDiagnoseId());
         if (Objects.isNull(select)) {
@@ -276,10 +273,10 @@ public class BuPrescriptionController {
             outpatientAppointmentId = select.getId();
         }
 
-        //2:根据技术小项目生成对应的预约数据
+        //根据技术小项目生成对应的预约数据
         Long finalOutpatientAppointmentId = outpatientAppointmentId;
         prescription.getItemList().forEach(item -> {
-            //查询技术小项目的预约数据是否生成
+            //查询是否生成技术小项目的预约数据是否生成
             BuPrescriptionItemAppointment buPrescriptionItemAppointment = buPrescriptionItemAppointmentService.selectByAppointmentIdAndItemId(finalOutpatientAppointmentId, item.getId());
             if (Objects.nonNull(buPrescriptionItemAppointment)) {
 
@@ -305,29 +302,6 @@ public class BuPrescriptionController {
                 insert.setCreateTime(new Date());
                 insert.setUpdateTime(insert.getCreateTime());
                 buPrescriptionItemAppointmentService.save(insert);
-
-                //3:根据技术小项目的次数生成相应数量的任务
-                int quantity = item.getQuantity().intValue();
-                List<BuPrescriptionItemTask> list = new ArrayList<>(quantity);
-                while (quantity > 0) {
-                    BuPrescriptionItemTask buPrescriptionItemTask = new BuPrescriptionItemTask();
-                    buPrescriptionItemTask.setOutpatientAppointmentId(finalOutpatientAppointmentId);
-                    buPrescriptionItemTask.setPrescriptionItemAppointmentId(insert.getId());
-                    buPrescriptionItemTask.setCustomerId(prescription.getCustomerId());
-                    buPrescriptionItemTask.setPatientId(prescription.getPatientId());
-                    buPrescriptionItemTask.setOutpatientId(prescription.getOutpatientId());
-                    buPrescriptionItemTask.setDiagnoseId(prescription.getDiagnoseId());
-                    buPrescriptionItemTask.setPrescriptionId(prescription.getId());
-                    buPrescriptionItemTask.setPrescriptionItemId(item.getId());
-                    buPrescriptionItemTask.setEntityId(item.getEntityId());
-                    buPrescriptionItemTask.setTsName(item.getName());
-                    buPrescriptionItemTask.setCreateTime(new Date());
-                    buPrescriptionItemTask.setUpdateTime(buPrescriptionItemTask.getCreateTime());
-                    list.add(buPrescriptionItemTask);
-                    quantity--;
-                }
-
-                buPrescriptionItemTaskService.saveBatch(list);
             }
         });
     }

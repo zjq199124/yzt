@@ -7,8 +7,9 @@ import com.maizhiyu.yzt.entity.BuOutpatientAppointment;
 import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.AppointmentRo;
-import com.maizhiyu.yzt.ro.BuPrescriptionItemTaskRo;
+import com.maizhiyu.yzt.ro.BuPrescriptionItemAppointmentItemRo;
 import com.maizhiyu.yzt.ro.OutpatientAppointmentRo;
+import com.maizhiyu.yzt.security.HsUserDetails;
 import com.maizhiyu.yzt.service.IBuOutpatientAppointmentService;
 import com.maizhiyu.yzt.service.IBuPrescriptionItemAppointmentItemService;
 import io.swagger.annotations.Api;
@@ -51,10 +52,10 @@ public class BuOutpatientAppointmentController extends BaseController {
 
     @ApiOperation(value = "预约")
     @PostMapping("/makeAppointment")
-    public Result<Boolean> makeAppointment(@RequestBody BuPrescriptionItemTaskRo buPrescriptionItemTaskRo) {
+    public Result<Boolean> makeAppointment(@RequestBody BuPrescriptionItemAppointmentItemRo buPrescriptionItemAppointmentItemRo) {
         Long customerId = ((Number) getClaims().get("customerId")).longValue();
         BuPrescriptionItemAppointmentItem buPrescriptionItemAppointmentItem = new BuPrescriptionItemAppointmentItem();
-        BeanUtil.copyProperties(buPrescriptionItemTaskRo, buPrescriptionItemAppointmentItem);
+        BeanUtil.copyProperties(buPrescriptionItemAppointmentItemRo, buPrescriptionItemAppointmentItem);
         buPrescriptionItemAppointmentItem.setCustomerId(customerId);
         Boolean result = buPrescriptionItemAppointmentItemService.makeAppointment(buPrescriptionItemAppointmentItem);
         return Result.success(result);

@@ -90,21 +90,27 @@ public class BuOutpatientAppointmentServiceImpl extends ServiceImpl<BuOutpatient
 
     @Override
     public BuOutpatientAppointment appointmentDetail(Long id) {
-        //1：查询一次门诊对应的预约数据
         BuOutpatientAppointment buOutpatientAppointment = buOutpatientAppointmentMapper.selectById(id);
         Preconditions.checkArgument(Objects.nonNull(buOutpatientAppointment), "id错误!");
 
-        //2:查询此次门诊所开的处置的小项目所对应的预约数据信息
         List<BuPrescriptionItemAppointment> list = buPrescriptionItemAppointmentMapper.selectByOutpatientAppointmentId(buOutpatientAppointment.getId());
         buOutpatientAppointment.setBuPrescriptionItemAppointmentList(list);
 
         if(CollectionUtils.isEmpty(list))
             return buOutpatientAppointment;
 
-        //3:查询每一个处治小项目的每个任务的预约数据（已预约，未签到）
-        /*list.forEach(item -> {
+        List<Long> prescriptionItemAppointmentIdList = list.stream().map(BuPrescriptionItemAppointment::getId).collect(Collectors.toList());
+        List<BuPrescriptionItemAppointmentItem> buPrescriptionItemAppointmentItemList = buPrescriptionItemAppointmentItemMapper.selectByPrescriptionItemAppointmentIdList(prescriptionItemAppointmentIdList);
+
+        if(CollectionUtils.isEmpty(buPrescriptionItemAppointmentItemList))
+            return buOutpatientAppointment;
+
+        Map<Long, List<BuPrescriptionItemAppointmentItem>> prescriptionItemAppointmentIdMap = buPrescriptionItemAppointmentItemList.stream().collect(Collectors.groupingBy(BuPrescriptionItemAppointmentItem::getPrescriptionItemAppointmentId));
+
+        //设置已预约详情
+        list.forEach(item -> {
             item.setBuPrescriptionItemAppointmentItemList(prescriptionItemAppointmentIdMap.get(item.getId()));
-        });*/
+        });
 
 
         //查询处方的每一个条目的具体治疗记录

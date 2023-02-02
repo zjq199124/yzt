@@ -1,10 +1,11 @@
 package com.maizhiyu.yzt.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.result.Result;
-import com.maizhiyu.yzt.ro.BuPrescriptionItemTaskRo;
+import com.maizhiyu.yzt.ro.BuPrescriptionItemAppointmentItemRo;
 import com.maizhiyu.yzt.ro.BuPrescriptionItemAppointmentRo;
 import com.maizhiyu.yzt.service.IBuOutpatientAppointmentService;
 import com.maizhiyu.yzt.service.IBuPrescriptionItemAppointmentItemService;
@@ -58,9 +59,9 @@ public class BuOutpatientAppointmentController {
 
     @ApiOperation(value = "编辑或保存预约")
     @PostMapping("/saveOrUpdateAppointment")
-    public Result<Boolean> makeAppointment(@RequestBody BuPrescriptionItemTaskRo buPrescriptionItemTaskRo) {
+    public Result<Boolean> makeAppointment(@RequestBody BuPrescriptionItemAppointmentItemRo buPrescriptionItemAppointmentItemRo) {
         BuPrescriptionItemAppointmentItem buPrescriptionItemAppointmentItem = new BuPrescriptionItemAppointmentItem();
-        BeanUtil.copyProperties(buPrescriptionItemTaskRo, buPrescriptionItemAppointmentItem);
+        BeanUtil.copyProperties(buPrescriptionItemAppointmentItemRo, buPrescriptionItemAppointmentItem);
         Boolean result = buPrescriptionItemAppointmentItemService.makeAppointment(buPrescriptionItemAppointmentItem);
         return Result.success(result);
     }
