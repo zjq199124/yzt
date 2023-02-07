@@ -2,9 +2,13 @@ package com.maizhiyu.yzt.mapper;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.BuPrescriptionItemTask;
+import com.maizhiyu.yzt.ro.ItemTaskRo;
 import com.maizhiyu.yzt.ro.WaitSignatureRo;
+import com.maizhiyu.yzt.ro.WaitTreatmentRo;
+import com.maizhiyu.yzt.vo.BuPrescriptionItemTaskVo;
 import com.maizhiyu.yzt.vo.WaitSignatureVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 /**
@@ -17,6 +21,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 @Repository
 public interface BuPrescriptionItemTaskMapper extends BaseMapper<BuPrescriptionItemTask> {
 
-    Page<WaitSignatureVo> selectWaitSignatureList(Page<WaitSignatureVo> page, WaitSignatureRo waitSignatureRo);
+    Page<BuPrescriptionItemTaskVo> selectWaitSignatureList(Page<BuPrescriptionItemTaskVo> page, WaitSignatureRo waitSignatureRo);
+
+    Page<BuPrescriptionItemTaskVo> selectWaitTreatmentList(Page<BuPrescriptionItemTaskVo> page, WaitTreatmentRo waitTreatmentRo);
+
+    Page<BuPrescriptionItemTaskVo> selectTreatmentList(@Param("page") Page<BuPrescriptionItemTaskVo> page, @Param("itemTaskRo") ItemTaskRo itemTaskRo);
+
+    BuPrescriptionItemTaskVo treatmentRecordDetail(@Param("id") Long id);
 }
 

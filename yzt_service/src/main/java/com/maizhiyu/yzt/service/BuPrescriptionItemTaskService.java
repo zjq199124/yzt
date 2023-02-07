@@ -2,9 +2,10 @@ package com.maizhiyu.yzt.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.maizhiyu.yzt.entity.BuCure;
 import com.maizhiyu.yzt.entity.BuPrescriptionItemTask;
-import com.maizhiyu.yzt.ro.WaitSignatureRo;
-import com.maizhiyu.yzt.vo.WaitSignatureVo;
+import com.maizhiyu.yzt.ro.*;
+import com.maizhiyu.yzt.vo.BuPrescriptionItemTaskVo;
 
 /**
  * (BuPrescriptionItemTask)表服务接口
@@ -14,8 +15,22 @@ import com.maizhiyu.yzt.vo.WaitSignatureVo;
  */
 public interface BuPrescriptionItemTaskService extends IService<BuPrescriptionItemTask> {
 
-    Page<WaitSignatureVo> selectWaitSignatureList(WaitSignatureRo waitSignatureRo);
+    Page<BuPrescriptionItemTaskVo> selectWaitSignatureList(WaitSignatureRo waitSignatureRo);
 
-    Boolean signature(Long prescriptionItemTaskId);
+    Boolean signature(ItemTaskRo itemTaskRo);
+
+    Page<BuPrescriptionItemTaskVo> waitTreatmentList(WaitTreatmentRo waitTreatmentRo);
+
+    boolean startTreatment(ItemTaskRo itemTaskRo);
+
+    boolean endTreatment(Long id);
+
+    Page<BuPrescriptionItemTaskVo> treatmentList(ItemTaskRo itemTaskRo);
+
+    BuPrescriptionItemTaskVo treatmentRecordDetail(Long id);
+
+    Boolean appointment(AppointmentRo appointmentRo);
+
+    Boolean deleteAppointment(Long buPrescriptionItemTaskId);
 }
 

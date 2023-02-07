@@ -65,7 +65,7 @@ public class BuPrescriptionItemAppointment extends Model<BuPrescriptionItemAppoi
     private Integer surplusQuantity;
 
     @ApiModelProperty("是否删除；1：是；0：否")
-    private Integer IsDel;
+    private Integer isDel;
 
     @ApiModelProperty(value="更新时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")

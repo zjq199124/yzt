@@ -21,6 +21,7 @@
         <result property="weekDay" column="week_day" jdbcType="INTEGER"/>
         <result property="signatureStatus" column="signature_status" jdbcType="INTEGER"/>
         <result property="signatureTime" column="signature_time" jdbcType="TIMESTAMP"/>
+        <result property="registrantId" column="registrant_id" jdbcType="BIGINT"/>
         <result property="cureStatus" column="cure_status" jdbcType="INTEGER"/>
         <result property="cureStartTime" column="cure_start_time" jdbcType="TIMESTAMP"/>
         <result property="cureEndTime" column="cure_end_time" jdbcType="TIMESTAMP"/>
@@ -30,11 +31,13 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
-    <resultMap id="WaitSignatureMap" type="com.maizhiyu.yzt.vo.WaitSignatureVo">
-        <result column="prescriptionItemId" property="prescriptionItemId" />
+    <resultMap id="BuPrescriptionItemTaskVoMap" type="com.maizhiyu.yzt.vo.BuPrescriptionItemTaskVo">
+        <result column="prescriptionItemTaskId" property="prescriptionItemTaskId" />
+        <result column="prescription_item_id" property="prescriptionItemId" />
+        <result column="prescription_id" property="prescriptionId" />
         <result column="outpatient_id" property="outpatientId" />
         <result column="entity_id" property="entityId" />
-        <result column="patientId" property="patientId" />
+        <result column="patient_id" property="patientId" />
         <result column="name" property="name" />
         <result column="phone" property="phone" />
         <result column="gender" property="gender" />
@@ -42,6 +45,7 @@
         <result column="dname" property="dname" />
         <result column="appointment_date" property="appointmentDate" />
         <result column="time_slot" property="timeSlot" />
+        <result column="signature_time" property="signatureTime" />
         <result column="disease" property="disease" />
         <result column="tsName" property="tsName" />
         <result column="quantity" property="quantity" />
@@ -49,7 +53,7 @@
         <result column="outpatientTime" property="outpatientTime" />
     </resultMap>
 
-    <select id="selectWaitSignatureList" resultType="com.maizhiyu.yzt.vo.WaitSignatureVo">
+    <select id="selectWaitSignatureList" resultType="com.maizhiyu.yzt.vo.BuPrescriptionItemTaskVo">
         SELECT
             temp.id AS prescriptionItemTaskId,
             temp.outpatient_id,
@@ -74,7 +78,7 @@
             bpia.treatment_quantity,
             bpia.quantity,
             bd.disease,
-            ts.NAME AS tsName,
+            ts.name AS tsName,
             bd.create_time AS outpatientTime
         FROM
             (
@@ -122,6 +126,149 @@
             <if test="waitSignatureRo.startDate != null and waitSignatureRo.endDate">
                 AND (bd.create_time BETWEEN #{waitSignatureRo.startDate} AND #{waitSignatureRo.endDate})
             </if>
+    </select>
+    <select id="selectWaitTreatmentList" resultType="com.maizhiyu.yzt.vo.BuPrescriptionItemTaskVo">
+        SELECT
+        bpit.id AS prescriptionItemTaskId,
+        bpit.outpatient_id,
+        bpit.entity_id,
+        bp.name,
+        bp.phone,
+        bp.id AS patientId,
+        CASE
+
+        WHEN bp.sex = 1 THEN
+        '男'
+        WHEN bp.sex = 0 THEN
+        '女' ELSE '未知'
+        END AS gender,
+        TIMESTAMPDIFF(
+        YEAR,
+        bp.birthday,
+        CURDATE()) AS age,
+        hd.dname,
+        bpit.signature_time,
+        bpia.treatment_quantity,
+        bpia.quantity,
+        bd.disease,
+        ts.name AS tsName,
+        bd.create_time AS outpatientTime
+        FROM
+        bu_prescription_item_task bpit
+        LEFT JOIN bu_patient bp ON bpit.patient_id = bp.id
+        AND bp.is_del = 0
+        LEFT JOIN hs_department hd ON bpit.department_id = hd.id
+        AND hd.is_del = 0
+        LEFT JOIN bu_prescription_item_appointment bpia ON bpit.prescription_item_appointment_id = bpia.id
+        AND bpia.is_del = 0
+        LEFT JOIN bu_diagnose bd ON bpit.diagnose_id = bd.id
+        AND bd.is_del = 0
+        LEFT JOIN ts_sytech ts ON bpit.entity_id = ts.id
+        AND ts.is_del = 0
+        WHERE
+        bpit.is_del = 0 AND bpit.signature_status = 1 and bpit.cure_status = 0
+        AND bpit.customer_id = #{waitTreatmentRo.customerId}
+        <if test="waitTreatmentRo.search != null and waitTreatmentRo.search !=''">
+            AND (bp.name LIKE CONCAT('%',#{waitTreatmentRo.search},'%') OR bp.phone LIKE CONCAT('%',#{waitTreatmentRo.search},'%'))
+        </if>
+        <if test="waitTreatmentRo.departmentId != null">
+            AND bpit.departmentId = #{waitTreatmentRo.departmentId}
+        </if>
+        ORDER BY bpit.signature_time desc
+    </select>
+    <select id="selectTreatmentList" resultType="com.maizhiyu.yzt.vo.BuPrescriptionItemTaskVo">
+        SELECT
+        bp.name,
+        CASE
+        WHEN bp.sex = 1 THEN '男'
+        WHEN bp.sex = 0 THEN '女'
+        ELSE '未知'
+        END AS gender,
+        TIMESTAMPDIFF(YEAR,bp.birthday,CURDATE()) as age,
+        hd.dname,
+        bd.disease,
+        bd.create_time as outpatientTime,
+        ts.name as tsName,
+        bpia.quantity,
+        bpia.treatment_quantity,
+        bo.create_time as outpatient_time,
+        bpit.cure_start_time,
+        bpit.id as prescriptionItemTaskId,
+        bpit.patient_id,
+        bpit.outpatient_id,
+        bpit.entity_id,
+        bpit.cure_user_id,
+        bpit.signature_id,
+        bpit.department_id,
+        bpit.customer_id
+        FROM
+        bu_prescription_item_task bpit
+        LEFT JOIN bu_patient bp ON bpit.patient_id = bp.id
+        AND bp.is_del = 0
+        LEFT JOIN hs_department hd ON bpit.department_id = hd.id
+        AND hd.is_del = 0
+        LEFT JOIN bu_outpatient bo ON bpit.outpatient_id = bo.id
+        AND bo.is_del = 0
+        LEFT JOIN bu_diagnose bd ON bpit.outpatient_id = bd.outpatient_id
+        AND bd.is_del = 0
+        LEFT JOIN bu_prescription_item_appointment bpia ON bpit.prescription_item_appointment_id = bpia.id
+        AND bpia.is_del = 0
+        LEFT JOIN ts_sytech ts ON bpit.entity_id = ts.id
+        AND ts.is_del = 0
+        WHERE
+        bpit.is_del = 0 AND bpit.cure_status = 2
+        <if test="itemTaskRo.search != null and itemTaskRo.search != ''">
+            AND (bp.name LIKE concat('%',#{itemTaskRo.search},'%') OR bp.phone LIKE concat('%',#{itemTaskRo.search},'%'))
+        </if>
+        <if test="itemTaskRo.departmentId != null">
+            AND bpit.department_id = #{itemTaskRo.departmentId}
+        </if>
+        <if test="itemTaskRo.startDate != null and itemTaskRo.endDate != null">
+            AND (bpit.cure_start_time between #{itemTaskRo.startDate} AND {itemTaskRo.endDate})
+        </if>
+        ORDER BY
+        bc.create_time DESC
+    </select>
+    <select id="treatmentRecordDetail" resultType="com.maizhiyu.yzt.vo.BuPrescriptionItemTaskVo">
+        SELECT
+            bp.name,
+            bp.phone,
+            CASE
+                WHEN bp.sex = 1 THEN '男'
+                WHEN bp.sex = 0 THEN '女'
+                ELSE '未知'
+                END AS gender,
+            TIMESTAMPDIFF(YEAR,bp.birthday,CURDATE()) as age,
+            bd.disease,
+            bd.syndrome,
+            bo.create_time as outpatient_time,
+            bpi.name as tsName,
+            bpi.detail,
+            bpit.id as prescriptionItemTaskId,
+            bpit.prescription_id,
+            bpit.patient_id,
+            bpit.outpatient_id,
+            bpit.entity_id,
+            bpit.cure_user_id,
+            bpit.registrant_id,
+            bpit.create_time,
+            bpit.cure_status,
+            bpit.cure_start_time,
+            hu.user_name AS cureUserName,
+            hu1.user_name AS registrantName
+        FROM
+            bu_prescription_item_task bpit
+                LEFT JOIN bu_patient bp ON bpit.patient_id = bp.id
+                AND bp.is_del = 0
+                LEFT JOIN bu_outpatient bo ON bpit.outpatient_id = bo.id
+                AND bo.is_del = 0
+                LEFT JOIN bu_diagnose bd ON bpit.outpatient_id = bd.outpatient_id
+                LEFT JOIN hs_user hu ON bpit.cure_user_id = hu.id AND hu.is_del = 0
+                LEFT JOIN hs_user hu1 ON bpit.registrant_id = hu1.id AND hu1.is_del = 0
+                LEFT JOIN bu_prescription_item bpi ON bpit.prescription_item_id = bpi.id
+                AND bpi.is_del = 0
+        WHERE
+            bpit.is_del = 0 and bpit.id = #{id}
     </select>
 
 </mapper>

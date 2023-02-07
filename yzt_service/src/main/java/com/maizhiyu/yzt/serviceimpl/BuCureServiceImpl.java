@@ -123,10 +123,6 @@ public class BuCureServiceImpl extends ServiceImpl<BuCureMapper, BuCure> impleme
 
     @Override
     public BuCureVo selectCureDetailBySignatureId(Long signatureId) {
-        LambdaQueryWrapper<BuCure> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(BuCure::getSignatureId, signatureId)
-                .orderByDesc(BuCure::getCreateTime)
-                .last("limit 1");
         BuCureVo buCureVo = buCureMapper.selectCureDetailBySignatureId(signatureId);
         Preconditions.checkArgument(Objects.nonNull(buCureVo),"签到id错误!");
 

@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.vo;
 
+import com.maizhiyu.yzt.entity.BuPrescriptionItem;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,11 +8,12 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class WaitSignatureVo implements Serializable {
+public class BuPrescriptionItemTaskVo implements Serializable {
     private static final long serialVersionUID = -1L;
 
     @ApiModelProperty("处治小项目任务id")
@@ -19,6 +21,9 @@ public class WaitSignatureVo implements Serializable {
 
     @ApiModelProperty("处方适宜技术小项目id")
     private Long prescriptionItemId;
+
+    @ApiModelProperty("处方id")
+    private Long prescriptionId;
 
     @ApiModelProperty("门诊id")
     private Long outpatientId;
@@ -59,6 +64,9 @@ public class WaitSignatureVo implements Serializable {
     @ApiModelProperty("适宜技术名称")
     private String tsName;
 
+    @ApiModelProperty("适宜技术详情")
+    private String detail;
+
     @ApiModelProperty("开方次数")
     private Integer quantity;
 
@@ -67,4 +75,7 @@ public class WaitSignatureVo implements Serializable {
 
     @ApiModelProperty("就诊时间")
     private Date outpatientTime;
+
+    @ApiModelProperty("技术方案")
+    private List<BuPrescriptionItem> buPrescriptionItemList;
 }

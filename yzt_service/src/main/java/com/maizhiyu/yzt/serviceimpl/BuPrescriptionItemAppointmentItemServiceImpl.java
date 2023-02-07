@@ -3,6 +3,7 @@ package com.maizhiyu.yzt.serviceimpl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.base.Preconditions;
@@ -24,10 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -199,20 +197,21 @@ public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<Bu
 
     @Override
     public Boolean appointment(AppointmentRo appointmentRo) {
-        //取出现有要保存或编辑的预约数据的id
+        //1:取出现有要保存或编辑的预约数据的id
         List<Long> idList = appointmentRo.getBuPrescriptionItemTaskRoList().stream().filter(item -> Objects.nonNull(item.getId())).map(BuPrescriptionItemTaskRo::getId).collect(Collectors.toList());
 
-        //查询出之前在，这次没有的id，表明这些预约数据要删除
+        //2:查询出之前在，这次没有的id，表明这些预约数据要删除
         if (!CollectionUtils.isEmpty(appointmentRo.getPreTaskIdList())) {
             List<Long> deleteIdList = appointmentRo.getPreTaskIdList().stream().filter(item -> !idList.contains(item)).collect(Collectors.toList());
 
             if (!CollectionUtils.isEmpty(deleteIdList)) {
                 deleteIdList.forEach(item -> {
+                    //3:删除对应的预约数据
                     deleteAppointment(item);
                 });
             }
         }
-        //查询出id为null的数据出来这表示是新预约的数据
+        //4：查询出id为null的数据出来这表示是新预约的数据
         List<BuPrescriptionItemTask> buPrescriptionItemTaskList = new ArrayList<>();
         for (BuPrescriptionItemTaskRo buPrescriptionItemTaskRo : appointmentRo.getBuPrescriptionItemTaskRoList()) {
             if(Objects.nonNull(buPrescriptionItemTaskRo.getId()))
@@ -243,9 +242,55 @@ public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<Bu
         }
 
         if (!CollectionUtils.isEmpty(buPrescriptionItemTaskList)) {
-            //批量预约数据，就是修改设置任务上的预约时间
-            boolean res = buPrescriptionItemTaskService.saveBatch(buPrescriptionItemTaskList);
-            return res;
+            //5：按照处方小项目id进行分组，相同的说明约的同一个适宜技术的。
+            Map<Long, List<BuPrescriptionItemTask>> prescriptionItemIdListMap = buPrescriptionItemTaskList.stream().collect(Collectors.groupingBy(BuPrescriptionItemTask::getPrescriptionItemId));
+            //6：根据处方小项目批量预约数据，就是修改设置任务上的预约时间
+            prescriptionItemIdListMap.keySet().forEach(item -> {
+                List<BuPrescriptionItemTask> list = prescriptionItemIdListMap.get(item);
+                //7:保存预约信息
+                if (!CollectionUtils.isEmpty(list)) {
+                    boolean res = buPrescriptionItemTaskService.saveBatch(buPrescriptionItemTaskList);
+                    if (res) {
+                        //8：修改对应的处置小项目的预约数据汇总,和预约完成状态
+                        LambdaQueryWrapper<BuPrescriptionItemAppointment> queryWrapper = new LambdaQueryWrapper<>();
+                        queryWrapper.eq(BuPrescriptionItemAppointment::getPrescriptionItemId, item)
+                                .eq(BuPrescriptionItemAppointment::getIsDel, 0)
+                                .last("limit 1");
+
+                        BuPrescriptionItemAppointment buPrescriptionItemAppointment = buPrescriptionItemAppointmentMapper.selectOne(queryWrapper);
+                        if (Objects.nonNull(buPrescriptionItemAppointment)) {
+
+                            buPrescriptionItemAppointment.setAppointmentQuantity(buPrescriptionItemAppointment.getAppointmentQuantity() + list.size());
+                            buPrescriptionItemAppointment.setSurplusQuantity(buPrescriptionItemAppointment.getSurplusQuantity() - list.size());
+                            if (buPrescriptionItemAppointment.getSurplusQuantity() == 0) {
+                                buPrescriptionItemAppointment.setState(3);
+                            } else {
+                                buPrescriptionItemAppointment.setState(2);
+                            }
+                            buPrescriptionItemAppointment.setUpdateTime(new Date());
+                            buPrescriptionItemAppointmentMapper.updateById(buPrescriptionItemAppointment);
+
+                            //9：修改此次门诊对应的总的预约小项目
+                            queryWrapper = null;
+                            queryWrapper.eq(BuPrescriptionItemAppointment::getOutpatientAppointmentId, buPrescriptionItemAppointment.getOutpatientAppointmentId())
+                                    .eq(BuPrescriptionItemAppointment::getIsDel, 0)
+                                    .ne(BuPrescriptionItemAppointment::getState, 3);
+
+                            List<BuPrescriptionItemAppointment> prescriptionItemAppointments = buPrescriptionItemAppointmentMapper.selectList(queryWrapper);
+
+                            LambdaUpdateWrapper<BuOutpatientAppointment> query = new LambdaUpdateWrapper<>();
+                            query.eq(BuOutpatientAppointment::getId, buPrescriptionItemAppointment.getOutpatientAppointmentId());
+                            if (CollectionUtils.isEmpty(prescriptionItemAppointments)) {
+                                query.set(BuOutpatientAppointment::getState, 3);
+                            } else {
+                                query.set(BuOutpatientAppointment::getState, 2);
+                            }
+                            query.set(BuOutpatientAppointment::getUpdateTime, new Date());
+                            buOutpatientAppointmentMapper.update(null, query);
+                        }
+                    }
+                }
+            });
         }
         return true;
     }

@@ -55,8 +55,12 @@ public class BuPrescriptionItemTask extends Model<BuPrescriptionItemTask> {
     private Integer signatureStatus;
     //签到时间
     private Date signatureTime;
+    //签到登记人id
+    private Long registrantId;
     //治疗状态；0未治疗；1治疗中；2治疗已结束
     private Integer cureStatus;
+    //治疗负责人id
+    private Long cureUserId;
     //治疗开始时间
     private Date cureStartTime;
     //治疗结束时间
