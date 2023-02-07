@@ -134,7 +134,7 @@ public class BuPrescriptionItemTaskController extends BaseController {
 
     @ApiOperation("治疗记录详情")
     @GetMapping("/treatmentRecordDetail")
-    @ApiImplicitParam(name = "signatureId", value = "签到id")
+    @ApiImplicitParam(name = "prescriptionItemTaskId", value = "处方小项目任务id")
     public Result<BuPrescriptionItemTaskVo> selectCureDetailBySignatureId(Long prescriptionItemTaskId) {
         BuPrescriptionItemTaskVo buPrescriptionItemTaskVo = buPrescriptionItemTaskService.treatmentRecordDetail(prescriptionItemTaskId);
         return Result.success(buPrescriptionItemTaskVo);
