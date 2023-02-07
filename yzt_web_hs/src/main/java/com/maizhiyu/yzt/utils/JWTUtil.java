@@ -54,6 +54,7 @@ public class JWTUtil {
                  .claim("username", hsUserDetails.getUsername())
                  .claim("customerId", hsUserDetails.getCustomerId())
                  .setIssuedAt(new Date())
+                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRE))
                  //指定算法
                  .signWith(SignatureAlgorithm.HS256, SECRET).compact();
 
