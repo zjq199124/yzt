@@ -1,15 +1,15 @@
 package com.maizhiyu.yzt.controller;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Preconditions;
 import com.maizhiyu.yzt.base.BaseController;
-import com.maizhiyu.yzt.entity.BuOutpatientAppointment;
-import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem;
 import com.maizhiyu.yzt.enums.SmsTemplateEnum;
 import com.maizhiyu.yzt.result.Result;
-import com.maizhiyu.yzt.ro.*;
+import com.maizhiyu.yzt.ro.AppointmentRo;
+import com.maizhiyu.yzt.ro.ItemTaskRo;
+import com.maizhiyu.yzt.ro.WaitSignatureRo;
+import com.maizhiyu.yzt.ro.WaitTreatmentRo;
 import com.maizhiyu.yzt.service.*;
 import com.maizhiyu.yzt.serviceimpl.MsCustomerService;
 import com.maizhiyu.yzt.vo.BuPrescriptionItemTaskVo;
@@ -23,12 +23,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
-@Api(tags = "治疗签到接口")
+@Api(tags = "治疗签到接口-新")
 @RestController
 @RequestMapping("/prescriptionItemTask")
 public class BuPrescriptionItemTaskController extends BaseController {
