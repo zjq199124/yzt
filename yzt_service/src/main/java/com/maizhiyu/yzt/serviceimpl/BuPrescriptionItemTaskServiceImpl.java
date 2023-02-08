@@ -268,6 +268,7 @@ public class BuPrescriptionItemTaskServiceImpl extends ServiceImpl<BuPrescriptio
                 buPrescriptionItemTask.setWeekDay(buPrescriptionItemTaskRo.getWeekday());
                 buPrescriptionItemTask.setUpdateTime(new Date());
                 //5:添加预约时间
+                log.info("/*************保存对应的预约数据*************/");
                 int res = buPrescriptionItemTaskMapper.updateById(buPrescriptionItemTask);
                 if (res > 0) {
                     //8：修改对应的处置小项目的预约数据汇总,和预约完成状态
