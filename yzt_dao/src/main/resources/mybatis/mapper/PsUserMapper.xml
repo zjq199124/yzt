@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maizhiyu.yzt.mapper.PsUserMapper">
+
+    <select id="selectFamily" resultType="hashmap">
+        SELECT
+            rel.id relId,
+            p.id,
+            p.nickname,
+            p.age,(
+                CASE
+                    p.sex
+                    WHEN 0 THEN
+                        "女" ELSE "男"
+                    END
+                ) sex,
+            (
+                CASE
+
+                    WHEN rel.rel_id = 1
+                        AND p.sex = 0 THEN
+                        "母亲"
+                    WHEN rel.rel_id = 1
+                        AND p.sex = 1 THEN
+                        "母亲"
+                    WHEN rel.rel_id = 2
+                        AND p.sex = 0 THEN
+                        "妻子"
+                    WHEN rel.rel_id = 2
+                        AND p.sex = 1 THEN
+                        "丈夫"
+                    WHEN rel.rel_id = 3
+                        AND p.sex = 0 THEN
+                        "女儿"
+                    WHEN rel.rel_id = 3
+                        AND p.sex = 1 THEN
+                        "儿子" ELSE "其他"
+                    END
+                ) tag
+        FROM
+            ps_user p
+                RIGHT JOIN rel_user rel ON p.id = rel.another_user_id
+        <where>
+        <if test="userId != null and userId != 0">
+             rel.user_id = #{userId}
+        </if>
+        </where>
+    </select>
+
+</mapper>

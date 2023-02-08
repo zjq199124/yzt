@@ -9,6 +9,7 @@ import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IPsUserService;
 import com.maizhiyu.yzt.service.ISmsService;
 import com.maizhiyu.yzt.serviceimpl.PsUserService;
+import com.maizhiyu.yzt.utils.IdcardToAge;
 import com.maizhiyu.yzt.utils.RedisUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -55,6 +56,7 @@ public class PsUserController {
     @GetMapping("/getUser")
     public Result getUser(Long id) {
         PsUser user = psUserService.getById(id);
+        user.setAge(IdcardToAge.getAge(user.getIdCard()));
         return Result.success(user);
     }
 

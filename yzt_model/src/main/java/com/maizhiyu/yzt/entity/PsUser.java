@@ -1,10 +1,7 @@
 package com.maizhiyu.yzt.entity;
 
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
@@ -64,6 +61,9 @@ public class PsUser implements Serializable {
 
     @ApiModelProperty(value="头像地址")
     private String avatar;
+
+    @ApiModelProperty(value = "年龄")
+    private Integer age;
 
     @ApiModelProperty(value="位置经度")
     private String longitude;

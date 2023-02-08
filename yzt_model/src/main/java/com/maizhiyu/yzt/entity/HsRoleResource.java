@@ -3,6 +3,7 @@ package com.maizhiyu.yzt.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -37,6 +38,7 @@ public class HsRoleResource {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
     private Date createTime;
 
+    @TableLogic
     @ApiModelProperty(value = "状态(1:已删除 0:未删除)")
     private Integer isDel;
 

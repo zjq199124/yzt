@@ -4,12 +4,15 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.HsResource;
+import com.maizhiyu.yzt.entity.HsRoleResource;
 import com.maizhiyu.yzt.mapper.HsResourceMapper;
+import com.maizhiyu.yzt.mapper.HsRoleResourceMapper;
 import com.maizhiyu.yzt.service.IHsResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +24,9 @@ public class HsResourceService extends ServiceImpl<HsResourceMapper,HsResource> 
 
     @Autowired
     private HsResourceMapper mapper;
+
+    @Resource
+    private HsRoleResourceMapper hsRoleResourceMapper;
 
     @Override
     public List<Map<String, Object>> getResourceList() {

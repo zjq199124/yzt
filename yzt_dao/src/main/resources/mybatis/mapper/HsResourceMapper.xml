@@ -24,6 +24,7 @@
         join hs_role_resource X on X.resource_id = R.id
         <where>
             R.is_del=0 and
+            X.is_del = 0 and
             X.role_id = #{roleId}
         </where>
     </select>
