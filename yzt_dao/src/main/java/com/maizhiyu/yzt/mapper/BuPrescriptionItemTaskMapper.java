@@ -21,9 +21,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 @Repository
 public interface BuPrescriptionItemTaskMapper extends BaseMapper<BuPrescriptionItemTask> {
 
-    Page<BuPrescriptionItemTaskVo> selectWaitSignatureList(Page<BuPrescriptionItemTaskVo> page, WaitSignatureRo waitSignatureRo);
+    Page<BuPrescriptionItemTaskVo> selectWaitSignatureList(@Param("page") Page<BuPrescriptionItemTaskVo> page, @Param("waitSignatureRo") WaitSignatureRo waitSignatureRo);
 
-    Page<BuPrescriptionItemTaskVo> selectWaitTreatmentList(Page<BuPrescriptionItemTaskVo> page, WaitTreatmentRo waitTreatmentRo);
+    Page<BuPrescriptionItemTaskVo> selectWaitTreatmentList(@Param("page") Page<BuPrescriptionItemTaskVo> page, @Param("waitTreatmentRo") WaitTreatmentRo waitTreatmentRo);
 
     Page<BuPrescriptionItemTaskVo> selectTreatmentList(@Param("page") Page<BuPrescriptionItemTaskVo> page, @Param("itemTaskRo") ItemTaskRo itemTaskRo);
 
