@@ -13,12 +13,13 @@ import com.maizhiyu.yzt.service.IBuPrescriptionItemAppointmentItemService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
 
-
+@Slf4j
 @Api(tags = "2.1门诊预约接口")
 @RestController
 @RequestMapping("/outpatientAppointment")
@@ -33,6 +34,7 @@ public class BuOutpatientAppointmentController extends BaseController {
     @ApiOperation(value = "查询门诊预约列表")
     @PostMapping("/list")
     public Result<List<BuOutpatientAppointment>> outpatientAppointmentList(@RequestBody OutpatientAppointmentRo outpatientAppointmentRo) {
+        log.info("/*************查询待签到列表*************/");
         Long customerId = ((Number) getClaims().get("customerId")).longValue();
         outpatientAppointmentRo.setCustomerId(customerId);
         Page<BuOutpatientAppointment> page = buOutpatientAppointmentService.list(outpatientAppointmentRo);

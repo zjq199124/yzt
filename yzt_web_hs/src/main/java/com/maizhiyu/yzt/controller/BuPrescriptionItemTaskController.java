@@ -67,6 +67,7 @@ public class BuPrescriptionItemTaskController extends BaseController {
     @ApiOperation(value = "批量预约操作")
     @PostMapping("/appointment")
     public Result<Boolean> appointment(@RequestBody AppointmentRo appointmentRo) {
+        log.info("/*************批量预约*************/");
         Long customerId = ((Number) getClaims().get("customerId")).longValue();
         appointmentRo.setCustomerId(customerId);
         Boolean result = buPrescriptionItemTaskService.appointment(appointmentRo);
