@@ -2,7 +2,7 @@
 spring:
   application:
     name: yizhentang
-  http:
+  servlet:
     multipart:
       max-file-size: 10MB #
       max-request-size: 100MB
