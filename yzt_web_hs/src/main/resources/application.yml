@@ -10,7 +10,6 @@ spring:
         max-file-size: 10MB     #单个文件最大限制
         max-request-size: 50MB  #多个文件最大限制
 
-
 ### 服务配置 ###
 server:
   port: 10082
@@ -18,7 +17,6 @@ server:
     timeout: 7200
   servlet:
     context-path: /hs/api
-
 
 ### mybatis ###
 mybatis-plus:
