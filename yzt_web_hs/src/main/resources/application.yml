@@ -1,9 +1,14 @@
 spring:
+  application:
+    name: yizhentang
   profiles:
     active: @profiles.active@
   mvc:
     servlet:
       load-on-startup: 1
+      multipart:
+        max-file-size: 10MB     #单个文件最大限制
+        max-request-size: 50MB  #多个文件最大限制
 
 ### 服务配置 ###
 server:
@@ -12,7 +17,6 @@ server:
     timeout: 7200
   servlet:
     context-path: /hs/api
-
 
 ### mybatis ###
 mybatis-plus:

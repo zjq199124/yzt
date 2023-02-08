@@ -62,5 +62,6 @@
         <if test="outpatientAppointmentRo.patientId != null">
             and bp.id = #{outpatientAppointmentRo.patientId}
         </if>
+        order by boa.outpatient_time desc
     </select>
 </mapper>

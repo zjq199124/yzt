@@ -1,20 +1,17 @@
-
-
-
 ### spring ###
 spring:
   application:
     name: yizhentang
-  http:
+  servlet:
     multipart:
-      max-file-size: 2000Mb      # Max file size，默认1M
-      max-request-size: 2500Mb   # Max request size，默认10M
+      max-file-size: 10MB #
+      max-request-size: 100MB
   datasource:
     # 当前数据源操作类型
     type: com.alibaba.druid.pool.DruidDataSource
     #     mysql驱动包
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:p6spy:mysql://192.168.0.90:3306/yztdev?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.0.90:3306/yztdev?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
     username: root
     password: yzt123456
     druid:

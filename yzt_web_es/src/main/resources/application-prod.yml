@@ -21,7 +21,7 @@ spring:
     # 当前数据源操作类型
     type: com.alibaba.druid.pool.DruidDataSource
     #     mysql驱动包
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://rm-bp1xk4j7gsb2ylig3so.mysql.rds.aliyuncs.com:3306/yztpro?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
     username: yztp
     password: rootDB1sfdWSX

@@ -64,6 +64,8 @@ public class TeHwcxController {
     @ApiOperation(value = "接收红外检测报告", notes = "接收红外检测报告")
     @ApiImplicitParams({})
     @PostMapping(value = "/receiveInfrared")
+
+
     @Transactional
     public Result<Boolean> receiveInfrared(InfraredResult infraredResult) {
         try {

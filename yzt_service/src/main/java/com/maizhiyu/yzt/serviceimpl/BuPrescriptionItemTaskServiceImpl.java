@@ -5,19 +5,14 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.base.Preconditions;
-import com.maizhiyu.yzt.entity.BuOutpatientAppointment;
-import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointment;
-import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem;
-import com.maizhiyu.yzt.entity.BuPrescriptionItemTask;
+import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.mapper.BuOutpatientAppointmentMapper;
-import com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentItemMapper;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentMapper;
+import com.maizhiyu.yzt.mapper.BuPrescriptionItemMapper;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemTaskMapper;
-import com.maizhiyu.yzt.ro.AppointmentRo;
-import com.maizhiyu.yzt.ro.BuPrescriptionItemAppointmentRo;
-import com.maizhiyu.yzt.ro.BuPrescriptionItemTaskRo;
+import com.maizhiyu.yzt.ro.*;
 import com.maizhiyu.yzt.service.BuPrescriptionItemTaskService;
-import com.maizhiyu.yzt.service.IBuPrescriptionItemAppointmentItemService;
+import com.maizhiyu.yzt.vo.BuPrescriptionItemTaskVo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -26,12 +21,21 @@ import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
+/**
+ * (BuPrescriptionItemTask)表服务实现类
+ *
+ * @author makejava
+ * @since 2023-02-01 15:16:12
+ */
+@Service("buPrescriptionItemTaskService")
 @Transactional(rollbackFor = Exception.class)
-public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<BuPrescriptionItemAppointmentItemMapper, BuPrescriptionItemAppointmentItem> implements IBuPrescriptionItemAppointmentItemService {
+public class BuPrescriptionItemTaskServiceImpl extends ServiceImpl<BuPrescriptionItemTaskMapper, BuPrescriptionItemTask> implements BuPrescriptionItemTaskService {
 
     @Resource
-    private BuPrescriptionItemAppointmentItemMapper buPrescriptionItemAppointmentItemMapper;
+    private BuPrescriptionItemTaskMapper buPrescriptionItemTaskMapper;
+
+    @Resource
+    private BuPrescriptionItemMapper buPrescriptionItemMapper;
 
     @Resource
     private BuPrescriptionItemAppointmentMapper buPrescriptionItemAppointmentMapper;
@@ -39,98 +43,123 @@ public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<Bu
     @Resource
     private BuOutpatientAppointmentMapper buOutpatientAppointmentMapper;
 
-    @Resource
-    private BuPrescriptionItemTaskMapper buPrescriptionItemTaskMapper;
-
-    @Resource
-    private BuPrescriptionItemTaskService buPrescriptionItemTaskService;
+    @Override
+    public Page<BuPrescriptionItemTaskVo> selectWaitSignatureList(WaitSignatureRo waitSignatureRo) {
+        Page<BuPrescriptionItemTaskVo> page = new Page<>(waitSignatureRo.getCurrentPage(), waitSignatureRo.getPageSize());
+        Page<BuPrescriptionItemTaskVo> pageResult = buPrescriptionItemTaskMapper.selectWaitSignatureList(page,waitSignatureRo);
+        return pageResult;
+    }
 
     @Override
-    public Boolean makeAppointment(BuPrescriptionItemAppointmentItem buPrescriptionItemAppointmentItem) {
-        int insert = 0;
-        int update = 0;
+    public Boolean signature(ItemTaskRo itemTaskRo) {
         int result = 0;
-        //先查询是否在该时段已经预约了
-        LambdaQueryWrapper<BuPrescriptionItemAppointmentItem> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(BuPrescriptionItemAppointmentItem::getIsDel, 0)
-                .eq(BuPrescriptionItemAppointmentItem::getAppointmentDate, buPrescriptionItemAppointmentItem.getAppointmentDate())
-                .eq(BuPrescriptionItemAppointmentItem::getTimeSlot, buPrescriptionItemAppointmentItem.getTimeSlot())
-                .eq(BuPrescriptionItemAppointmentItem::getCustomerId, buPrescriptionItemAppointmentItem.getCustomerId())
-                .eq(BuPrescriptionItemAppointmentItem::getPatientId, buPrescriptionItemAppointmentItem.getPatientId())
-                .eq(BuPrescriptionItemAppointmentItem::getOutpatientId, buPrescriptionItemAppointmentItem.getOutpatientId())
-                .last("limit 1");
-        BuPrescriptionItemAppointmentItem select = buPrescriptionItemAppointmentItemMapper.selectOne(queryWrapper);
+        if (Objects.nonNull(itemTaskRo.getPrescriptionItemTaskId())) {
+            //1:传了任务id过来的，直接签到
+            LambdaUpdateWrapper<BuPrescriptionItemTask> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(BuPrescriptionItemTask::getId, itemTaskRo.getPrescriptionItemTaskId())
+                    .set(BuPrescriptionItemTask::getSignatureStatus, 1)
+                    .set(BuPrescriptionItemTask::getSignatureTime, new Date())
+                    .set(BuPrescriptionItemTask::getRegistrantId, itemTaskRo.getRegistrantId())
+                    .set(BuPrescriptionItemTask::getUpdateTime, new Date());
+            result = buPrescriptionItemTaskMapper.update(null, updateWrapper);
+        } else {
+            //直接新建的签到，要查询一个没有签到的任务，进行签到
+            LambdaQueryWrapper<BuPrescriptionItemTask> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(BuPrescriptionItemTask::getPrescriptionItemId, itemTaskRo.getPrescriptionItemId())
+                    .eq(BuPrescriptionItemTask::getIsDel, 0)
+                    .eq(BuPrescriptionItemTask::getSignatureStatus, 0)
+                    .last("limit 1");
 
-        Preconditions.checkArgument(Objects.isNull(select), "该患者在该时段已经有预约不能重复预约!");
+            BuPrescriptionItemTask buPrescriptionItemTask = buPrescriptionItemTaskMapper.selectOne(queryWrapper);
 
-        buPrescriptionItemAppointmentItem.setState(1);
-        buPrescriptionItemAppointmentItem.setCreateTime(new Date());
-        buPrescriptionItemAppointmentItem.setUpdateTime(buPrescriptionItemAppointmentItem.getCreateTime());
-        if (Objects.nonNull(buPrescriptionItemAppointmentItem.getId())) {
-            insert = buPrescriptionItemAppointmentItemMapper.insert(buPrescriptionItemAppointmentItem);
+            if (Objects.nonNull(buPrescriptionItemTask)) {
+                buPrescriptionItemTask.setSignatureStatus(1);
+                buPrescriptionItemTask.setSignatureTime(new Date());
+                buPrescriptionItemTask.setUpdateTime(new Date());
 
-            if (insert > 0) {
-                //预约成功，要增加该适宜技术已预约的次数，扣减剩余预约的次数
-                LambdaQueryWrapper<BuPrescriptionItemAppointment> wrapper = new LambdaQueryWrapper<>();
-                wrapper.eq(BuPrescriptionItemAppointment::getIsDel, 0)
-                        .eq(BuPrescriptionItemAppointment::getId, buPrescriptionItemAppointmentItem.getPrescriptionItemAppointmentId())
-                        .orderByDesc(BuPrescriptionItemAppointment::getCreateTime)
-                        .last("limit 1");
-                BuPrescriptionItemAppointment buPrescriptionItemAppointment = buPrescriptionItemAppointmentMapper.selectOne(wrapper);
-                Preconditions.checkArgument(Objects.nonNull(buPrescriptionItemAppointment), "当前所开适宜技术的预约信息错误!");
+                result = buPrescriptionItemTaskMapper.updateById(buPrescriptionItemTask);
+            }
+        }
+        return result > 0;
+    }
 
-                buPrescriptionItemAppointment.setSurplusQuantity(buPrescriptionItemAppointment.getSurplusQuantity() - 1);
-                buPrescriptionItemAppointment.setAppointmentQuantity(buPrescriptionItemAppointment.getAppointmentQuantity() + 1);
+    @Override
+    public Page<BuPrescriptionItemTaskVo> waitTreatmentList(WaitTreatmentRo waitTreatmentRo) {
+        Page<BuPrescriptionItemTaskVo> page = new Page<>(waitTreatmentRo.getCurrentPage(), waitTreatmentRo.getPageSize());
+        Page<BuPrescriptionItemTaskVo> pageResult = buPrescriptionItemTaskMapper.selectWaitTreatmentList(page,waitTreatmentRo);
+        return pageResult;
+    }
 
-                if (buPrescriptionItemAppointment.getSurplusQuantity() == 0) {
-                    buPrescriptionItemAppointment.setState(3);
-                } else {
-                    buPrescriptionItemAppointment.setState(2);
-                }
-                buPrescriptionItemAppointment.setUpdateTime(new Date());
-                update = buPrescriptionItemAppointmentMapper.updateById(buPrescriptionItemAppointment);
-                if (update > 0) {
-                    //更新整个诊断下的预约的状态
-                    LambdaQueryWrapper<BuOutpatientAppointment> query = new LambdaQueryWrapper<>();
-                    query.eq(BuOutpatientAppointment::getIsDel, 0)
-                            .eq(BuOutpatientAppointment::getCustomerId, buPrescriptionItemAppointment.getCustomerId())
-                            .eq(BuOutpatientAppointment::getPatientId, buPrescriptionItemAppointment.getPatientId())
-                            .eq(BuOutpatientAppointment::getId, buPrescriptionItemAppointment.getOutpatientAppointmentId())
-                            .orderByDesc(BuOutpatientAppointment::getCreateTime)
-                            .last("limit 1");
-                    BuOutpatientAppointment buOutpatientAppointment = buOutpatientAppointmentMapper.selectOne(query);
-                    Preconditions.checkArgument(Objects.nonNull(buOutpatientAppointment), "当前门诊下的预约数据错误!");
+    @Override
+    public boolean startTreatment(ItemTaskRo itemTaskRo) {
+        //1:设置治疗状态为开始治疗
+        LambdaUpdateWrapper<BuPrescriptionItemTask> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(BuPrescriptionItemTask::getId, itemTaskRo.getPrescriptionItemTaskId())
+                .set(BuPrescriptionItemTask::getCureStatus, 1)
+                .set(BuPrescriptionItemTask::getCureStartTime, new Date())
+                .set(BuPrescriptionItemTask::getCureUserId, itemTaskRo.getCureUserId())
+                .set(BuPrescriptionItemTask::getUpdateTime, new Date());
 
-                    if (buOutpatientAppointment.getState() == 1) {//未预约
-                        //预约中
-                        buOutpatientAppointment.setState(2);
-                    } else if (buOutpatientAppointment.getState() == 2) {//预约中
-                        //查询该诊断下的适宜技术的预约数据是否还有不是预约完成状态的
-                        LambdaQueryWrapper<BuPrescriptionItemAppointment> buPrescriptionItemAppointmentQueryWrapper = new LambdaQueryWrapper<>();
-                        buPrescriptionItemAppointmentQueryWrapper.eq(BuPrescriptionItemAppointment::getIsDel, 0)
-                                .eq(BuPrescriptionItemAppointment::getOutpatientAppointmentId, buOutpatientAppointment.getId())
-                                .eq(BuPrescriptionItemAppointment::getCustomerId, buPrescriptionItemAppointment.getCustomerId())
-                                .eq(BuPrescriptionItemAppointment::getPatientId, buPrescriptionItemAppointment.getPatientId())
-                                .eq(BuPrescriptionItemAppointment::getOutpatientId, buPrescriptionItemAppointment.getOutpatientId())
-                                .ne(BuPrescriptionItemAppointment::getState, 3);
-
-                        List<BuPrescriptionItemAppointment> list = buPrescriptionItemAppointmentMapper.selectList(buPrescriptionItemAppointmentQueryWrapper);
-                        if (CollectionUtils.isEmpty(list)) {
-                            //没有查到不是预约完成状态的子项
-                            buOutpatientAppointment.setState(3);
-                        } else {
-                            buOutpatientAppointment.setState(2);
-                        }
-                    }
-                    result = buOutpatientAppointmentMapper.updateById(buOutpatientAppointment);
+        int update = buPrescriptionItemTaskMapper.update(null, updateWrapper);
+        if (update > 0) {
+            //2：开始治疗后已预约的次数要减去1
+            BuPrescriptionItemTask buPrescriptionItemTask = buPrescriptionItemTaskMapper.selectById(itemTaskRo.getPrescriptionItemTaskId());
+            if (Objects.nonNull(buPrescriptionItemTask)) {
+                BuPrescriptionItemAppointment buPrescriptionItemAppointment = buPrescriptionItemAppointmentMapper.selectById(buPrescriptionItemTask.getPrescriptionItemAppointmentId());
+                if (Objects.nonNull(buPrescriptionItemAppointment)) {
+                    buPrescriptionItemAppointment.setAppointmentQuantity(buPrescriptionItemAppointment.getAppointmentQuantity() - 1);
+                    buPrescriptionItemAppointment.setUpdateTime(new Date());
+                    buPrescriptionItemAppointmentMapper.updateById(buPrescriptionItemAppointment);
                 }
             }
-            return insert > 0 && update > 0 && result > 0;
-        } else {
-            buPrescriptionItemAppointmentItem.setUpdateTime(new Date());
-            int res = buPrescriptionItemAppointmentItemMapper.updateById(buPrescriptionItemAppointmentItem);
-            return res > 0;
         }
+        return update > 0;
+    }
+
+    @Override
+    public boolean endTreatment(Long id) {
+        //1：修改治疗状态为已治疗
+        LambdaUpdateWrapper<BuPrescriptionItemTask> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(BuPrescriptionItemTask::getId, id)
+                .set(BuPrescriptionItemTask::getCureStatus, 2)
+                .set(BuPrescriptionItemTask::getCureEndTime, new Date())
+                .set(BuPrescriptionItemTask::getUpdateTime, new Date());
+
+        int update = buPrescriptionItemTaskMapper.update(null, updateWrapper);
+
+        if (update > 0) {
+            //2：处方小项目中的已治疗次数加1
+            BuPrescriptionItemTask buPrescriptionItemTask = buPrescriptionItemTaskMapper.selectById(id);
+            if (Objects.nonNull(buPrescriptionItemTask)) {
+                BuPrescriptionItemAppointment buPrescriptionItemAppointment = buPrescriptionItemAppointmentMapper.selectById(buPrescriptionItemTask.getPrescriptionItemAppointmentId());
+                if (Objects.nonNull(buPrescriptionItemAppointment)) {
+                    buPrescriptionItemAppointment.setTreatmentQuantity(buPrescriptionItemAppointment.getTreatmentQuantity() + 1);
+                    buPrescriptionItemAppointment.setUpdateTime(new Date());
+                    buPrescriptionItemAppointmentMapper.updateById(buPrescriptionItemAppointment);
+                }
+            }
+        }
+        return update > 0;
+    }
+
+    @Override
+    public Page<BuPrescriptionItemTaskVo> treatmentList(ItemTaskRo itemTaskRo) {
+        Page<BuPrescriptionItemTaskVo> page = new Page<>(itemTaskRo.getCurrentPage(), itemTaskRo.getPageSize());
+        Page<BuPrescriptionItemTaskVo> pageResult = buPrescriptionItemTaskMapper.selectTreatmentList(page, itemTaskRo);
+        return pageResult;
+    }
+
+    @Override
+    public BuPrescriptionItemTaskVo treatmentRecordDetail(Long id) {
+        BuPrescriptionItemTaskVo buPrescriptionItemTaskVo = buPrescriptionItemTaskMapper.treatmentRecordDetail(id);
+        if (Objects.nonNull(buPrescriptionItemTaskVo)) {
+            LambdaQueryWrapper<BuPrescriptionItem> query = new LambdaQueryWrapper<>();
+            query.eq(BuPrescriptionItem::getPrescriptionId, buPrescriptionItemTaskVo.getPrescriptionId())
+                    .eq(BuPrescriptionItem::getIsDel, 0);
+            List<BuPrescriptionItem> buPrescriptionItems = buPrescriptionItemMapper.selectList(query);
+            buPrescriptionItemTaskVo.setBuPrescriptionItemList(buPrescriptionItems);
+        }
+        return buPrescriptionItemTaskVo;
     }
 
     @Override
@@ -247,7 +276,7 @@ public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<Bu
                 List<BuPrescriptionItemTask> list = prescriptionItemIdListMap.get(item);
                 //7:保存预约信息
                 if (!CollectionUtils.isEmpty(list)) {
-                    boolean res = buPrescriptionItemTaskService.saveBatch(buPrescriptionItemTaskList);
+                    boolean res = this.saveBatch(buPrescriptionItemTaskList);
                     if (res) {
                         //8：修改对应的处置小项目的预约数据汇总,和预约完成状态
                         LambdaQueryWrapper<BuPrescriptionItemAppointment> queryWrapper = new LambdaQueryWrapper<>();
@@ -292,30 +321,5 @@ public class BuPrescriptionItemAppointmentItemServiceImpl extends ServiceImpl<Bu
         }
         return true;
     }
-
-    @Override
-    public List<BuPrescriptionItemAppointmentItem> selectRemindLatestAppointmentList(Date startDate, Date endDate) {
-        List<BuPrescriptionItemAppointmentItem> list = buPrescriptionItemAppointmentItemMapper.selectRemindLatestAppointmentList(startDate, endDate);
-        return list;
-    }
-
-    @Override
-    public List<BuPrescriptionItemAppointmentItem> selectTreatmentRemindList(Date startDate, Date endDate) {
-        List<BuPrescriptionItemAppointmentItem> list = buPrescriptionItemAppointmentItemMapper.selectTreatmentRemindList(startDate, endDate);
-        return list;
-    }
-
-    @Override
-    public Page<BuPrescriptionItemAppointment> listPrescriptionItemAppointment(BuPrescriptionItemAppointmentRo buPrescriptionItemAppointmentRo) {
-        Page page = new Page(buPrescriptionItemAppointmentRo.getCurrentPage(), buPrescriptionItemAppointmentRo.getPageSize());
-
-        LambdaQueryWrapper<BuPrescriptionItemAppointment> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.in(BuPrescriptionItemAppointment::getPatientId, buPrescriptionItemAppointmentRo.getPatientIdList())
-                .eq(BuPrescriptionItemAppointment::getIsDel, 0)
-                .ne(BuPrescriptionItemAppointment::getState, 3);
-        Page resultPage = buPrescriptionItemAppointmentMapper.selectPage(page, queryWrapper);
-        return resultPage;
-    }
-
-
 }
+

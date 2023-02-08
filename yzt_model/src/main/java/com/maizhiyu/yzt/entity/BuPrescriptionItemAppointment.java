@@ -65,7 +65,7 @@ public class BuPrescriptionItemAppointment extends Model<BuPrescriptionItemAppoi
     private Integer surplusQuantity;
 
     @ApiModelProperty("是否删除；1：是；0：否")
-    private Integer IsDel;
+    private Integer isDel;
 
     @ApiModelProperty(value="更新时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
@@ -83,10 +83,10 @@ public class BuPrescriptionItemAppointment extends Model<BuPrescriptionItemAppoi
     private String tsName;
 
     @TableField(exist = false)
-    @ApiModelProperty("预约数据")
-    List<BuPrescriptionItemAppointmentItem> buPrescriptionItemAppointmentItemList;
+    @ApiModelProperty("已预约的处治任务List，（未签到，未治疗）")
+    List<BuPrescriptionItemTask> appointmentTaskList;
 
     @TableField(exist = false)
-    @ApiModelProperty("适宜技术治疗list")
-    private List<BuCure> buCureList;
+    @ApiModelProperty("已治疗的处治任务")
+    private List<BuPrescriptionItemTask> cureTaskList;
 }
