@@ -1,11 +1,5 @@
 ### spring ###
 spring:
-  application:
-    name: yizhentang
-  http:
-    multipart:
-      max-file-size: 2000Mb      # Max file size，默认1M
-      max-request-size: 2500Mb   # Max request size，默认10M
   datasource:
     # 当前数据源操作类型
     type: com.alibaba.druid.pool.DruidDataSource
@@ -115,15 +109,6 @@ oss:
   expiration: "30"
   styleWatermark: "一真堂"
   styleMicro: "一真堂"
-
-#oss.endpoint: https://oss-cn-hangzhou.aliyuncs.com
-#oss.accessKeyId: LTAI5tE56JZeMtFwEFjx93MM
-#oss.accessKeySecret: YLfoT7wlHQOINc1ZCAWWqwJebQnTWo
-#oss.publicBucket: yzt-hs-dev
-#oss.publicBucketUrl: https://yzt-hs-dev.oss-cn-hangzhou.aliyuncs.com
-#oss.expiration: 1800
-#oss.style_watermark: watermark
-#oss.style_micro: micro
 
 
 sms:

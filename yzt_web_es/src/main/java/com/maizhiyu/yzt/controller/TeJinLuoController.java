@@ -44,7 +44,7 @@ public class TeJinLuoController {
     @PostMapping(value = "/receiveFile")
     public Result<String> receiveFile(@RequestParam MultipartFile file, String patientPhone) {
         try {
-            SysMultimedia sysMultimedia = sysMultimediaService.saveMultimedia(file, OSSCatalogEnum.MERIDIAN.getPath(), true, "红外检查报告",FileTypeEnum.IMAGE.getCode());
+            SysMultimedia sysMultimedia = sysMultimediaService.saveMultimedia(file, OSSCatalogEnum.MERIDIAN.getPath(), true, "红外检查报告", FileTypeEnum.IMAGE.getCode());
             //保存患者检查数据
             BuCheck buCheck = new BuCheck();
             buCheck.setType(CheckTypeEnum.MERIDIAN.getCode());

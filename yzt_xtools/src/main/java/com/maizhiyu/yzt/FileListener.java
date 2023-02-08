@@ -94,8 +94,9 @@ public class FileListener extends FileAlterationListenerAdaptor {
         Response<Result> response = call.execute();
         // 判断结果
         Result result = response.body();
-        if (result.getCode() == 0) {
+        if (result!=null&&result.getCode() == 0) {
             System.out.println("上传文件成功：" + result);
+
         } else {
             throw new RuntimeException("上传文件失败：" + result);
         }
@@ -105,7 +106,6 @@ public class FileListener extends FileAlterationListenerAdaptor {
 
 
     public static void main(String[] args) throws Exception {
-
         // 参数判断
         if (args.length != 2) {
             System.out.println(">>> 请指定上传地址和监听路径！");
