@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -45,7 +46,8 @@ public class PsUser implements Serializable {
     private String idCard;
 
     @ApiModelProperty(value="用户出生日期")
-    @JsonFormat(pattern = "yyyy-MM-dd ", timezone = "Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "Asia/Shanghai")
     private Date birthday;
 
     @ApiModelProperty(value="用户性别(0:女，1:男)")

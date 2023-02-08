@@ -9,10 +9,7 @@ import com.maizhiyu.yzt.exception.BusinessException;
 import com.maizhiyu.yzt.mapper.TsSytechMapper;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.BatchAddUserRO;
-import com.maizhiyu.yzt.serviceimpl.HsUserService;
-import com.maizhiyu.yzt.serviceimpl.TsAssOperationService;
-import com.maizhiyu.yzt.serviceimpl.TsAssService;
-import com.maizhiyu.yzt.serviceimpl.UserAssService;
+import com.maizhiyu.yzt.serviceimpl.*;
 import com.maizhiyu.yzt.vo.TssAssVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -23,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.websocket.server.PathParam;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,7 +46,7 @@ public class TsAssController {
     private HsUserService hsUserService;
 
     @Resource
-    private TsSytechMapper tsSytechMapper;
+    private TsSytechService tsSytechService;
 
     @ApiOperation(value = "获取用户列表" , notes = "获取用户列表")
     @ApiImplicitParams({
@@ -110,7 +110,9 @@ public class TsAssController {
     public Result saveAss(@RequestBody List<UserAss> userAsslist){
         Boolean res = userAssService.saveBatch(userAsslist);
         TsAss tsAss = tsAssService.getById(userAsslist.get(0).getAssId());
+        int sum = userAsslist.stream().mapToInt(UserAss::getScore).sum();
         tsAss.setStatus(2);
+        tsAss.setTotalScore(sum);
         Boolean a = tsAssService.saveOrUpdate(tsAss);
         return Result.success(a);
 
@@ -132,10 +134,11 @@ public class TsAssController {
             @ApiImplicitParam(name = "sytechId", value = "适宜技术id",required = true),
     })
     @GetMapping("/selectAssBySytech")
-    public Result selectAssBySytch(@RequestParam Long sytechId,Long assId){
+    public Result selectAssBySytch(@RequestParam Long sytechId,Long assId) throws ParseException {
         List<TsAssOperation> list = tsAssOperationService.getAssDetail(sytechId);
         TsAss tsAss = tsAssService.getById(assId);
         tsAss.setStatus(1);
+        tsAss.setStartTime(new Date());
         Boolean res = tsAssService.saveOrUpdate(tsAss);
         return Result.success(list);
     }
@@ -145,7 +148,7 @@ public class TsAssController {
     })
     @GetMapping("/selectSytech")
     public Result selectSytech(){
-        List<TsSytech> list = tsSytechMapper.selectList(null);
+        List<TsSytech> list = tsSytechService.query().eq("istest",1).list();
         return Result.success(list);
     }
 

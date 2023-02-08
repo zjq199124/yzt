@@ -36,6 +36,9 @@ public class TsSytech {
     @ApiModelProperty(value="是否展示")
     private Integer display;
 
+    @ApiModelProperty("是否展示")
+    private Integer istest;
+
     @ApiModelProperty(value="更新时间")
     private Date updateTime;
 
