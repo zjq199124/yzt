@@ -60,13 +60,13 @@ public class BuPrescriptionItemTaskVo implements Serializable {
     private String timeSlot;
 
     @ApiModelProperty("签到时间")
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone="Asia/Shanghai")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date signatureTime;
 
     @ApiModelProperty("治疗时间")
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone="Asia/Shanghai")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date cureStartTime;
 
     @ApiModelProperty("疾病名称")
@@ -94,8 +94,8 @@ public class BuPrescriptionItemTaskVo implements Serializable {
     private String registrantName;
 
     @ApiModelProperty("就诊时间")
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone="Asia/Shanghai")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date outpatientTime;
 
     @ApiModelProperty("技术方案")

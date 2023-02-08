@@ -120,6 +120,12 @@
             #{item}
         </foreach>
     </select>
+    <select id="selectPrescriptionItemListByPrescriptionId"
+            resultType="com.maizhiyu.yzt.entity.BuPrescriptionItem">
+        select bpi.* from bu_prescription_item bpi
+        inner join bu_prescription_item_appointment bpia on bpi.id = bpia.prescription_item_id and bpia.is_del = 0
+        where bpi.prescription_id = #{prescriptionId} and bpi.is_del = 0 and (bpia.state = 1 or bpia.state = 2)
+    </select>
 </mapper>
 
 

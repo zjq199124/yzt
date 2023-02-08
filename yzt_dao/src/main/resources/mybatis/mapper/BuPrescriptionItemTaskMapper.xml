@@ -226,7 +226,7 @@
             AND bpit.department_id = #{itemTaskRo.departmentId}
         </if>
         <if test="itemTaskRo.startDate != null and itemTaskRo.endDate != null">
-            AND (bpit.cure_start_time between #{itemTaskRo.startDate} AND {itemTaskRo.endDate})
+            AND (bd.create_time between #{itemTaskRo.startDate} AND {itemTaskRo.endDate})
         </if>
         ORDER BY
         bpit.cure_status,bpit.signature_time DESC
