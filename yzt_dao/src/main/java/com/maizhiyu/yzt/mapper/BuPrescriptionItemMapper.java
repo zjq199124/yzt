@@ -24,6 +24,4 @@ public interface BuPrescriptionItemMapper extends BaseMapper<BuPrescriptionItem>
     Page<WaitSignatureVo> selectWaitSignatureList(@Param("page") Page<WaitSignatureVo> page, @Param("waitSignatureRo") WaitSignatureRo waitSignatureRo);
 
     List<WaitSignatureVo> selectWaitSignatureInfo(@Param("outpatientIdList") List<Long> outpatientIdList);
-
-    List<BuPrescriptionItem> selectPrescriptionItemListByPrescriptionId(@Param("prescriptionId") Long prescriptionId);
 }

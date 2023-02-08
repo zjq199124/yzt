@@ -52,25 +52,22 @@ public class BuPrescriptionItemTaskVo implements Serializable {
     private String dname;
 
     @ApiModelProperty("预约日期")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date appointmentDate;
 
     @ApiModelProperty("预约时段")
     private String timeSlot;
 
     @ApiModelProperty("签到时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date signatureTime;
 
-    @ApiModelProperty("开始治疗时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("治疗时间")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date cureStartTime;
-
-    @ApiModelProperty("治疗状态；0未治疗；1治疗中；2治疗已结束")
-    private Integer cureStatus;
 
     @ApiModelProperty("疾病名称")
     private String disease;
@@ -87,15 +84,18 @@ public class BuPrescriptionItemTaskVo implements Serializable {
     @ApiModelProperty("已治疗次数")
     private Integer treatmentQuantity;
 
-    @ApiModelProperty("治疗负责人姓名")
+    @ApiModelProperty("治疗状态；0未治疗；1治疗中；2治疗已结束")
+    private Integer cureStatus;
+
+    @ApiModelProperty("治疗负责人")
     private String cureUserName;
 
-    @ApiModelProperty("登记负责人id")
+    @ApiModelProperty("签到登记人")
     private String registrantName;
 
     @ApiModelProperty("就诊时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date outpatientTime;
 
     @ApiModelProperty("技术方案")

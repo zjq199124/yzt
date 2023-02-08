@@ -269,7 +269,6 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
 
     @Override
     public List<BuDiagnose> selectDiagnoseList(Long customerId, String term) {
-        //这里要查询的是开了处方的，并且处方不是预约完成的数据
         List<BuDiagnose> buDiagnoseList = buDiagnoseMapper.selectDiagnoseList(customerId, term);
         return buDiagnoseList;
     }

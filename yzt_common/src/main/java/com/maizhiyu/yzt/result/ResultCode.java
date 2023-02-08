@@ -89,12 +89,8 @@ public enum ResultCode {
     PERMISSION_NO_ACCESS(70001, "只有标签 Owner ,才具备删除权限"),
     PERMISSION_NO_PHONE_ACCESS(70002,"此认证标签已有员工认证，不可以进行删除"),
     PERMISSION_NO_SUPER_ADMIN(70003,"超级管理员没有录入权限"),
-    PERMISSION_NO_ENOUGH(70004,"无权限"),
+    PERMISSION_NO_ENOUGH(70004,"无权限");
 
-
-    /* 短信通知错误：80001-89999 */
-    SMS_FAILURE(80001, "短信发送失败!"),
-    SMS_FAILURE_NO_PHONE(80002, "手机号码不能为空!");
 
     private Integer code;
     private String msg;

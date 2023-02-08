@@ -19,9 +19,9 @@ public class AppointmentRo implements Serializable {
     private Long customerId;
 
     @ApiModelProperty("之前已经存在的预约数据")
-    private List<Long> preItemIdList;
+    private List<Long> preTaskIdList;
 
     @ApiModelProperty("预约数据列表")
-    private List<BuPrescriptionItemAppointmentItemRo> buPrescriptionItemAppointmentItemRoList;
+    private List<BuPrescriptionItemTaskRo> buPrescriptionItemTaskRoList;
 
 }

@@ -1,9 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.base.Preconditions;
@@ -16,8 +14,8 @@ import com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentItemMapper;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentMapper;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemTaskMapper;
 import com.maizhiyu.yzt.ro.AppointmentRo;
-import com.maizhiyu.yzt.ro.BuPrescriptionItemTaskRo;
 import com.maizhiyu.yzt.ro.BuPrescriptionItemAppointmentRo;
+import com.maizhiyu.yzt.ro.BuPrescriptionItemTaskRo;
 import com.maizhiyu.yzt.service.BuPrescriptionItemTaskService;
 import com.maizhiyu.yzt.service.IBuPrescriptionItemAppointmentItemService;
 import org.springframework.stereotype.Service;

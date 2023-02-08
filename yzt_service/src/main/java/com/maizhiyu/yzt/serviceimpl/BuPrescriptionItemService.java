@@ -116,8 +116,7 @@ public class BuPrescriptionItemService extends ServiceImpl<BuPrescriptionItemMap
         wrapper.eq(BuPrescriptionItem::getIsDel, 0)
                 .eq(BuPrescriptionItem::getPrescriptionId, buPrescription.getId());
 
-        //List<BuPrescriptionItem> buPrescriptionItems = mapper.selectList(wrapper);
-        List<BuPrescriptionItem> buPrescriptionItems = mapper.selectPrescriptionItemListByPrescriptionId(buPrescription.getId());
+        List<BuPrescriptionItem> buPrescriptionItems = mapper.selectList(wrapper);
         return buPrescriptionItems;
     }
 }
