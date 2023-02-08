@@ -87,7 +87,13 @@
                 FROM
                     bu_prescription_item_task
                 WHERE
-                    appointment_status = 1 UNION
+                    appointment_status = 1
+                    <if test="waitSignatureRo.startDate != null and waitSignatureRo.endDate">
+                        AND (appointment_date BETWEEN #{waitSignatureRo.startDate} AND #{waitSignatureRo.endDate})
+                    </if>
+
+                UNION
+
                 SELECT
                     *
                 FROM
@@ -122,9 +128,6 @@
             </if>
             <if test="waitSignatureRo.appointmentStatus != null">
                 AND temp.appointment_status = #{waitSignatureRo.appointmentStatus}
-            </if>
-            <if test="waitSignatureRo.startDate != null and waitSignatureRo.endDate">
-                AND (bd.create_time BETWEEN #{waitSignatureRo.startDate} AND #{waitSignatureRo.endDate})
             </if>
     </select>
     <select id="selectWaitTreatmentList" resultType="com.maizhiyu.yzt.vo.BuPrescriptionItemTaskVo">
