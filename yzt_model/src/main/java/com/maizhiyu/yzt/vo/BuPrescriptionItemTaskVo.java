@@ -1,10 +1,12 @@
 package com.maizhiyu.yzt.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.maizhiyu.yzt.entity.BuPrescriptionItem;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -50,13 +52,25 @@ public class BuPrescriptionItemTaskVo implements Serializable {
     private String dname;
 
     @ApiModelProperty("预约日期")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date appointmentDate;
 
     @ApiModelProperty("预约时段")
     private String timeSlot;
 
     @ApiModelProperty("签到时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date signatureTime;
+
+    @ApiModelProperty("开始治疗时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date cureStartTime;
+
+    @ApiModelProperty("治疗状态；0未治疗；1治疗中；2治疗已结束")
+    private Integer cureStatus;
 
     @ApiModelProperty("疾病名称")
     private String disease;
@@ -73,7 +87,15 @@ public class BuPrescriptionItemTaskVo implements Serializable {
     @ApiModelProperty("已治疗次数")
     private Integer treatmentQuantity;
 
+    @ApiModelProperty("治疗负责人姓名")
+    private String cureUserName;
+
+    @ApiModelProperty("登记负责人id")
+    private String registrantName;
+
     @ApiModelProperty("就诊时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date outpatientTime;
 
     @ApiModelProperty("技术方案")

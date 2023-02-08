@@ -6,6 +6,7 @@ import com.google.common.base.Preconditions;
 import com.maizhiyu.yzt.base.BaseController;
 import com.maizhiyu.yzt.enums.SmsTemplateEnum;
 import com.maizhiyu.yzt.result.Result;
+import com.maizhiyu.yzt.result.ResultCode;
 import com.maizhiyu.yzt.ro.AppointmentRo;
 import com.maizhiyu.yzt.ro.ItemTaskRo;
 import com.maizhiyu.yzt.ro.WaitSignatureRo;
@@ -89,7 +90,7 @@ public class BuPrescriptionItemTaskController extends BaseController {
     @ApiOperation("签到")
     @PostMapping("/signature")
     public Result<Boolean> signature(@RequestBody ItemTaskRo itemTaskRo) {
-        Preconditions.checkArgument(Objects.isNull(itemTaskRo.getPrescriptionItemTaskId()) && Objects.isNull(itemTaskRo.getPrescriptionItemId()),
+        Preconditions.checkArgument(Objects.nonNull(itemTaskRo.getPrescriptionItemTaskId()) || Objects.nonNull(itemTaskRo.getPrescriptionItemId()),
                 "处治小项目id和任务id不能同时为空!");
         Boolean result = buPrescriptionItemTaskService.signature(itemTaskRo);
         return Result.success(result);
@@ -149,6 +150,7 @@ public class BuPrescriptionItemTaskController extends BaseController {
             @ApiImplicitParam(name = "tsName",value = "适宜技术名称", required = true)
     })
     public Result<Boolean> smsNotify(String name,String phone,String tsName) {
+        Assert.isNull("phone", "手机号不能为空!");
         Long customerId = ((Number) getClaims().get("customerId")).longValue();
         Map<String, Object> customer = msCustomerService.getCustomer(customerId);
         Map<String, String> map = new HashMap<>();
@@ -160,7 +162,7 @@ public class BuPrescriptionItemTaskController extends BaseController {
             e.printStackTrace();
             log.error("发送短信提醒失败 "  + e.getMessage());
         }
-        return Result.success(false);
+        return Result.failure(ResultCode.SMS_FAILURE.code(),ResultCode.SMS_FAILURE.msg());
     }
 }
 
