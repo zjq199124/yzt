@@ -28,7 +28,7 @@ public class OutpatientAppointmentRo extends BaseRo implements Serializable {
     @ApiModelProperty("客户id")
     private Long customerId;
 
-    @ApiModelProperty("PsUser主键id")
+    @ApiModelProperty("psUser主键id")
     private Long psUserId;
 
     @ApiModelProperty("患者id")

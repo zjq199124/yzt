@@ -23,5 +23,5 @@ public class TimeSlotDetailVo implements Serializable {
     private Integer overLimit;
 
     @ApiModelProperty("适宜技术小项目预约详情数据主键id")
-    private Long buPrescriptionItemAppointmentItemId;
+    private Long buPrescriptionTaskId;
 }

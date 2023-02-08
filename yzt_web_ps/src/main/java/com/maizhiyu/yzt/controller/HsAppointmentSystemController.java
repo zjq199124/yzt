@@ -1,13 +1,15 @@
 package com.maizhiyu.yzt.controller;
 
 import com.maizhiyu.yzt.result.Result;
-import com.maizhiyu.yzt.ro.TimeSlotVo;
 import com.maizhiyu.yzt.service.IHsAppointmentSystemService;
 import com.maizhiyu.yzt.vo.TimeSlotDetailVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.Date;

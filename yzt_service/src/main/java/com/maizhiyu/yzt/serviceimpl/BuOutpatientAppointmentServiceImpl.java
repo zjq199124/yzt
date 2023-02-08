@@ -1,19 +1,15 @@
 package com.maizhiyu.yzt.serviceimpl;
 
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.date.Week;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.base.Preconditions;
-import com.maizhiyu.yzt.entity.BuCure;
 import com.maizhiyu.yzt.entity.BuOutpatientAppointment;
 import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointment;
-import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem;
-import com.maizhiyu.yzt.mapper.BuCureMapper;
+import com.maizhiyu.yzt.entity.BuPrescriptionItemTask;
 import com.maizhiyu.yzt.mapper.BuOutpatientAppointmentMapper;
-import com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentItemMapper;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentMapper;
+import com.maizhiyu.yzt.mapper.BuPrescriptionItemTaskMapper;
 import com.maizhiyu.yzt.ro.OutpatientAppointmentRo;
 import com.maizhiyu.yzt.service.IBuOutpatientAppointmentService;
 import org.springframework.stereotype.Service;
@@ -21,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -38,10 +33,7 @@ public class BuOutpatientAppointmentServiceImpl extends ServiceImpl<BuOutpatient
     private BuPrescriptionItemAppointmentMapper buPrescriptionItemAppointmentMapper;
 
     @Resource
-    private BuPrescriptionItemAppointmentItemMapper buPrescriptionItemAppointmentItemMapper;
-
-    @Resource
-    private BuCureMapper buCureMapper;
+    private BuPrescriptionItemTaskMapper buPrescriptionItemTaskMapper;
 
     @Override
     public Page<BuOutpatientAppointment> list(OutpatientAppointmentRo outpatientAppointmentRo) {
@@ -90,50 +82,43 @@ public class BuOutpatientAppointmentServiceImpl extends ServiceImpl<BuOutpatient
 
     @Override
     public BuOutpatientAppointment appointmentDetail(Long id) {
+        //1：查询一次门诊对应的预约数据
         BuOutpatientAppointment buOutpatientAppointment = buOutpatientAppointmentMapper.selectById(id);
         Preconditions.checkArgument(Objects.nonNull(buOutpatientAppointment), "id错误!");
 
+        //2:查询此次门诊所开的处置的小项目所对应的预约数据信息
         List<BuPrescriptionItemAppointment> list = buPrescriptionItemAppointmentMapper.selectByOutpatientAppointmentId(buOutpatientAppointment.getId());
         buOutpatientAppointment.setBuPrescriptionItemAppointmentList(list);
 
         if(CollectionUtils.isEmpty(list))
             return buOutpatientAppointment;
 
-        List<Long> prescriptionItemAppointmentIdList = list.stream().map(BuPrescriptionItemAppointment::getId).collect(Collectors.toList());
-        List<BuPrescriptionItemAppointmentItem> buPrescriptionItemAppointmentItemList = buPrescriptionItemAppointmentItemMapper.selectByPrescriptionItemAppointmentIdList(prescriptionItemAppointmentIdList);
-
-        if(CollectionUtils.isEmpty(buPrescriptionItemAppointmentItemList))
-            return buOutpatientAppointment;
-
-        Map<Long, List<BuPrescriptionItemAppointmentItem>> prescriptionItemAppointmentIdMap = buPrescriptionItemAppointmentItemList.stream().collect(Collectors.groupingBy(BuPrescriptionItemAppointmentItem::getPrescriptionItemAppointmentId));
-
-        //设置已预约详情
+        //3:查询每一个处治小项目的每个任务的预约数据（已预约，未签到）
         list.forEach(item -> {
-            item.setBuPrescriptionItemAppointmentItemList(prescriptionItemAppointmentIdMap.get(item.getId()));
+            LambdaQueryWrapper<BuPrescriptionItemTask> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(BuPrescriptionItemTask::getPrescriptionItemAppointmentId, item.getId())
+                    .eq(BuPrescriptionItemTask::getAppointmentStatus, 1)
+                    .eq(BuPrescriptionItemTask::getSignatureStatus, 0)
+                    .eq(BuPrescriptionItemTask::getCureStatus, 0)
+                    .eq(BuPrescriptionItemTask::getIsDel, 0)
+                    .isNotNull(BuPrescriptionItemTask::getAppointmentDate)
+                    .isNotNull(BuPrescriptionItemTask::getTimeSlot);
+
+            List<BuPrescriptionItemTask> buPrescriptionItemTaskList = buPrescriptionItemTaskMapper.selectList(queryWrapper);
+            item.setAppointmentTaskList(buPrescriptionItemTaskList);
         });
 
-
-        //查询处方的每一个条目的具体治疗记录
-        List<Long> prescriptionItemIdList = list.stream().map(BuPrescriptionItemAppointment::getPrescriptionItemId).collect(Collectors.toList());
-        LambdaQueryWrapper<BuCure> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(BuCure::getIsDel, 0)
-                .in(BuCure::getPrescriptionItemId, prescriptionItemIdList);
-        List<BuCure> buCureList = buCureMapper.selectList(queryWrapper);
-
-        if(CollectionUtils.isEmpty(buCureList))
-            return buOutpatientAppointment;
-
-        Map<Long, List<BuCure>> prescriptionItemIdMap = buCureList.stream().collect(Collectors.groupingBy(BuCure::getPrescriptionItemId));
-
-        //设置已预约详情
+        //4：查询每一个处治小项目的每个任务的治疗数据
         list.forEach(item -> {
-            item.setBuCureList(prescriptionItemIdMap.get(item.getPrescriptionItemId()));
-            if (!CollectionUtils.isEmpty(item.getBuCureList())) {
-                item.getBuCureList().forEach(buCure -> {
-                    Week week = DateUtil.dayOfWeekEnum(item.getCreateTime());
-                    buCure.setWeekDay(week.getValue());
-                });
-            }
+            LambdaQueryWrapper<BuPrescriptionItemTask> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(BuPrescriptionItemTask::getPrescriptionItemAppointmentId, item.getId())
+                    .eq(BuPrescriptionItemTask::getCureStatus, 2)
+                    .eq(BuPrescriptionItemTask::getIsDel, 0)
+                    .isNotNull(BuPrescriptionItemTask::getCureStartTime)
+                    .isNotNull(BuPrescriptionItemTask::getCureEndTime);
+
+            List<BuPrescriptionItemTask> buPrescriptionItemTaskList = buPrescriptionItemTaskMapper.selectList(queryWrapper);
+            item.setCureTaskList(buPrescriptionItemTaskList);
         });
         return buOutpatientAppointment;
     }

@@ -7,7 +7,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem;
+import com.maizhiyu.yzt.entity.BuPrescriptionItemTask;
 import com.maizhiyu.yzt.entity.HsAppointmentSystem;
+import com.maizhiyu.yzt.mapper.BuPrescriptionItemTaskMapper;
 import com.maizhiyu.yzt.vo.TimeSlotDetailVo;
 import com.maizhiyu.yzt.vo.TimeSlotInfoVo;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentItemMapper;
@@ -33,6 +35,9 @@ public class HsAppointmentSystemServiceImpl extends ServiceImpl<HsAppointmentSys
 
     @Resource
     private BuPrescriptionItemAppointmentItemMapper buPrescriptionItemAppointmentItemMapper;
+
+    @Resource
+    private BuPrescriptionItemTaskMapper buPrescriptionItemTaskMapper;
 
     @Override
     public Boolean add(HsAppointmentSystem hsAppointmentSystem) {
@@ -107,7 +112,6 @@ public class HsAppointmentSystemServiceImpl extends ServiceImpl<HsAppointmentSys
             return null;
 
         try {
-
             TimeSlotInfoVo timeSlotInfoVo = JSONObject.parseObject(hsAppointmentSystem.getTimeSlotInfo(), TimeSlotInfoVo.class);
             //查询上午的时段列表中，用户的预约状态和该时段的约满状态
             if (!CollectionUtils.isEmpty(timeSlotInfoVo.getMorningTimeSlotList())) {
@@ -144,27 +148,40 @@ public class HsAppointmentSystemServiceImpl extends ServiceImpl<HsAppointmentSys
     }
 
     private void fillInfo(Long customerId, Long outpatientAppointmentId, Date date, List<TimeSlotDetailVo> timeSlotDetailVoList, List<String> timeSlotStringList, Integer timeSlotQuantity) {
-        List<BuPrescriptionItemAppointmentItem> buPrescriptionItemAppointmentItemList = buPrescriptionItemAppointmentItemMapper.selectByTimeSlot(customerId, outpatientAppointmentId,  DateUtil.beginOfDay(date), timeSlotStringList);
+        LambdaQueryWrapper<BuPrescriptionItemTask> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(BuPrescriptionItemTask::getCustomerId, customerId)
+                .eq(BuPrescriptionItemTask::getOutpatientAppointmentId, outpatientAppointmentId)
+                .eq(BuPrescriptionItemTask::getAppointmentDate, DateUtil.beginOfDay(date))
+                .eq(BuPrescriptionItemTask::getIsDel, 0)
+                .in(BuPrescriptionItemTask::getTimeSlot, timeSlotStringList);
+
+        List<BuPrescriptionItemTask> buPrescriptionItemTaskList = buPrescriptionItemTaskMapper.selectList(queryWrapper);
 
         //根据时段标记出当前患者是否在这个时段有预约
-        if (!CollectionUtils.isEmpty(buPrescriptionItemAppointmentItemList)) {
-            Map<String, BuPrescriptionItemAppointmentItem> timeSlotMap = buPrescriptionItemAppointmentItemList.stream().collect(Collectors.toMap(BuPrescriptionItemAppointmentItem::getTimeSlot, Function.identity(), (k1, k2) -> k1));
+        if (!CollectionUtils.isEmpty(buPrescriptionItemTaskList)) {
+            Map<String, BuPrescriptionItemTask> timeSlotMap = buPrescriptionItemTaskList.stream().collect(Collectors.toMap(BuPrescriptionItemTask::getTimeSlot, Function.identity(), (k1, k2) -> k1));
             timeSlotDetailVoList.forEach(item -> {
-                BuPrescriptionItemAppointmentItem buPrescriptionItemAppointmentItem = timeSlotMap.get(item.getTimeSlot());
-                int hasAppointment = Objects.nonNull(buPrescriptionItemAppointmentItem) ? 1 : 0;
+                BuPrescriptionItemTask buPrescriptionItemTask = timeSlotMap.get(item.getTimeSlot());
+                int hasAppointment = Objects.nonNull(buPrescriptionItemTask) ? 1 : 0;
                 item.setHasAppointment(hasAppointment);
-                item.setBuPrescriptionItemAppointmentItemId(buPrescriptionItemAppointmentItem.getId());
+                item.setBuPrescriptionTaskId(buPrescriptionItemTask.getId());
             });
         }
 
         //根据时段标记出当前时段预约的数量是否达到上限
-        List<BuPrescriptionItemAppointmentItem> customerBuPrescriptionItemAppointmentItemList = buPrescriptionItemAppointmentItemMapper.selectByTimeSlot(customerId, null,  DateUtil.beginOfDay(date), timeSlotStringList);
+        LambdaQueryWrapper<BuPrescriptionItemTask> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(BuPrescriptionItemTask::getCustomerId, customerId)
+                .eq(BuPrescriptionItemTask::getAppointmentDate, DateUtil.beginOfDay(date))
+                .eq(BuPrescriptionItemTask::getIsDel, 0)
+                .in(BuPrescriptionItemTask::getTimeSlot, timeSlotStringList);
 
-        if (!CollectionUtils.isEmpty(customerBuPrescriptionItemAppointmentItemList)) {
-            Map<String, List<BuPrescriptionItemAppointmentItem>> customerTimeSlotMap = customerBuPrescriptionItemAppointmentItemList.stream().collect(Collectors.groupingBy(BuPrescriptionItemAppointmentItem::getTimeSlot));
+        List<BuPrescriptionItemTask> customerBuPrescriptionItemTaskList = buPrescriptionItemTaskMapper.selectList(queryWrapper);
+
+        if (!CollectionUtils.isEmpty(customerBuPrescriptionItemTaskList)) {
+            Map<String, List<BuPrescriptionItemTask>> customerTimeSlotMap = customerBuPrescriptionItemTaskList.stream().collect(Collectors.groupingBy(BuPrescriptionItemTask::getTimeSlot));
 
             timeSlotDetailVoList.forEach(item -> {
-                List<BuPrescriptionItemAppointmentItem> list = customerTimeSlotMap.get(item.getTimeSlot());
+                List<BuPrescriptionItemTask> list = customerTimeSlotMap.get(item.getTimeSlot());
                 if (CollectionUtils.isEmpty(list)) {
                     item.setOverLimit(0);
                 } else {

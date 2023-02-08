@@ -6,10 +6,8 @@ import com.maizhiyu.yzt.base.BaseController;
 import com.maizhiyu.yzt.entity.BuOutpatientAppointment;
 import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem;
 import com.maizhiyu.yzt.result.Result;
-import com.maizhiyu.yzt.ro.AppointmentRo;
-import com.maizhiyu.yzt.ro.BuPrescriptionItemAppointmentItemRo;
+import com.maizhiyu.yzt.ro.BuPrescriptionItemTaskRo;
 import com.maizhiyu.yzt.ro.OutpatientAppointmentRo;
-import com.maizhiyu.yzt.security.HsUserDetails;
 import com.maizhiyu.yzt.service.IBuOutpatientAppointmentService;
 import com.maizhiyu.yzt.service.IBuPrescriptionItemAppointmentItemService;
 import io.swagger.annotations.Api;
@@ -52,29 +50,12 @@ public class BuOutpatientAppointmentController extends BaseController {
 
     @ApiOperation(value = "预约")
     @PostMapping("/makeAppointment")
-    public Result<Boolean> makeAppointment(@RequestBody BuPrescriptionItemAppointmentItemRo buPrescriptionItemAppointmentItemRo) {
+    public Result<Boolean> makeAppointment(@RequestBody BuPrescriptionItemTaskRo buPrescriptionItemTaskRo) {
         Long customerId = ((Number) getClaims().get("customerId")).longValue();
         BuPrescriptionItemAppointmentItem buPrescriptionItemAppointmentItem = new BuPrescriptionItemAppointmentItem();
-        BeanUtil.copyProperties(buPrescriptionItemAppointmentItemRo, buPrescriptionItemAppointmentItem);
+        BeanUtil.copyProperties(buPrescriptionItemTaskRo, buPrescriptionItemAppointmentItem);
         buPrescriptionItemAppointmentItem.setCustomerId(customerId);
         Boolean result = buPrescriptionItemAppointmentItemService.makeAppointment(buPrescriptionItemAppointmentItem);
-        return Result.success(result);
-    }
-
-    @ApiOperation(value = "删除预约")
-    @GetMapping("/deleteAppointment")
-    @ApiImplicitParam(name = "buPrescriptionItemAppointmentItemId", value = "适宜技术小项目预约详情数据主键id", required = true)
-    public Result<Boolean> deleteAppointment(Long buPrescriptionItemAppointmentItemId) {
-        Boolean result = buPrescriptionItemAppointmentItemService.deleteAppointment(buPrescriptionItemAppointmentItemId);
-        return Result.success(result);
-    }
-
-    @ApiOperation(value = "批量预约操作")
-    @PostMapping("/appointment")
-    public Result<Boolean> appointment(@RequestBody AppointmentRo appointmentRo) {
-        Long customerId = ((Number) getClaims().get("customerId")).longValue();
-        appointmentRo.setCustomerId(customerId);
-        Boolean result = buPrescriptionItemAppointmentItemService.appointment(appointmentRo);
         return Result.success(result);
     }
 }
