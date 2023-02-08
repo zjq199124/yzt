@@ -27,7 +27,8 @@
     <select id="selectDiagnoseList" resultType="com.maizhiyu.yzt.entity.BuDiagnose">
         select bp.name,bp.phone,bd.id,bd.disease,bd.syndrome,bd.create_time from bu_diagnose bd
         left join bu_patient bp on bd.patient_id = bp.id and bp.is_del = 0
-        where bd.is_del = 0 and bd.customer_id = #{customerId}
+        inner join bu_outpatient_appointment boa on bd.id = boa.diagnose_id and boa.is_del = 0
+        where bd.is_del = 0 and (boa.state = 1 or boa.state = 2) and bd.customer_id = #{customerId}
         <if test="term != null and term != ''">
             and (bd.disease like concat('%',#{term},'%') or bp.name like concat('%',#{term},'%') or bp.phone like concat('%',#{term},'%') or bp.idcard like concat('%',#{term},'%'))
         </if>
