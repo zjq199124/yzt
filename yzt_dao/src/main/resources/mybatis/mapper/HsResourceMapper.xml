@@ -37,6 +37,7 @@
         join hs_user_role Y on X.role_id = Y.role_id
         <where>
             R.is_del=0 and
+            X.is_del = 0 and
             Y.user_id = #{userId}
         </where>
     </select>
