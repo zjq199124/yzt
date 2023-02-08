@@ -4,8 +4,8 @@ spring:
     name: yizhentang
   http:
     multipart:
-      max-file-size: 2000Mb      # Max file size，默认1M
-      max-request-size: 2500Mb   # Max request size，默认10M
+      max-file-size: 10MB #
+      max-request-size: 100MB
   datasource:
     # 当前数据源操作类型
     type: com.alibaba.druid.pool.DruidDataSource
