@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -69,10 +70,12 @@ public class BuPrescriptionItemAppointment extends Model<BuPrescriptionItemAppoi
 
     @ApiModelProperty(value="更新时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date updateTime;
 
     @ApiModelProperty(value="创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date createTime;
 
     @ApiModelProperty(value = "备注")

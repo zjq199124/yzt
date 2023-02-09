@@ -4,9 +4,13 @@ package com.maizhiyu.yzt.entity;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.io.Serializable;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * (BuPrescriptionItemTask)表实体类
@@ -46,6 +50,9 @@ public class BuPrescriptionItemTask extends Model<BuPrescriptionItemTask> {
     //预约转态0未预约；1已预约；2已逾期
     private Integer appointmentStatus;
     //预约日期
+    @ApiModelProperty(value="创建时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date appointmentDate;
     //预约时段
     private String timeSlot;
@@ -54,6 +61,9 @@ public class BuPrescriptionItemTask extends Model<BuPrescriptionItemTask> {
     //签到状态；0未签到；1已签到
     private Integer signatureStatus;
     //签到时间
+    @ApiModelProperty(value="签到时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date signatureTime;
     //签到登记人id
     private Long registrantId;
@@ -62,8 +72,14 @@ public class BuPrescriptionItemTask extends Model<BuPrescriptionItemTask> {
     //治疗负责人id
     private Long cureUserId;
     //治疗开始时间
+    @ApiModelProperty(value="治疗开始时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date cureStartTime;
     //治疗结束时间
+    @ApiModelProperty(value="治疗结束时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date cureEndTime;
     //是否删除；1是；0否
     private Integer isDel;
