@@ -5,9 +5,7 @@
     <select id="selectOutpatientList" resultType="hashmap">
         SELECT
         X.id,
-        -- 	X.CODE,
         X.STATUS,
-        -- DATE_FORMAT( X.time, '%Y-%m-%d %T' ) time,
         DATE_FORMAT( X.update_time, '%Y-%m-%d %T' ) update_time,
         DATE_FORMAT( X.create_time, '%Y-%m-%d %T' ) create_time,
         A.id customer_id,
@@ -35,12 +33,6 @@
             <if test="createEndDate != null">
                 and X.create_time &lt; #{createEndDate}
             </if>
-<!--            <if test="startDate != null">-->
-<!--                and X.time >= #{startDate}-->
-<!--            </if>-->
-<!--            <if test="endDate != null">-->
-<!--                and X.time &lt; #{endDate}-->
-<!--            </if>-->
             <if test="customerId != null">
                 and X.customer_id = #{customerId}
             </if>
