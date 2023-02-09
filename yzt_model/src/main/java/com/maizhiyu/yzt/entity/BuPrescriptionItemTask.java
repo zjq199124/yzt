@@ -1,6 +1,8 @@
 package com.maizhiyu.yzt.entity;
 
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.io.Serializable;
 import java.util.Date;
@@ -24,6 +26,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 @NoArgsConstructor
 public class BuPrescriptionItemTask extends Model<BuPrescriptionItemTask> {
     //处治小项目任务主键id
+    @ApiModelProperty(value="处治小项目任务主键id")
+    @TableId(type = IdType.AUTO)
     private Long id;
     //患者门诊处治预约信息主键id
     private Long outpatientAppointmentId;
