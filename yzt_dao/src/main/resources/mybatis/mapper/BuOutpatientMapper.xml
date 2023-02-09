@@ -3,21 +3,31 @@
 <mapper namespace="com.maizhiyu.yzt.mapper.BuOutpatientMapper">
     <!--    YEAR(NOW())-YEAR(D.birthday)  D.birthday patient_birthday,-->
     <select id="selectOutpatientList" resultType="hashmap">
-        select
-        X.id, X.code, X.status, X.type,
-        DATE_FORMAT(X.time, '%Y-%m-%d %T') time,
-        DATE_FORMAT(X.update_time, '%Y-%m-%d %T') update_time,
-        DATE_FORMAT(X.create_time, '%Y-%m-%d %T') create_time,
-        A.id customer_id, A.name customer_name,
-        B.id department_id, B.dname departmentName,
-        C.id doctor_id, C.real_name doctor_name,
-        D.id patient_id, D.name patientName, D.sex patientSex, D.phone patientPhone, D.nl age ,D.birthday patientBirthday
-        from
-        bu_outpatient X
-        left join ms_customer A on A.id = X.customer_id
-        left join hs_department B on B.id = X.department_id
-        left join hs_user C on C.id = X.doctor_id
-        left join bu_patient D on D.id = X.patient_id
+        SELECT
+        X.id,
+        -- 	X.CODE,
+        X.STATUS,
+        -- DATE_FORMAT( X.time, '%Y-%m-%d %T' ) time,
+        DATE_FORMAT( X.update_time, '%Y-%m-%d %T' ) update_time,
+        DATE_FORMAT( X.create_time, '%Y-%m-%d %T' ) create_time,
+        A.id customer_id,
+        A.NAME customer_name,
+        B.id department_id,
+        B.dname departmentName,
+        C.id doctor_id,
+        C.real_name doctor_name,
+        D.id patient_id,
+        D.NAME patientName,
+        D.sex patientSex,
+        D.phone patientPhone,
+        D.nl age,
+        D.birthday patientBirthday
+        FROM
+        bu_diagnose X
+        LEFT JOIN ms_customer A ON A.id = X.customer_id
+        LEFT JOIN hs_department B ON B.id = X.department_id
+        LEFT JOIN hs_user C ON C.id = X.doctor_id
+        LEFT JOIN bu_patient D ON D.id = X.patient_id
         <where>
             <if test="createStartDate != null">
                 and X.create_time >= #{createStartDate}
@@ -25,12 +35,12 @@
             <if test="createEndDate != null">
                 and X.create_time &lt; #{createEndDate}
             </if>
-            <if test="startDate != null">
-                and X.time >= #{startDate}
-            </if>
-            <if test="endDate != null">
-                and X.time &lt; #{endDate}
-            </if>
+<!--            <if test="startDate != null">-->
+<!--                and X.time >= #{startDate}-->
+<!--            </if>-->
+<!--            <if test="endDate != null">-->
+<!--                and X.time &lt; #{endDate}-->
+<!--            </if>-->
             <if test="customerId != null">
                 and X.customer_id = #{customerId}
             </if>
@@ -52,10 +62,9 @@
             <if test="term != null and term != ''">
                 and (D.name like concat(concat('%',#{term}),'%')
                 or D.phone like concat(concat('%',#{term}),'%')
-                or X.code like concat(concat('%',#{term}),'%'))
             </if>
         </where>
-        order by time desc, X.create_time desc
+        order by  X.create_time desc
     </select>
 
     <select id="selectPsUserOutpatientList" resultType="hashmap">
