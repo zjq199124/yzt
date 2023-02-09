@@ -4,7 +4,7 @@
     <!--    YEAR(NOW())-YEAR(D.birthday)  D.birthday patient_birthday,-->
     <select id="selectOutpatientList" resultType="hashmap">
         SELECT
-        X.id,
+        X.outpatient_id id,
         X.STATUS,
         DATE_FORMAT( X.update_time, '%Y-%m-%d %T' ) update_time,
         DATE_FORMAT( X.create_time, '%Y-%m-%d %T' ) create_time,
