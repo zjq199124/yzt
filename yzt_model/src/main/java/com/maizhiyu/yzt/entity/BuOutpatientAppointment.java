@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiModelProperty;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.naming.Name;
 import java.io.Serializable;
@@ -45,6 +46,7 @@ public class BuOutpatientAppointment extends Model<BuOutpatientAppointment> {
 
     @ApiModelProperty(value="就诊时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date outpatientTime;
 
     @ApiModelProperty("预约状态 1：未预约；2：预约中;3:预约完成")
@@ -55,10 +57,12 @@ public class BuOutpatientAppointment extends Model<BuOutpatientAppointment> {
 
     @ApiModelProperty(value="更新时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date updateTime;
 
     @ApiModelProperty(value="创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date createTime;
 
     @ApiModelProperty(value = "备注")
