@@ -33,7 +33,7 @@
         LEFT JOIN bu_prescription_item bpi ON bpi.id = bc.prescription_item_id
         <where>
             bc.create_time <![CDATA[ < ]]> DATE_SUB(NOW(),INTERVAL 7 day)
-            <if test="query.date != null">
+            <if test="query.date != null and query.date !=''">
                 AND bo.create_time <![CDATA[ >= ]]> #{query.date}
             </if>
             <if test="query.term != null and query.term != ''">
