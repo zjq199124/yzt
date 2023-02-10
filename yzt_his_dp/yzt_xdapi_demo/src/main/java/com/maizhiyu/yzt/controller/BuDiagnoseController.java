@@ -4,10 +4,7 @@ import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.base.Preconditions;
 import com.maizhiyu.yzt.bean.aro.BuDiagnoseRO;
-import com.maizhiyu.yzt.entity.DiseaseMapping;
-import com.maizhiyu.yzt.entity.HisDoctor;
-import com.maizhiyu.yzt.entity.HisOutpatient;
-import com.maizhiyu.yzt.entity.HisPatient;
+import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.feign.FeignYptClient;
 import com.maizhiyu.yzt.mapperhis.HisDoctorMapper;
 import com.maizhiyu.yzt.mapperhis.HisOutpatientMapper;
@@ -16,6 +13,7 @@ import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.DiseaseMappingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,5 +116,16 @@ public class BuDiagnoseController {
         result.put("customerName", customerName);
 
         return Result.success(result);
+    }
+
+    @ApiOperation(value = "获取多媒体数据详情", notes = "获取多媒体数据详情")
+    @ApiImplicitParam(name = "id", value = "多媒体id", required = true)
+    @GetMapping("/getMultimediaInfo")
+    public Result getMultimediaInfo(@RequestParam Long id) {
+        if (Objects.isNull(id)) {
+            id = 377L;
+        }
+        Result<SysMultimedia> result = yptClient.getMultimedia(id);
+        return Result.success(result.getData());
     }
 }

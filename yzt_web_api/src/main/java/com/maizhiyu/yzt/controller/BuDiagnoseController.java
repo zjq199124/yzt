@@ -5,6 +5,7 @@ import com.maizhiyu.yzt.aro.BuPrescriptionRO;
 import com.maizhiyu.yzt.entity.BuDiagnose;
 import com.maizhiyu.yzt.entity.BuOutpatient;
 import com.maizhiyu.yzt.entity.MsCustomer;
+import com.maizhiyu.yzt.entity.SysMultimedia;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.BuDiagnoseRO;
 import com.maizhiyu.yzt.service.*;
@@ -45,6 +46,9 @@ public class BuDiagnoseController {
 
     @Resource
     private IBuOutpatientService buOutpatientService;
+
+    @Resource
+    private SysMultimediaService sysMultimediaService;
 
     @Resource
     private HttpServletRequest request;
@@ -127,6 +131,12 @@ public class BuDiagnoseController {
         BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(null, outpatientId);
         Long id = Optional.ofNullable(buOutpatient).orElse(new BuOutpatient()).getId();
         return Result.success(id);
+    }
+
+    @GetMapping(value = "/getMultimedia")
+    public Result<SysMultimedia> getMultimedia(@RequestParam(value = "id")Long id) {
+        SysMultimedia sysMultimedia = sysMultimediaService.getMultimedia(id);
+        return Result.success(sysMultimedia);
     }
 }
 

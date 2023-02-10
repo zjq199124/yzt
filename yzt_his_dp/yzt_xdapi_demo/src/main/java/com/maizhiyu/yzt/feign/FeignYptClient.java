@@ -10,6 +10,7 @@ import com.maizhiyu.yzt.bean.axo.BuPatientXO;
 import com.maizhiyu.yzt.bean.axo.HsDepartmentXO;
 import com.maizhiyu.yzt.bean.axo.HsUserXO;
 import com.maizhiyu.yzt.entity.BuDiagnose;
+import com.maizhiyu.yzt.entity.SysMultimedia;
 import com.maizhiyu.yzt.result.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -96,6 +97,9 @@ public interface FeignYptClient {
      */
     @PostMapping(value = "/department/addDepartmentHis")
     Result<Boolean> addDepartmentHis(@RequestBody HsDepartmentXO.AddDepartmentXO xo);
+
+    @GetMapping(value = "/diagnose/getMultimedia")
+    Result<SysMultimedia> getMultimedia(@RequestParam(value = "id") Long id);
 }
 
 
