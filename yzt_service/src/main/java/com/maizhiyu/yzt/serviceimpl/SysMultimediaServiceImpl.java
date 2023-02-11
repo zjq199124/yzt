@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.SysMultimedia;
 import com.maizhiyu.yzt.enums.FileSaveTypeEnum;
 import com.maizhiyu.yzt.mapper.SysMultimediaMapper;
-import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.SysMultimediaService;
 import com.maizhiyu.yzt.utils.ossKit.AliOssUtil;
 import lombok.experimental.var;
@@ -94,7 +93,7 @@ public class SysMultimediaServiceImpl extends ServiceImpl<SysMultimediaMapper, S
     }
 
     @Override
-    public Result<SysMultimedia> getMultimedia(Serializable id) {
+    public SysMultimedia getMultimedia(Serializable id) {
         SysMultimedia sysMultimedia = getById(id);
         String url=null;
         if (sysMultimedia != null) {
@@ -105,7 +104,7 @@ public class SysMultimediaServiceImpl extends ServiceImpl<SysMultimediaMapper, S
             }
         }
         sysMultimedia.setUrl(url);
-        return Result.success(sysMultimedia);
+        return sysMultimedia;
     }
 
 

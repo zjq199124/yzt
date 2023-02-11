@@ -2,7 +2,6 @@ package com.maizhiyu.yzt.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.SysMultimedia;
-import com.maizhiyu.yzt.result.Result;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
@@ -58,7 +57,7 @@ public interface SysMultimediaService extends IService<SysMultimedia> {
      * @param id
      * @return
      */
-    Result<SysMultimedia> getMultimedia(Serializable id);
+    SysMultimedia getMultimedia(Serializable id);
 
 
 }
