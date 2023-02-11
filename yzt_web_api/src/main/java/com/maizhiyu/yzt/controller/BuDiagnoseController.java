@@ -135,8 +135,8 @@ public class BuDiagnoseController {
 
     @GetMapping(value = "/getMultimedia")
     public Result<SysMultimedia> getMultimedia(@RequestParam(value = "id")Long id) {
-        SysMultimedia sysMultimedia = sysMultimediaService.getMultimedia(id);
-        return Result.success(sysMultimedia);
+        Result<SysMultimedia> result = sysMultimediaService.getMultimedia(id);
+        return Result.success(result.getData());
     }
 }
 
