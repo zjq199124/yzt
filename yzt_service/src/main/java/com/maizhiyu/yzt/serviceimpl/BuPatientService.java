@@ -31,8 +31,8 @@ public class BuPatientService extends ServiceImpl<BuPatientMapper, BuPatient> im
     private PsUserPatientMapper userPatientMapper;
 
     @Override
-    @ExistCheck(clazz = BuPatient.class, fname = "name|idcard", message = "患者已存在")
-    @ExistCheck(clazz = BuPatient.class, fname = "name|phone", message = "患者已存在")
+    //@ExistCheck(clazz = BuPatient.class, fname = "name|idcard", message = "患者已存在")
+    //@ExistCheck(clazz = BuPatient.class, fname = "name|phone", message = "患者已存在")
     public Integer addPatient(BuPatient patient) {
         if (patient.getCode() == null) {
             String code = UUID.randomUUID().toString().replace("-", "").substring(0, 20);
@@ -82,8 +82,11 @@ public class BuPatientService extends ServiceImpl<BuPatientMapper, BuPatient> im
     @Override
     public BuPatient getPatient(String name, String phone, String idcard) {
         QueryWrapper<BuPatient> wrapper = new QueryWrapper<>();
-        wrapper.or(q -> q.eq("name", name).eq("idcard", idcard))
+        /*wrapper.or(q -> q.eq("name", name).eq("idcard", idcard))
                 .or(q -> q.eq("name", name).eq("phone", phone))
+                .orderByDesc("update_time")
+                .last("limit 1");*/
+        wrapper.eq("idcard",idcard)
                 .orderByDesc("update_time")
                 .last("limit 1");
         return patientMapper.selectOne(wrapper);
