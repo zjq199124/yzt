@@ -52,7 +52,11 @@ public class PsUserService extends ServiceImpl<PsUserMapper,PsUser> implements I
     @Override
     public PsUser getUserByOpenid(String openid) {
         QueryWrapper<PsUser> wrapper = new QueryWrapper<>();
-        wrapper.eq("openid", openid);
+        wrapper.eq("openid", openid)
+                .eq("is_del", 0)
+                .orderByDesc("id")
+                .last("limit 1");
+
         return mapper.selectOne(wrapper);
     }
 

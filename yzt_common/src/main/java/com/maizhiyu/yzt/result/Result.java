@@ -22,10 +22,20 @@ public class Result<T> implements Serializable {
     @ApiModelProperty(value = "返回数据")
     private T data;
 
+    @ApiModelProperty(value = "接口成功后的业务状态码")
+    private Integer businessCode;
+
     public Result(Integer code, String msg, T data) {
         this.code = code;
         this.msg = msg;
         this.data = data;
+    }
+
+    public Result(Integer code, String msg, T data,Integer businessCode) {
+        this.code = code;
+        this.msg = msg;
+        this.data = data;
+        this.businessCode = businessCode;
     }
 
     public static Result success() {
@@ -34,6 +44,10 @@ public class Result<T> implements Serializable {
 
     public static Result success(Object data) {
         return new Result(ResultCode.SUCCESS.code(), ResultCode.SUCCESS.msg(), data);
+    }
+
+    public static Result success(Object data,SuccessBusinessCode successBusinessCode) {
+        return new Result(ResultCode.SUCCESS.code(), ResultCode.SUCCESS.msg(), data,successBusinessCode.businessCode());
     }
 
     public static Result success(Object data,String msg) {

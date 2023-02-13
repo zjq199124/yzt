@@ -6,6 +6,8 @@ import com.maizhiyu.yzt.entity.PsUser;
 import com.maizhiyu.yzt.enums.SmsSceneEnum;
 import com.maizhiyu.yzt.enums.SmsTemplateEnum;
 import com.maizhiyu.yzt.result.Result;
+import com.maizhiyu.yzt.result.ResultCode;
+import com.maizhiyu.yzt.result.SuccessBusinessCode;
 import com.maizhiyu.yzt.service.IPsUserService;
 import com.maizhiyu.yzt.service.ISmsService;
 import com.maizhiyu.yzt.serviceimpl.PsUserService;
@@ -21,10 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 
 @Api(tags = "用户接口")
@@ -64,15 +63,17 @@ public class PsUserController {
     @ApiOperation(value = "验证码登录", notes = "验证码登录")
     @ApiImplicitParam(name = "map", value = "验证参数map对象包含有 phone,code,openId 三个key", required = false)
     @PostMapping("/AuthCodeLogin")
-    public Result AuthCodeLogin(@RequestBody Map<String,String> map) {
+    public Result AuthCodeLogin(@RequestBody Map<String,String> map) throws Exception {
+        Assert.notNull(map.get("openid"), "openid不能为空!");
         //以手机号查询code进行比较
         Object o = redisUtils.get(SmsSceneEnum.LOGIN_PREFIX.getCode() + "_" + map.get("phone"));
         Assert.notNull(o, "当前手机号不存在验证码!");
         String c = String.valueOf(o);
         Assert.isTrue(c.equals(map.get("code")), "验证码错误!");
-        PsUser psUser = service.getUserByPhone(map.get("phone"));
-        psUser.setOpenid(map.get("openId"));
-        service.updateById(psUser);
+        PsUser psUser = service.getUserByOpenid(map.get("openid"));
+        if (Objects.isNull(psUser)) {
+            Result.failure(ResultCode.OPENID_ERROR);
+        }
         return Result.success(psUser);
     }
 

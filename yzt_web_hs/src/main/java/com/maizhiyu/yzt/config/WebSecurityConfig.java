@@ -1,9 +1,6 @@
 package com.maizhiyu.yzt.config;
 
-import com.maizhiyu.yzt.security.HsAuthFailureHandler;
-import com.maizhiyu.yzt.security.HsAuthSuccessHandler;
-import com.maizhiyu.yzt.security.HsLogoutSuccessHandler;
-import com.maizhiyu.yzt.security.HsUserDetailsService;
+import com.maizhiyu.yzt.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -42,6 +39,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value(value = "${spring.profiles.active}")
     private String env;
 
+    @Autowired
+    private LoginAuthenticationProvider loginAuthenticationProvider;
 
     /**
      * 配置相关设置
@@ -117,11 +116,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //        .roles("USER");
 
         // 使用数据库中的正式数据
-        auth
+        /*auth
                 // 设置UserDetailService
                 .userDetailsService(userDetailsService)
                 // 设置密码加密类
-                .passwordEncoder(new BCryptPasswordEncoder());
+                .passwordEncoder(new BCryptPasswordEncoder());*/
+        auth.authenticationProvider(loginAuthenticationProvider)
+                .userDetailsService(userDetailsService);
+        super.configure(auth);
     }
 
 
