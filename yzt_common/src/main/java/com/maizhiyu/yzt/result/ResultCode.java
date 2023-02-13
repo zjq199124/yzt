@@ -41,6 +41,8 @@ public enum ResultCode {
     USER_CODE_ERROR(20011, "验证码错误"),
     USER_CODE_SMS_FAIL(20012, "验证码发送失败"),
     USER_PHONE_FAIL(20013, "当前手机号不是原注册号"),
+    USERNAME_OR_PASSWORD_ERROR(20014, "用户名或密码错误"),
+    OPENID_ERROR(20015, "openId错误!"),
 
 
     /* 业务错误：30001-39999 */
