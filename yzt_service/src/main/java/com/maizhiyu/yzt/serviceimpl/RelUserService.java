@@ -52,7 +52,7 @@ public class RelUserService extends ServiceImpl<RelUserMapper, RelUser> implemen
             return map1;
         }).collect(Collectors.toList());
         List<Map<String, Object>> list = collect.stream().map(m -> {
-            psUsers.stream().filter(m2 -> Objects.equals(m.get("userId"), m2.getId()))
+            psUsers.stream().filter(m2 -> Objects.equals(m.get("familyId"), m2.getId()))
                     .forEach(m2 -> {
                         m.put("nickname", m2.getNickname());
                         m.put("phone", m2.getPhone());
@@ -90,10 +90,13 @@ public class RelUserService extends ServiceImpl<RelUserMapper, RelUser> implemen
         map.put("id", user.getId());
         map.put("nickname", user.getNickname());
         map.put("age", user.getAge());
+        map.put("sex",user.getSex());
         map.put("zsex", Sex.SexToName(user.getSex()));
         map.put("tag", "本人");
         list.add(map);
         Collections.swap(list, list.size() - 1, 0);
+
+
         return list;
     }
 

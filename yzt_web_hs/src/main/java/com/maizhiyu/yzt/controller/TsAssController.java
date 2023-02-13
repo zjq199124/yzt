@@ -3,6 +3,7 @@ package com.maizhiyu.yzt.controller;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.exception.BusinessException;
@@ -108,15 +109,16 @@ public class TsAssController {
     @ApiOperation(value = "保存打分(按照列表的形式)" ,notes = "保存打分(按照列表的形式)")
     @PostMapping("/saveAssList")
     public Result saveAss(@RequestBody List<UserAss> userAsslist){
+        int sum = 0;
         Boolean res = userAssService.saveBatch(userAsslist);
         TsAss tsAss = tsAssService.getById(userAsslist.get(0).getAssId());
-        int sum = userAsslist.stream().mapToInt(UserAss::getScore).sum();
+        sum = userAsslist.stream().mapToInt(UserAss::getScore).sum();
         tsAss.setStatus(2);
         tsAss.setTotalScore(sum);
         Boolean a = tsAssService.saveOrUpdate(tsAss);
         return Result.success(a);
-
     }
+
 
     @ApiOperation(value = "查询用户成绩",notes = "查询最终成绩")
     @ApiImplicitParams({
@@ -151,6 +153,8 @@ public class TsAssController {
         List<TsSytech> list = tsSytechService.query().eq("istest",1).list();
         return Result.success(list);
     }
+
+
 
 
 //    @ApiOperation(value = "查询用户考核结果" , notes = "查询用户考核结果")
