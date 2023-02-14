@@ -57,11 +57,16 @@ spring:
       filters: stat,wall,log4j
 
   # redis 配置
+#  redis:
+#    host: 59.110.137.205
+#    port: 6379
+#    password: 1qaz@WSX
+#    timeout: 86400
   redis:
-    host: 59.110.137.205
-    port: 6379
-    password: 1qaz@WSX
+    host: 120.26.4.216
+    port: 6300
     timeout: 86400
+    password: yzt123456
   session:
     store-type: redis
 
