@@ -117,7 +117,7 @@ oss:
   accessKeySecret: "DQtx7CwSvvrV3trwdaYEQRhhVAHCiw"
   publicBucket: "yzt-public"
   publicBucketUrl: "https://yzt-public.oss-cn-hangzhou.aliyuncs.com"
-  privateBucket: "yzt-privacy"
+  privateBucket: "yzt-test-privacy"
   privateBucketUrl: "https://yzt-privacy.oss-cn-hangzhou.aliyuncs.com"
   expiration: "30"
   styleWatermark: "一真堂"
