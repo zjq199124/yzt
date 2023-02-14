@@ -84,6 +84,11 @@ my:
   writeLimit: false
   isEncryption: false
 
+### 业务配置 ###
+file:
+  upload-folder: /Users/huhu/Temps/static/
+  static-access-path: /files/**
+
 
 sms:
   endpoint: "dysmsapi.aliyuncs.com"
