@@ -7,7 +7,6 @@ import com.maizhiyu.yzt.enums.SmsSceneEnum;
 import com.maizhiyu.yzt.enums.SmsTemplateEnum;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.result.ResultCode;
-import com.maizhiyu.yzt.result.SuccessBusinessCode;
 import com.maizhiyu.yzt.service.IPsUserService;
 import com.maizhiyu.yzt.service.ISmsService;
 import com.maizhiyu.yzt.serviceimpl.PsUserService;
@@ -23,7 +22,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 
 
 @Api(tags = "用户接口")
