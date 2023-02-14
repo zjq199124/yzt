@@ -81,7 +81,7 @@ jwt:
   header: Authorization
   prefix: Bearer_
   secret: 1qaz@WSX
-  expire: 360000000000
+  expire: 129600000
 
 
 oss:
