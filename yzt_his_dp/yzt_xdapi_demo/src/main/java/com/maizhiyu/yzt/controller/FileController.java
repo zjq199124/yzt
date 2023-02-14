@@ -37,16 +37,8 @@ public class FileController {
     public void transfer(HttpServletResponse res, @RequestParam(value = "multimediaId") Long multimediaId) throws Exception {
         //获取多媒体数据
         Result<SysMultimedia> multimediaResult= yptClient.getMultimedia(multimediaId);
-        String url=null;
-        if (multimediaResult.getData() != null) {
-            if (multimediaResult.getData().getServicePath().equals(FileSaveTypeEnum.ALI_PUBLIC.getCode())) {
-                url=aliOssUtil.getPublicUrl(multimediaResult.getData().getFilePath());
-            } else {
-                url=aliOssUtil.generatePresignedUrl(multimediaResult.getData().getFilePath());
-            }
-        }
-        Assert.notNull(url, "url为空!");
-        InputStream in = new URL(url).openStream();
+        Assert.notNull(multimediaResult.getData().getUrl(), "url为空!");
+        InputStream in = new URL(multimediaResult.getData().getUrl()).openStream();
         ServletOutputStream outputStream = res.getOutputStream();
         byte[] buff = new byte[1024];
         int n;
