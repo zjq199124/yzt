@@ -38,11 +38,11 @@ public class BuCheckController {
 
     @ApiOperation(value = "获取检查列表(门诊)", notes = "获取检查列表(门诊)")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "outpatientId", value = "门诊ID", required = true),
+            @ApiImplicitParam(name = "phone", value = "手机号", required = true),
     })
     @GetMapping("/getCheckListOfOutpatient")
-    public Result getCheckListOfOutpatient(Long outpatientId) {
-        List<BuCheck> list = checkService.getCheckListOfOutpatient(outpatientId);
+    public Result getCheckListOfOutpatient(@RequestParam("phone") Long phone) {
+        List<BuCheck> list = checkService.getCheckListOfOutpatient(phone);
         return Result.success(list);
     }
 

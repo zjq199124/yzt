@@ -100,6 +100,9 @@ public interface FeignYptClient {
 
     @GetMapping(value = "/diagnose/getMultimedia")
     Result<SysMultimedia> getMultimedia(@RequestParam(value = "id") Long id);
+
+    @GetMapping("/check/getCheckListOfOutpatient")
+    Result getCheckListOfOutpatient(@RequestParam(value = "phone") String phone);
 }
 
 
