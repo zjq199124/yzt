@@ -65,9 +65,9 @@ public class BuCheckService extends ServiceImpl<BuCheckMapper,BuCheck> implement
     }
 
     @Override
-    public List<BuCheck> getCheckListOfOutpatient(Long outpatientId) {
+    public List<BuCheck> getCheckListOfOutpatient(Long mobile) {
         QueryWrapper<BuCheck> wrapper = new QueryWrapper<>();
-        wrapper.eq("outpatient_id", outpatientId);
+        wrapper.eq("mobile", mobile);
         List<BuCheck> buChecks = mapper.selectList(wrapper);
         buChecks.stream().forEach(item->{
             item.setName(CheckTypeEnum.getNameByCode(item.getType()));
