@@ -89,13 +89,13 @@ oss:
   endpoint: "oss-cn-hangzhou.aliyuncs.com"
   accessKeyId: "LTAI5tEozMaZFLJXmjtv2y1L"
   accessKeySecret: "DQtx7CwSvvrV3trwdaYEQRhhVAHCiw"
-  publicBucket: "yzt-hs-dev"
-  publicBucketUrl: "yzt-hs-dev.oss-cn-hangzhou.aliyuncs.com"
-  privateBucket: "yzt-equipment"
-  privateBucketUrl: "yzt-equipment.oss-cn-hangzhou.aliyuncs.com"
+  publicBucket: "yzt-test-public"
+  publicBucketUrl: "https://yzt-test-public.oss-cn-hangzhou.aliyuncs.com"
+  privateBucket: "yzt-test-privacy"
+  privateBucketUrl: "https://yzt-test-privacy.oss-cn-hangzhou.aliyuncs.com"
   expiration: "30"
-  styleWatermark: "一真"
-  styleMicro: "一真"
+  styleWatermark: "一真堂"
+  styleMicro: "一真堂"
 
 his:
   url: https://yptdev.yztyun.com/hoso/

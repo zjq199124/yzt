@@ -122,10 +122,6 @@ public class BuDiagnoseController {
     @ApiImplicitParam(name = "id", value = "多媒体id", required = true)
     @GetMapping("/getMultimediaInfo")
     public Result getMultimediaInfo(@RequestParam Long id) {
-        if (Objects.isNull(id)) {
-            id = 377L;
-        }
-        Result<SysMultimedia> result = yptClient.getMultimedia(id);
-        return Result.success(result.getData());
+        return yptClient.getMultimedia(id);
     }
 }
