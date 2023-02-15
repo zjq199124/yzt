@@ -1,25 +1,10 @@
 package com.maizhiyu.yzt.serviceimpl;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.map.MapUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.maizhiyu.yzt.entity.PsFmaily;
-import com.maizhiyu.yzt.entity.PsUser;
 import com.maizhiyu.yzt.entity.RelUser;
 import com.maizhiyu.yzt.mapper.RelUserMapper;
-import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IRelUserService;
-import com.maizhiyu.yzt.utils.IdcardToAge;
-import com.maizhiyu.yzt.utils.RegexUtils;
-import com.maizhiyu.yzt.utils.Sex;
-import com.maizhiyu.yzt.vo.FamilyVo;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-import javax.annotation.Resource;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class RelUserService extends ServiceImpl<RelUserMapper, RelUser> implements IRelUserService {
