@@ -14,9 +14,9 @@ public interface IRelUserService extends IService<RelUser> {
 
 
 
-    List<Map<String, Object>> getFamily(Long userId);
-
-    Boolean addFamily(FamilyVo familyVo);
-
-    Boolean updateFamily(FamilyVo familyVo);
+//    List<Map<String, Object>> getFamily(Long userId);
+//
+//    Boolean addFamily(FamilyVo familyVo);
+//
+//    Boolean updateFamily(FamilyVo familyVo);
 }

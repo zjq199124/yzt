@@ -36,7 +36,7 @@ public class PsFmaily {
     private Integer sex;
 
     @ApiModelProperty(value = "年龄")
-    private Integer age;
+    private Date birthday;
 
     @ApiModelProperty(value = "用户ID")
     private Integer psUserId;

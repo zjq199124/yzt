@@ -6,7 +6,9 @@ import com.maizhiyu.yzt.entity.PsFmaily;
 import com.maizhiyu.yzt.entity.PsUser;
 import com.maizhiyu.yzt.mapper.PsFamilyMapper;
 import com.maizhiyu.yzt.service.IPsFamilyService;
+import com.maizhiyu.yzt.utils.IdcardToAge;
 import com.maizhiyu.yzt.utils.Sex;
+import nonapi.io.github.classgraph.json.Id;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -27,11 +29,7 @@ public class PsFamilyService extends ServiceImpl<PsFamilyMapper, PsFmaily> imple
         List<Map<String, Object>> familylist = new ArrayList<>();
         for (PsFmaily familys:family){
             Map<String, Object> eve = BeanUtil.beanToMap(familys);
-            if (Integer.parseInt(String.valueOf(eve.get("sex"))) == 0) {
-                eve.put("zsex", "女");
-            } else {
-                eve.put("zset", "男");
-            }
+            eve.put("zsex",IdcardToAge.getAge(familys.getIdCard()));
             if (Integer.parseInt(String.valueOf(eve.get("relType"))) == 1 && Integer.parseInt(String.valueOf(eve.get("sex"))) == 0) {
                 eve.put("tag", "母亲");
             } else if (Integer.parseInt(String.valueOf(eve.get("relType"))) == 1 && Integer.parseInt(String.valueOf(eve.get("sex"))) == 1) {
@@ -53,7 +51,7 @@ public class PsFamilyService extends ServiceImpl<PsFamilyMapper, PsFmaily> imple
         PsUser user = psUserService.getById(userId);
         map.put("id", user.getId());
         map.put("nickname", user.getNickname());
-        map.put("age", user.getAge());
+        map.put("age", IdcardToAge.getAge(user.getIdCard()));
         map.put("sex",user.getSex());
         map.put("zsex", Sex.SexToName(user.getSex()));
         map.put("tag", "本人");
