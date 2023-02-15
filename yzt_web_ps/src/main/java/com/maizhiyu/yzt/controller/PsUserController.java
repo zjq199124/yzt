@@ -6,7 +6,7 @@ import com.maizhiyu.yzt.entity.PsUser;
 import com.maizhiyu.yzt.enums.SmsSceneEnum;
 import com.maizhiyu.yzt.enums.SmsTemplateEnum;
 import com.maizhiyu.yzt.result.Result;
-import com.maizhiyu.yzt.result.ResultCode;
+import com.maizhiyu.yzt.result.SuccessBusinessCode;
 import com.maizhiyu.yzt.service.IPsUserService;
 import com.maizhiyu.yzt.service.ISmsService;
 import com.maizhiyu.yzt.serviceimpl.PsUserService;
@@ -22,10 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 
 @Api(tags = "用户接口")
@@ -66,17 +63,33 @@ public class PsUserController {
     @ApiImplicitParam(name = "map", value = "验证参数map对象包含有 phone,code,openId 三个key", required = false)
     @PostMapping("/AuthCodeLogin")
     public Result AuthCodeLogin(@RequestBody Map<String,String> map) throws Exception {
-        Assert.notNull(map.get("openid"), "openid不能为空!");
-        //以手机号查询code进行比较
+        Assert.notNull(map.get("phone"), "phone不能为空!");
+        //1：以手机号phone查询code进行比较
         Object o = redisUtils.get(SmsSceneEnum.LOGIN_PREFIX.getCode() + "_" + map.get("phone"));
         Assert.notNull(o, "当前手机号不存在验证码!");
         String c = String.valueOf(o);
         Assert.isTrue(c.equals(map.get("code")), "验证码错误!");
-        PsUser psUser = service.getUserByOpenid(map.get("openid"));
+        //2：以手机号查询账户信息
+        PsUser psUser = service.getUserByOpenid(map.get("phone"));
         if (Objects.isNull(psUser)) {
-            Result.failure(ResultCode.OPENID_ERROR);
+            //3:没有账户信息就要创建账户信息
+            psUser = createPsUser(map.get("phone"));
+        }
+
+        //4:此时还没有完善资料，要继续完善个人资料
+        if (psUser.getIsCompleteDetail() == 0) {
+           return Result.success(psUser, SuccessBusinessCode.PS_COMPLETE_MESSAGE);
         }
         return Result.success(psUser);
+    }
+
+    private PsUser createPsUser(String phone) {
+        PsUser psUser = new PsUser();
+        psUser.setPhone(phone);
+        psUser.setCreateTime(new Date());
+        psUser.setUpdateTime(psUser.getCreateTime());
+        service.save(psUser);
+        return psUser;
     }
 
 

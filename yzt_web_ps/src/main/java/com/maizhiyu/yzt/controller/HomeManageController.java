@@ -1,8 +1,6 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.maizhiyu.yzt.entity.PsFmaily;
-import com.maizhiyu.yzt.entity.PsUser;
 import com.maizhiyu.yzt.entity.RelUser;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.serviceimpl.PsFamilyService;

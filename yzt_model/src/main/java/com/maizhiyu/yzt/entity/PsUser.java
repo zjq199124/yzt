@@ -92,4 +92,7 @@ public class PsUser implements Serializable {
 
     @ApiModelProperty(value="是否删除：1是；0否")
     private Integer isDel;
+
+    @ApiModelProperty(value="是否删除：1是；0否")
+    private Integer isCompleteDetail;
 }
