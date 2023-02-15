@@ -38,7 +38,6 @@ public class HomeManageController {
     })
     @GetMapping("/getFamily")
     public Result getFamily(@RequestParam Long userId) {
-//        List<Map<String, Object>>list = relUserService.getFamily(userId);
         List<Map<String, Object>> list = psFamilyService.getFamily(userId);
         return Result.success(list);
     }
@@ -47,31 +46,31 @@ public class HomeManageController {
     @PostMapping("/addFamily")
     public Result addFamily(@RequestBody PsFmaily psFmaily) {
         Boolean res = psFamilyService.addFamily(psFmaily);
-        return Result.success();
+        return Result.success(res);
     }
 
-    @ApiOperation(value = "删除家庭成员", notes = "删除家庭成员")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId" ,value = "当前用户id",required = true),
-            @ApiImplicitParam(name = "familyId" , value = "关联用户id", required = true),
-    })
-    @GetMapping("/delFamily")
-    public Result delFamily(@RequestParam Long userId,@RequestParam Long familyId) {
-        RelUser one = relUserService.query().eq("user_id", userId)
-                .eq("another_user_id", familyId).one();
-        relUserService.removeById(one);
-        psFamilyService.removeById(familyId);
-        return Result.success();
-
-    }
-
-    @ApiOperation(value = "修改家庭成员信息",notes = "修改家庭信息")
-    @PostMapping("/updateFamily")
-    public Result updateFamily(@RequestBody FamilyVo familyVo ){
-        Boolean res = relUserService.updateFamily(familyVo);
-        return Result.success();
-
-    }
+//    @ApiOperation(value = "删除家庭成员", notes = "删除家庭成员")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "userId" ,value = "当前用户id",required = true),
+//            @ApiImplicitParam(name = "familyId" , value = "关联用户id", required = true),
+//    })
+//    @GetMapping("/delFamily")
+//    public Result delFamily(@RequestParam Long userId,@RequestParam Long familyId) {
+//        RelUser one = relUserService.query().eq("user_id", userId)
+//                .eq("another_user_id", familyId).one();
+//        relUserService.removeById(one);
+//        psFamilyService.removeById(familyId);
+//        return Result.success();
+//
+//    }
+//
+//    @ApiOperation(value = "修改家庭成员信息",notes = "修改家庭信息")
+//    @PostMapping("/updateFamily")
+//    public Result updateFamily(@RequestBody FamilyVo familyVo ){
+//        Boolean res = relUserService.updateFamily(familyVo);
+//        return Result.success();
+//
+//    }
 
 
 }
