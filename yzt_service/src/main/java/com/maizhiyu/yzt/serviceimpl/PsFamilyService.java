@@ -17,14 +17,11 @@ import java.util.*;
 public class PsFamilyService extends ServiceImpl<PsFamilyMapper, PsFamily> implements IPsFamilyService {
 
     @Resource
-    private PsFamilyService psFamilyService;
-
-    @Resource
     private PsUserService psUserService;
 
     @Override
     public List<Map<String, Object>> getFamily(Long userId) {
-        List<PsFamily> family = psFamilyService.query().eq("ps_user_id", userId).list();
+        List<PsFamily> family = this.query().eq("ps_user_id", userId).list();
         List<Map<String, Object>> familylist = new ArrayList<>();
         for (PsFamily familys:family){
             Map<String, Object> eve = BeanUtil.beanToMap(familys);
@@ -60,7 +57,7 @@ public class PsFamilyService extends ServiceImpl<PsFamilyMapper, PsFamily> imple
 
     @Override
     public Boolean addFamily(PsFamily psFamily) {
-        boolean b = psFamilyService.saveOrUpdate(psFamily);
-        return null;
+        boolean res = this.saveOrUpdate(psFamily);
+        return res;
     }
 }
