@@ -2,20 +2,19 @@ package com.maizhiyu.yzt.serviceimpl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.maizhiyu.yzt.entity.PsFmaily;
+import com.maizhiyu.yzt.entity.PsFamily;
 import com.maizhiyu.yzt.entity.PsUser;
 import com.maizhiyu.yzt.mapper.PsFamilyMapper;
 import com.maizhiyu.yzt.service.IPsFamilyService;
 import com.maizhiyu.yzt.utils.IdcardToAge;
 import com.maizhiyu.yzt.utils.Sex;
-import nonapi.io.github.classgraph.json.Id;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
 
 @Service
-public class PsFamilyService extends ServiceImpl<PsFamilyMapper, PsFmaily> implements IPsFamilyService {
+public class PsFamilyService extends ServiceImpl<PsFamilyMapper, PsFamily> implements IPsFamilyService {
 
     @Resource
     private PsFamilyService psFamilyService;
@@ -25,9 +24,9 @@ public class PsFamilyService extends ServiceImpl<PsFamilyMapper, PsFmaily> imple
 
     @Override
     public List<Map<String, Object>> getFamily(Long userId) {
-        List<PsFmaily> family = psFamilyService.query().eq("ps_user_id", userId).list();
+        List<PsFamily> family = psFamilyService.query().eq("ps_user_id", userId).list();
         List<Map<String, Object>> familylist = new ArrayList<>();
-        for (PsFmaily familys:family){
+        for (PsFamily familys:family){
             Map<String, Object> eve = BeanUtil.beanToMap(familys);
             eve.put("zsex",IdcardToAge.getAge(familys.getIdCard()));
             if (Integer.parseInt(String.valueOf(eve.get("relType"))) == 1 && Integer.parseInt(String.valueOf(eve.get("sex"))) == 0) {
@@ -60,8 +59,8 @@ public class PsFamilyService extends ServiceImpl<PsFamilyMapper, PsFmaily> imple
     }
 
     @Override
-    public Boolean addFamily(PsFmaily psFmaily) {
-        boolean b = psFamilyService.saveOrUpdate(psFmaily);
+    public Boolean addFamily(PsFamily psFamily) {
+        boolean b = psFamilyService.saveOrUpdate(psFamily);
         return null;
     }
 }

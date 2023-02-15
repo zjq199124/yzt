@@ -17,7 +17,7 @@ import java.util.Date;
 @Accessors(chain=true)
 @TableName("ps_family")
 @ApiModel(description="家庭成员信息表")
-public class PsFmaily {
+public class PsFamily {
 
     @ApiModelProperty(value="ID")
     @TableId(type = IdType.AUTO)

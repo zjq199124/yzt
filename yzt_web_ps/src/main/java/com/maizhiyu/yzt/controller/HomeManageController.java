@@ -1,12 +1,10 @@
 package com.maizhiyu.yzt.controller;
 
 
-import com.maizhiyu.yzt.entity.RelUser;
+import com.maizhiyu.yzt.entity.PsFamily;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.serviceimpl.PsFamilyService;
 import com.maizhiyu.yzt.serviceimpl.PsUserService;
-import com.maizhiyu.yzt.serviceimpl.RelUserService;
-import com.maizhiyu.yzt.vo.FamilyVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -42,8 +40,8 @@ public class HomeManageController {
 
     @ApiOperation(value = "添加家人", notes = "添加家人")
     @PostMapping("/addFamily")
-    public Result addFamily(@RequestBody PsFmaily psFmaily) {
-        Boolean res = psFamilyService.addFamily(psFmaily);
+    public Result addFamily(@RequestBody PsFamily psFamily) {
+        Boolean res = psFamilyService.addFamily(psFamily);
         return Result.success(res);
     }
 
