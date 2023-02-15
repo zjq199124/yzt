@@ -69,17 +69,17 @@ public class RelUserService extends ServiceImpl<RelUserMapper, RelUser> implemen
             } else {
                 eve.put("zset", "男");
             }
-            if (Integer.parseInt(String.valueOf(eve.get("relId"))) == 1 && Integer.parseInt(String.valueOf(eve.get("sex"))) == 0) {
+            if (Integer.parseInt(String.valueOf(eve.get("relType"))) == 1 && Integer.parseInt(String.valueOf(eve.get("sex"))) == 0) {
                 eve.put("tag", "母亲");
-            } else if (Integer.parseInt(String.valueOf(eve.get("relId"))) == 1 && Integer.parseInt(String.valueOf(eve.get("sex"))) == 1) {
+            } else if (Integer.parseInt(String.valueOf(eve.get("relType"))) == 1 && Integer.parseInt(String.valueOf(eve.get("sex"))) == 1) {
                 eve.put("tag", "父亲");
-            } else if (Integer.parseInt(String.valueOf(eve.get("relId"))) == 2 && Integer.parseInt(String.valueOf(eve.get("sex"))) == 0) {
+            } else if (Integer.parseInt(String.valueOf(eve.get("relType"))) == 2 && Integer.parseInt(String.valueOf(eve.get("sex"))) == 0) {
                 eve.put("tag", "妻子");
-            } else if (Integer.parseInt(String.valueOf(eve.get("relId"))) == 2 && Integer.parseInt(String.valueOf(eve.get("sex"))) == 1) {
+            } else if (Integer.parseInt(String.valueOf(eve.get("relType"))) == 2 && Integer.parseInt(String.valueOf(eve.get("sex"))) == 1) {
                 eve.put("tag", "丈夫");
-            } else if (Integer.parseInt(String.valueOf(eve.get("relId"))) == 3 && Integer.parseInt(String.valueOf(eve.get("sex"))) == 0) {
+            } else if (Integer.parseInt(String.valueOf(eve.get("relType"))) == 3 && Integer.parseInt(String.valueOf(eve.get("sex"))) == 0) {
                 eve.put("tag", "女儿");
-            } else if (Integer.parseInt(String.valueOf(eve.get("relId"))) == 3 && Integer.parseInt(String.valueOf(eve.get("sex"))) == 1) {
+            } else if (Integer.parseInt(String.valueOf(eve.get("relType"))) == 3 && Integer.parseInt(String.valueOf(eve.get("sex"))) == 1) {
                 eve.put("tag", "儿子");
             } else {
                 eve.put("tag", "其他");
