@@ -38,8 +38,8 @@ public class HomeManageController {
         return Result.success(list);
     }
 
-    @ApiOperation(value = "添加家人", notes = "添加家人")
-    @PostMapping("/addFamily")
+    @ApiOperation(value = "添加或者修改家人信息", notes = "添加或者修改家人信息")
+    @PostMapping("/addOrUpdateFamily")
     public Result addFamily(@RequestBody PsFamily psFamily) {
         Boolean res = psFamilyService.addFamily(psFamily);
         return Result.success(res);

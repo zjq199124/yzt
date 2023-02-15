@@ -39,7 +39,7 @@ public class PsFamily {
     private Date birthday;
 
     @ApiModelProperty(value = "用户ID")
-    private Integer psUserId;
+    private Long psUserId;
 
     @ApiModelProperty(value = "之间关系(1: 父母  2:爱人  3: 子女  4:其他  )")
     private Integer relType;
