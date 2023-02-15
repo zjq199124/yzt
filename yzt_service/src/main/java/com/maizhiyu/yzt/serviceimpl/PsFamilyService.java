@@ -1,13 +1,10 @@
 package com.maizhiyu.yzt.serviceimpl;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.maizhiyu.yzt.enums.FamilyTypeEnum;
 import com.maizhiyu.yzt.entity.PsFamily;
-import com.maizhiyu.yzt.entity.PsUser;
 import com.maizhiyu.yzt.mapper.PsFamilyMapper;
 import com.maizhiyu.yzt.service.IPsFamilyService;
-import com.maizhiyu.yzt.utils.IdcardToAge;
-import com.maizhiyu.yzt.utils.Sex;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -20,43 +17,38 @@ public class PsFamilyService extends ServiceImpl<PsFamilyMapper, PsFamily> imple
     private PsUserService psUserService;
 
     @Override
-    public List<Map<String, Object>> getFamily(Long userId) {
-        List<PsFamily> family = this.query().eq("ps_user_id", userId).list();
-        List<Map<String, Object>> familylist = new ArrayList<>();
-        for (PsFamily familys:family){
-            Map<String, Object> eve = BeanUtil.beanToMap(familys);
-            eve.put("zsex",IdcardToAge.getAge(familys.getIdCard()));
-            if (Integer.parseInt(String.valueOf(eve.get("relType"))) == 1 && Integer.parseInt(String.valueOf(eve.get("sex"))) == 0) {
-                eve.put("tag", "母亲");
-            } else if (Integer.parseInt(String.valueOf(eve.get("relType"))) == 1 && Integer.parseInt(String.valueOf(eve.get("sex"))) == 1) {
-                eve.put("tag", "父亲");
-            } else if (Integer.parseInt(String.valueOf(eve.get("relType"))) == 2 && Integer.parseInt(String.valueOf(eve.get("sex"))) == 0) {
-                eve.put("tag", "妻子");
-            } else if (Integer.parseInt(String.valueOf(eve.get("relType"))) == 2 && Integer.parseInt(String.valueOf(eve.get("sex"))) == 1) {
-                eve.put("tag", "丈夫");
-            } else if (Integer.parseInt(String.valueOf(eve.get("relType"))) == 3 && Integer.parseInt(String.valueOf(eve.get("sex"))) == 0) {
-                eve.put("tag", "女儿");
-            } else if (Integer.parseInt(String.valueOf(eve.get("relType"))) == 3 && Integer.parseInt(String.valueOf(eve.get("sex"))) == 1) {
-                eve.put("tag", "儿子");
-            } else {
-                eve.put("tag", "其他");
-            }
-            familylist.add(eve);
-        }
-        Map map = new HashMap<>();
-        PsUser user = psUserService.getById(userId);
-        map.put("id", user.getId());
-        map.put("nickname", user.getNickname());
-        map.put("age", IdcardToAge.getAge(user.getIdCard()));
-        map.put("sex",user.getSex());
-        map.put("zsex", Sex.SexToName(user.getSex()));
-        map.put("tag", "本人");
-        familylist.add(map);
-        return familylist;
+    public List<PsFamily> getFamily(Long userId) {
+        List<PsFamily> familyList = this.query().eq("ps_user_id", userId).list();
+        familyList.forEach(item -> {
+            FamilyTypeEnum familyTypeEnum = FamilyTypeEnum.getByCode(item.getRelType());
+            item.setRelDescription(familyTypeEnum.msg());
+        });
+        return familyList;
     }
 
     @Override
     public Boolean addFamily(PsFamily psFamily) {
+        if (psFamily.getRelType().equals(FamilyTypeEnum.PARENT.code())) {
+            if (psFamily.getSex() == 1) {
+                psFamily.setRelType(FamilyTypeEnum.FATHER.code());
+            } else {
+                psFamily.setRelType(FamilyTypeEnum.MOTHER.code());
+            }
+        }
+        if (psFamily.getRelType().equals(FamilyTypeEnum.CHILD.code())) {
+            if (psFamily.getSex() == 1) {
+                psFamily.setRelType(FamilyTypeEnum.SON.code());
+            } else {
+                psFamily.setRelType(FamilyTypeEnum.DAUGHTER.code());
+            }
+        }
+        if (psFamily.getRelType().equals(FamilyTypeEnum.SPOUSE.code())) {
+            if (psFamily.getSex() == 1) {
+                psFamily.setRelType(FamilyTypeEnum.HUSBAND.code());
+            } else {
+                psFamily.setRelType(FamilyTypeEnum.WIFE.code());
+            }
+        }
         boolean res = this.saveOrUpdate(psFamily);
         return res;
     }

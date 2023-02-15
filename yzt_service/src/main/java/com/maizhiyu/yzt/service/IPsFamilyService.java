@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface IPsFamilyService extends IService<PsFamily> {
-    List<Map<String, Object>> getFamily(Long userId);
+    List<PsFamily> getFamily(Long userId);
 
     Boolean addFamily(PsFamily psFamily);
 }

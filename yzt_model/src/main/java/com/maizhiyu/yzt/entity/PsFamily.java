@@ -1,9 +1,6 @@
 package com.maizhiyu.yzt.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -41,7 +38,8 @@ public class PsFamily {
     @ApiModelProperty(value = "用户ID")
     private Long psUserId;
 
-    @ApiModelProperty(value = "之间关系(1: 父母  2:爱人  3: 子女  4:其他  )")
+    @ApiModelProperty(value = "之间关系(0:本人 1: 父母  2:父亲  3: 母亲  4:子女\n" +
+            "                 5:儿子 6:女儿  7:爱人 8:妻子 9:丈夫 10:其他  )")
     private Integer relType;
 
     @ApiModelProperty(value="创建时间")
@@ -58,4 +56,8 @@ public class PsFamily {
 
     @ApiModelProperty(value="备注")
     private String remark;
+
+    @ApiModelProperty("关系描述")
+    @TableField(exist = false)
+    private String relDescription;
 }

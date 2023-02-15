@@ -34,7 +34,7 @@ public class HomeManageController {
     })
     @GetMapping("/getFamily")
     public Result getFamily(@RequestParam Long userId) {
-        List<Map<String, Object>> list = psFamilyService.getFamily(userId);
+        List<PsFamily> list = psFamilyService.getFamily(userId);
         return Result.success(list);
     }
 

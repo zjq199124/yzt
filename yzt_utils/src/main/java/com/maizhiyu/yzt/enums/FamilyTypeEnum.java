@@ -1,4 +1,4 @@
-package com.maizhiyu.yzt.constant;
+package com.maizhiyu.yzt.enums;
 
 /**
  * API 统一返回状态码
@@ -7,12 +7,16 @@ public enum FamilyTypeEnum {
 
     /* 家人关系枚举 */
     SELF(0, "本人"),
-    FATHER(1, "父亲"),
-    MOTHER(2, "母亲"),
-    SON(3, "儿子"),
-    DAUGHTER(4, "女儿"),
-    SPOUSE(5, "配偶"),
-    OTHER(6, "其他");
+    PARENT(1,"父母"),
+    FATHER(2, "父亲"),
+    MOTHER(3, "母亲"),
+    CHILD(4,"子女"),
+    SON(5, "儿子"),
+    DAUGHTER(6, "女儿"),
+    SPOUSE(7, "爱人"),
+    WIFE(8,"妻子"),
+    HUSBAND(9,"丈夫"),
+    OTHER(10, "其他");
 
 
     private Integer code;
