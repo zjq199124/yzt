@@ -51,6 +51,14 @@
                 and X.sytech_id = #{sytechId}
             </if>
         </where>
+        ORDER BY
+        createTime DESC,
+        CASE
+        X.STATUS
+        WHEN 0 THEN 1
+        WHEN 1  THEN 2
+        WHEN 2  THEN 3
+        END ASC
     </select>
 
     <select id="selectAssDetail" resultType="com.maizhiyu.yzt.entity.TsAss">
