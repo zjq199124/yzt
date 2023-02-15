@@ -10,7 +10,7 @@ public interface IPsUserService extends IService<PsUser> {
 
     Integer addUser(PsUser user);
 
-    Integer setUser(PsUser user);
+    Boolean setUser(PsUser user);
 
     Integer setUserByOpenid(PsUser user);
 

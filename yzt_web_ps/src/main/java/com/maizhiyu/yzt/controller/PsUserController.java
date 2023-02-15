@@ -2,11 +2,14 @@ package com.maizhiyu.yzt.controller;
 
 
 import cn.hutool.core.lang.Assert;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.maizhiyu.yzt.entity.PsFamily;
 import com.maizhiyu.yzt.entity.PsUser;
 import com.maizhiyu.yzt.enums.SmsSceneEnum;
 import com.maizhiyu.yzt.enums.SmsTemplateEnum;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.result.SuccessBusinessCode;
+import com.maizhiyu.yzt.service.IPsFamilyService;
 import com.maizhiyu.yzt.service.IPsUserService;
 import com.maizhiyu.yzt.service.ISmsService;
 import com.maizhiyu.yzt.serviceimpl.PsUserService;
@@ -41,6 +44,9 @@ public class PsUserController {
     private PsUserService psUserService;
 
     @Resource
+    private IPsFamilyService psFamilyService;
+
+    @Resource
     private RedisUtils redisUtils;
 
     @Resource
@@ -70,7 +76,7 @@ public class PsUserController {
         String c = String.valueOf(o);
         Assert.isTrue(c.equals(map.get("code")), "验证码错误!");
         //2：以手机号查询账户信息
-        PsUser psUser = service.getUserByOpenid(map.get("phone"));
+        PsUser psUser = service.getUserByPhone(map.get("phone"));
         if (Objects.isNull(psUser)) {
             //3:没有账户信息就要创建账户信息
             psUser = createPsUser(map.get("phone"));
@@ -107,8 +113,9 @@ public class PsUserController {
                 return Result.failure("身份证号码不符合位数要求");
             }
         }
-        boolean b = psUserService.saveOrUpdate(user);
-        return Result.success(b);
+
+        Boolean res = psUserService.setUser(user);
+        return Result.success(res);
     }
 
     @ApiOperation(value = "发送验证码", notes = "发送验证码")

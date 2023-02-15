@@ -3,12 +3,19 @@ package com.maizhiyu.yzt.serviceimpl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.maizhiyu.yzt.constant.FamilyTypeEnum;
+import com.maizhiyu.yzt.entity.PsFamily;
 import com.maizhiyu.yzt.entity.PsUser;
+import com.maizhiyu.yzt.mapper.PsFamilyMapper;
 import com.maizhiyu.yzt.mapper.PsUserMapper;
 import com.maizhiyu.yzt.service.IPsUserService;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.Objects;
 
 
 @Service
@@ -17,6 +24,9 @@ public class PsUserService extends ServiceImpl<PsUserMapper,PsUser> implements I
 
     @Autowired
     private PsUserMapper mapper;
+
+    @Resource
+    private PsFamilyMapper psFamilyMapper;
 
     @Override
     public Integer addUser(PsUser user) {
@@ -33,8 +43,36 @@ public class PsUserService extends ServiceImpl<PsUserMapper,PsUser> implements I
     }
 
     @Override
-    public Integer setUser(PsUser user) {
-        return mapper.updateById(user);
+    public Boolean setUser(PsUser user) {
+        boolean res = this.saveOrUpdate(user);
+        //设置完成之后主用户的信息（本人自己），将这份信息添加到家人表中去
+        if (res) {
+            LambdaQueryWrapper<PsFamily> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(PsFamily::getPsUserId, user.getId())
+                    .eq(PsFamily::getRelType, FamilyTypeEnum.SELF.code())
+                    .eq(PsFamily::getIsDel, 0)
+                    .orderByDesc(PsFamily::getUpdateTime)
+                    .last("limit 1");
+            PsFamily select = psFamilyMapper.selectOne(queryWrapper);
+            PsFamily psFamily = new PsFamily();
+
+            if (Objects.isNull(select)) {
+                psFamily.setBirthday(user.getBirthday())
+                        .setPhone(user.getPhone())
+                        .setPsUserId(user.getId())
+                        .setNickname(user.getNickname())
+                        .setSex(user.getSex())
+                        .setIdCard(user.getIdCard())
+                        .setRelType(FamilyTypeEnum.SELF.code());
+                int insert = psFamilyMapper.insert(psFamily);
+                return insert > 0;
+            } else {
+                psFamily.setId(select.getId());
+                int update = psFamilyMapper.updateById(psFamily);
+                return update > 0;
+            }
+        }
+        return false;
     }
 
     @Override
