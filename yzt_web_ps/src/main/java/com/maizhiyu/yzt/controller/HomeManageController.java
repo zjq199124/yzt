@@ -32,24 +32,21 @@ public class HomeManageController {
     @Resource
     private PsFamilyService psFamilyService;
 
-    @Resource
-    private RelUserService relUserService;
-
     @ApiOperation(value = "获取家庭信息", notes = "获取家庭信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户id", required = true),
     })
     @GetMapping("/getFamily")
     public Result getFamily(@RequestParam Long userId) {
-
-        List<Map<String, Object>>list = relUserService.getFamily(userId);
+//        List<Map<String, Object>>list = relUserService.getFamily(userId);
+        List<Map<String, Object>> list = psFamilyService.getFamily(userId);
         return Result.success(list);
     }
 
     @ApiOperation(value = "添加家人", notes = "添加家人")
     @PostMapping("/addFamily")
-    public Result addFamily(@RequestBody FamilyVo familyVo) {
-        Boolean res = relUserService.addFamily(familyVo);
+    public Result addFamily(@RequestBody PsFmaily psFmaily) {
+        Boolean res = psFamilyService.addFamily(psFmaily);
         return Result.success();
     }
 
