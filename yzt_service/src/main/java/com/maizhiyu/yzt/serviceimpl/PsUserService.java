@@ -43,6 +43,8 @@ public class PsUserService extends ServiceImpl<PsUserMapper,PsUser> implements I
 
     @Override
     public Boolean setUser(PsUser user) {
+        user.setStatus(1);
+        user.setIsCompleteDetail(1);
         boolean res = this.saveOrUpdate(user);
         //设置完成之后主用户的信息（本人自己），将这份信息添加到家人表中去
         if (res) {

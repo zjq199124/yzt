@@ -72,7 +72,7 @@ public class PsUserController {
         Assert.notNull(map.get("phone"), "phone不能为空!");
         //1：以手机号phone查询code进行比较
         Object o = redisUtils.get(SmsSceneEnum.LOGIN_PREFIX.getCode() + "_" + map.get("phone"));
-        Assert.notNull(o, "当前手机号不存在验证码!");
+        Assert.notNull(o, "验证码已过期!");
         String c = String.valueOf(o);
         Assert.isTrue(c.equals(map.get("code")), "验证码错误!");
         //2：以手机号查询账户信息
@@ -92,6 +92,8 @@ public class PsUserController {
     private PsUser createPsUser(String phone) {
         PsUser psUser = new PsUser();
         psUser.setPhone(phone);
+        psUser.setStatus(1);
+        psUser.setIsCompleteDetail(0);
         psUser.setCreateTime(new Date());
         psUser.setUpdateTime(psUser.getCreateTime());
         service.save(psUser);
