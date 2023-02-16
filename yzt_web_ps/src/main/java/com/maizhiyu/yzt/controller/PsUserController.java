@@ -58,8 +58,11 @@ public class PsUserController {
             @ApiImplicitParam(name = "id", value = "用户ID", required = false),
     })
     @GetMapping("/getUser")
-    public Result getUser(Long id) {
+    public Result getUser(Long id) throws Exception {
         PsUser user = psUserService.getById(id);
+        if (Objects.isNull(user)) {
+            throw new Exception("用户id错误!");
+        }
         user.setAge(IdcardToAge.getAge(user.getIdCard()));
         return Result.success(user);
     }
