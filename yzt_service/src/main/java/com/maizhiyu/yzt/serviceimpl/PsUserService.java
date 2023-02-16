@@ -56,15 +56,15 @@ public class PsUserService extends ServiceImpl<PsUserMapper,PsUser> implements I
                     .last("limit 1");
             PsFamily select = psFamilyMapper.selectOne(queryWrapper);
             PsFamily psFamily = new PsFamily();
+            psFamily.setBirthday(user.getBirthday())
+                    .setPhone(user.getPhone())
+                    .setPsUserId(user.getId())
+                    .setNickname(user.getNickname())
+                    .setSex(user.getSex())
+                    .setIdCard(user.getIdCard())
+                    .setRelType(FamilyTypeEnum.SELF.code());
 
             if (Objects.isNull(select)) {
-                psFamily.setBirthday(user.getBirthday())
-                        .setPhone(user.getPhone())
-                        .setPsUserId(user.getId())
-                        .setNickname(user.getNickname())
-                        .setSex(user.getSex())
-                        .setIdCard(user.getIdCard())
-                        .setRelType(FamilyTypeEnum.SELF.code());
                 int insert = psFamilyMapper.insert(psFamily);
                 return insert > 0;
             } else {
