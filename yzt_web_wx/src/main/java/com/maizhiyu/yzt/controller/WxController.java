@@ -209,11 +209,11 @@ public class WxController {
         String openid = jobj.getString("openid");
 
         // 添加或更新用户
-        PsUser user = addUser(openid);
+        //PsUser user = addUser(openid);
 
         // 引导用户到业务系统页面
-        Long uid = user.getId();
-        String url = BUSINESS_URL + "?openid=" + openid + "&uid=" + uid;
+        //Long uid = user.getId();
+        String url = BUSINESS_URL + "?openid=" + openid;
         logger.info("redirect: " + url);
 
         // 页面重定向
