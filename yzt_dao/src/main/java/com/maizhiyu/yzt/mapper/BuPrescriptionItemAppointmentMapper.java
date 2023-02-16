@@ -13,4 +13,6 @@ public interface BuPrescriptionItemAppointmentMapper extends BaseMapper<BuPrescr
     List<BuPrescriptionItemAppointment> selectByDiagnoseIdList(@Param("diagnoseIdList") List<Long> diagnoseIdList);
 
     List<BuPrescriptionItemAppointment> selectByOutpatientAppointmentId(@Param("outpatientAppointmentId") Long outpatientAppointmentId);
+
+    List<BuPrescriptionItemAppointment> selectByPrescriptionIdList(@Param("prescriptionIdList") List<Long> prescriptionIdList);
 }

@@ -256,7 +256,8 @@ public class BuPrescriptionController {
     private void addAppointmentInfo(BuPrescription prescription) {
         // 1:先查询这次门诊是否有预约数据
         Long outpatientAppointmentId = null;
-        BuOutpatientAppointment select = buOutpatientAppointmentService.selectByDiagnoseId(prescription.getDiagnoseId());
+        //BuOutpatientAppointment select = buOutpatientAppointmentService.selectByDiagnoseId(prescription.getDiagnoseId());
+        BuOutpatientAppointment select = buOutpatientAppointmentService.selectByDiagnoseId(prescription.getId());
         if (Objects.isNull(select)) {
             BuOutpatientAppointment buOutpatientAppointment = new BuOutpatientAppointment();
             buOutpatientAppointment.setCustomerId(prescription.getCustomerId());
@@ -264,12 +265,15 @@ public class BuPrescriptionController {
             buOutpatientAppointment.setOutpatientId(prescription.getOutpatientId());
             buOutpatientAppointment.setDepartmentId(prescription.getDepartmentId());
             buOutpatientAppointment.setDiagnoseId(prescription.getDiagnoseId());
+            //增加下面一行代码
+            buOutpatientAppointment.setPrescriptionId(prescription.getId());
+
             buOutpatientAppointment.setCreateTime(new Date());
             buOutpatientAppointment.setUpdateTime(new Date());
 
             BuDiagnose diagnose = diagnoseService.getDiagnose(prescription.getDiagnoseId());
             buOutpatientAppointment.setOutpatientTime(diagnose.getCreateTime());
-            //根据诊断生成门诊预约数据
+            //根据诊断下的每开的一次处方生成一个对应的处方的预约信息
             BuOutpatientAppointment insert = buOutpatientAppointmentService.insert(buOutpatientAppointment);
             outpatientAppointmentId = insert.getId();
         } else {

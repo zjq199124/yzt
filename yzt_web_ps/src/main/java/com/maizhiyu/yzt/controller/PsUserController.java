@@ -137,7 +137,7 @@ public class PsUserController {
         try {
             Boolean res = smsService.sendSms(signName,SmsTemplateEnum.VERIFICATION_CODE.getCode(), phone, map);
             if (res) {
-                boolean ret = redisUtils.set(SmsSceneEnum.LOGIN_PREFIX.getCode() + "_" + phone, verificationCode, 120);
+                boolean ret = redisUtils.set(SmsSceneEnum.LOGIN_PREFIX.getCode() + "_" + phone, verificationCode, 300);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -10,6 +10,7 @@
         <result column="patient_id" property="patientId"/>
         <result column="department_id" property="departmentId"/>
         <result column="diagnose_id" property="diagnoseId"/>
+        <result column="prescription_id" property="prescriptionId"/>
         <result column="outpatient_time" property="outpatientTime"/>
         <result column="state" property="state"/>
         <result column="is_del" property="isDel"/>

@@ -43,12 +43,23 @@ public class BuOutpatientAppointmentServiceImpl extends ServiceImpl<BuOutpatient
             return resultPage;
 
         //查询处方下面的的明细技术的预约状况
-        List<Long> diagnoseIdList = resultPage.getRecords().stream().filter(item -> Objects.nonNull(item.getDiagnoseId())).map(BuOutpatientAppointment::getDiagnoseId).collect(Collectors.toList());
+        /*List<Long> diagnoseIdList = resultPage.getRecords().stream().filter(item -> Objects.nonNull(item.getDiagnoseId())).map(BuOutpatientAppointment::getDiagnoseId).collect(Collectors.toList());
         if(CollectionUtils.isEmpty(diagnoseIdList))
             return resultPage;
 
         //查询该诊断下所开出的适宜技术小项目对应的预约情况
         List<BuPrescriptionItemAppointment> buPrescriptionItemAppointments = buPrescriptionItemAppointmentMapper.selectByDiagnoseIdList(diagnoseIdList);
+
+        if(CollectionUtils.isEmpty(buPrescriptionItemAppointments))
+            return resultPage;*/
+
+        //查询处方下面的的明细技术的预约状况
+        List<Long> prescriptionIdList = resultPage.getRecords().stream().filter(item -> Objects.nonNull(item.getDiagnoseId())).map(BuOutpatientAppointment::getPrescriptionId).collect(Collectors.toList());
+        if(CollectionUtils.isEmpty(prescriptionIdList))
+            return resultPage;
+
+        //查询该诊断下所开出的适宜技术小项目对应的预约情况
+        List<BuPrescriptionItemAppointment> buPrescriptionItemAppointments = buPrescriptionItemAppointmentMapper.selectByPrescriptionIdList(prescriptionIdList);
 
         if(CollectionUtils.isEmpty(buPrescriptionItemAppointments))
             return resultPage;

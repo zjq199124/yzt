@@ -41,6 +41,9 @@ public class BuOutpatientAppointment extends Model<BuOutpatientAppointment> {
     @ApiModelProperty(value="科室id")
     private Long departmentId;
 
+    @ApiModelProperty(value="处方id")
+    private Long prescriptionId;
+
     @ApiModelProperty(value="诊断id")
     private Long diagnoseId;
 
