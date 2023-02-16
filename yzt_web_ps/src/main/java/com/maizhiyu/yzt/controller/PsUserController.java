@@ -86,6 +86,12 @@ public class PsUserController {
         if (psUser.getIsCompleteDetail() == 0) {
            return Result.success(psUser, SuccessBusinessCode.PS_COMPLETE_MESSAGE);
         }
+        //5：此时如果带了openid,要更新openid
+        if (Objects.nonNull(map.get("openid"))) {
+            psUser.setOpenid(map.get("openid"));
+            psUser.setUpdateTime(new Date());
+            service.saveOrUpdate(psUser);
+        }
         return Result.success(psUser);
     }
 
