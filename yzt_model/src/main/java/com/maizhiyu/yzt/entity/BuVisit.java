@@ -55,7 +55,7 @@ public class BuVisit extends Model<BuVisit> implements Serializable {
 
     @ApiModelProperty("随访时间")
     @NotNull
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "Asia/Shanghai")
+    @JsonFormat(pattern = "yyyy-MM-dd", locale = "zh", timezone = "Asia/Shanghai")
     private Date visitTime;
 
 }
