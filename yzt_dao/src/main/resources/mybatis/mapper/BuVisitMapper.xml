@@ -4,32 +4,35 @@
 
     <resultMap type="com.maizhiyu.yzt.entity.BuVisit" id="BuVisitMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
-        <result property="cureId" column="cure_id" jdbcType="INTEGER"/>
+        <result property="taskId" column="task_id" jdbcType="INTEGER"/>
         <result property="status" column="status" jdbcType="INTEGER"/>
         <result property="result" column="result" jdbcType="INTEGER"/>
-        <result property="type" column="type" jdbcType="INTEGER"/>
         <result property="content" column="content" jdbcType="VARCHAR"/>
     </resultMap>
+
     <!--随访分页列表查询-->
     <select id="getPage" resultType="com.maizhiyu.yzt.vo.VisitVO" parameterType="com.maizhiyu.yzt.ro.VisitRO">
         SELECT
+        bv.*,
+        bpit.id taskId,
         bp.NAME,
         bp.phone,
         bp.sex,
-        bit.ts_name,
+        bpit.ts_name,
         DATE_FORMAT(bo.create_time, '%Y-%m-%d %H:%i:%S') diagnose_time,
         bd.disease diagnose_name,
-        bit.ts_name sytech_name,
+        bpit.ts_name sytech_name,
         (select real_name from hs_user where id=bd.doctor_id) doctor_name,
-        (select real_name from hs_user where id=bit.cure_user_id ) cure_user_name
+        (select real_name from hs_user where id=bpit.cure_user_id ) cure_user_name
         FROM
-        bu_prescription_item_task bit
-        LEFT JOIN bu_patient bp ON bp.id = bit.patient_id
-        LEFT JOIN bu_outpatient bo ON bit.outpatient_id = bo.id
-        LEFT JOIN bu_diagnose bd ON bit.outpatient_id = bo.id
+        bu_prescription_item_task bpit
+        LEFT JOIN bu_patient bp ON bp.id = bpit.patient_id
+        LEFT JOIN bu_outpatient bo ON bpit.outpatient_id = bo.id
+        LEFT JOIN bu_diagnose bd ON bpit.outpatient_id = bo.id
+        LEFT JOIN bu_visit bv ON bv.task_id = bpit.id
         <where>
-            bit.cure_end_time <![CDATA[ < ]]> DATE_SUB(NOW(),INTERVAL 7 day)
-            and bit.cure_status=2
+            bpit.cure_end_time <![CDATA[ < ]]> DATE_SUB(NOW(),INTERVAL 7 day)
+            and bpit.cure_status=2
             <if test="query.date != null and query.date !=''">
                 AND bo.create_time <![CDATA[ >= ]]> #{query.date}
             </if>
@@ -42,28 +45,29 @@
                 AND bv.status=#{query.status}
             </if>
         </where>
-        GROUP BY bit.id
+        GROUP BY bpit.id
     </select>
 
     <!--以随访id查询随访详情-->
     <select id="getInfoById" resultType="com.maizhiyu.yzt.vo.VisitVO">
-        SELECT bv.*,
-        bc.id cure_id,
+        SELECT
+        bv.*,
+        bpit.id taskId,
         bp.NAME,
         bp.phone,
         bp.sex,
-        bp.nl,
-        bo.create_time diagnose_time,
+        bpit.ts_name,
+        DATE_FORMAT(bo.create_time, '%Y-%m-%d %H:%i:%S') diagnose_time,
         bd.disease diagnose_name,
-        bpi.NAME sytech_name,
-        (select real_name from hs_user where id = bd.doctor_id) doctor_name,
-        (select real_name from hs_user where id = bc.cure_user_id) cure_user_name
-        FROM bu_visit bv
-        LEFT JOIN bu_cure bc ON bv.cure_id = bc.id
-        LEFT JOIN bu_outpatient bo ON bc.outpatient_id = bo.id
-        LEFT JOIN bu_patient bp ON bp.id = bo.patient_id
-        LEFT JOIN bu_diagnose bd ON bd.outpatient_id = bo.id
-        LEFT JOIN bu_prescription_item bpi ON bpi.id = bc.prescription_item_id
+        bpit.ts_name sytech_name,
+        (select real_name from hs_user where id=bd.doctor_id) doctor_name,
+        (select real_name from hs_user where id=bpit.cure_user_id ) cure_user_name
+        FROM
+        bu_prescription_item_task bpit
+        LEFT JOIN bu_patient bp ON bp.id = bpit.patient_id
+        LEFT JOIN bu_outpatient bo ON bpit.outpatient_id = bo.id
+        LEFT JOIN bu_diagnose bd ON bpit.outpatient_id = bo.id
+        LEFT JOIN bu_visit bv ON bv.task_id = bpit.id
         <where>
             bv.id=#{id}
         </where>

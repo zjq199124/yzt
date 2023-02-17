@@ -33,9 +33,9 @@ public class BuVisit extends Model<BuVisit> implements Serializable {
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty("治疗id")
+    @ApiModelProperty("治疗任务id")
     @NotNull
-    private Long cureId;
+    private Long taskId;
 
     @ApiModelProperty("随访状态(1-正常，2-失访，3-死亡）")
     @NotNull
@@ -45,9 +45,9 @@ public class BuVisit extends Model<BuVisit> implements Serializable {
     @NotNull
     private Integer result;
 
-    @ApiModelProperty("随访类型")
-    @NotNull
-    private Integer type;
+//    @ApiModelProperty("随访类型")
+//    @NotNull
+//    private Integer type;
 
     @ApiModelProperty("随访详情")
     @NotNull
