@@ -65,15 +65,14 @@
         FROM
         bu_prescription_item_task bpit
         LEFT JOIN bu_patient bp ON bp.id = bpit.patient_id
+
         LEFT JOIN bu_outpatient bo ON bpit.outpatient_id = bo.id
         LEFT JOIN bu_diagnose bd ON bpit.outpatient_id = bo.id
         LEFT JOIN bu_visit bv ON bv.task_id = bpit.id
         <where>
             bv.id=#{id}
         </where>
-
+        GROUP BY bpit.id
     </select>
-    <select id="getPages" resultType="java.util.Map"></select>
-
 
 </mapper>
