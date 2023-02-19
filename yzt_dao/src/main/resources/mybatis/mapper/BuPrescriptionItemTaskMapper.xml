@@ -26,6 +26,7 @@
         <result property="cureStartTime" column="cure_start_time" jdbcType="TIMESTAMP"/>
         <result property="cureEndTime" column="cure_end_time" jdbcType="TIMESTAMP"/>
         <result property="isDel" column="is_del" jdbcType="INTEGER"/>
+        <result property="isCancel" column="is_cancel" jdbcType="INTEGER"/>
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
@@ -52,12 +53,12 @@
         <result column="treatment_quantity" property="treatmentQuantity" />
         <result column="outpatientTime" property="outpatientTime" />
     </resultMap>
-
     <select id="selectWaitSignatureList" resultType="com.maizhiyu.yzt.vo.BuPrescriptionItemTaskVo">
-        SELECT
-            temp.id AS prescriptionItemTaskId,
-            temp.outpatient_id,
-            temp.entity_id,
+    SELECT
+        temp.id AS prescriptionItemTaskId,
+        temp.outpatient_id,
+
+        temp.entity_id,
             bp.name,
             bp.phone,
             bp.id AS patientId,

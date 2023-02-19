@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -25,5 +26,14 @@ public class BuPrescriptionItemAppointmentServiceImpl extends ServiceImpl<BuPres
                 .eq(BuPrescriptionItemAppointment::getIsDel, 0)
                 .last("limit 1");
         return buPrescriptionItemAppointmentMapper.selectOne(queryWrapper);
+    }
+
+    @Override
+    public List<BuPrescriptionItemAppointment> selectByItemIdList(List<Long> buPrescriptionItemIdList) {
+        LambdaQueryWrapper<BuPrescriptionItemAppointment> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(BuPrescriptionItemAppointment::getPrescriptionItemId, buPrescriptionItemIdList)
+                .eq(BuPrescriptionItemAppointment::getIsDel, 0);
+
+        return buPrescriptionItemAppointmentMapper.selectList(queryWrapper);
     }
 }

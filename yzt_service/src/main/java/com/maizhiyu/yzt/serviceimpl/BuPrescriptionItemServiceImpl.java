@@ -14,12 +14,14 @@ import com.maizhiyu.yzt.mapper.BuPrescriptionMapper;
 import com.maizhiyu.yzt.ro.WaitSignatureRo;
 import com.maizhiyu.yzt.service.IBuPrescriptionItemService;
 import com.maizhiyu.yzt.vo.WaitSignatureVo;
+import com.sun.org.apache.xpath.internal.operations.Lt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -29,7 +31,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
-public class BuPrescriptionItemService extends ServiceImpl<BuPrescriptionItemMapper,BuPrescriptionItem> implements IBuPrescriptionItemService {
+public class BuPrescriptionItemServiceImpl extends ServiceImpl<BuPrescriptionItemMapper,BuPrescriptionItem> implements IBuPrescriptionItemService {
 
     @Autowired
     private BuPrescriptionItemMapper mapper;
@@ -119,5 +121,18 @@ public class BuPrescriptionItemService extends ServiceImpl<BuPrescriptionItemMap
         //List<BuPrescriptionItem> buPrescriptionItems = mapper.selectList(wrapper);
         List<BuPrescriptionItem> buPrescriptionItems = mapper.selectPrescriptionItemListByPrescriptionId(buPrescription.getId());
         return buPrescriptionItems;
+    }
+
+    @Override
+    public List<BuPrescriptionItem> selectHasUpdateData(Date startDate, Date endDate) {
+        LambdaQueryWrapper<BuPrescriptionItem> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(BuPrescriptionItem::getIsDel, 0);
+        if (Objects.isNull(startDate)) {
+            queryWrapper.lt(BuPrescriptionItem::getUpdateTime, endDate);
+        } else {
+            queryWrapper.between(BuPrescriptionItem::getUpdateTime, startDate, endDate);
+        }
+        List<BuPrescriptionItem> buPrescriptionItemList = mapper.selectList(queryWrapper);
+        return buPrescriptionItemList;
     }
 }

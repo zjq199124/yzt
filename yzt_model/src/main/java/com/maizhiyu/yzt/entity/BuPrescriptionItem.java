@@ -83,6 +83,12 @@ public class BuPrescriptionItem extends Model<BuPrescriptionItem> {
     @ApiModelProperty(value="是否删除 1：是；0：否")
     private Integer isDel;
 
+    @ApiModelProperty(value="是否拆分任务 1：是；0：否")
+    private Integer isSplit;
+
+    @ApiModelProperty(value="是否作废 1：是；0：否")
+    private Integer isCancel;
+
     @ApiModelProperty(value="备注")
     private String note;
 

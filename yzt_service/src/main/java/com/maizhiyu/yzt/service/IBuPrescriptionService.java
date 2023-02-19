@@ -95,4 +95,10 @@ public interface IBuPrescriptionService extends IService<BuPrescription> {
      */
     void setPaymentStatus(Long id, Long userId);
 
+    /**
+     * 根据id查询出处治列表
+     * @param prescriptionIdList
+     * @return
+     */
+    List<BuPrescription> selectByIdList(List<Long> prescriptionIdList);
 }

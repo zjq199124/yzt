@@ -225,6 +225,18 @@ public class BuPrescriptionItemTaskServiceImpl extends ServiceImpl<BuPrescriptio
     }
 
     @Override
+    public void updateNeedCancelTaskByItemAppointmentIdList(List<Long> prescriptionItemAppointmentIdList) {
+        //将不是治疗中和已治疗中的数据设置成作废
+        LambdaUpdateWrapper<BuPrescriptionItemTask> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.ne(BuPrescriptionItemTask::getCureStatus, 1)
+                .ne(BuPrescriptionItemTask::getCureStatus, 2)
+                .in(BuPrescriptionItemTask::getPrescriptionItemAppointmentId, prescriptionItemAppointmentIdList)
+                .set(BuPrescriptionItemTask::getIsCancel, 1);
+
+        buPrescriptionItemTaskMapper.update(null, updateWrapper);
+    }
+
+    @Override
     public Boolean appointment(AppointmentRo appointmentRo) {
         //1:取出现有要保存或编辑的预约数据的id
         List<Long> idList = appointmentRo.getBuPrescriptionItemTaskRoList().stream().filter(item -> Objects.nonNull(item.getId())).map(BuPrescriptionItemTaskRo::getId).collect(Collectors.toList());

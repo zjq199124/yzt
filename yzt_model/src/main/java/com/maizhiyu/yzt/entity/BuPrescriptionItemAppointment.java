@@ -26,7 +26,7 @@ public class BuPrescriptionItemAppointment extends Model<BuPrescriptionItemAppoi
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty(value="门诊预约数据id")
+    @ApiModelProperty(value="门诊下的一条处治数据对应的预约数据id")
     private Long outpatientAppointmentId;
 
     @ApiModelProperty(value="处方条目id")
@@ -67,6 +67,9 @@ public class BuPrescriptionItemAppointment extends Model<BuPrescriptionItemAppoi
 
     @ApiModelProperty("是否删除；1：是；0：否")
     private Integer isDel;
+
+    @ApiModelProperty("是否作废；1：是；0：否")
+    private Integer isCancel;
 
     @ApiModelProperty(value="更新时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")

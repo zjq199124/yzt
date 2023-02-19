@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.serviceimpl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -8,11 +9,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.exception.BusinessException;
 import com.maizhiyu.yzt.mapper.*;
+import com.maizhiyu.yzt.service.IBuPrescriptionItemService;
 import com.maizhiyu.yzt.service.IBuPrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,7 +25,7 @@ import java.util.stream.Collectors;
 public class BuPrescriptionService extends ServiceImpl<BuPrescriptionMapper, BuPrescription> implements IBuPrescriptionService {
 
     @Autowired
-    private BuPrescriptionItemService buPrescriptionItemService;
+    private IBuPrescriptionItemService buPrescriptionItemService;
 
     @Autowired
     private BuPatientMapper patientMapper;
@@ -35,6 +38,9 @@ public class BuPrescriptionService extends ServiceImpl<BuPrescriptionMapper, BuP
 
     @Autowired
     private HsCustomerHerbsMapper hsCustomerHerbsMapper;
+
+    @Resource
+    private BuPrescriptionMapper buPrescriptionMapper;
 
     @Override
     public boolean addPrescription(BuPrescription prescription) {
@@ -202,6 +208,13 @@ public class BuPrescriptionService extends ServiceImpl<BuPrescriptionMapper, BuP
         } else {
             throw new BusinessException("当前数据未打印，不能结算");
         }
+    }
+
+    @Override
+    public List<BuPrescription> selectByIdList(List<Long> prescriptionIdList) {
+        LambdaQueryWrapper<BuPrescription> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(BuPrescription::getId, prescriptionIdList);
+        return buPrescriptionMapper.selectList(queryWrapper);
     }
 
     private boolean saveOrUpdateItems(BuPrescription prescription) {

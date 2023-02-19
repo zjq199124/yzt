@@ -6,6 +6,7 @@ import com.maizhiyu.yzt.entity.BuPrescriptionItem;
 import com.maizhiyu.yzt.ro.WaitSignatureRo;
 import com.maizhiyu.yzt.vo.WaitSignatureVo;
 
+import java.util.Date;
 import java.util.List;
 
 public interface IBuPrescriptionItemService extends IService<BuPrescriptionItem> {
@@ -23,5 +24,7 @@ public interface IBuPrescriptionItemService extends IService<BuPrescriptionItem>
     Page<WaitSignatureVo> selectWaitSignatureList(WaitSignatureRo waitSignatureRo);
 
     List<BuPrescriptionItem> getPrescriptionItemListByDiagnoseId(Long diagnoseId);
+
+    List<BuPrescriptionItem> selectHasUpdateData(Date startDate, Date endDate);
 }
 

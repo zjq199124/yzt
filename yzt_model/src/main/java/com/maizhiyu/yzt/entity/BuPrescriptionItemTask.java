@@ -87,6 +87,10 @@ public class BuPrescriptionItemTask extends Model<BuPrescriptionItemTask> {
     private Date cureEndTime;
     //是否删除；1是；0否
     private Integer isDel;
+
+    //是否作废；1是；0否
+    private Integer isCancel;
+
     //备注
     private String remark;
     //创建时间

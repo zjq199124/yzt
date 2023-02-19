@@ -3,9 +3,12 @@ package com.maizhiyu.yzt.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.BuCure;
+import com.maizhiyu.yzt.entity.BuDealTaskRecord;
 import com.maizhiyu.yzt.entity.BuPrescriptionItemTask;
 import com.maizhiyu.yzt.ro.*;
 import com.maizhiyu.yzt.vo.BuPrescriptionItemTaskVo;
+
+import java.util.List;
 
 /**
  * (BuPrescriptionItemTask)表服务接口
@@ -32,5 +35,7 @@ public interface BuPrescriptionItemTaskService extends IService<BuPrescriptionIt
     Boolean appointment(AppointmentRo appointmentRo);
 
     Boolean deleteAppointment(Long buPrescriptionItemTaskId);
+
+    void updateNeedCancelTaskByItemAppointmentIdList(List<Long> prescriptionItemAppointmentIdList);
 }
 
