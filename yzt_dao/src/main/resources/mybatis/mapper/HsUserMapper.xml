@@ -28,8 +28,7 @@
         R.id role_id, R.rolename rolename, R.descrip role_desc
         from
         hs_user U
-        left join hs_user_department X on X.user_id = U.id
-        left join hs_department D on X.department_id = D.id
+        LEFT JOIN hs_department D ON D.his_id = U.his_departmrnt_id
         left join hs_user_role Y on Y.user_id = U.id
         left join hs_role R on Y.role_id = R.id
         <where>
