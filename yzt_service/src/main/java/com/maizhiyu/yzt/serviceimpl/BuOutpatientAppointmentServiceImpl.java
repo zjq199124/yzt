@@ -133,4 +133,12 @@ public class BuOutpatientAppointmentServiceImpl extends ServiceImpl<BuOutpatient
         });
         return buOutpatientAppointment;
     }
+
+    @Override
+    public List<BuOutpatientAppointment> selectByIdList(List<Long> outpatientAppointmentIdList) {
+        LambdaQueryWrapper<BuOutpatientAppointment> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(BuOutpatientAppointment::getId, outpatientAppointmentIdList);
+        List<BuOutpatientAppointment> buOutpatientAppointmentList = buOutpatientAppointmentMapper.selectList(queryWrapper);
+        return buOutpatientAppointmentList;
+    }
 }

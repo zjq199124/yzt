@@ -1,9 +1,7 @@
 package com.maizhiyu.yzt.task;
 
-import cn.hutool.core.date.DateField;
-import cn.hutool.core.date.DateUtil;
 import com.maizhiyu.yzt.entity.*;
-import com.maizhiyu.yzt.ro.ItemTaskRo;
+import com.maizhiyu.yzt.enums.AppointmentTypeEnum;
 import com.maizhiyu.yzt.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -49,11 +47,6 @@ public class SplitTask {
         if (Objects.nonNull(buDealTaskRecord)) {
             startDate = buDealTaskRecord.getDealTime();
         }
-        //新增处治小项目的id列表
-        List<Long> insertItemIdList = new ArrayList<>();
-        //更新的处治小项目的id列表
-        List<Long> updateItemIdList = new ArrayList<>();
-
 
         //1:查询这个时间内有更改的处治小项目数据
         List<BuPrescriptionItem> buPrescriptionItemList = buPrescriptionItemService.selectHasUpdateData(startDate, endDate);
@@ -83,6 +76,8 @@ public class SplitTask {
         //1:查询出处治小项目对应的预约汇总数据
         List<Long> prescriptionItemIdList = buPrescriptionItemList.stream().map(BuPrescriptionItem::getId).collect(Collectors.toList());
         List<BuPrescriptionItemAppointment> buPrescriptionItemAppointmentList = buPrescriptionItemAppointmentService.selectByItemIdList(prescriptionItemIdList);
+        if(CollectionUtils.isEmpty(buPrescriptionItemAppointmentList))
+            return;
 
         //2:查询出对应的处治小项目下的不是治疗中或不是已治疗的任务数据都改成已作废
         List<Long> prescriptionItemAppointmentIdList = buPrescriptionItemAppointmentList.stream().map(BuPrescriptionItemAppointment::getId).collect(Collectors.toList());
@@ -95,6 +90,41 @@ public class SplitTask {
         });
         buPrescriptionItemAppointmentService.saveOrUpdateBatch(buPrescriptionItemAppointmentList);
 
+        //4:查询并且更新对应的处治的状态
+        List<Long> outpatientAppointmentIdList = buPrescriptionItemAppointmentList.stream().map(BuPrescriptionItemAppointment::getOutpatientAppointmentId).collect(Collectors.toSet()).stream().collect(Collectors.toList());
+        List<BuOutpatientAppointment>  buOutpatientAppointmentList = buOutpatientAppointmentService.selectByIdList(outpatientAppointmentIdList);
+        if(CollectionUtils.isEmpty(buOutpatientAppointmentList))
+            return;
+        Map<Long, List<BuPrescriptionItemAppointment>> outpatientAppointmentIdMap = buPrescriptionItemAppointmentList.stream().collect(Collectors.groupingBy(BuPrescriptionItemAppointment::getOutpatientAppointmentId));
+
+        //判断处治对应的预约数据是否需要调整
+        buOutpatientAppointmentList.forEach(item -> {
+            List<BuPrescriptionItemAppointment> list = outpatientAppointmentIdMap.get(item.getId());
+            if(CollectionUtils.isEmpty(list))
+                return;
+
+            //5.1:查询是否有不是未预约的处治小项目预约数据
+            int size = list.stream().filter(temp -> temp.getState() != AppointmentTypeEnum.NO_APPOINTMENT.code()).collect(Collectors.toList()).size();
+            if (size == 0) {
+                item.setState(AppointmentTypeEnum.NO_APPOINTMENT.code());
+                return;
+            }
+
+            //5.1:查询是否有预约中的处治小项目预约数据
+            size = list.stream().filter(temp -> temp.getState() == AppointmentTypeEnum.IN_APPOINTMENT.code()).collect(Collectors.toList()).size();
+            if (size > 0) {
+                item.setState(AppointmentTypeEnum.IN_APPOINTMENT.code());
+                return;
+            } else {
+                //5.1:查询是否有预约已完成的处治小项目预约数据
+                size = list.stream().filter(temp -> temp.getState() == AppointmentTypeEnum.COMPLETE_APPOINTMENT.code()).collect(Collectors.toList()).size();
+                if (size > 0) {
+                    item.setState(AppointmentTypeEnum.COMPLETE_APPOINTMENT.code());
+                } else {
+                    item.setState(AppointmentTypeEnum.HAS_CANCEL.code());
+                }
+            }
+        });
     }
 
     private void dealInsertBuPrescriptionItemData(List<BuPrescriptionItem> buPrescriptionItemList) {

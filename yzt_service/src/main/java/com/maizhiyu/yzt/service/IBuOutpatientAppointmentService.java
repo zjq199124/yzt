@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.BuOutpatientAppointment;
 import com.maizhiyu.yzt.ro.OutpatientAppointmentRo;
 
+import java.util.List;
+
 public interface IBuOutpatientAppointmentService extends IService<BuOutpatientAppointment> {
     Page<BuOutpatientAppointment> list(OutpatientAppointmentRo outpatientAppointmentRo);
 
@@ -18,4 +20,6 @@ public interface IBuOutpatientAppointmentService extends IService<BuOutpatientAp
      * @return
      */
     BuOutpatientAppointment appointmentDetail(Long id);
+
+    List<BuOutpatientAppointment> selectByIdList(List<Long> outpatientAppointmentIdList);
 }

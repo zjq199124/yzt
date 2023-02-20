@@ -25,9 +25,6 @@ public class BuDealTaskRecord extends Model<BuDealTaskRecord> implements Seriali
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty("客户id")
-    private Long customerId;
-
     @ApiModelProperty("上一次任务拆分时间")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Shanghai")
     private Date dealTime;
