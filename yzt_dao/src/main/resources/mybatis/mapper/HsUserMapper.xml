@@ -69,7 +69,7 @@
                U.avatar,
                U.is_doctor                               isDoctor,
                U.is_therapist                            isTherapist,
-               DATE_FORMAT(U.create_time, '%Y-%m-%d %T') create_time,
+               DATE_FORMAT(U.create_time, '%Y-%m-%d %T') createTime,
                C.name                                    customerName,
                D.id                                      department_id,
                D.dname                                   department_name,

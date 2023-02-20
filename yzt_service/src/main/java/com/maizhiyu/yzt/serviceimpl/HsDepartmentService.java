@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -46,8 +45,8 @@ public class HsDepartmentService extends ServiceImpl<HsDepartmentMapper,HsDepart
     public IPage<Map<String, Object>> getDepartmentList(Page page, Long customerId, Integer status, String term) {
         QueryWrapper<HsDepartment> wrapper = new QueryWrapper<>();
         wrapper.select("id", "status", "dname",
-                "DATE_FORMAT(update_time, '%Y-%m-%d %T') update_time",
-                "DATE_FORMAT(create_time, '%Y-%m-%d %T') create_time");
+                "DATE_FORMAT(update_time, '%Y-%m-%d %T') updateTime",
+                "DATE_FORMAT(create_time, '%Y-%m-%d %T') createTime");
         if (status != null) {
             wrapper.eq("status", status);
         }
