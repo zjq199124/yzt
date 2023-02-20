@@ -18,7 +18,7 @@
         select
             X.customer_id, X.id, X.status, X.rolename, X.descrip,
             DATE_FORMAT(X.update_time, '%Y-%m-%d %T' ) update_time,
-            DATE_FORMAT(X.create_time, '%Y-%m-%d %T' ) create_time
+            DATE_FORMAT(X.create_time, '%Y-%m-%d %T' ) createTime
         from
             hs_role X
         <where>
