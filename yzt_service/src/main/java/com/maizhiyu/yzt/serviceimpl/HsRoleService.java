@@ -2,24 +2,20 @@ package com.maizhiyu.yzt.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.maizhiyu.yzt.entity.HsRole;
 import com.maizhiyu.yzt.entity.HsRoleResource;
 import com.maizhiyu.yzt.mapper.HsRoleMapper;
 import com.maizhiyu.yzt.mapper.HsRoleResourceMapper;
+import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.service.IHsRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -54,7 +50,11 @@ public class HsRoleService extends ServiceImpl<HsRoleMapper, HsRole> implements 
     }
 
     @Override
-    public Integer delRole(Long id) {
+    public Result delRole(Long id) {
+        //判断是否是默认角色
+        if (id == 1) {
+            return Result.success("","不允许删除默认角色");
+        }
         // 删除角色信息
         Integer res = roleMapper.deleteById(id);
         // 删除关系表数
@@ -62,7 +62,7 @@ public class HsRoleService extends ServiceImpl<HsRoleMapper, HsRole> implements 
         wrapper.eq("role_id", id);
         roleResourceMapper.delete(wrapper);
         // 返回结果
-        return res;
+        return Result.success(res);
     }
 
     @Override

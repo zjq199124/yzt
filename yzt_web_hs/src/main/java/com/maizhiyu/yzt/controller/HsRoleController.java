@@ -41,8 +41,8 @@ public class HsRoleController {
     })
     @GetMapping("/delRole")
     public Result delRole(Long id) {
-        Integer res = service.delRole(id);
-        return Result.success(res);
+        Result res = service.delRole(id);
+        return res;
     }
 
 
