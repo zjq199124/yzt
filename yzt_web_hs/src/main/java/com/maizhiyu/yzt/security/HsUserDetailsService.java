@@ -44,7 +44,7 @@ public class HsUserDetailsService implements UserDetailsService {
             wrapper1.eq(HsUserRole::getUserId , user.getId());
             if (hsUserRoleMapper.selectOne(wrapper1) == null){
                 HsUserRole hsUserRole = new HsUserRole();
-                hsUserRole.setUserId(user.getId()).setRoleId(86L);
+                hsUserRole.setUserId(user.getId()).setRoleId(1L);
                 hsUserRoleMapper.insert(hsUserRole);
             };
             return user;
