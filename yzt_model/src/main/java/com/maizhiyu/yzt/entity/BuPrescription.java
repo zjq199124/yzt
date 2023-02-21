@@ -94,5 +94,5 @@ public class BuPrescription implements Serializable {
     private List<BuPrescriptionItem> itemList;
 
     @ApiModelProperty(value="HisId")
-    private String hisId;
+    private Long hisId;
 }

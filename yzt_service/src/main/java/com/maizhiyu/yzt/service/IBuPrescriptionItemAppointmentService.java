@@ -14,5 +14,5 @@ public interface IBuPrescriptionItemAppointmentService extends IService<BuPrescr
      */
     BuPrescriptionItemAppointment selectByAppointmentIdAndItemId(Long outpatientAppointmentId,Long prescriptionItemId);
 
-    List<BuPrescriptionItemAppointment> selectByItemIdList(List<Long> buPrescriptionItemIdList);
+    List<BuPrescriptionItemAppointment> selectByItemHisIdList(List<Long> prescriptionItemHisIdList);
 }

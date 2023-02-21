@@ -22,7 +22,7 @@ public class BuPrescriptionRO {
     public static class AddPrescriptionZhongyao {
         @NotBlank
         @ApiModelProperty(value="HIS中处方ID")
-        private String hisId;
+        private Long hisId;
 
         @ApiModelProperty(value="云平台中处方ID")
         private Long id;
@@ -68,7 +68,7 @@ public class BuPrescriptionRO {
     public static class AddPrescriptionChengyao {
         @NotBlank
         @ApiModelProperty(value="HIS中处方ID")
-        private String id;
+        private Long id;
 
         @NotBlank
         @ApiModelProperty(value="HIS中医生ID")
@@ -96,7 +96,7 @@ public class BuPrescriptionRO {
     public static class AddPrescriptionXieding {
         @NotBlank
         @ApiModelProperty(value="HIS中处方ID")
-        private String id;
+        private Long id;
 
         @NotBlank
         @ApiModelProperty(value="HIS中医生ID")
@@ -128,7 +128,7 @@ public class BuPrescriptionRO {
     public static class AddPrescriptionShiyi {
 
         @ApiModelProperty(value="HIS中处方ID")
-        private String hisId;
+        private Long hisId;
 
         @ApiModelProperty(value="云平台处方ID")
         private Long id;

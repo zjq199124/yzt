@@ -52,6 +52,9 @@ public class BuDiagnoseController {
     @Value("${customer.name}")
     private String customerName;
 
+    @Value("${customer.id}")
+    private Long customerId;
+
     //TODO 这里的参数为his中的参数，逻辑是不能通的
     @ApiOperation(value = "获取诊断方案推荐", notes = "获取诊断方案推荐")
     @PostMapping("/getRecommend")
@@ -59,9 +62,9 @@ public class BuDiagnoseController {
         Assert.notNull(ro, "查询对象不能为空!");
         ro.setCustomerName(customerName);
         //1.对his传过来的疾病名称和云平台疾病名称进行映射(有西医诊断优先匹配西医诊断)
-        if (Objects.isNull(ro.getDiseaseId())) {
+            if (Objects.isNull(ro.getDiseaseId())) {
             String hisDiseaseName = Objects.nonNull(ro.getWestDiagnose()) ? ro.getWestDiagnose() : ro.getTcmDiagnose();
-            DiseaseMapping jzfyDiseaseMapping = diseaseMappingService.selectByHisName(hisDiseaseName);
+            DiseaseMapping jzfyDiseaseMapping = diseaseMappingService.selectByCustomerIdAndHisName(customerId,hisDiseaseName);
             Preconditions.checkArgument(Objects.nonNull(jzfyDiseaseMapping), "his中的诊断：" + hisDiseaseName + " 在云平台中没有与之相匹配的中医诊断!");
             ro.setDiseaseId(jzfyDiseaseMapping.getDiseaseId());
             ro.setDisease(jzfyDiseaseMapping.getName());
@@ -76,18 +79,24 @@ public class BuDiagnoseController {
         }
 
         //在没有分型syndromeIdList以及没有症状集合symptomIdList先查询下这次挂号看病是否已经有保存诊断信息和治疗处方
-        if (CollectionUtils.isEmpty(ro.getSymptomIdList()) && CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
+        /*if (CollectionUtils.isEmpty(ro.getSymptomIdList()) && CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
             Result result = yptClient.getDetail(ro);
             if(Objects.nonNull(result.getData()))
                 return result;
-        }
+        }*/
 
         // 调用开放接口获取诊断推荐
         Result result=yptClient.getRecommend(ro);
         return result;
     }
 
-    @ApiOperation(value = "获取门诊诊断和患者信息", notes = "获取门诊诊断和患者信息")
+    /**
+     * 通过his端的outpatientId获取患者在his端的门诊，患者，医生信息
+     * @param outpatientId
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "获取患者在his端的门诊，患者，医生信息", notes = "获取患者在his端的门诊，患者，医生信息")
     @ApiImplicitParam(name = "outpatientId", value = "门诊ID", required = true)
     @GetMapping("/getDiagnoseOfOutpatient")
     public Result getDiagnoseOfOutpatient(@RequestParam Long outpatientId) throws Exception {

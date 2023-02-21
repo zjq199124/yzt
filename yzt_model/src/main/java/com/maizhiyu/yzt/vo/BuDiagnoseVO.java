@@ -80,6 +80,9 @@ public class BuDiagnoseVO {
         @ApiModelProperty(value="所属适宜技术id")
         private Long sytechId;
 
+        @ApiModelProperty(value="适宜技术表主键id")
+        private Long entityId;
+
         @ApiModelProperty(value="技术名称")
         private String name;
 

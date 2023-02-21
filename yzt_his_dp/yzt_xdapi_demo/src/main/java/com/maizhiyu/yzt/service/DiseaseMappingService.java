@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface DiseaseMappingService extends IService<DiseaseMapping> {
 
-    DiseaseMapping selectByHisName(String hisDiseaseName);
+    DiseaseMapping selectByCustomerIdAndHisName(Long customerId,String hisDiseaseName);
 
-    List<DiseaseMapping> diseaseList(String search);
+    List<DiseaseMapping> diseaseList(Long customerId,String search);
 }

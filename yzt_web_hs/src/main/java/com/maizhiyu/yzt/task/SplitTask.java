@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableScheduling
 @Slf4j
+@Transactional(rollbackFor = Exception.class)
 public class SplitTask {
 
     @Resource
@@ -58,7 +60,7 @@ public class SplitTask {
         List<BuPrescriptionItem> insertBuPrescriptionItemList = buPrescriptionItemList.stream().filter(item -> item.getIsSplit() == 0).collect(Collectors.toList());
 
         //查询出已经拆分了的但是经过了修改的数据，这里的修改只能是作废，不允许增加几次，减少几次之类的
-        List<BuPrescriptionItem> cancelBuPrescriptionItemList = buPrescriptionItemList.stream().filter(item -> (item.getIsSplit() == 0 && item.getIsCancel() == 1)).collect(Collectors.toList());
+        List<BuPrescriptionItem> cancelBuPrescriptionItemList = buPrescriptionItemList.stream().filter(item -> (item.getIsSplit() == 1 && item.getIsCancel() == 1)).collect(Collectors.toList());
 
         //3：处理新增的处治数据
         if (!CollectionUtils.isEmpty(insertBuPrescriptionItemList)) {
@@ -69,13 +71,18 @@ public class SplitTask {
         if (!CollectionUtils.isEmpty(cancelBuPrescriptionItemList)) {
             dealCancelBuPrescriptionItemData(cancelBuPrescriptionItemList);
         }
+
+        //5：保存最后一次拆分任务的时间
+        BuDealTaskRecord lastRecord = new BuDealTaskRecord();
+        lastRecord.setDealTime(endDate);
+        buDealTaskRecordService.save(lastRecord);
     }
 
     private void dealCancelBuPrescriptionItemData(List<BuPrescriptionItem> buPrescriptionItemList) {
 
         //1:查询出处治小项目对应的预约汇总数据
-        List<Long> prescriptionItemIdList = buPrescriptionItemList.stream().map(BuPrescriptionItem::getId).collect(Collectors.toList());
-        List<BuPrescriptionItemAppointment> buPrescriptionItemAppointmentList = buPrescriptionItemAppointmentService.selectByItemIdList(prescriptionItemIdList);
+        List<Long> prescriptionItemHisIdList = buPrescriptionItemList.stream().map(BuPrescriptionItem::getHisId).collect(Collectors.toList());
+        List<BuPrescriptionItemAppointment> buPrescriptionItemAppointmentList = buPrescriptionItemAppointmentService.selectByItemHisIdList(prescriptionItemHisIdList);
         if(CollectionUtils.isEmpty(buPrescriptionItemAppointmentList))
             return;
 
@@ -133,13 +140,13 @@ public class SplitTask {
         //1：创建处治小项目的预约情况汇总数据
         for (BuPrescriptionItem item : buPrescriptionItemList) {
             BuPrescriptionItemAppointment buPrescriptionItemAppointment = new BuPrescriptionItemAppointment();
-            buPrescriptionItemAppointment.setPrescriptionItemId(item.getId())
-                    .setCustomerId(item.getCustomerId())
+            buPrescriptionItemAppointment.setCustomerId(item.getCustomerId())
                     .setPatientId(item.getPatientId())
                     .setOutpatientId(item.getOutpatientId())
                     .setEntityId(item.getEntityId())
+                    .setTsName(item.getName())
                     .setPrescriptionId(item.getPrescriptionId())
-                    .setPrescriptionItemId(item.getId())
+                    .setPrescriptionItemId(item.getHisId())
                     .setState(1)
                     .setQuantity(item.getQuantity().intValue())
                     .setTreatmentQuantity(0)
@@ -150,9 +157,9 @@ public class SplitTask {
             buPrescriptionItemAppointmentList.add(buPrescriptionItemAppointment);
         }
 
-        //2：查询出所对应的处治数据
-        List<Long> prescriptionIdList = buPrescriptionItemAppointmentList.stream().map(BuPrescriptionItemAppointment::getPrescriptionId).collect(Collectors.toSet()).stream().collect(Collectors.toList());
-        List<BuPrescription> buPrescriptionList = buPrescriptionService.selectByIdList(prescriptionIdList);
+        //2：查询出所对应的处治数据（统一使用hisId字段做关联）
+        List<Long> prescriptionIdList = buPrescriptionItemList.stream().map(BuPrescriptionItem::getPrescriptionId).collect(Collectors.toSet()).stream().collect(Collectors.toList());
+        List<BuPrescription> buPrescriptionList = buPrescriptionService.selectByHisIdList(prescriptionIdList);
 
         //3：创建处治预约情况汇总数据
         List<BuOutpatientAppointment> buOutpatientAppointmentList = new ArrayList<>();
@@ -163,7 +170,7 @@ public class SplitTask {
             buOutpatientAppointment.setOutpatientId(buPrescription.getOutpatientId());
             buOutpatientAppointment.setDepartmentId(buPrescription.getDepartmentId());
             buOutpatientAppointment.setDiagnoseId(buPrescription.getDiagnoseId());
-            buOutpatientAppointment.setPrescriptionId(buPrescription.getId());
+            buOutpatientAppointment.setPrescriptionId(buPrescription.getHisId());
             //门诊时间这里取的是处治的开具时间
             buOutpatientAppointment.setOutpatientTime(buPrescription.getCreateTime());
             buOutpatientAppointment.setCreateTime(new Date());
@@ -187,7 +194,7 @@ public class SplitTask {
         //6：保存处治小项目预约数据
         buPrescriptionItemAppointmentService.saveBatch(buPrescriptionItemAppointmentList, buPrescriptionItemAppointmentList.size());
 
-        //7：根据处治小项目数据拆分任务
+        //7：根据处治小项目预约数据拆分任务
         List<BuPrescriptionItemTask> buPrescriptionItemTaskList = new ArrayList<>();
         for (BuPrescriptionItemAppointment buPrescriptionItemAppointment : buPrescriptionItemAppointmentList) {
             //根据处治小项目的数量拆分任务
@@ -200,16 +207,22 @@ public class SplitTask {
                 buPrescriptionItemTask.setOutpatientId(buPrescriptionItemAppointment.getOutpatientId());
                 buPrescriptionItemTask.setDiagnoseId(buPrescriptionItemAppointment.getDiagnoseId());
                 buPrescriptionItemTask.setPrescriptionId(buPrescriptionItemAppointment.getPrescriptionId());
-                buPrescriptionItemTask.setPrescriptionItemId(buPrescriptionItemAppointment.getId());
+                buPrescriptionItemTask.setPrescriptionItemId(buPrescriptionItemAppointment.getPrescriptionItemId());
                 buPrescriptionItemTask.setEntityId(buPrescriptionItemAppointment.getEntityId());
                 buPrescriptionItemTask.setTsName(buPrescriptionItemAppointment.getTsName());
                 buPrescriptionItemTask.setCreateTime(new Date());
                 buPrescriptionItemTask.setUpdateTime(buPrescriptionItemTask.getCreateTime());
                 buPrescriptionItemTaskList.add(buPrescriptionItemTask);
             }
-            //8：保存拆分的任务数据
-            buPrescriptionItemTaskService.saveBatch(buPrescriptionItemTaskList);
         }
+        //8：保存拆分的任务数据
+        buPrescriptionItemTaskService.saveBatch(buPrescriptionItemTaskList);
+
+        //9:设置对应的处治小项目的拆分状态为已拆分
+        buPrescriptionItemList.forEach(item -> {
+            item.setIsSplit(1);
+        });
+        buPrescriptionItemService.updateBatchById(buPrescriptionItemList);
     }
 }
 

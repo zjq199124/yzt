@@ -202,7 +202,7 @@ public class BuPrescriptionController {
         prescription.setDoctorId(ro.getBaseInfo().getDoctorId());
         prescription.setPatientId(ro.getBaseInfo().getPatientId());
         prescription.setOutpatientId(ro.getBaseInfo().getOutpatientId());
-        prescription.setDiagnoseId(ro.getDiagnoseInfo().getId());
+        //prescription.setDiagnoseId(ro.getDiagnoseInfo().getId());
         prescription.setAttention(ro.getAttention());
         prescription.setCreateTime(new Date());
         prescription.setUpdateTime(prescription.getCreateTime());

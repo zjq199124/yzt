@@ -159,7 +159,7 @@ public class BuPrescriptionController {
     @ApiOperation(value = "嵌入页面诊断与处置保存", notes = "嵌入页面诊断与处置保存")
     @PostMapping("/addPrescriptionShiyi")
     public Result addPrescriptionShiyi(@RequestBody @Valid BuPrescriptionRO.AddPrescriptionShiyi ro) throws IOException {
-        Assert.notNull(ro, "处方数据不能为空!");
+        /*Assert.notNull(ro, "处方数据不能为空!");
         Assert.notNull(ro.getBaseInfo(), "基础信息不能为空!");
         Assert.notNull(ro.getDiagnoseInfo(), "诊断信息不能为空!");
         BuPrescriptionRO.AddPrescriptionShiyi.BaseInfo baseInfo = ro.getBaseInfo();
@@ -169,7 +169,7 @@ public class BuPrescriptionController {
         Long yptOutpatientId = processOutpatient(baseInfo.getOutpatientId().toString(), yptDoctorId, yptPatientId);
 
 
-        //将诊断与处置推送给his
+        //将处置推送给his
         if (Objects.nonNull(ro) && !CollectionUtils.isEmpty(ro.getItemList())) {
             savePrescriptionShiyiToHis(ro);
         }
@@ -192,7 +192,34 @@ public class BuPrescriptionController {
             return Result.success(res.getData());
         } else {
             return Result.success(result.getData());
+        }*/
+
+        Assert.notNull(ro, "处方数据不能为空!");
+        Assert.notNull(ro.getBaseInfo(), "基础信息不能为空!");
+        Assert.notNull(ro.getDiagnoseInfo(), "诊断信息不能为空!");
+        BuPrescriptionRO.AddPrescriptionShiyi.BaseInfo baseInfo = ro.getBaseInfo();
+        //判断医生，患者，患者门诊信息
+        Long yptDoctorId = processDoctor(baseInfo.getDoctorId().toString());
+        Long yptPatientId = processPatient(baseInfo.getPatientId().toString());
+        Long yptOutpatientId = processOutpatient(baseInfo.getOutpatientId().toString(), yptDoctorId, yptPatientId);
+
+
+        //将处置推送给his
+        if (Objects.nonNull(ro) && !CollectionUtils.isEmpty(ro.getItemList())) {
+            savePrescriptionShiyiToHis(ro);
         }
+
+        //ro中的outpatientId是视图中的registration_id,要换成code才是我们这边所说的his中medical_record_id对应云平台的his中的outpatientId
+        YptOutpatient yptOutpatient = getYptOutpatientById(yptOutpatientId);
+        ro.getBaseInfo().setOutpatientId(yptOutpatient.getHisId());
+        ro.getDiagnoseInfo().setCustomerName(customerName);
+        //将patientId,outPatientId,doctorId替换成云平台对应的数据
+        ro.getBaseInfo().setDoctorId(yptDoctorId);
+        ro.getBaseInfo().setPatientId(yptPatientId);
+        ro.getBaseInfo().setOutpatientId(yptOutpatientId);
+
+        Result<BuDiagnose> result = yptClient.addDiagnose(ro);
+        return Result.success(result.getData());
     }
 
     private void savePrescriptionShiyiToHis(BuPrescriptionRO.AddPrescriptionShiyi ro) throws IOException {

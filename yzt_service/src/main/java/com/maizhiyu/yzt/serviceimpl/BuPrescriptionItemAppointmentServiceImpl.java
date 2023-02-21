@@ -29,9 +29,9 @@ public class BuPrescriptionItemAppointmentServiceImpl extends ServiceImpl<BuPres
     }
 
     @Override
-    public List<BuPrescriptionItemAppointment> selectByItemIdList(List<Long> buPrescriptionItemIdList) {
+    public List<BuPrescriptionItemAppointment> selectByItemHisIdList(List<Long> prescriptionItemHisIdList) {
         LambdaQueryWrapper<BuPrescriptionItemAppointment> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.in(BuPrescriptionItemAppointment::getPrescriptionItemId, buPrescriptionItemIdList)
+        queryWrapper.in(BuPrescriptionItemAppointment::getPrescriptionItemId, prescriptionItemHisIdList)
                 .eq(BuPrescriptionItemAppointment::getIsDel, 0);
 
         return buPrescriptionItemAppointmentMapper.selectList(queryWrapper);

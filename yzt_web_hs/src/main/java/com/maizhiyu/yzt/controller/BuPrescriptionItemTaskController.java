@@ -10,6 +10,7 @@ import com.maizhiyu.yzt.ro.AppointmentRo;
 import com.maizhiyu.yzt.ro.ItemTaskRo;
 import com.maizhiyu.yzt.ro.WaitSignatureRo;
 import com.maizhiyu.yzt.ro.WaitTreatmentRo;
+import com.maizhiyu.yzt.security.HsUserDetails;
 import com.maizhiyu.yzt.service.*;
 import com.maizhiyu.yzt.serviceimpl.MsCustomerService;
 import com.maizhiyu.yzt.vo.BuPrescriptionItemTaskVo;
@@ -56,6 +57,9 @@ public class BuPrescriptionItemTaskController extends BaseController {
     @Resource
     private IBuPrescriptionItemAppointmentItemService buPrescriptionItemAppointmentItemService;
 
+    @Resource
+    private IHsUserService userService;
+
     @ApiOperation(value = "删除预约")
     @GetMapping("/deleteAppointment")
     @ApiImplicitParam(name = "buPrescriptionItemTaskId", value = "处治小项目任务的Id", required = true)
@@ -66,9 +70,9 @@ public class BuPrescriptionItemTaskController extends BaseController {
 
     @ApiOperation(value = "批量预约操作")
     @PostMapping("/appointment")
-    public Result<Boolean> appointment(@RequestBody AppointmentRo appointmentRo) {
+    public Result<Boolean> appointment(@RequestBody AppointmentRo appointmentRo) throws Exception {
         log.info("/*************批量预约*************/");
-        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+        Long customerId = getCustomerId();
         appointmentRo.setCustomerId(customerId);
         Boolean result = buPrescriptionItemTaskService.appointment(appointmentRo);
         return Result.success(result);
@@ -78,8 +82,9 @@ public class BuPrescriptionItemTaskController extends BaseController {
 
     @ApiOperation("待签到列表")
     @PostMapping("/waitSignatureList")
-    public Result<Page<BuPrescriptionItemTaskVo>> waitSignatureList(@RequestBody WaitSignatureRo waitSignatureRo) {
-        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+    public Result<Page<BuPrescriptionItemTaskVo>> waitSignatureList(@RequestBody WaitSignatureRo waitSignatureRo) throws Exception {
+        //Long customerId = ((Number) getClaims().get("customerId")).longValue();
+        Long customerId = getCustomerId();
         waitSignatureRo.setCustomerId(customerId);
         //Page<WaitSignatureVo> page = buPrescriptionItemService.selectWaitSignatureList(waitSignatureRo);
         Page<BuPrescriptionItemTaskVo> page = buPrescriptionItemTaskService.selectWaitSignatureList(waitSignatureRo);
@@ -98,8 +103,8 @@ public class BuPrescriptionItemTaskController extends BaseController {
 
     @ApiOperation("待治疗列表")
     @PostMapping("/waitTreatmentList")
-    public Result<Page<BuPrescriptionItemTaskVo>> waitTreatmentList(@RequestBody WaitTreatmentRo waitTreatmentRo) {
-        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+    public Result<Page<BuPrescriptionItemTaskVo>> waitTreatmentList(@RequestBody WaitTreatmentRo waitTreatmentRo) throws Exception {
+        Long customerId = getCustomerId();
         waitTreatmentRo.setCustomerId(customerId);
         //Page<BuSignature> pageResult = buSignatureService.waitTreatmentList(waitTreatmentRo);
         Page<BuPrescriptionItemTaskVo> page = buPrescriptionItemTaskService.waitTreatmentList(waitTreatmentRo);

@@ -51,8 +51,8 @@ public class HsAppointmentSystemController extends BaseController {
 
     @ApiOperation("展示预约时段")
     @GetMapping("/getTimeSlotByDate")
-    public Result getTimeSlotByDate(@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date date, Long outpatientAppointmentId) {
-        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+    public Result getTimeSlotByDate(@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date date, Long outpatientAppointmentId) throws Exception {
+        Long customerId = getCustomerId();
         List<TimeSlotDetailVo> resultList = hsAppointmentSystemService.getTimeSlotByDate(customerId, outpatientAppointmentId, date);
         return Result.success(resultList);
     }

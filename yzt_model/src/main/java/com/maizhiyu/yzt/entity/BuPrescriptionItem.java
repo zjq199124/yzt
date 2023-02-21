@@ -46,7 +46,7 @@ public class BuPrescriptionItem extends Model<BuPrescriptionItem> {
     @ApiModelProperty(value="处方ID")
     private Long prescriptionId;
 
-    @ApiModelProperty(value="实体ID")
+    @ApiModelProperty(value="his方的技术id")
     private Long entityId;
 
     @ApiModelProperty(value="名称")
@@ -82,6 +82,9 @@ public class BuPrescriptionItem extends Model<BuPrescriptionItem> {
 
     @ApiModelProperty(value="是否删除 1：是；0：否")
     private Integer isDel;
+
+    @ApiModelProperty(value="his方的处治小项目的id")
+    private Long hisId;
 
     @ApiModelProperty(value="是否拆分任务 1：是；0：否")
     private Integer isSplit;

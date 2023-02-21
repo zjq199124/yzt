@@ -1,18 +1,19 @@
 package com.maizhiyu.yzt.entity;
 
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import java.io.Serializable;
-import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 /**
  * (BuPrescriptionItemTask)表实体类
@@ -57,10 +58,13 @@ public class BuPrescriptionItemTask extends Model<BuPrescriptionItemTask> {
     @ApiModelProperty(value="创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private Date appointmentDate;
     //预约时段
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String timeSlot;
     //预约星期数
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private Integer weekDay;
     //签到状态；0未签到；1已签到
     private Integer signatureStatus;

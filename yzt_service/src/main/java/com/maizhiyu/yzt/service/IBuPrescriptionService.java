@@ -101,4 +101,11 @@ public interface IBuPrescriptionService extends IService<BuPrescription> {
      * @return
      */
     List<BuPrescription> selectByIdList(List<Long> prescriptionIdList);
+
+    /**
+     * 根据hisId查询处治列表
+     * @param prescriptionIdList
+     * @return
+     */
+    List<BuPrescription> selectByHisIdList(List<Long> prescriptionIdList);
 }

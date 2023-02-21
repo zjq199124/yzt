@@ -80,6 +80,11 @@ public class TreatmentMapping extends Model<TreatmentMapping> {
      */
     private String remark;
 
+    /**
+     * 用户id（医院的id）
+     */
+    private Long customerId;
+
 
 //    @Override
 //    protected Serializable pkVal() {

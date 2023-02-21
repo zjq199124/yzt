@@ -3,6 +3,7 @@ package com.maizhiyu.yzt.base;
 import com.maizhiyu.yzt.exception.BusinessException;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.security.HsUserDetails;
+import com.maizhiyu.yzt.service.IHsUserService;
 import com.maizhiyu.yzt.utils.JWTUtil;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -26,6 +29,9 @@ public class BaseController {
 
     @Autowired
     protected HttpServletRequest request;
+
+    @Resource
+    private IHsUserService userService;
 
 
     public Claims getClaims() {
@@ -44,12 +50,25 @@ public class BaseController {
         return claims;
     }
 
-    public HsUserDetails getHsUserDetails() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        HsUserDetails hsUserDetails = (HsUserDetails) authentication.getPrincipal();
-        if (Objects.isNull(hsUserDetails)) {
-            throw new BusinessException("认证信息获取失败");
+    public HsUserDetails getHsUserDetails() throws Exception {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            HsUserDetails hsUserDetails = (HsUserDetails) authentication.getPrincipal();
+            return hsUserDetails;
+        } catch (Exception e) {
+            throw new Exception("后台服务已重启，请退出重新登录!");
         }
-        return hsUserDetails;
+    }
+
+    public Long getCustomerId() throws Exception {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            HsUserDetails hsUserDetails = (HsUserDetails) authentication.getPrincipal();
+            Map<String, Object> userMap = userService.getUser(hsUserDetails.getId());
+            Long customerId = Long.parseLong(userMap.get("customerId").toString());
+            return customerId;
+        } catch (Exception e) {
+            throw new Exception("后台服务已重启，请退出重新登录!");
+        }
     }
 }

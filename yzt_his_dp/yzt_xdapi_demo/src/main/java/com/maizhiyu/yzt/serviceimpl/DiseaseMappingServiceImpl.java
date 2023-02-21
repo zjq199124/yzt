@@ -28,9 +28,10 @@ public class DiseaseMappingServiceImpl extends ServiceImpl<DiseaseMappingMapper,
     private DiseaseMappingMapper DiseaseMappingMapper;
 
     @Override
-    public DiseaseMapping selectByHisName(String hisDiseaseName) {
+    public DiseaseMapping selectByCustomerIdAndHisName(Long customerId,String hisDiseaseName) {
         LambdaQueryWrapper<DiseaseMapping> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(DiseaseMapping::getHisName, hisDiseaseName)
+                .eq(DiseaseMapping::getCustomerId, customerId)
                 .eq(DiseaseMapping::getIsDel, 0)
                 .isNotNull(DiseaseMapping::getDiseaseId)
                 .orderByDesc(DiseaseMapping::getUpdateTime)
@@ -40,12 +41,13 @@ public class DiseaseMappingServiceImpl extends ServiceImpl<DiseaseMappingMapper,
     }
 
     @Override
-    public List<DiseaseMapping> diseaseList(String search) {
+    public List<DiseaseMapping> diseaseList(Long customerId,String search) {
         LambdaQueryWrapper<DiseaseMapping> queryWrapper = new LambdaQueryWrapper<>();
         if (StringUtils.isNotBlank(search)) {
             queryWrapper.like(DiseaseMapping::getHisName, search);
         }
         queryWrapper.eq(DiseaseMapping::getIsDel, 0);
+        queryWrapper.eq(DiseaseMapping::getCustomerId, customerId);
         List<DiseaseMapping> DiseaseMappingList = DiseaseMappingMapper.selectList(queryWrapper);
         return DiseaseMappingList;
     }

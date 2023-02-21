@@ -158,23 +158,19 @@ public class BuRecommendService extends ServiceImpl<BuRecommendMapper, Object> i
     @Override
     public Map<String, Object> selectRecommend(BuDiagnoseRO.GetRecommendRO ro) {
         //推荐方案必须要有病名称或id
-        DictDisease disease = null;
-        if (ro.getDisease() != null) {
-            LambdaQueryWrapper<DictDisease> wrapper = Wrappers.lambdaQuery();
-            wrapper.eq(DictDisease::getName, ro.getDisease());
-            disease = dictDiseaseMapper.selectOne(wrapper);
-        } else {
-            disease = dictDiseaseMapper.selectById(ro.getDiseaseId());
+        if (Objects.isNull(ro.getDisease())) {
+            DictDisease dictDisease = dictDiseaseMapper.selectById(ro.getDiseaseId());
+            Assert.notNull(dictDisease, "疾病id错误!");
+            ro.setDisease(dictDisease.getName());
         }
-        Assert.notNull(disease.getId(), "疾病名称或id不存在!");
-        ro.setDiseaseId(disease.getId());
+
         Map<String, Object> resultMap = new HashMap<>();
         //在没有分型syndromeIdList以及没有症状集合symptomIdList先查询下这次挂号看病是否已经有保存诊断信息和治疗处方
-        if (CollectionUtils.isEmpty(ro.getSymptomIdList()) && CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
+        /*if (CollectionUtils.isEmpty(ro.getSymptomIdList()) && CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
             Map<String, Object> result = buDiagnoseService.getDetails(ro);
             if (Objects.nonNull(result))
                 return result;
-        }
+        }*/
 
         //2.没有syndromeIdList的情况下，判断是否有传症状集合symptomIdList，没有的话通过Feign远程调用云平台中获取疾病所有症状的接口
         if (CollectionUtils.isEmpty(ro.getSyndromeIdList()) && CollectionUtils.isEmpty(ro.getSymptomIdList())) {
@@ -191,7 +187,7 @@ public class BuRecommendService extends ServiceImpl<BuRecommendMapper, Object> i
 
         //3.判断是否有传分型集合syndromeIdList，没有的话使用symptomIdList通过Feign远程调用云平台中获取疾病所有分型的接口
         if (CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
-            List<DictSyndromeVo> dictSyndromeVoList = dictSyndromeService.selectDictSyndromeBySymptomIdList(disease.getId(), ro.getSymptomIdList());
+            List<DictSyndromeVo> dictSyndromeVoList = dictSyndromeService.selectDictSyndromeBySymptomIdList(ro.getDiseaseId(), ro.getSymptomIdList());
             //疾病分型数据集合
             resultMap.put("dictSyndromeList", dictSyndromeVoList);
             if (!CollectionUtils.isEmpty(dictSyndromeVoList)) {
@@ -200,9 +196,9 @@ public class BuRecommendService extends ServiceImpl<BuRecommendMapper, Object> i
                 ro.setSyndromeIdList(syndromeIdList);
             }
         }
-        List<BuDiagnoseVO.ShiyiVO> sytechList = buRecommendMapper.getRecommendSytech(ro.getSyndromeIdList(), ro.getDiseaseId(), ro.getSytechId(), ro.getCustomerName());
+        List<BuDiagnoseVO.ShiyiVO> sytechList = buRecommendMapper.getRecommendSytech(ro.getSyndromeIdList(), ro.getDiseaseId(), ro.getSytechId(), ro.getCustomerId());
         //查询是否保存处方
-        LambdaQueryWrapper<BuPrescription> prescriptionQueryWrapper = new LambdaQueryWrapper<>();
+       /* LambdaQueryWrapper<BuPrescription> prescriptionQueryWrapper = new LambdaQueryWrapper<>();
         prescriptionQueryWrapper.eq(BuPrescription::getPatientId, ro.getPatientId())
                 .eq(BuPrescription::getOutpatientId, ro.getOutpatientId())
                 .orderByDesc(BuPrescription::getUpdateTime)
@@ -211,7 +207,7 @@ public class BuRecommendService extends ServiceImpl<BuRecommendMapper, Object> i
         if (buPrescription != null) {
             resultMap.put("yptPrescriptionId", buPrescription.getId());
             resultMap.put("yptPrescription", buPrescription);
-        }
+        }*/
         // 整合数据
         BuDiagnoseVO.GetRecommendVO vo = new BuDiagnoseVO.GetRecommendVO();
         vo.setZhongyaoList(Collections.emptyList());
@@ -223,9 +219,9 @@ public class BuRecommendService extends ServiceImpl<BuRecommendMapper, Object> i
 
         resultMap.put("prescriptionItemList", Collections.emptyList());
         //云平台中医诊断名称
-        resultMap.put("yptDiseaseName", disease.getName());
+        resultMap.put("yptDiseaseName", ro.getDisease());
         //云平台中医诊断Id
-        resultMap.put("yptDiseaseId", disease.getId());
+        resultMap.put("yptDiseaseId", ro.getDiseaseId());
         // 返回数据
         return resultMap;
     }

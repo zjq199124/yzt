@@ -40,25 +40,29 @@ public class BuOutpatientAppointmentController extends BaseController {
 
     @ApiOperation(value = "查询门诊预约列表")
     @PostMapping("/list")
-    public Result<List<BuOutpatientAppointment>> outpatientAppointmentList(@RequestBody OutpatientAppointmentRo outpatientAppointmentRo) {
-        log.info("/*************查询待签到列表*************/");
+    public Result<List<BuOutpatientAppointment>> outpatientAppointmentList(@RequestBody OutpatientAppointmentRo outpatientAppointmentRo) throws Exception {
+        log.info("/*************查询待预约列表*************/");
         //Long customerId = ((Number) getClaims().get("customerId")).longValue();
-        Long customerId = null;
         HsUserDetails hsUserDetails = getHsUserDetails();
-        if (Objects.nonNull(hsUserDetails)) {
-            Map<String, Object> userMap = userService.getUser(hsUserDetails.getId());
-            if (Objects.nonNull(userMap)) {
-                customerId = Long.parseLong(userMap.get("customerId").toString());
-            }
-        }
+        Long customerId = getCustomerId(hsUserDetails);
         outpatientAppointmentRo.setCustomerId(customerId);
         Page<BuOutpatientAppointment> page = buOutpatientAppointmentService.list(outpatientAppointmentRo);
         return Result.success(page);
     }
 
+    private Long getCustomerId(HsUserDetails hsUserDetails) {
+        if (Objects.nonNull(hsUserDetails)) {
+            Map<String, Object> userMap = userService.getUser(hsUserDetails.getId());
+            if (Objects.nonNull(userMap)) {
+                return Long.parseLong(userMap.get("customerId").toString());
+            }
+        }
+        return null;
+    }
+
     @ApiOperation(value = "预约状况接口")
     @GetMapping("/appointmentDetail")
-    @ApiImplicitParam(name = "outpatientAppointmentId", value = "当前诊断下的预约数据id", required = true)
+    @ApiImplicitParam(name = "outpatientAppointmentId", value = "当前处治下的预约数据id", required = true)
     public Result<BuOutpatientAppointment> appointment(Long outpatientAppointmentId) {
         BuOutpatientAppointment buOutpatientAppointment = buOutpatientAppointmentService.appointmentDetail(outpatientAppointmentId);
         return Result.success(buOutpatientAppointment);
@@ -67,8 +71,9 @@ public class BuOutpatientAppointmentController extends BaseController {
 
     @ApiOperation(value = "预约")
     @PostMapping("/makeAppointment")
-    public Result<Boolean> makeAppointment(@RequestBody BuPrescriptionItemTaskRo buPrescriptionItemTaskRo) {
-        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+    public Result<Boolean> makeAppointment(@RequestBody BuPrescriptionItemTaskRo buPrescriptionItemTaskRo) throws Exception {
+        HsUserDetails hsUserDetails = getHsUserDetails();
+        Long customerId = getCustomerId(hsUserDetails);
         BuPrescriptionItemAppointmentItem buPrescriptionItemAppointmentItem = new BuPrescriptionItemAppointmentItem();
         BeanUtil.copyProperties(buPrescriptionItemTaskRo, buPrescriptionItemAppointmentItem);
         buPrescriptionItemAppointmentItem.setCustomerId(customerId);

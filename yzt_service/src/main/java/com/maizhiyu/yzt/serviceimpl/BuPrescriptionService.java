@@ -217,6 +217,13 @@ public class BuPrescriptionService extends ServiceImpl<BuPrescriptionMapper, BuP
         return buPrescriptionMapper.selectList(queryWrapper);
     }
 
+    @Override
+    public List<BuPrescription> selectByHisIdList(List<Long> prescriptionIdList) {
+        LambdaQueryWrapper<BuPrescription> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(BuPrescription::getHisId, prescriptionIdList);
+        return buPrescriptionMapper.selectList(queryWrapper);
+    }
+
     private boolean saveOrUpdateItems(BuPrescription prescription) {
         if (CollectionUtils.isEmpty(prescription.getItemList()))
             return false;
@@ -228,7 +235,7 @@ public class BuPrescriptionService extends ServiceImpl<BuPrescriptionMapper, BuP
             e.setDoctorId(prescription.getDoctorId());
             e.setPatientId(prescription.getPatientId());
             e.setOutpatientId(prescription.getOutpatientId());
-            e.setPrescriptionId(prescription.getId());
+            e.setPrescriptionId(prescription.getHisId());
             return e;
         }).collect(Collectors.toList());
         return buPrescriptionItemService.saveOrUpdateBatch(item);

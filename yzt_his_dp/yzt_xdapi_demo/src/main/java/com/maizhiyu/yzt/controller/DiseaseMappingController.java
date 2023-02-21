@@ -6,6 +6,7 @@ import com.maizhiyu.yzt.service.DiseaseMappingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,11 +31,14 @@ public class DiseaseMappingController {
     @Resource
     private DiseaseMappingService diseaseMappingService;
 
+    @Value("${customer.id}")
+    private Long customerId;
+
     @ApiOperation(value = "内部his系统疾病映射接口")
     @ApiImplicitParam(name = "hisDiseaseName",value = "his疾病名称",required = true)
     @GetMapping("/jzfy")
     public Result selectDiseaseMappingByHisDiseaseName(String hisDiseaseName) {
-        DiseaseMapping diseaseMapping = diseaseMappingService.selectByHisName(hisDiseaseName);
+        DiseaseMapping diseaseMapping = diseaseMappingService.selectByCustomerIdAndHisName(customerId,hisDiseaseName);
         boolean result = Objects.nonNull(diseaseMapping) ? true : false;
         return Result.success(result);
     }
@@ -44,7 +48,7 @@ public class DiseaseMappingController {
     @ApiImplicitParam(name = "search",value = "搜索字段")
     @GetMapping("/list")
     public Result diseaseList(String search) {
-        List<DiseaseMapping> jzfyDiseaseMappingList = diseaseMappingService.diseaseList(search);
+        List<DiseaseMapping> jzfyDiseaseMappingList = diseaseMappingService.diseaseList(customerId,search);
         return Result.success(jzfyDiseaseMappingList);
     }
 

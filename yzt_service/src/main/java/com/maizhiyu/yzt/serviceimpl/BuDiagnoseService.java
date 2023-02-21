@@ -256,7 +256,7 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
             syndromeIdList = dictSyndromeVoList.stream().map(DictSyndromeVo::getId).collect(Collectors.toList());
         }
 
-        List<BuDiagnoseVO.ShiyiVO> sytechList = buRecommendMapper.getRecommendSytech(syndromeIdList, ro.getDiseaseId(), ro.getSytechId(), ro.getCustomerName());
+        List<BuDiagnoseVO.ShiyiVO> sytechList = buRecommendMapper.getRecommendSytech(syndromeIdList, ro.getDiseaseId(), ro.getSytechId(), ro.getCustomerId());
 //        BuDiagnoseRO.GetRecommendRO recommendRo = new BuDiagnoseRO.GetRecommendRO();
 //        recommendRo.setDiseaseId(buDiagnose.getDiseaseId());
 //        recommendRo.setCustomerName(ro.getCustomerName());
