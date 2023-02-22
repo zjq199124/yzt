@@ -47,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      **/
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        if (env.equals("pro")) {
+        if (!env.equals("local")) {
             /* 这是正式配置 */
             http.authorizeRequests()
                     // 设置访问白名单（匹配这些url不需要认证）

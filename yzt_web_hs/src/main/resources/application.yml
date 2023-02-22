@@ -13,10 +13,11 @@ spring:
 ### 服务配置 ###
 server:
   port: 10082
-  session:
-    timeout: 7200
   servlet:
     context-path: /hs/api
+    session:
+      cookie: #cookie 过期时间
+        max-age: 604800 #一周
 
 ### mybatis ###
 mybatis-plus:
