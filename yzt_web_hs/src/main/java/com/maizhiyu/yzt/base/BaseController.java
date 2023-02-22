@@ -1,7 +1,6 @@
 package com.maizhiyu.yzt.base;
 
 import com.maizhiyu.yzt.exception.BusinessException;
-import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.security.HsUserDetails;
 import com.maizhiyu.yzt.utils.JWTUtil;
 import io.jsonwebtoken.Claims;
@@ -27,8 +26,9 @@ public class BaseController {
     @Autowired
     protected HttpServletRequest request;
 
-
+    //JWT token中用户登录信息获取
     public Claims getClaims() {
+
         String token = request.getHeader("token") == null ? request.getParameter("token") : request.getHeader("token");
 
         if (token == null) {
@@ -44,6 +44,7 @@ public class BaseController {
         return claims;
     }
 
+    //security 会话中获取用户登录信息
     public HsUserDetails getHsUserDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         HsUserDetails hsUserDetails = (HsUserDetails) authentication.getPrincipal();
@@ -51,5 +52,15 @@ public class BaseController {
             throw new BusinessException("认证信息获取失败");
         }
         return hsUserDetails;
+    }
+
+    //    当前登录用户id
+    public Long getUserId() {
+        return getHsUserDetails().getId();
+    }
+
+    //    当前登录用户所属客户id
+    public Long getCustomerId() {
+        return getHsUserDetails().getCustomerId();
     }
 }

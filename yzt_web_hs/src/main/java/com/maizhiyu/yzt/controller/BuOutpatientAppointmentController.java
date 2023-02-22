@@ -42,6 +42,7 @@ public class BuOutpatientAppointmentController extends BaseController {
     @PostMapping("/list")
     public Result<List<BuOutpatientAppointment>> outpatientAppointmentList(@RequestBody OutpatientAppointmentRo outpatientAppointmentRo) {
         log.info("/*************查询待签到列表*************/");
+        getHsUserDetails();
         //Long customerId = ((Number) getClaims().get("customerId")).longValue();
         Long customerId = null;
         HsUserDetails hsUserDetails = getHsUserDetails();
