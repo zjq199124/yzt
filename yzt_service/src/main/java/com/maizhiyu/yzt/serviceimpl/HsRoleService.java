@@ -53,7 +53,7 @@ public class HsRoleService extends ServiceImpl<HsRoleMapper, HsRole> implements 
     public Result delRole(Long id) {
         //判断是否是默认角色
         if (id == 1) {
-            return Result.success("","不允许删除默认角色");
+            return Result.failure("不允许删除默认角色");
         }
         // 删除角色信息
         Integer res = roleMapper.deleteById(id);

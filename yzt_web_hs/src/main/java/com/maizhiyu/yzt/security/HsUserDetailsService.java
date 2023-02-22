@@ -36,8 +36,6 @@ public class HsUserDetailsService implements UserDetailsService {
         // 查询用户
         HsUserDetails user = mapper.selectOne(wrapper);
 
-
-
         // 用户存在
         if (user != null) {
             LambdaQueryWrapper<HsUserRole> wrapper1 = new LambdaQueryWrapper<>();
@@ -49,7 +47,6 @@ public class HsUserDetailsService implements UserDetailsService {
             };
             return user;
         }
-
         // 用户不在
         else {
             throw new UsernameNotFoundException("用户不存在");

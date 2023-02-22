@@ -36,7 +36,6 @@ public class LoginAuthenticationProvider extends DaoAuthenticationProvider {
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication){
         if (authentication.getCredentials() == null) {
             logger.debug("Authentication failed: no credentials provided");
-
             throw new BadCredentialsException(messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
         }
 
