@@ -15,5 +15,6 @@ import java.util.Map;
 
 @Mapper
 public interface BuOutpatientAppointmentMapper extends BaseMapper<BuOutpatientAppointment> {
-    Page<BuOutpatientAppointment> list(@Param("page") Page<BuOutpatientAppointment> page, @Param("outpatientAppointmentRo") OutpatientAppointmentRo outpatientAppointmentRo);
+    Page<BuOutpatientAppointment> list(@Param("page") Page<BuOutpatientAppointment> page,
+                                       @Param("outpatientAppointmentRo") OutpatientAppointmentRo outpatientAppointmentRo);
 }

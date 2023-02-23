@@ -22,4 +22,6 @@ public interface BuPrescriptionMapper extends BaseMapper<BuPrescription> {
 
     List<Map<String, Object>> selectPatientPrescriptionItemSummary(
             @Param("patientId") Long patientId);
+
+    List<BuPrescription> selectByHisIdList(@Param("hisIdList") List<Long> hisIdList);
 }

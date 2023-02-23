@@ -2,6 +2,7 @@ package com.maizhiyu.yzt.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.BuPrescription;
+import com.maizhiyu.yzt.entity.TranPrescription;
 
 import java.util.List;
 import java.util.Map;
@@ -104,8 +105,8 @@ public interface IBuPrescriptionService extends IService<BuPrescription> {
 
     /**
      * 根据hisId查询处治列表
-     * @param prescriptionIdList
+     * @param hisIdList
      * @return
      */
-    List<BuPrescription> selectByHisIdList(List<Long> prescriptionIdList);
+    List<BuPrescription> selectByHisIdList(List<Long> hisIdList);
 }

@@ -56,6 +56,9 @@ public class BuPrescription implements Serializable {
     @ApiModelProperty(value="诊断ID")
     private Long diagnoseId;
 
+    @ApiModelProperty(value="疾病ID")
+    private Long diseaseId;
+
     @ApiModelProperty(value="注意事项")
     private String attention;
 
@@ -71,11 +74,14 @@ public class BuPrescription implements Serializable {
     @ApiModelProperty(value="用药时间")
     private String useTime;
 
-//    @ApiModelProperty(value="汇总价格")
-//    private BigDecimal price;
+   @ApiModelProperty(value="汇总价格")
+    private BigDecimal price;
 
     @ApiModelProperty("是否删除；1是；0否")
     private Integer isDel;
+
+    @ApiModelProperty("是否作废；1是；0否")
+    private Integer isCancel;
 
     @ApiModelProperty(value="更新时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="Asia/Shanghai")
@@ -95,4 +101,8 @@ public class BuPrescription implements Serializable {
 
     @ApiModelProperty(value="HisId")
     private Long hisId;
+
+    @ApiModelProperty("门诊时间")
+    @TableField(exist = false)
+    private Date outpatientTime;
 }

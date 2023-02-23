@@ -77,10 +77,10 @@ public class BuDiagnoseVO {
        /* @ApiModelProperty(value="编码")
         private String code;*/
 
-        @ApiModelProperty(value="所属适宜技术id")
-        private Long sytechId;
+        /*@ApiModelProperty(value="具体适宜技术id")
+        private Long sytechId;*/
 
-        @ApiModelProperty(value="适宜技术表主键id")
+        @ApiModelProperty(value="sch_sytech表中的sytech_id或者ts_sytech表中的id")
         private Long entityId;
 
         @ApiModelProperty(value="技术名称")

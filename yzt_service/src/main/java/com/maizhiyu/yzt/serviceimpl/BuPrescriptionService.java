@@ -218,10 +218,11 @@ public class BuPrescriptionService extends ServiceImpl<BuPrescriptionMapper, BuP
     }
 
     @Override
-    public List<BuPrescription> selectByHisIdList(List<Long> prescriptionIdList) {
+    public List<BuPrescription> selectByHisIdList(List<Long> hisIdList) {
         LambdaQueryWrapper<BuPrescription> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.in(BuPrescription::getHisId, prescriptionIdList);
-        return buPrescriptionMapper.selectList(queryWrapper);
+        queryWrapper.in(BuPrescription::getHisId, hisIdList);
+        List<BuPrescription> buPrescriptionList = buPrescriptionMapper.selectByHisIdList(hisIdList);
+        return buPrescriptionList;
     }
 
     private boolean saveOrUpdateItems(BuPrescription prescription) {

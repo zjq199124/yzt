@@ -2,10 +2,7 @@ package com.maizhiyu.yzt.controller;
 
 import cn.hutool.core.lang.Assert;
 import com.maizhiyu.yzt.aro.BuPrescriptionRO;
-import com.maizhiyu.yzt.entity.BuDiagnose;
-import com.maizhiyu.yzt.entity.BuOutpatient;
-import com.maizhiyu.yzt.entity.MsCustomer;
-import com.maizhiyu.yzt.entity.SysMultimedia;
+import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.BuDiagnoseRO;
 import com.maizhiyu.yzt.service.*;
@@ -48,6 +45,9 @@ public class BuDiagnoseController {
     private IBuOutpatientService buOutpatientService;
 
     @Resource
+    private IBuPatientService buPatientService;
+
+    @Resource
     private SysMultimediaService sysMultimediaService;
 
     @Resource
@@ -66,7 +66,11 @@ public class BuDiagnoseController {
         //赋值为云平台数据
         if (buOutpatient != null) {
             ro.setOutpatientId(buOutpatient.getId());
-            ro.setPatientId(buOutpatient.getPatientId());
+            //这里的这个patientId是bu_patient里面的his_id,查询云平台outpatient
+            BuPatient buPatient = buPatientService.selectByHisId(customerId, buOutpatient.getPatientId());
+            if (Objects.nonNull(buPatient)) {
+                ro.setPatientId(buOutpatient.getId());
+            }
         }
         Map<String, Object> map = recommendService.selectRecommend(ro);
         return Result.success(map);
@@ -85,12 +89,9 @@ public class BuDiagnoseController {
         buDiagnose.setDoctorId(ro.getBaseInfo().getDoctorId());
         buDiagnose.setPatientId(ro.getBaseInfo().getPatientId());
         buDiagnose.setOutpatientId(ro.getBaseInfo().getOutpatientId());
-        buDiagnose.setId(ro.getDiagnoseInfo().getId());
         buDiagnose.setCustomerId(ro.getDiagnoseInfo().getCustomerId());
-        buDiagnose.setDepartmentId(ro.getDiagnoseInfo().getDepartmentId());
         buDiagnose.setDisease(ro.getDiagnoseInfo().getDisease());
         buDiagnose.setDiseaseId(ro.getDiagnoseInfo().getDiseaseId());
-        buDiagnose.setDisease(ro.getDiagnoseInfo().getDisease());
         buDiagnose.setSymptoms(ro.getDiagnoseInfo().getSymptoms());
         buDiagnose.setSymptomIds(ro.getDiagnoseInfo().getSymptomIds());
         buDiagnose.setSyndrome(ro.getDiagnoseInfo().getSyndrome());
@@ -114,13 +115,13 @@ public class BuDiagnoseController {
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
         ro.setCustomerId(customerId);
-        //查询云平台outpatient
+       /* //查询云平台outpatient
         BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getOutpatientId());
         //赋值为云平台数据
         if (buOutpatient != null) {
             ro.setOutpatientId(buOutpatient.getId());
             ro.setPatientId(buOutpatient.getPatientId());
-        }
+        }*/
         Map<String, Object> result = diagnoseService.getDetails(ro);
         return Result.success(result);
     }

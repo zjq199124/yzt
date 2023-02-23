@@ -47,7 +47,13 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
     private DictSyndromeMapper dictSyndromeMapper;
 
     @Resource
+    private TranPrescriptionMapper tranPrescriptionMapper;
+
+    @Resource
     private BuPrescriptionMapper buPrescriptionMapper;
+
+    @Resource
+    private TranPrescriptionItemMapper tranPrescriptionItemMapper;
 
     @Resource
     private BuPrescriptionItemMapper buPrescriptionItemMapper;
@@ -121,11 +127,12 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
     public Map<String, Object> getDetails(BuDiagnoseRO.GetRecommendRO ro) {
 
         Assert.notNull(ro, "入参信息为空!");
-        LambdaQueryWrapper<BuOutpatient> outpatientQueryWrapper = new LambdaQueryWrapper<>();
+     /*   LambdaQueryWrapper<BuOutpatient> outpatientQueryWrapper = new LambdaQueryWrapper<>();
         outpatientQueryWrapper.eq(BuOutpatient::getId, ro.getOutpatientId());
         BuOutpatient buOutpatient = outpatientMapper.selectOne(outpatientQueryWrapper);
-        if (buOutpatient == null) return null;
-//        Assert.notNull(buOutpatient, "门诊信息为空!");
+        if (buOutpatient == null)
+            return null;*/
+
         Map<String, Object> resultMap = new HashMap<>();
         //1：查询是否有诊断信息
         LambdaQueryWrapper<BuDiagnose> queryWrapper = new LambdaQueryWrapper<>();
@@ -214,35 +221,36 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
         }
 
         //4：查询出已经保存的处方
-        LambdaQueryWrapper<BuPrescription> prescriptionQueryWrapper = new LambdaQueryWrapper<>();
-        prescriptionQueryWrapper.eq(BuPrescription::getPatientId, buOutpatient.getPatientId())
-                .eq(BuPrescription::getOutpatientId, buOutpatient.getId())
-                .eq(BuPrescription::getDoctorId, buOutpatient.getDoctorId())
-                .eq(BuPrescription::getIsDel, 0)
-                .orderByDesc(BuPrescription::getUpdateTime)
+        LambdaQueryWrapper<TranPrescription> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(TranPrescription::getPatientId, ro.getPatientId())
+                .eq(TranPrescription::getOutpatientId, ro.getOutpatientId())
+                .eq(TranPrescription::getDoctorId, ro.getHisDoctorId())
+                .eq(TranPrescription::getIsDel, 0)
+                .eq(TranPrescription::getDiagnoseId, buDiagnose.getId())
+                .orderByDesc(TranPrescription::getUpdateTime)
                 .last("limit 1");
-        BuPrescription buPrescription = buPrescriptionMapper.selectOne(prescriptionQueryWrapper);
+        TranPrescription tranPrescription = tranPrescriptionMapper.selectOne(wrapper);
 
-        if (Objects.isNull(buPrescription)) {
+        if (Objects.isNull(tranPrescription)) {
             //处方中所包含的适宜技术的列表
             resultMap.put("prescriptionItemList", Collections.emptyList());
             //处方id
             resultMap.put("yptPrescriptionId", null);
             resultMap.put("yptPrescription", null);
         } else {
-            resultMap.put("yptPrescriptionId", buPrescription.getId());
-            resultMap.put("yptPrescription", buPrescription);
+            resultMap.put("yptPrescriptionId", tranPrescription.getId());
+            resultMap.put("yptPrescription", tranPrescription);
             //5:查询保存的处方所对应的具体适宜技术
-            LambdaQueryWrapper<BuPrescriptionItem> buPrescriptionItemQueryWrapper = new LambdaQueryWrapper<>();
-            buPrescriptionItemQueryWrapper.eq(BuPrescriptionItem::getPrescriptionId, buPrescription.getId())
-                    .eq(BuPrescriptionItem::getDoctorId, buOutpatient.getDoctorId())
-                    .eq(BuPrescriptionItem::getPatientId, buOutpatient.getPatientId())
-                    .eq(BuPrescriptionItem::getOutpatientId, buOutpatient.getId())
-                    .eq(BuPrescriptionItem::getType, 5)
-                    .eq(BuPrescriptionItem::getIsDel, 0);
+            LambdaQueryWrapper<TranPrescriptionItem> itemQueryWrapper = new LambdaQueryWrapper<>();
+            itemQueryWrapper.eq(TranPrescriptionItem::getPrescriptionId, tranPrescription.getId())
+                    .eq(TranPrescriptionItem::getDoctorId, tranPrescription.getDoctorId())
+                    .eq(TranPrescriptionItem::getPatientId, tranPrescription.getPatientId())
+                    .eq(TranPrescriptionItem::getOutpatientId, tranPrescription.getOutpatientId())
+                    .eq(TranPrescriptionItem::getType, 5)
+                    .eq(TranPrescriptionItem::getIsDel, 0);
 
-            List<BuPrescriptionItem> buPrescriptionItemList = buPrescriptionItemMapper.selectList(buPrescriptionItemQueryWrapper);
-            resultMap.put("prescriptionItemList", buPrescriptionItemList);
+            List<TranPrescriptionItem> tranPrescriptionItemList = tranPrescriptionItemMapper.selectList(itemQueryWrapper);
+            resultMap.put("prescriptionItemList", tranPrescriptionItemList);
         }
 
         //6：查询需要推荐的适宜技术

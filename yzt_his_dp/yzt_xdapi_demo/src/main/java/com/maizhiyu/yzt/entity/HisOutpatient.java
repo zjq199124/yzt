@@ -1,7 +1,6 @@
 package com.maizhiyu.yzt.entity;
 
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -16,19 +15,14 @@ import java.util.Date;
 
 @Data
 @Accessors(chain=true)
-@TableName("ypt_Registration")
-//@TableName("his_outpatient")
+@TableName("his_outpatient")
 @ApiModel(description="门诊预约表")
 public class HisOutpatient implements Serializable {
 
     @TableId
     @ApiModelProperty(value="预约ID(outpatientId)")
-    @TableField(value = "code")
-    private String code;
-
-    @ApiModelProperty(value="预约时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Shanghai")
-    private Date time;
+    @TableField(value = "id")
+    private String id;
 
     @ApiModelProperty(value="his端医生ID")
     private String doctorId;
@@ -36,7 +30,14 @@ public class HisOutpatient implements Serializable {
     @ApiModelProperty(value="his端患者ID")
     private String patientId;
 
+    @ApiModelProperty(value="his端医生科室ID")
+    private String departmentId;
 
-    @ApiModelProperty(value="his端患患者的挂号id")
-    private String registrationId;
+    @ApiModelProperty(value="创建时间")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="Asia/Shanghai")
+    private Date createTime;
+
+    @ApiModelProperty(value="修改时间")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="Asia/Shanghai")
+    private Date updateTime;
 }

@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.serviceimpl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -65,5 +66,14 @@ public class BuOutpatientService extends ServiceImpl<BuOutpatientMapper, BuOutpa
     @Override
     public IPage<Map<String, Object>> getPsUserOutpatientList(Page page,Long userId, Long patientId, Integer type, Integer status) {
         return mapper.selectPsUserOutpatientList(page,userId, patientId, type, status);
+    }
+
+    @Override
+    public List<BuOutpatient> selectByHisIdListAndCustomerId(Long customerId, List<Long> hisIdList) {
+        LambdaQueryWrapper<BuOutpatient> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(BuOutpatient::getCustomerId, customerId)
+                .in(BuOutpatient::getHisId, hisIdList);
+
+        return mapper.selectList(queryWrapper);
     }
 }

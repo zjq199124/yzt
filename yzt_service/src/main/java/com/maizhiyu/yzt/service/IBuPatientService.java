@@ -33,4 +33,6 @@ public interface IBuPatientService extends IService<BuPatient> {
     IPage<Map<String, Object>> getPatientListByTherapist(Page page, Long TherapistId, Integer type, String term);
 
     List<Map<String, Object>> getPatientPrescriptionList(Long patientId, Integer type);
+
+    BuPatient selectByHisId(Long customerId, Long hisId);
 }

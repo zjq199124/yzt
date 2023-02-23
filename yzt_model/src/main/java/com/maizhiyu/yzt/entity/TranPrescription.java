@@ -90,8 +90,8 @@ public class TranPrescription implements Serializable {
 
     @ApiModelProperty(value="子项列表")
     @TableField(exist = false)
-    private List<BuPrescriptionItem> itemList;
+    private List<TranPrescriptionItem> itemList;
 
     @ApiModelProperty(value="HisId")
-    private String hisId;
+    private Long hisId;
 }

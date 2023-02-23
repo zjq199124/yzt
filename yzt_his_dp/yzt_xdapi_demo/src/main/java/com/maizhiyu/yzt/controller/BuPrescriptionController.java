@@ -83,6 +83,9 @@ public class BuPrescriptionController {
     @Value("${customer.name}")
     private String customerName;
 
+    @Value("${customer.id}")
+    private Long customerId;
+
     @Value("${his.url}")
     private String hisUrl;
 
@@ -194,62 +197,57 @@ public class BuPrescriptionController {
             return Result.success(result.getData());
         }*/
 
-        Assert.notNull(ro, "处方数据不能为空!");
+        /*Assert.notNull(ro, "处方数据不能为空!");
         Assert.notNull(ro.getBaseInfo(), "基础信息不能为空!");
         Assert.notNull(ro.getDiagnoseInfo(), "诊断信息不能为空!");
         BuPrescriptionRO.AddPrescriptionShiyi.BaseInfo baseInfo = ro.getBaseInfo();
         //判断医生，患者，患者门诊信息
         Long yptDoctorId = processDoctor(baseInfo.getDoctorId().toString());
         Long yptPatientId = processPatient(baseInfo.getPatientId().toString());
-        Long yptOutpatientId = processOutpatient(baseInfo.getOutpatientId().toString(), yptDoctorId, yptPatientId);
+        Long yptOutpatientId = processOutpatient(baseInfo.getOutpatientId().toString(), yptDoctorId, yptPatientId);*/
 
 
-        //将处置推送给his
+       /* //将处置推送给his
         if (Objects.nonNull(ro) && !CollectionUtils.isEmpty(ro.getItemList())) {
             savePrescriptionShiyiToHis(ro);
         }
-
+*/
         //ro中的outpatientId是视图中的registration_id,要换成code才是我们这边所说的his中medical_record_id对应云平台的his中的outpatientId
-        YptOutpatient yptOutpatient = getYptOutpatientById(yptOutpatientId);
-        ro.getBaseInfo().setOutpatientId(yptOutpatient.getHisId());
+        /*YptOutpatient yptOutpatient = getYptOutpatientById(yptOutpatientId);
+        ro.getBaseInfo().setOutpatientId(yptOutpatient.getHisId());*/
         ro.getDiagnoseInfo().setCustomerName(customerName);
         //将patientId,outPatientId,doctorId替换成云平台对应的数据
-        ro.getBaseInfo().setDoctorId(yptDoctorId);
+        /*ro.getBaseInfo().setDoctorId(yptDoctorId);
         ro.getBaseInfo().setPatientId(yptPatientId);
-        ro.getBaseInfo().setOutpatientId(yptOutpatientId);
+        ro.getBaseInfo().setOutpatientId(yptOutpatientId);*/
 
         Result<BuDiagnose> result = yptClient.addDiagnose(ro);
-        return Result.success(result.getData());
+        if (!(result.getCode().equals(0) && !CollectionUtils.isEmpty(ro.getItemList())))
+            return Result.failure();
+
+        if (Objects.isNull(ro.getDiagnoseInfo().getId())) {
+            ro.getDiagnoseInfo().setId(result.getData().getId());
+        }
+        //将处置推送给his
+        if (!(Objects.nonNull(ro) && !CollectionUtils.isEmpty(ro.getItemList())))
+            return Result.failure();
+
+        boolean hisResult = savePrescriptionShiyiToHis(ro);
+
+        if (!hisResult)
+            return Result.failure();
+
+        //保存一份回显数据到云平台中
+        Result<Boolean> res = yptClient.addPrescriptionShiyi(ro);
+        return Result.success(res.getData());
     }
 
-    private void savePrescriptionShiyiToHis(BuPrescriptionRO.AddPrescriptionShiyi ro) throws IOException {
+    private boolean savePrescriptionShiyiToHis(BuPrescriptionRO.AddPrescriptionShiyi ro) throws IOException {
         Gson gson = new Gson();
         //克隆出一个对象用来进行翻译操作
         Object cloneObj = ObjectUtil.clone(ro);
         JSONObject json = JSON.parseObject(gson.toJson(cloneObj));
         BuPrescriptionRO.AddPrescriptionShiyi clone = JSON.toJavaObject(json, BuPrescriptionRO.AddPrescriptionShiyi.class);
-
-        for (BuPrescriptionRO.BuPrescriptionItemShiyi vo : clone.getItemList()) {
-            try {
-                // 按code映射
-                if (StringUtils.isNotBlank(vo.getCode())) {
-                    TreatmentMapping treatmentMapping = treatmentMappingService.getTreatmentByCode(vo.getCode());
-                    if (Objects.nonNull(treatmentMapping)) {
-                        vo.setEntityId(Long.parseLong(treatmentMapping.getHiscode()));
-                        continue;
-                    }
-                } else if (StringUtils.isNotBlank(vo.getName())) {
-                    // 按名称映射
-                    TreatmentMapping treatmentMapping = treatmentMappingService.getTreatmentByName(vo.getName());
-                    if (Objects.nonNull(treatmentMapping)) {
-                        vo.setEntityId(Long.parseLong(treatmentMapping.getHiscode()));
-                        continue;
-                    }
-                }
-            } catch (Exception e) {
-                log.warn("适宜处方ID映射异常：" + e.getMessage());
-            }
-        }
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(hisUrl)
@@ -258,7 +256,7 @@ public class BuPrescriptionController {
         HisApi hisApi = retrofit.create(HisApi.class);
 
         //his中处置id不为空的话那么先删除his中的处置
-        if (Objects.nonNull(clone.getHisId())) {
+        /*if (Objects.nonNull(clone.getHisId())) {
             try {
                 Call<Object> repos = hisApi.cancelTreatmentById(Integer.parseInt(clone.getHisId()));
                 repos.execute().body();
@@ -266,17 +264,12 @@ public class BuPrescriptionController {
                 log.warn("处治保存到his失败!");
                 e.printStackTrace();
             }
-        }
+        }*/
 
         TreatmentRo treatmentRo = new TreatmentRo();
         treatmentRo.setDoctorId(clone.getBaseInfo().getDoctorId().intValue());
 
-        LambdaQueryWrapper<HisOutpatient> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(HisOutpatient::getRegistrationId, ro.getBaseInfo().getOutpatientId())
-                .last("limit 1");
-        HisOutpatient outpatient = outpatientMapper.selectOne(queryWrapper);
-
-        treatmentRo.setMedicalRecordId(Integer.parseInt(outpatient.getCode()));
+        treatmentRo.setMedicalRecordId(ro.getBaseInfo().getOutpatientId().intValue());
 
         List<TreatmentItemsRo> treatmentItemsRoList = clone.getItemList().stream().map(item -> {
             TreatmentItemsRo treatmentItemsRo = new TreatmentItemsRo();
@@ -304,6 +297,7 @@ public class BuPrescriptionController {
             log.warn("处治保存到his失败!");
             e.printStackTrace();
         }
+        return true;
     }
 
     private Long processDoctor(String doctorId) {
@@ -343,7 +337,7 @@ public class BuPrescriptionController {
 
     private Long processOutpatient(String outpatientId, Long yptDoctorId, Long yptPatientId) {
         LambdaQueryWrapper<HisOutpatient> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(HisOutpatient::getRegistrationId, outpatientId)
+        queryWrapper.eq(HisOutpatient::getId, outpatientId)
                 .last("limit 1");
         HisOutpatient outpatient = outpatientMapper.selectOne(queryWrapper);
         if (outpatient == null) {

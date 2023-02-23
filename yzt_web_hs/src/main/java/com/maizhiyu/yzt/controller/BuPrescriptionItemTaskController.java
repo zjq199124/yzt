@@ -83,10 +83,8 @@ public class BuPrescriptionItemTaskController extends BaseController {
     @ApiOperation("待签到列表")
     @PostMapping("/waitSignatureList")
     public Result<Page<BuPrescriptionItemTaskVo>> waitSignatureList(@RequestBody WaitSignatureRo waitSignatureRo) throws Exception {
-        //Long customerId = ((Number) getClaims().get("customerId")).longValue();
         Long customerId = getCustomerId();
         waitSignatureRo.setCustomerId(customerId);
-        //Page<WaitSignatureVo> page = buPrescriptionItemService.selectWaitSignatureList(waitSignatureRo);
         Page<BuPrescriptionItemTaskVo> page = buPrescriptionItemTaskService.selectWaitSignatureList(waitSignatureRo);
         return Result.success(page);
     }
@@ -106,7 +104,6 @@ public class BuPrescriptionItemTaskController extends BaseController {
     public Result<Page<BuPrescriptionItemTaskVo>> waitTreatmentList(@RequestBody WaitTreatmentRo waitTreatmentRo) throws Exception {
         Long customerId = getCustomerId();
         waitTreatmentRo.setCustomerId(customerId);
-        //Page<BuSignature> pageResult = buSignatureService.waitTreatmentList(waitTreatmentRo);
         Page<BuPrescriptionItemTaskVo> page = buPrescriptionItemTaskService.waitTreatmentList(waitTreatmentRo);
         return Result.success(page);
     }
@@ -131,8 +128,8 @@ public class BuPrescriptionItemTaskController extends BaseController {
 
     @ApiOperation("已治疗列表接口")
     @PostMapping("/treatmentList")
-    public Result<Page<BuPrescriptionItemTaskVo>> treatmentList(@RequestBody ItemTaskRo itemTaskRo) {
-        Long customerId = ((Number) getClaims().get("customerId")).longValue();
+    public Result<Page<BuPrescriptionItemTaskVo>> treatmentList(@RequestBody ItemTaskRo itemTaskRo) throws Exception {
+        Long customerId = getCustomerId();
         itemTaskRo.setCustomerId(customerId);
         Page<BuPrescriptionItemTaskVo> resultPage = buPrescriptionItemTaskService.treatmentList(itemTaskRo);
         return Result.success(resultPage);

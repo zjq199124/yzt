@@ -323,7 +323,10 @@ public class BuPrescriptionRO  implements Serializable {
         @ApiModelProperty(value="名称")
         private String name;
 
-        @ApiModelProperty(value = "所属适宜技术id")
+        @ApiModelProperty(value = "具体适宜技术id")
+        private Long sytechId;
+
+        @ApiModelProperty(value = "所属适宜技术方案id")
         private Long entityId;
 
         @ApiModelProperty(value = "客户customerId，通过customerId的有无判断是协定方还是适宜技术")

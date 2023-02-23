@@ -1,5 +1,7 @@
 package com.maizhiyu.yzt.task;
 
+import cn.hutool.core.map.MapUtil;
+import com.aliyun.core.utils.MapUtils;
 import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.enums.AppointmentTypeEnum;
 import com.maizhiyu.yzt.service.*;
@@ -38,6 +40,9 @@ public class SplitTask {
 
     @Resource
     private IBuDealTaskRecordService buDealTaskRecordService;
+
+    @Resource
+    private IBuOutpatientService buOutpatientService;
 
     @Scheduled(cron = "0 0/2 * * * ?")
     private void splitTask() {
@@ -171,8 +176,7 @@ public class SplitTask {
             buOutpatientAppointment.setDepartmentId(buPrescription.getDepartmentId());
             buOutpatientAppointment.setDiagnoseId(buPrescription.getDiagnoseId());
             buOutpatientAppointment.setPrescriptionId(buPrescription.getHisId());
-            //门诊时间这里取的是处治的开具时间
-            buOutpatientAppointment.setOutpatientTime(buPrescription.getCreateTime());
+            buOutpatientAppointment.setOutpatientTime(buPrescription.getOutpatientTime());
             buOutpatientAppointment.setCreateTime(new Date());
             buOutpatientAppointment.setUpdateTime(new Date());
             buOutpatientAppointmentList.add(buOutpatientAppointment);

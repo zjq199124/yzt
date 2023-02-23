@@ -64,26 +64,18 @@ public class BuDiagnoseController {
         //1.对his传过来的疾病名称和云平台疾病名称进行映射(有西医诊断优先匹配西医诊断)
             if (Objects.isNull(ro.getDiseaseId())) {
             String hisDiseaseName = Objects.nonNull(ro.getWestDiagnose()) ? ro.getWestDiagnose() : ro.getTcmDiagnose();
-            DiseaseMapping jzfyDiseaseMapping = diseaseMappingService.selectByCustomerIdAndHisName(customerId,hisDiseaseName);
-            Preconditions.checkArgument(Objects.nonNull(jzfyDiseaseMapping), "his中的诊断：" + hisDiseaseName + " 在云平台中没有与之相匹配的中医诊断!");
-            ro.setDiseaseId(jzfyDiseaseMapping.getDiseaseId());
-            ro.setDisease(jzfyDiseaseMapping.getName());
-        }
-        LambdaQueryWrapper<HisOutpatient> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(HisOutpatient::getRegistrationId, ro.getOutpatientId())
-                .last("limit 1");
-        HisOutpatient outpatient = outpatientMapper.selectOne(queryWrapper);
-        if (Objects.nonNull(outpatient)) {
-            //内部his要转一下
-            ro.setOutpatientId(Long.parseLong(outpatient.getCode()));
+            DiseaseMapping diseaseMapping = diseaseMappingService.selectByCustomerIdAndHisName(customerId,hisDiseaseName);
+            Preconditions.checkArgument(Objects.nonNull(diseaseMapping), "his中的诊断：" + hisDiseaseName + " 在云平台中没有与之相匹配的中医诊断!");
+            ro.setDiseaseId(diseaseMapping.getDiseaseId());
+            ro.setDisease(diseaseMapping.getName());
         }
 
         //在没有分型syndromeIdList以及没有症状集合symptomIdList先查询下这次挂号看病是否已经有保存诊断信息和治疗处方
-        /*if (CollectionUtils.isEmpty(ro.getSymptomIdList()) && CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
+        if (CollectionUtils.isEmpty(ro.getSymptomIdList()) && CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
             Result result = yptClient.getDetail(ro);
             if(Objects.nonNull(result.getData()))
                 return result;
-        }*/
+        }
 
         // 调用开放接口获取诊断推荐
         Result result=yptClient.getRecommend(ro);
@@ -104,7 +96,7 @@ public class BuDiagnoseController {
         // 获取token字段
         Assert.notNull(outpatientId, "outpatientId不能为空!");
         LambdaQueryWrapper<HisOutpatient> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(HisOutpatient::getRegistrationId, outpatientId)
+        queryWrapper.eq(HisOutpatient::getId, outpatientId)
                 .last("limit 1");
         HisOutpatient hisOutpatient = outpatientMapper.selectOne(queryWrapper);
         if (Objects.isNull(hisOutpatient))

@@ -30,26 +30,28 @@ public class BaseController {
     @Autowired
     protected HttpServletRequest request;
 
-    @Resource
-    private IHsUserService userService;
-
-
+    /**
+     * 从JWT token 中获取用户信息
+     * @return
+     */
     public Claims getClaims() {
         String token = request.getHeader("token") == null ? request.getParameter("token") : request.getHeader("token");
 
         if (token == null) {
             throw new BusinessException("token 不能为空");
         }
-
         Claims claims = JWTUtil.checkJWT(token);
-
         if (token == null) {
             throw new BusinessException("token 验证失败");
         }
-
         return claims;
     }
 
+    /**
+     *从sercuity 会话中获取用户信息
+     * @return
+     * @throws Exception
+     */
     public HsUserDetails getHsUserDetails() throws Exception {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -60,15 +62,24 @@ public class BaseController {
         }
     }
 
+    /**
+     * 获取当前会话客户id
+     *
+     * @return
+     * @throws Exception
+     */
     public Long getCustomerId() throws Exception {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            HsUserDetails hsUserDetails = (HsUserDetails) authentication.getPrincipal();
-            Map<String, Object> userMap = userService.getUser(hsUserDetails.getId());
-            Long customerId = Long.parseLong(userMap.get("customerId").toString());
-            return customerId;
-        } catch (Exception e) {
-            throw new Exception("后台服务已重启，请退出重新登录!");
-        }
+        return getHsUserDetails().getCustomerId();
     }
+
+    /**
+     * 获取当前会话用户id
+     *
+     * @return
+     * @throws Exception
+     */
+    public Long getUserId() throws Exception {
+        return getHsUserDetails().getId();
+    }
+
 }

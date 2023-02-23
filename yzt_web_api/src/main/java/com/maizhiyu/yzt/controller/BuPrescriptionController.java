@@ -54,6 +54,9 @@ public class BuPrescriptionController {
     @Resource
     private BuPrescriptionItemTaskService buPrescriptionItemTaskService;
 
+    @Resource
+    private ITranPrescriptionService tranPrescriptionService;
+
     @ApiOperation(value = "新增处方(中药)", notes = "新增处方(中药)")
     @PostMapping("/addPrescriptionZhongyao")
     public Result<Boolean> addPrescriptionZhongyao(HttpServletRequest request, @RequestBody BuPrescriptionRO.AddPrescriptionZhongyao ro) {
@@ -188,7 +191,7 @@ public class BuPrescriptionController {
     @ApiOperation(value = "新增处方(适宜技术)", notes = "新增处方(适宜技术)")
     @PostMapping("/addPrescriptionShiyi")
     public Result<Boolean> addPrescriptionShiyi(HttpServletRequest request, @RequestBody BuPrescriptionRO.AddPrescriptionShiyi ro) {
-        // 获取token字段
+        /*// 获取token字段
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         if (customerId == null) return Result.failure(10001, "token错误");
         checkYptDataExist(ro.getBaseInfo().getDoctorId(), ro.getBaseInfo().getPatientId(), ro.getBaseInfo().getOutpatientId());
@@ -230,6 +233,49 @@ public class BuPrescriptionController {
 
         // 保存适宜技术成功后，要添加门诊预约数据，一个门诊下的诊断开的所有适宜技术的总和对应一张大的门诊预约表bu_outpatient_appointment中插入一条数据
         addAppointmentInfo(prescription);
+
+        // 返回结果
+        return Result.success(res);*/
+
+        // 获取token字段
+        Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
+        if (customerId == null) return Result.failure(10001, "token错误");
+        //checkYptDataExist(ro.getBaseInfo().getDoctorId(), ro.getBaseInfo().getPatientId(), ro.getBaseInfo().getOutpatientId());
+        // 整理处方数据
+        List<TranPrescriptionItem> itemList = new ArrayList<>();
+        TranPrescription tranPrescription = new TranPrescription();
+        tranPrescription.setId(ro.getId());
+        tranPrescription.setType(5);
+        tranPrescription.setStatus(1);
+        tranPrescription.setCustomerId(customerId);
+        tranPrescription.setDoctorId(ro.getBaseInfo().getDoctorId());
+        tranPrescription.setPatientId(ro.getBaseInfo().getPatientId());
+        tranPrescription.setOutpatientId(ro.getBaseInfo().getOutpatientId());
+        tranPrescription.setDiagnoseId(ro.getDiagnoseInfo().getId());
+        tranPrescription.setAttention(ro.getAttention());
+        tranPrescription.setCreateTime(new Date());
+        tranPrescription.setUpdateTime(tranPrescription.getCreateTime());
+        tranPrescription.setHisId(ro.getHisId());
+        for (BuPrescriptionRO.BuPrescriptionItemShiyi it : ro.getItemList()) {
+            TranPrescriptionItem item = new TranPrescriptionItem();
+            item.setType(1);
+            item.setCustomerId(it.getCustomerId());
+            item.setDoctorId(ro.getBaseInfo().getDoctorId());
+            item.setPatientId(ro.getBaseInfo().getPatientId());
+            item.setOutpatientId(ro.getBaseInfo().getOutpatientId());
+            item.setId(it.getId());
+            item.setName(it.getName());
+            item.setDetail(it.getDetail());
+            item.setOperation(it.getOperation());
+            item.setQuantity(new BigDecimal(it.getQuantity()));
+            item.setNote(it.getNote());
+            item.setEntityId(it.getEntityId());
+            // 添加到列表
+            itemList.add(item);
+        }
+        tranPrescription.setItemList(itemList);
+        // 保存药材
+        Boolean res = tranPrescriptionService.setPrescriptionByDiff(tranPrescription, ro.getPreItemIdList());
 
         // 返回结果
         return Result.success(res);

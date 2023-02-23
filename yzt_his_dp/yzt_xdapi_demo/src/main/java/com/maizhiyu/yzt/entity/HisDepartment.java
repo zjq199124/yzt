@@ -15,18 +15,24 @@ import java.util.Date;
 
 @Data
 @Accessors(chain = true)
-@TableName("ypt_department")
-//@TableName("his_outpatient")
+@TableName("his_department")
 @ApiModel(description = "科室表")
 public class HisDepartment implements Serializable {
 
     @TableId
-    @ApiModelProperty(value = "科室ID(outpatientId)")
+    @ApiModelProperty(value = "科室ID(departmentId)")
     @TableField(value = "id")
     private String id;
 
     @ApiModelProperty(value = "科室名称")
     private String name;
 
+    @ApiModelProperty(value="创建时间")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="Asia/Shanghai")
+    private Date createTime;
+
+    @ApiModelProperty(value="修改时间")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="Asia/Shanghai")
+    private Date updateTime;
 
 }

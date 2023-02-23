@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maizhiyu.yzt.entity.BuOutpatient;
 
+import java.util.List;
 import java.util.Map;
 
 public interface IBuOutpatientService extends IService<BuOutpatient> {
@@ -73,4 +74,6 @@ public interface IBuOutpatientService extends IService<BuOutpatient> {
      * @return
      */
     IPage<Map<String, Object>> getPsUserOutpatientList(Page page,Long userId, Long patientId, Integer type, Integer status);
+
+    List<BuOutpatient> selectByHisIdListAndCustomerId(Long customerId, List<Long> hisIdList);
 }
