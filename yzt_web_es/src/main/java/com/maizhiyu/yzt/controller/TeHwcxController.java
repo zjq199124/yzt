@@ -1,6 +1,7 @@
 package com.maizhiyu.yzt.controller;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.SystemClock;
 import cn.hutool.core.lang.Assert;
 import com.maizhiyu.yzt.entity.BuCheck;
 import com.maizhiyu.yzt.entity.SysMultimedia;
@@ -24,13 +25,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -64,11 +63,11 @@ public class TeHwcxController {
     @ApiOperation(value = "接收红外检测报告", notes = "接收红外检测报告")
     @ApiImplicitParams({})
     @PostMapping(value = "/receiveInfrared")
+    @Transactional(rollbackFor = Exception.class)
+    public Result<Boolean> receiveInfrared(@Valid @RequestBody InfraredResult infraredResult) throws IOException {
 
-
-    @Transactional
-    public Result<Boolean> receiveInfrared(InfraredResult infraredResult) {
-        try {
+            log.info("接收红外检测报告："+ SystemClock.nowDate());
+//        try {
             InputStream inputStream = new URL(infraredResult.getTcmUrl()).openStream();
             //获取文件
             PDDocument doc = PDDocument.load(inputStream);
@@ -77,13 +76,13 @@ public class TeHwcxController {
             textStripper.setStartPage(3);
             textStripper.setEndPage(14);
             String content = textStripper.getText(doc);
-            System.out.println("内容:" + content);
-            System.out.println("全部页数" + doc.getNumberOfPages());
+            log.info("内容:" + content);
+            log.info("全部页数" + doc.getNumberOfPages());
             String[] lines = content.split("\\r\\n");
             //先保存检测数据
             TxInfraredData txInfraredData = InfraredPdfAnalysis.getThwbase(lines);
             txInfraredData.setPhone(infraredResult.getMobile());
-            txInfraredData.setIdCard(infraredResult.getIDCard());
+            txInfraredData.setIdCard(infraredResult.getIdCard());
             txInfraredData.setTestDate(DateUtil.parse(infraredResult.getCreateTime()));
             String[] paths = infraredResult.getTcmUrl().split("/");
             String fileName = paths[paths.length - 1];
@@ -121,16 +120,16 @@ public class TeHwcxController {
 
             //保存患者检查数据
             BuCheck buCheck = new BuCheck();
-            buCheck.setIdCard(infraredResult.getIDCard());
+            buCheck.setIdCard(infraredResult.getIdCard());
             buCheck.setMobile(infraredResult.getMobile());
             buCheck.setType(CheckTypeEnum.INFRARED.getCode());
             buCheck.setMultimediaId(txInfraredData.getMultimediaId());
             buCheck.setCreateTime(txInfraredData.getTestDate());
             buCheckService.addCheck(buCheck);
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
         return Result.success(true);
     }
 
