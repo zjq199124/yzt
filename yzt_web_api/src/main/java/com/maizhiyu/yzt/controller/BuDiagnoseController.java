@@ -61,7 +61,7 @@ public class BuDiagnoseController {
         ro.setCustomerName(currentPrincipalName);
         Long customerId = (Integer) JwtTokenUtils.getField(request, "id") + 0L;
         ro.setCustomerId(customerId);
-        //查询云平台outpatient
+    /*    //查询云平台outpatient
         BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getOutpatientId());
         //赋值为云平台数据
         if (buOutpatient != null) {
@@ -71,7 +71,7 @@ public class BuDiagnoseController {
             if (Objects.nonNull(buPatient)) {
                 ro.setPatientId(buOutpatient.getId());
             }
-        }
+        }*/
         Map<String, Object> map = recommendService.selectRecommend(ro);
         return Result.success(map);
     }

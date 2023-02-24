@@ -37,9 +37,9 @@
         TIMESTAMPDIFF(YEAR,bp.birthday,CURDATE()) as age
         FROM
         `bu_outpatient_appointment` boa
-        LEFT JOIN bu_patient bp ON boa.patient_id = bp.id
-        LEFT JOIN bu_diagnose bd ON boa.diagnose_id = bd.id
-        LEFT JOIN hs_department hd ON boa.department_id = hd.id
+        LEFT JOIN bu_patient bp ON boa.patient_id = bp.his_id and boa.customer_id = bp.customer_id
+        LEFT JOIN bu_diagnose bd ON boa.patient_id = bd.patient_id and boa.outpatient_id = bd.outpatient_id and boa.customer_id = bd.customer_id
+        LEFT JOIN hs_department hd ON boa.department_id = hd.his_id and boa.customer_id = hd.customer_id
         AND boa.customer_id = hd.customer_id
         WHERE
         boa.is_del = 0
@@ -61,7 +61,7 @@
             #{outpatientAppointmentRo.endDate})
         </if>
         <if test="outpatientAppointmentRo.patientId != null">
-            and bp.id = #{outpatientAppointmentRo.patientId}
+            and bp.his_id = #{outpatientAppointmentRo.patientId}
         </if>
         order by boa.outpatient_time desc
     </select>

@@ -69,14 +69,6 @@ public class BuDiagnoseController {
             ro.setDiseaseId(diseaseMapping.getDiseaseId());
             ro.setDisease(diseaseMapping.getName());
         }
-
-        //在没有分型syndromeIdList以及没有症状集合symptomIdList先查询下这次挂号看病是否已经有保存诊断信息和治疗处方
-        if (CollectionUtils.isEmpty(ro.getSymptomIdList()) && CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
-            Result result = yptClient.getDetail(ro);
-            if(Objects.nonNull(result.getData()))
-                return result;
-        }
-
         // 调用开放接口获取诊断推荐
         Result result=yptClient.getRecommend(ro);
         return result;

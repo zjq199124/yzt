@@ -204,20 +204,16 @@
         ss.operation,
         ss.recommend,
         ss.syndrome_id,
-        ss.sytech_id as sytechId,
+        ss.sytech_id as entityId,
         ds.NAME AS syndromeName,
         dd.name AS diseaseName,
-        ts.name name
+        ss.name
         FROM
         sch_sytech ss
         INNER JOIN dict_syndrome ds ON ss.syndrome_id = ds.id
         AND ds.is_del = 0
         INNER JOIN dict_disease dd ON ss.disease_id = dd.id
         AND dd.is_del = 0
-        LEFT JOIN ts_sytech ts ON ts.id = ss.sytech_id
-        <if test="customerName != null and customerName != ''">
-            LEFT JOIN ms_customer mc ON ss.customer_id = mc.id AND mc.status = 1 AND mc.username = #{customerName}
-        </if>
         WHERE
         ss.disease_id = #{diseaseId}
         AND ss.STATUS = 1
@@ -231,7 +227,7 @@
             </foreach>
         </if>
         AND (
-        ss.customer_id IS NOT NULL
+        ss.customer_id = #{customerId}
         OR ( ss.customer_id IS NULL AND ss.recommend = 1 )
         )
         GROUP BY ss.sytech_id

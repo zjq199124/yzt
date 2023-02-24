@@ -2,6 +2,32 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.maizhiyu.yzt.mapper.BuPrescriptionMapper">
 
+    <resultMap type="com.maizhiyu.yzt.entity.BuPrescription" id="BuPrescriptionMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="code" column="code" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="customerId" column="customer_id" jdbcType="BIGINT"/>
+        <result property="departmentId" column="department_id" jdbcType="BIGINT"/>
+        <result property="doctorId" column="doctor_id" jdbcType="BIGINT"/>
+        <result property="patientId" column="patient_id" jdbcType="INTEGER"/>
+        <result property="outpatientId" column="outpatient_id" jdbcType="BIGINT"/>
+        <result property="diagnoseId" column="diagnose_id" jdbcType="INTEGER"/>
+        <result property="diseaseId" column="disease_id" jdbcType="BIGINT"/>
+        <result property="attention" column="attention" jdbcType="VARCHAR"/>
+        <result property="dayCount" column="day_count" jdbcType="INTEGER"/>
+        <result property="doseCount" column="dose_count" jdbcType="INTEGER"/>
+        <result property="doseTimes" column="dose_times" jdbcType="INTEGER"/>
+        <result property="useTime" column="use_time" jdbcType="VARCHAR"/>
+        <result property="price" column="price" jdbcType="DECIMAL"/>
+        <result property="paymentStatus" column="payment_status" jdbcType="INTEGER"/>
+        <result property="hisId" column="his_id" jdbcType="BIGINT"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="isDel" column="is_del" jdbcType="INTEGER"/>
+        <result property="isCancel" column="is_cancel" jdbcType="INTEGER"/>
+    </resultMap>
+
 
     <select id="selectPrescriptionItemSummary" resultType="hashmap">
         select
@@ -48,6 +74,15 @@
                 where patient_id = #{patientId}
                 group by item_id
             ) X on A.id = X.item_id
+    </select>
+    <select id="selectByHisIdList" resultType="com.maizhiyu.yzt.entity.BuPrescription">
+        select bp.*,bo.create_time as outpatientTime from bu_prescription bp
+        left join bu_outpatient bo on bp.outpatient_id = bo.his_id and bp.customer_id = bp.customer_id
+        where bp.is_del = 0
+        and bp.his_id in
+        <foreach collection="hisIdList" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
     </select>
 
 </mapper>

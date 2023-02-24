@@ -197,6 +197,8 @@ public class BuRecommendService extends ServiceImpl<BuRecommendMapper, Object> i
             }
         }
         List<BuDiagnoseVO.ShiyiVO> sytechList = buRecommendMapper.getRecommendSytech(ro.getSyndromeIdList(), ro.getDiseaseId(), ro.getSytechId(), ro.getCustomerId());
+        translateSytechToHis(ro.getCustomerId(), sytechList);
+
         //查询是否保存处方
        /* LambdaQueryWrapper<BuPrescription> prescriptionQueryWrapper = new LambdaQueryWrapper<>();
         prescriptionQueryWrapper.eq(BuPrescription::getPatientId, ro.getPatientId())
@@ -224,6 +226,12 @@ public class BuRecommendService extends ServiceImpl<BuRecommendMapper, Object> i
         resultMap.put("yptDiseaseId", ro.getDiseaseId());
         // 返回数据
         return resultMap;
+    }
+
+    private void translateSytechToHis(Long customerId, List<BuDiagnoseVO.ShiyiVO> sytechList) {
+        List<Long> entityIdList = sytechList.stream().map(BuDiagnoseVO.ShiyiVO::getEntityId).collect(Collectors.toSet()).stream().collect(Collectors.toList());
+
+
     }
 
     // 根据辨证分型获取推荐方案

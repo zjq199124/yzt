@@ -57,7 +57,6 @@
     SELECT
         temp.id AS prescriptionItemTaskId,
         temp.outpatient_id,
-
         temp.entity_id,
             bp.name,
             bp.phone,
@@ -79,8 +78,8 @@
             bpia.treatment_quantity,
             bpia.quantity,
             bd.disease,
-            ts.name AS tsName,
-            bd.create_time AS outpatientTime
+            tm.hisname AS tsName,
+            bp.create_time AS outpatientTime
         FROM
             (
                 SELECT
@@ -89,8 +88,11 @@
                     bu_prescription_item_task
                 WHERE
                     appointment_status = 1
-                    <if test="waitSignatureRo.startDate != null and waitSignatureRo.endDate">
+                    <if test="waitSignatureRo.startDate != null and waitSignatureRo.endDate != null">
                         AND (appointment_date BETWEEN #{waitSignatureRo.startDate} AND #{waitSignatureRo.endDate})
+                    </if>
+                    <if test="waitSignatureRo.customerId != null">
+                        AND customer_id = #{waitSignatureRo.customerId}
                     </if>
 
                 UNION
@@ -101,6 +103,9 @@
                     bu_prescription_item_task
                 WHERE
                     appointment_status = 0
+                    <if test="waitSignatureRo.customerId != null">
+                        AND customer_id = #{waitSignatureRo.customerId}
+                    </if>
                 GROUP BY
                     prescription_item_id,
                     entity_id
@@ -108,16 +113,16 @@
                     appointment_status DESC,
                     time_slot ASC
             ) temp
-                LEFT JOIN bu_patient bp ON temp.patient_id = bp.id
+                LEFT JOIN bu_patient bp ON temp.patient_id = bp.his_id and temp.customer_id = bp.customer_id
                 AND bp.is_del = 0
-                LEFT JOIN hs_department hd ON temp.department_id = hd.id
+                LEFT JOIN hs_department hd ON temp.department_id = hd.his_id and temp.customer_id = hd.customer_id
                 AND hd.is_del = 0
                 LEFT JOIN bu_prescription_item_appointment bpia ON temp.prescription_item_appointment_id = bpia.id
                 AND bpia.is_del = 0
-                LEFT JOIN bu_diagnose bd ON temp.diagnose_id = bd.id
-                AND bd.is_del = 0
-                LEFT JOIN ts_sytech ts ON temp.entity_id = ts.id
-                AND ts.is_del = 0
+                LEFT JOIN bu_prescription bpr ON temp.prescription_id= bpr.his_id  and temp.customer_id = bpr.customer_id
+                AND bpr.is_del = 0
+                LEFT JOIN bu_diagnose bd ON temp.outpatient_id = bd.outpatient_id and temp.patient_id = bd.patient_id and temp.customer_id = bd.customer_id
+                LEFT JOIN treatment_mapping tm ON temp.entity_id = tm.hiscode and temp.customer_id = tm.customer_id
         WHERE
             temp.is_del = 0 AND temp.signature_status = 0
             AND temp.customer_id = #{waitSignatureRo.customerId}
@@ -125,11 +130,12 @@
                 AND (bp.name LIKE CONCAT('%',#{waitSignatureRo.search},'%') OR bp.phone LIKE CONCAT('%',#{waitSignatureRo.search},'%'))
             </if>
             <if test="waitSignatureRo.departmentId != null">
-                AND temp.departmentId = #{waitSignatureRo.departmentId}
+                AND temp.department_id = #{waitSignatureRo.departmentId}
             </if>
             <if test="waitSignatureRo.appointmentStatus != null">
                 AND temp.appointment_status = #{waitSignatureRo.appointmentStatus}
             </if>
+            ORDER BY isnull(temp.appointment_date) ASC, temp.time_slot ASC
     </select>
     <select id="selectWaitTreatmentList" resultType="com.maizhiyu.yzt.vo.BuPrescriptionItemTaskVo">
         SELECT
@@ -156,21 +162,20 @@
         bpia.treatment_quantity,
         bpia.quantity,
         bd.disease,
-        bpi.name AS tsName,
-        bpi.detail,
-        bd.create_time AS outpatientTime
+        tm.hisname AS tsName,
+        ss.detail,
+        bp.create_time AS outpatientTime
         FROM
         bu_prescription_item_task bpit
-        LEFT JOIN bu_patient bp ON bpit.patient_id = bp.id
-        AND bp.is_del = 0
-        LEFT JOIN hs_department hd ON bpit.department_id = hd.id
-        AND hd.is_del = 0
+        LEFT JOIN bu_patient bp ON bpit.patient_id = bp.his_id
+        AND bp.is_del = 0 AND bpit.customer_id = bp.customer_id
+        LEFT JOIN hs_department hd ON bpit.department_id = hd.his_id
+        AND hd.is_del = 0 AND bpit.customer_id = hd.customer_id
         LEFT JOIN bu_prescription_item_appointment bpia ON bpit.prescription_item_appointment_id = bpia.id
         AND bpia.is_del = 0
-        LEFT JOIN bu_diagnose bd ON bpit.diagnose_id = bd.id
-        AND bd.is_del = 0
-        LEFT JOIN bu_prescription_item bpi ON bpit.prescription_item_id = bpi.id
-        AND bpi.is_del = 0
+        LEFT JOIN bu_diagnose bd on bpit.patient_id = bd.patient_id and bpit.outpatient_id = bd.outpatient_id and bpit.customer_id = bd.customer_id
+        LEFT JOIN treatment_mapping tm ON bpit.entity_id = tm.hiscode and bpit.customer_id = tm.customer_id AND tm.is_del = 0
+        LEFT JOIN sch_sytech ss ON tm.code = ss.sytech_id AND bd.disease_id = ss.disease_id AND bd.syndrome_id = ss.syndrome_id AND ss.is_del = 0
         WHERE
         bpit.is_del = 0 AND bpit.signature_status = 1 and (bpit.cure_status = 0 or bpit.cure_status = 1)
         AND bpit.customer_id = #{waitTreatmentRo.customerId}
@@ -178,7 +183,7 @@
             AND (bp.name LIKE CONCAT('%',#{waitTreatmentRo.search},'%') OR bp.phone LIKE CONCAT('%',#{waitTreatmentRo.search},'%'))
         </if>
         <if test="waitTreatmentRo.departmentId != null">
-            AND bpit.departmentId = #{waitTreatmentRo.departmentId}
+            AND bpit.department_id = #{waitTreatmentRo.departmentId}
         </if>
         ORDER BY bpit.signature_time desc
     </select>
@@ -193,8 +198,8 @@
         TIMESTAMPDIFF(YEAR,bp.birthday,CURDATE()) as age,
         hd.dname,
         bd.disease,
-        bd.create_time as outpatientTime,
-        ts.name as tsName,
+        bo.create_time as outpatientTime,
+        tm.hisname as tsName,
         bpia.quantity,
         bpia.treatment_quantity,
         bo.create_time as outpatient_time,
@@ -209,18 +214,17 @@
         bpit.customer_id
         FROM
         bu_prescription_item_task bpit
-        LEFT JOIN bu_patient bp ON bpit.patient_id = bp.id
+        LEFT JOIN bu_patient bp ON bpit.patient_id = bp.his_id
         AND bp.is_del = 0
-        LEFT JOIN hs_department hd ON bpit.department_id = hd.id
+        LEFT JOIN hs_department hd ON bpit.department_id = hd.his_id
         AND hd.is_del = 0
-        LEFT JOIN bu_outpatient bo ON bpit.outpatient_id = bo.id
+        LEFT JOIN bu_outpatient bo ON bpit.outpatient_id = bo.his_id
         AND bo.is_del = 0
-        LEFT JOIN bu_diagnose bd ON bpit.outpatient_id = bd.outpatient_id
+        LEFT JOIN bu_diagnose bd ON bpit.patient_id = bd.patient_id and bpit.outpatient_id = bd.outpatient_id and bpit.customer_id = bd.customer_id
         AND bd.is_del = 0
         LEFT JOIN bu_prescription_item_appointment bpia ON bpit.prescription_item_appointment_id = bpia.id
         AND bpia.is_del = 0
-        LEFT JOIN ts_sytech ts ON bpit.entity_id = ts.id
-        AND ts.is_del = 0
+        LEFT JOIN treatment_mapping tm ON bpit.entity_id = tm.hiscode and bpit.customer_id = tm.customer_id
         WHERE
         bpit.is_del = 0 AND bpit.cure_status = 2
         <if test="itemTaskRo.search != null and itemTaskRo.search != ''">
@@ -230,7 +234,7 @@
             AND bpit.department_id = #{itemTaskRo.departmentId}
         </if>
         <if test="itemTaskRo.startDate != null and itemTaskRo.endDate != null">
-            AND (bd.create_time between #{itemTaskRo.startDate} AND #{itemTaskRo.endDate})
+            AND (bo.create_time between #{itemTaskRo.startDate} AND #{itemTaskRo.endDate})
         </if>
         ORDER BY
         bpit.cure_status,bpit.signature_time DESC
@@ -248,8 +252,8 @@
             bd.disease,
             bd.syndrome,
             bo.create_time as outpatient_time,
-            bpi.name as tsName,
-            bpi.detail,
+            tm.hisname as tsName,
+            ss.detail,
             bpit.id as prescriptionItemTaskId,
             bpit.prescription_id,
             bpit.patient_id,
@@ -264,15 +268,15 @@
             hu1.user_name AS registrantName
         FROM
             bu_prescription_item_task bpit
-                LEFT JOIN bu_patient bp ON bpit.patient_id = bp.id
+                LEFT JOIN bu_patient bp ON bpit.patient_id = bp.his_id
                 AND bp.is_del = 0
-                LEFT JOIN bu_outpatient bo ON bpit.outpatient_id = bo.id
+                LEFT JOIN bu_outpatient bo ON bpit.outpatient_id = bo.his_id
                 AND bo.is_del = 0
-                LEFT JOIN bu_diagnose bd ON bpit.outpatient_id = bd.id AND bd.is_del = 0
+                LEFT JOIN bu_diagnose bd on bpit.patient_id = bd.patient_id and bpit.outpatient_id = bd.outpatient_id and bpit.customer_id = bd.customer_id
+                LEFT JOIN treatment_mapping tm ON bpit.entity_id = tm.hiscode and bpit.customer_id = tm.customer_id AND tm.is_del = 0
+                LEFT JOIN sch_sytech ss ON tm.code = ss.sytech_id AND bd.disease_id = ss.disease_id AND bd.syndrome_id = ss.syndrome_id AND ss.is_del = 0
                 LEFT JOIN hs_user hu ON bpit.cure_user_id = hu.id AND hu.is_del = 0
                 LEFT JOIN hs_user hu1 ON bpit.registrant_id = hu1.id AND hu1.is_del = 0
-                LEFT JOIN bu_prescription_item bpi ON bpit.prescription_item_id = bpi.id
-                AND bpi.is_del = 0
         WHERE
             bpit.is_del = 0 and bpit.id = #{id}
     </select>

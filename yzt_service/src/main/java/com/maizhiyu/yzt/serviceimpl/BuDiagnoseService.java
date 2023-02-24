@@ -265,13 +265,13 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
         }
 
         List<BuDiagnoseVO.ShiyiVO> sytechList = buRecommendMapper.getRecommendSytech(syndromeIdList, ro.getDiseaseId(), ro.getSytechId(), ro.getCustomerId());
+        //此时查出来的具体适宜技术entityId和name都是云平台的，要进行翻译
 //        BuDiagnoseRO.GetRecommendRO recommendRo = new BuDiagnoseRO.GetRecommendRO();
 //        recommendRo.setDiseaseId(buDiagnose.getDiseaseId());
 //        recommendRo.setCustomerName(ro.getCustomerName());
 //        recommendRo.setSyndromeIdList(syndromeIdList);
 //        Map<String, Object> stringObjectMap = buRecommendService.selectRecommend(recommendRo);
         resultMap.put("shiyiList", sytechList);
-
         return resultMap;
     }
 
