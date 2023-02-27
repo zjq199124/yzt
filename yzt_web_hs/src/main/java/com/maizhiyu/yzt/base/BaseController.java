@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
@@ -47,6 +48,9 @@ public class BaseController {
     //security 会话中获取用户登录信息
     public HsUserDetails getHsUserDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object a = authentication.getPrincipal();
+        //匿名用户
+        Assert.isTrue(a.equals("anonymousUser"), "当前用户未登录，或登录已失效");
         HsUserDetails hsUserDetails = (HsUserDetails) authentication.getPrincipal();
         if (Objects.isNull(hsUserDetails)) {
             throw new BusinessException("认证信息获取失败");
