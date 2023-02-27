@@ -59,9 +59,9 @@ public class TeHwcxController implements Serializable {
     RedisUtils redisUtils;
     @ApiOperation(value = "接收红外检测报告", notes = "接收红外检测报告")
     @ApiImplicitParams({})
-    @PostMapping(value = "/receiveInfrared1")
+    @PostMapping(value = "/receiveInfrared")
     @Transactional(rollbackFor = Exception.class)
-    public Result<Boolean> receiveInfrared1 (@Valid @RequestBody InfraredResult infraredResult)  throws Exception  {
+    public Result<Boolean> receiveInfrared (@Valid @RequestBody InfraredResult infraredResult)  throws Exception  {
         if(ObjectUtil.isNotEmpty(infraredResult.getTcmUrl())){
             //获取文件地址
             String tcmUrl =  infraredResult.getTcmUrl().split("\\/")[4].split("\\.")[0];
