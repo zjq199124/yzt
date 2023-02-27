@@ -64,7 +64,7 @@ public class UpLoadScheduling {
     @Transactional(rollbackFor = Exception.class)
     @Scheduled(cron = "0 0 2 * * ?")
     //@Scheduled(cron = "0/10 * * * * ? ")
-    public Result<Boolean> upLoadScheduling ()throws IOException {
+    public void upLoadScheduling ()throws Exception {
         List<String> list = (ArrayList) redisUtils.get(UpLoadType.NO.getCode());
         if (ObjectUtil.isNotEmpty(list)) {
             InfraredResult infraredResult = new InfraredResult();
@@ -145,12 +145,11 @@ public class UpLoadScheduling {
                     buCheck.setCreateTime(txInfraredData.getTestDate());
                     buCheckService.addCheck(buCheck);
                     redisUtils.del(tcmUrl);
-                    return Result.success(true);
+                    return;
                 }
                 redisUtils.del(UpLoadType.NO.getCode());
             }
         }
-        return Result.success();
     }
 
     //创建一个实现Callable的实现类
