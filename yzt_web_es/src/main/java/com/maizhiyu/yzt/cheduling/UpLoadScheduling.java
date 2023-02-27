@@ -1,8 +1,6 @@
-package com.maizhiyu.yzt.Scheduling;
+package com.maizhiyu.yzt.cheduling;
 
-import cn.hutool.core.date.SystemClock;
 import cn.hutool.core.util.ObjectUtil;
-import com.maizhiyu.yzt.controller.TeHwcxController;
 import com.maizhiyu.yzt.entity.BuCheck;
 import com.maizhiyu.yzt.entity.TxInfraredData;
 import com.maizhiyu.yzt.entity.TxInfraredDetails;
@@ -25,16 +23,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
