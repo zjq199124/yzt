@@ -376,7 +376,9 @@
             temp.syndrome,
             temp.outpatientTime,
             temp.outpatient_appointment_id,
-            temp.prescription_item_appointment_id
+            temp.prescription_item_appointment_id,
+            temp.prescription_item_id,
+            temp.id
         FROM
             (
                 SELECT
@@ -386,7 +388,9 @@
                     bd.syndrome,
                     bo.create_time AS outpatientTime,
                     bpit.outpatient_appointment_id,
-                    bpit.prescription_item_appointment_id
+                    bpit.prescription_item_appointment_id,
+                    bpit.prescription_item_id,
+                    bpit.id
                 FROM
                     bu_prescription_item_task bpit
                         LEFT JOIN bu_patient bp ON bpit.patient_id = bp.his_id
