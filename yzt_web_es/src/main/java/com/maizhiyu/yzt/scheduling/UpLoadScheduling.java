@@ -1,5 +1,6 @@
 package com.maizhiyu.yzt.scheduling;
 
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.maizhiyu.yzt.entity.BuCheck;
 import com.maizhiyu.yzt.entity.TxInfraredData;
@@ -170,6 +171,9 @@ public class UpLoadScheduling {
                 txInfraredDataService.saveTxInfrareData(txInfraredData, openStream, fileName);
             }catch (Exception e) {
                 throw new BusinessException("pdf上传失败");
+            }finally {
+                //关闭流
+                openStream.close();
             }
             return txInfraredData;
         }
