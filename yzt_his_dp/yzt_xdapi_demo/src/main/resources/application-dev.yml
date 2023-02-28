@@ -99,5 +99,5 @@ oss:
 
 
 his:
-  #url: http://192.168.0.90/hoso/
-  url: http://localhost:8088/hoso/
+  url: http://192.168.0.90/hoso/
+  #url: http://localhost:8088/hoso/
