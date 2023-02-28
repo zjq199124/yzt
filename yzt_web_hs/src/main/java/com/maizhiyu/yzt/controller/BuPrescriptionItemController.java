@@ -58,12 +58,4 @@ public class BuPrescriptionItemController {
         List<BuPrescriptionItem> list = service.getPrescriptionItemList(prescriptionId);
         return Result.success(list);
     }
-
-    @ApiOperation(value = "通过诊断id获取处方子项列表", notes = "通过诊断id获取处方子项列表")
-    @ApiImplicitParam(name = "DiagnoseId", value = "诊断ID", required = true)
-    @GetMapping("/getPrescriptionItemListByDiagnoseId")
-    public Result getPrescriptionItemListByDiagnoseId(Long DiagnoseId) {
-        List<BuPrescriptionItem> list = service.getPrescriptionItemListByDiagnoseId(DiagnoseId);
-        return Result.success(list);
-    }
 }

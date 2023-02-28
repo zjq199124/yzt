@@ -72,6 +72,8 @@ public class BuDiagnoseController {
                 ro.setPatientId(buOutpatient.getId());
             }
         }*/
+        BuOutpatient buOutpatient = buOutpatientService.getOutpatientByHisId(customerId, ro.getOutpatientId());
+        ro.setPatientId(buOutpatient.getPatientId());
         Map<String, Object> map = recommendService.selectRecommend(ro);
         return Result.success(map);
     }

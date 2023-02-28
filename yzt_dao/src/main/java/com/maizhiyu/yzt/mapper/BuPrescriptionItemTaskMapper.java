@@ -11,6 +11,10 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import java.util.Date;
+import java.util.List;
+
 /**
  * (BuPrescriptionItemTask)表数据库访问层
  *
@@ -28,5 +32,11 @@ public interface BuPrescriptionItemTaskMapper extends BaseMapper<BuPrescriptionI
     Page<BuPrescriptionItemTaskVo> selectTreatmentList(@Param("page") Page<BuPrescriptionItemTaskVo> page, @Param("itemTaskRo") ItemTaskRo itemTaskRo);
 
     BuPrescriptionItemTaskVo treatmentRecordDetail(@Param("id") Long id);
+
+    List<BuPrescriptionItemTask> selectRemindLatestAppointmentList(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+    List<BuPrescriptionItemTask> selectTreatmentRemindList(Date startDate, Date endDate);
+
+    List<BuPrescriptionItemTask> selectOutpatientAppointmentByTerm(@Param("customerId") Long customerId, @Param("term") String term);
 }
 

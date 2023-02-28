@@ -10,6 +10,7 @@
         <result column="outpatient_id" property="outpatientId" />
         <result column="patient_id" property="patientId" />
         <result column="entity_id" property="entityId" />
+        <result column="name" property="name" />
         <result column="prescription_id" property="prescriptionId" />
         <result column="diagnose_id" property="diagnoseId" />
         <result column="state" property="state" />
@@ -48,10 +49,8 @@
     <select id="selectByPrescriptionIdList" resultType="com.maizhiyu.yzt.entity.BuPrescriptionItemAppointment">
         SELECT
         bpia.*,
-        ts.name AS tsName
+        bpia.name AS tsName
         FROM bu_prescription_item_appointment bpia
-        LEFT JOIN treatment_mapping tm ON bpia.entity_id = tm.hiscode and bpia.customer_id = tm.customer_id
-        LEFT JOIN ts_sytech ts ON tm.code = ts.id
         WHERE bpia.is_del = 0
         AND bpia.prescription_id IN
         <foreach collection="prescriptionIdList" item="item" open="(" separator="," close=")">

@@ -11,26 +11,27 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
 @Accessors(chain=true)
-@TableName("treatment_mapping")
-@ApiModel(description="适宜技术映射表")
-public class TreatmentMapping implements Serializable {
-
+@TableName("disease_mapping")
+@ApiModel(description="疾病映射表映射表")
+public class DiseaseMapping implements Serializable {
     @ApiModelProperty(value="ID")
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty(value="云平台适宜技术id")
+    @ApiModelProperty(value="云平台药品编码")
     private Long code;
+
+    @ApiModelProperty(value="云平台疾病id")
+    private Long diseaseId;
 
     @ApiModelProperty(value="客户ID")
     private Long customerId;
 
-    @ApiModelProperty(value="姓名")
+    @ApiModelProperty(value="云平台疾病名称")
     private String name;
 
     @ApiModelProperty(value="拼音")
@@ -40,10 +41,10 @@ public class TreatmentMapping implements Serializable {
     private String abbr;
 
     @ApiModelProperty(value="his内部编码")
-    private Long hiscode;
+    private String hisCode;
 
     @ApiModelProperty(value="his内名称")
-    private String hisname;
+    private String hisName;
 
     @ApiModelProperty(value="状态：0：未删除；1：已删除")
     private Integer isDel;
@@ -59,7 +60,4 @@ public class TreatmentMapping implements Serializable {
 
     @ApiModelProperty(value="备注")
     private String remark;
-
-    @ApiModelProperty(value="适宜技术价格")
-    private BigDecimal price;
 }

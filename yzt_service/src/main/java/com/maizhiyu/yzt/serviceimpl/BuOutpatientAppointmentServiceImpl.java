@@ -7,9 +7,11 @@ import com.google.common.base.Preconditions;
 import com.maizhiyu.yzt.entity.BuOutpatientAppointment;
 import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointment;
 import com.maizhiyu.yzt.entity.BuPrescriptionItemTask;
+import com.maizhiyu.yzt.entity.DiseaseMapping;
 import com.maizhiyu.yzt.mapper.BuOutpatientAppointmentMapper;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentMapper;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemTaskMapper;
+import com.maizhiyu.yzt.mapper.DiseaseMappingMapper;
 import com.maizhiyu.yzt.ro.OutpatientAppointmentRo;
 import com.maizhiyu.yzt.service.IBuOutpatientAppointmentService;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,12 +38,38 @@ public class BuOutpatientAppointmentServiceImpl extends ServiceImpl<BuOutpatient
     @Resource
     private BuPrescriptionItemTaskMapper buPrescriptionItemTaskMapper;
 
+    @Resource
+    private DiseaseMappingMapper diseaseMappingMapper;
+
     @Override
     public Page<BuOutpatientAppointment> list(OutpatientAppointmentRo outpatientAppointmentRo) {
         Page<BuOutpatientAppointment> page = new Page<>(outpatientAppointmentRo.getCurrentPage(), outpatientAppointmentRo.getPageSize());
         Page<BuOutpatientAppointment> resultPage = buOutpatientAppointmentMapper.list(page, outpatientAppointmentRo);
         if(CollectionUtils.isEmpty(resultPage.getRecords()))
             return resultPage;
+
+        //如果不走云平台系统的数据此时没有疾病名称，要重新填补疾病名称
+        List<Long> hisDiseaseIdList = resultPage.getRecords().stream().filter(item -> Objects.isNull(item.getDisease())).map(BuOutpatientAppointment::getDiseaseId).collect(Collectors.toSet()).stream().collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(hisDiseaseIdList)) {
+            LambdaQueryWrapper<DiseaseMapping> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(DiseaseMapping::getCustomerId, outpatientAppointmentRo.getCustomerId())
+                    .in(DiseaseMapping::getHisCode, hisDiseaseIdList);
+
+            List<DiseaseMapping> diseaseMappings = diseaseMappingMapper.selectList(queryWrapper);
+            if (!CollectionUtils.isEmpty(diseaseMappings)) {
+                Map<String, DiseaseMapping> hisCodeMap = diseaseMappings.stream().collect(Collectors.toMap(DiseaseMapping::getHisCode, Function.identity(), (k1, k2) -> k1));
+                resultPage.getRecords().forEach(item -> {
+                    if(Objects.nonNull(item.getDisease()))
+                        return;
+
+                    DiseaseMapping diseaseMapping = hisCodeMap.get(item.getDiseaseId());
+                    if(Objects.isNull(diseaseMapping))
+                        return;
+
+                    item.setDisease(diseaseMapping.getName());
+                });
+            }
+        }
 
         //查询处方下面的的明细技术的预约状况
         List<Long> prescriptionIdList = resultPage.getRecords().stream().map(BuOutpatientAppointment::getPrescriptionId).collect(Collectors.toList());

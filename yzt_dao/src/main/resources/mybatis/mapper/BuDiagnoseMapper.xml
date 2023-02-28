@@ -25,14 +25,32 @@
         <result column="phone" property="phone"/>
     </resultMap>
     <select id="selectDiagnoseList" resultType="com.maizhiyu.yzt.entity.BuDiagnose">
-        select bp.name,bp.phone,bd.id,bd.disease,bd.syndrome,bd.create_time from bu_diagnose bd
-        left join bu_patient bp on bd.patient_id = bp.id and bp.is_del = 0
-        inner join bu_outpatient_appointment boa on bd.id = boa.diagnose_id and boa.is_del = 0
-        where bd.is_del = 0 and (boa.state = 1 or boa.state = 2) and bd.customer_id = #{customerId}
+        SELECT
+            bp.name,
+            bp.phone,
+            boa.id,
+            bd.syndrome,
+            dm.his_name as disease,
+            boa.outpatient_time
+        FROM
+        bu_outpatient_appointment boa
+        LEFT JOIN bu_patient bp ON boa.patient_id = bp.his_id
+        AND boa.customer_id = bp.customer_id
+        AND bp.is_del = 0
+        LEFT JOIN bu_diagnose bd ON boa.diagnose_id = bd.id
+        AND bd.is_del = 0
+        LEFT JOIN disease_mapping dm ON boa.disease_id = dm.his_code
+        AND boa.customer_id = dm.customer_id
+        AND dm.is_del = 0
+        WHERE
+        boa.is_del = 0
+        AND ( boa.state = 1 OR boa.state = 2 )
+        AND bd.customer_id = #{customerId}
         <if test="term != null and term != ''">
-            and (bd.disease like concat('%',#{term},'%') or bp.name like concat('%',#{term},'%') or bp.phone like concat('%',#{term},'%') or bp.idcard like concat('%',#{term},'%'))
+            AND (dm.his_name LIKE concat('%',#{term},'%') OR bp.name LIKE concat('%',#{term},'%') OR bp.phone LIKE concat('%',#{term},'%') OR bp.idcard LIKE concat('%',#{term},'%'))
         </if>
-        order by bd.create_time desc
+        ORDER BY
+        boa.outpatient_time DESC
     </select>
 
 </mapper>

@@ -30,6 +30,9 @@
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result column="appointment_create_time" property="appointmentCreateTime" />
+        <result column="phone" property="phone" />
+        <result column="customerName" property="customerName" />
     </resultMap>
 
     <resultMap id="BuPrescriptionItemTaskVoMap" type="com.maizhiyu.yzt.vo.BuPrescriptionItemTaskVo">
@@ -48,16 +51,20 @@
         <result column="time_slot" property="timeSlot" />
         <result column="signature_time" property="signatureTime" />
         <result column="disease" property="disease" />
+        <result column="disease_id" property="diseaseId" />
         <result column="tsName" property="tsName" />
+        <result column="operation" property="operation" />
         <result column="quantity" property="quantity" />
         <result column="treatment_quantity" property="treatmentQuantity" />
         <result column="outpatientTime" property="outpatientTime" />
+        <result column="phone" property="phone" />
     </resultMap>
     <select id="selectWaitSignatureList" resultType="com.maizhiyu.yzt.vo.BuPrescriptionItemTaskVo">
     SELECT
         temp.id AS prescriptionItemTaskId,
         temp.outpatient_id,
         temp.entity_id,
+        temp.disease_id,
             bp.name,
             bp.phone,
             bp.id AS patientId,
@@ -78,7 +85,7 @@
             bpia.treatment_quantity,
             bpia.quantity,
             bd.disease,
-            tm.hisname AS tsName,
+            temp.ts_name,
             bp.create_time AS outpatientTime
         FROM
             (
@@ -122,7 +129,6 @@
                 LEFT JOIN bu_prescription bpr ON temp.prescription_id= bpr.his_id  and temp.customer_id = bpr.customer_id
                 AND bpr.is_del = 0
                 LEFT JOIN bu_diagnose bd ON temp.outpatient_id = bd.outpatient_id and temp.patient_id = bd.patient_id and temp.customer_id = bd.customer_id
-                LEFT JOIN treatment_mapping tm ON temp.entity_id = tm.hiscode and temp.customer_id = tm.customer_id
         WHERE
             temp.is_del = 0 AND temp.signature_status = 0
             AND temp.customer_id = #{waitSignatureRo.customerId}
@@ -142,6 +148,7 @@
         bpit.id AS prescriptionItemTaskId,
         bpit.outpatient_id,
         bpit.entity_id,
+        bpit.disease_id,
         bp.name,
         bp.phone,
         bp.id AS patientId,
@@ -162,7 +169,7 @@
         bpia.treatment_quantity,
         bpia.quantity,
         bd.disease,
-        tm.hisname AS tsName,
+        bpit.ts_name,
         ss.detail,
         bp.create_time AS outpatientTime
         FROM
@@ -252,8 +259,10 @@
             bd.disease,
             bd.syndrome,
             bo.create_time as outpatient_time,
-            tm.hisname as tsName,
+            bpit.ts_name,
             ss.detail,
+            bpit.disease_id,
+            bpit.customer_id,
             bpit.id as prescriptionItemTaskId,
             bpit.prescription_id,
             bpit.patient_id,
@@ -279,6 +288,133 @@
                 LEFT JOIN hs_user hu1 ON bpit.registrant_id = hu1.id AND hu1.is_del = 0
         WHERE
             bpit.is_del = 0 and bpit.id = #{id}
+    </select>
+    <select id="selectRemindLatestAppointmentList" resultType="com.maizhiyu.yzt.entity.BuPrescriptionItemTask">
+        SELECT
+            temp1.*
+        FROM
+            (
+                SELECT
+                    temp.id,
+                    temp.patient_id,
+                    temp.outpatient_id,
+                    temp.customer_id,
+                    temp.entity_id,
+                    temp.phone,
+                    temp.ts_name,
+                    temp.name AS customerName,
+                    bpit1.appointment_date,
+                    bpit1.time_slot
+                FROM
+                    (
+                        SELECT
+                            bpit.id,
+                            bpit.patient_id,
+                            bpit.outpatient_id,
+                            bpit.customer_id,
+                            bpit.entity_id,
+                            bpit.ts_name,
+                            ms.name AS customerName,
+                            bp.phone
+                        FROM
+                            bu_prescription_item_task bpit
+                                LEFT JOIN bu_patient bp ON bpit.patient_id = bp.his_id
+                                AND bp.is_del = 0
+                                LEFT JOIN ms_customer ms ON bpit.customer_id = ms.id AND ms.is_del = 0
+                        WHERE
+                            bpit.is_del = 0
+                          AND bpit.appointment_status = 1
+                          AND
+                              (bpit.appointment_create_time BETWEEN #{startDate} AND #{endDate})
+                        GROUP BY
+                            bpit.customer_id,
+                            bpit.patient_id,
+                            bpit.entity_id
+                    ) temp
+                        LEFT JOIN bu_prescription_item_task bpit1 ON temp.customer_id = bpit1.customer_id
+                        AND temp.patient_id = bpit1.patient_id
+                        AND temp.outpatient_id = bpit1.outpatient_id
+                        AND temp.entity_id = bpit1.entity_id
+                        AND temp.customer_id = bpit1.customer_id
+                WHERE
+                    bpit1.is_del = 0
+                  AND bpit1.appointment_status = 1
+                ORDER BY
+                    bpit1.appointment_date ASC,
+                    bpit1.time_slot ASC
+                    limit 999999999
+            ) temp1
+        GROUP BY
+            id,entity_id
+    </select>
+    <select id="selectTreatmentRemindList" resultType="com.maizhiyu.yzt.entity.BuPrescriptionItemTask">
+        SELECT
+            bpit.id,
+            bpit.patient_id,
+            bpit.outpatient_id,
+            bpit.customer_id,
+            bpit.entity_id,
+            bpit.ts_name,
+            ms.name AS customerName,
+            bp.phone
+        FROM
+            bu_prescription_item_task bpit
+                LEFT JOIN bu_patient bp ON bpit.patient_id = bp.his_id
+                AND bp.is_del = 0
+                LEFT JOIN ms_customer ms ON bpit.customer_id = ms.id AND ms.is_del = 0
+        WHERE
+            bpit.is_del = 0
+          AND bpit.appointment_status = 1
+          AND
+            (bpit.appointment_create_time BETWEEN #{startDate} AND #{endDate})
+    </select>
+    <select id="selectOutpatientAppointmentByTerm" resultType="com.maizhiyu.yzt.entity.BuPrescriptionItemTask">
+        SELECT
+            temp.name,
+            temp.phone,
+            temp.disease,
+            temp.syndrome,
+            temp.outpatientTime,
+            temp.outpatient_appointment_id,
+            temp.prescription_item_appointment_id
+        FROM
+            (
+                SELECT
+                    bp.name,
+                    bp.phone,
+                    dm.his_name AS disease,
+                    bd.syndrome,
+                    bo.create_time AS outpatientTime,
+                    bpit.outpatient_appointment_id,
+                    bpit.prescription_item_appointment_id
+                FROM
+                    bu_prescription_item_task bpit
+                        LEFT JOIN bu_patient bp ON bpit.patient_id = bp.his_id
+                        AND bpit.customer_id = bp.customer_id
+                        AND bp.is_del = 0
+                        LEFT JOIN bu_outpatient bo ON bpit.outpatient_id = bo.his_id
+                        AND bpit.customer_id = bo.customer_id
+                        AND bo.is_del = 0
+                        LEFT JOIN bu_diagnose bd ON bpit.patient_id = bd.patient_id
+                        AND bpit.outpatient_id = bd.outpatient_id
+                        AND bpit.customer_id = bd.customer_id
+                        AND bd.is_del = 0
+                        LEFT JOIN disease_mapping dm ON bpit.disease_id = dm.his_code
+                        AND bpit.customer_id = dm.customer_id
+                        AND dm.is_del = 0
+                WHERE
+                    bpit.is_del = 0
+                  AND bpit.signature_status = 0
+                  AND bpit.customer_id = #{customerId}
+                <if test="term != null and term != ''">
+                    AND (dm.his_name LIKE concat('%',#{term},'%') OR bp.name LIKE concat('%',#{term},'%') OR bp.phone LIKE concat('%',#{term},'%') OR bp.idcard LIKE concat('%',#{term},'%'))
+                </if>
+                ORDER BY
+                    bo.create_time ASC
+                    LIMIT 999999999
+            ) temp
+        GROUP BY
+            temp.outpatient_appointment_id
     </select>
 
 </mapper>

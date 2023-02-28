@@ -23,8 +23,6 @@ public interface IBuPrescriptionItemService extends IService<BuPrescriptionItem>
 
     Page<WaitSignatureVo> selectWaitSignatureList(WaitSignatureRo waitSignatureRo);
 
-    List<BuPrescriptionItem> getPrescriptionItemListByDiagnoseId(Long diagnoseId);
-
     List<BuPrescriptionItem> selectHasUpdateData(Date startDate, Date endDate);
 }
 

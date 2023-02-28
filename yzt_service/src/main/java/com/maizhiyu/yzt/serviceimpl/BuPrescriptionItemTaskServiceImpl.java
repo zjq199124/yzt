@@ -6,20 +6,22 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.base.Preconditions;
 import com.maizhiyu.yzt.entity.*;
-import com.maizhiyu.yzt.mapper.BuOutpatientAppointmentMapper;
-import com.maizhiyu.yzt.mapper.BuPrescriptionItemAppointmentMapper;
-import com.maizhiyu.yzt.mapper.BuPrescriptionItemMapper;
-import com.maizhiyu.yzt.mapper.BuPrescriptionItemTaskMapper;
+import com.maizhiyu.yzt.mapper.*;
 import com.maizhiyu.yzt.ro.*;
 import com.maizhiyu.yzt.service.BuPrescriptionItemTaskService;
 import com.maizhiyu.yzt.vo.BuPrescriptionItemTaskVo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -45,10 +47,17 @@ public class BuPrescriptionItemTaskServiceImpl extends ServiceImpl<BuPrescriptio
     @Resource
     private BuOutpatientAppointmentMapper buOutpatientAppointmentMapper;
 
+    @Resource
+    private DiseaseMappingMapper diseaseMappingMapper;
+
     @Override
     public Page<BuPrescriptionItemTaskVo> selectWaitSignatureList(WaitSignatureRo waitSignatureRo) {
         Page<BuPrescriptionItemTaskVo> page = new Page<>(waitSignatureRo.getCurrentPage(), waitSignatureRo.getPageSize());
         Page<BuPrescriptionItemTaskVo> pageResult = buPrescriptionItemTaskMapper.selectWaitSignatureList(page,waitSignatureRo);
+        if (!CollectionUtils.isEmpty(pageResult.getRecords())) {
+            //不走我们云平台系统开的处治没有疾病名称(只能通过获取到的diseaseId进行查询)
+            fillDiseaseName(waitSignatureRo.getCustomerId(),pageResult);
+        }
         return pageResult;
     }
 
@@ -89,6 +98,16 @@ public class BuPrescriptionItemTaskServiceImpl extends ServiceImpl<BuPrescriptio
     public Page<BuPrescriptionItemTaskVo> waitTreatmentList(WaitTreatmentRo waitTreatmentRo) {
         Page<BuPrescriptionItemTaskVo> page = new Page<>(waitTreatmentRo.getCurrentPage(), waitTreatmentRo.getPageSize());
         Page<BuPrescriptionItemTaskVo> pageResult = buPrescriptionItemTaskMapper.selectWaitTreatmentList(page,waitTreatmentRo);
+        if (!CollectionUtils.isEmpty(pageResult.getRecords())) {
+            pageResult.getRecords().forEach(item -> {
+                if (StringUtils.isBlank(item.getDetail())) {
+                    item.setDetail("未能获取到的操作详情，具体操作方式请遵医嘱");
+                }
+            });
+
+            //不走我们云平台系统开的处治没有疾病名称(只能通过获取到的diseaseId进行查询)
+            fillDiseaseName(waitTreatmentRo.getCustomerId(),pageResult);
+        }
         return pageResult;
     }
 
@@ -148,7 +167,34 @@ public class BuPrescriptionItemTaskServiceImpl extends ServiceImpl<BuPrescriptio
     public Page<BuPrescriptionItemTaskVo> treatmentList(ItemTaskRo itemTaskRo) {
         Page<BuPrescriptionItemTaskVo> page = new Page<>(itemTaskRo.getCurrentPage(), itemTaskRo.getPageSize());
         Page<BuPrescriptionItemTaskVo> pageResult = buPrescriptionItemTaskMapper.selectTreatmentList(page, itemTaskRo);
+
+        //不走我们云平台系统开的处治没有疾病名称(只能通过获取到的diseaseId进行查询)
+        fillDiseaseName(itemTaskRo.getCustomerId(), pageResult);
         return pageResult;
+    }
+
+    private void fillDiseaseName(Long customerId, Page<BuPrescriptionItemTaskVo> pageResult) {
+        List<Long> diseaseIdList = pageResult.getRecords().stream().filter(item -> Objects.isNull(item.getDisease())).map(BuPrescriptionItemTaskVo::getDiseaseId).collect(Collectors.toSet()).stream().collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(diseaseIdList))
+            return;
+
+        LambdaQueryWrapper<DiseaseMapping> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(DiseaseMapping::getCustomerId, customerId)
+                .in(DiseaseMapping::getHisCode, diseaseIdList);
+
+        List<DiseaseMapping> diseaseMappings = diseaseMappingMapper.selectList(queryWrapper);
+        if (CollectionUtils.isEmpty(diseaseMappings))
+            return;
+
+        Map<String, DiseaseMapping> hiscodeMap = diseaseMappings.stream().collect(Collectors.toMap(DiseaseMapping::getHisCode, Function.identity(), (k1, k2) -> k1));
+        pageResult.getRecords().forEach(item -> {
+            if(Objects.nonNull(item.getDisease()))
+                return;
+            DiseaseMapping diseaseMapping = hiscodeMap.get(item.getDiseaseId());
+            if(Objects.isNull(diseaseMapping))
+                return;
+            item.setDisease(diseaseMapping.getName());
+        });
     }
 
     @Override
@@ -160,6 +206,25 @@ public class BuPrescriptionItemTaskServiceImpl extends ServiceImpl<BuPrescriptio
                     .eq(BuPrescriptionItem::getIsDel, 0);
             List<BuPrescriptionItem> buPrescriptionItems = buPrescriptionItemMapper.selectList(query);
             buPrescriptionItemTaskVo.setBuPrescriptionItemList(buPrescriptionItems);
+
+            //不走我们云平台系统开的处治没有疾病名称(只能通过获取到的diseaseId进行查询)
+            if (Objects.nonNull(buPrescriptionItemTaskVo.getDisease()))
+                return buPrescriptionItemTaskVo;
+
+            if(Objects.isNull(buPrescriptionItemTaskVo.getDiseaseId()))
+                return buPrescriptionItemTaskVo;
+
+            LambdaQueryWrapper<DiseaseMapping> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(DiseaseMapping::getCustomerId, buPrescriptionItemTaskVo.getCustomerId())
+                    .eq(DiseaseMapping::getHisCode, buPrescriptionItemTaskVo.getDiseaseId())
+                    .orderByDesc(DiseaseMapping::getCreateTime)
+                    .last("limit 1");
+
+            DiseaseMapping diseaseMapping = diseaseMappingMapper.selectOne(queryWrapper);
+            if (Objects.isNull(diseaseMapping))
+                return buPrescriptionItemTaskVo;
+
+            buPrescriptionItemTaskVo.setDisease(diseaseMapping.getName());
         }
         return buPrescriptionItemTaskVo;
     }
@@ -237,6 +302,34 @@ public class BuPrescriptionItemTaskServiceImpl extends ServiceImpl<BuPrescriptio
     }
 
     @Override
+    public List<BuPrescriptionItemTask> selectRemindLatestAppointmentList(Date startDate, Date endDate) {
+        List<BuPrescriptionItemTask> buPrescriptionItemTaskList = buPrescriptionItemTaskMapper.selectRemindLatestAppointmentList(startDate, endDate);
+        return buPrescriptionItemTaskList;
+    }
+
+    @Override
+    public List<BuPrescriptionItemTask> selectTreatmentRemindList(Date startDate, Date endDate) {
+        List<BuPrescriptionItemTask> buPrescriptionItemTaskList = buPrescriptionItemTaskMapper.selectTreatmentRemindList(startDate, endDate);
+        return buPrescriptionItemTaskList;
+    }
+
+    @Override
+    public List<BuPrescriptionItemTask> selectOutpatientAppointmentByTerm(Long customerId, String term) {
+        List<BuPrescriptionItemTask> buPrescriptionItemTaskList = buPrescriptionItemTaskMapper.selectOutpatientAppointmentByTerm(customerId, term);
+        return buPrescriptionItemTaskList;
+    }
+
+    @Override
+    public List<BuPrescriptionItemTask> selectItemListByOutpatientAppointmentId(Long outpatientAppointmentId) {
+        LambdaQueryWrapper<BuPrescriptionItemTask> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(BuPrescriptionItemTask::getOutpatientAppointmentId, outpatientAppointmentId)
+                .eq(BuPrescriptionItemTask::getSignatureStatus, 0)
+                .eq(BuPrescriptionItemTask::getIsDel, 0)
+                .groupBy(BuPrescriptionItemTask::getPrescriptionItemAppointmentId);
+        return buPrescriptionItemTaskMapper.selectList(queryWrapper);
+    }
+
+    @Override
     public Boolean appointment(AppointmentRo appointmentRo) {
         //1:取出现有要保存或编辑的预约数据的id
         List<Long> idList = appointmentRo.getBuPrescriptionItemTaskRoList().stream().filter(item -> Objects.nonNull(item.getId())).map(BuPrescriptionItemTaskRo::getId).collect(Collectors.toList());
@@ -279,6 +372,7 @@ public class BuPrescriptionItemTaskServiceImpl extends ServiceImpl<BuPrescriptio
                 buPrescriptionItemTask.setTimeSlot(buPrescriptionItemTaskRo.getTimeSlot());
                 buPrescriptionItemTask.setWeekDay(buPrescriptionItemTaskRo.getWeekday());
                 buPrescriptionItemTask.setUpdateTime(new Date());
+                buPrescriptionItemTask.setAppointmentCreateTime(new Date());
                 //5:添加预约时间
                 log.info("/*************保存对应的预约数据*************/");
                 int res = buPrescriptionItemTaskMapper.updateById(buPrescriptionItemTask);

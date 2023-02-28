@@ -2,12 +2,12 @@ package com.maizhiyu.yzt.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.maizhiyu.yzt.entity.BuCure;
-import com.maizhiyu.yzt.entity.BuDealTaskRecord;
-import com.maizhiyu.yzt.entity.BuPrescriptionItemTask;
+import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.ro.*;
 import com.maizhiyu.yzt.vo.BuPrescriptionItemTaskVo;
+import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,5 +37,13 @@ public interface BuPrescriptionItemTaskService extends IService<BuPrescriptionIt
     Boolean deleteAppointment(Long buPrescriptionItemTaskId);
 
     void updateNeedCancelTaskByItemAppointmentIdList(List<Long> prescriptionItemAppointmentIdList);
+
+    List<BuPrescriptionItemTask> selectRemindLatestAppointmentList(Date startDate, Date endDate);
+
+    List<BuPrescriptionItemTask> selectTreatmentRemindList(Date startDate, Date endDate);
+
+    List<BuPrescriptionItemTask> selectOutpatientAppointmentByTerm(Long customerId, String term);
+
+    List<BuPrescriptionItemTask> selectItemListByOutpatientAppointmentId(@Param("outpatientAppointmentId") Long outpatientAppointmentId);
 }
 

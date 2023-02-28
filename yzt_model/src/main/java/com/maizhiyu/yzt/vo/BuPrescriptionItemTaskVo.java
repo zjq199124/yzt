@@ -33,6 +33,9 @@ public class BuPrescriptionItemTaskVo implements Serializable {
     @ApiModelProperty("处方子项适宜技术id")
     private Long entityId;
 
+    @ApiModelProperty("疾病名称")
+    private Long diseaseId;
+
     @ApiModelProperty("患者id")
     private Long patientId;
 
@@ -72,6 +75,9 @@ public class BuPrescriptionItemTaskVo implements Serializable {
     @ApiModelProperty("疾病名称")
     private String disease;
 
+    @ApiModelProperty("操作方法")
+    private String operation;
+
     @ApiModelProperty("适宜技术名称")
     private String tsName;
 
@@ -92,6 +98,9 @@ public class BuPrescriptionItemTaskVo implements Serializable {
 
     @ApiModelProperty("签到登记人")
     private String registrantName;
+
+    @ApiModelProperty("用户id")
+    private Long customerId;
 
     @ApiModelProperty("就诊时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="Asia/Shanghai")

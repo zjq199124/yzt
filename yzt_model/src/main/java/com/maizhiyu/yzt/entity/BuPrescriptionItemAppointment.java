@@ -44,6 +44,9 @@ public class BuPrescriptionItemAppointment extends Model<BuPrescriptionItemAppoi
     @ApiModelProperty(value="适宜技术ID")
     private Long entityId;
 
+    @ApiModelProperty(value="适宜技术名称")
+    private String name;
+
     @ApiModelProperty(value="处方id")
     private Long prescriptionId;
 

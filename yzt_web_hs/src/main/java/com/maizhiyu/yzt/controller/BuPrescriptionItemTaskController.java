@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Preconditions;
 import com.maizhiyu.yzt.base.BaseController;
+import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.enums.SmsTemplateEnum;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.AppointmentRo;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -164,6 +166,24 @@ public class BuPrescriptionItemTaskController extends BaseController {
             log.error("发送短信提醒失败 "  + e.getMessage());
         }
         return Result.success(false);
+    }
+
+    //通过姓名手机号身份证号码查询诊断信息
+    @ApiOperation(value = "通过姓名手机号身份证号码查询可预约的疾病诊断信息")
+    @ApiImplicitParam(name = "term", value = "搜索字段", required = true)
+    @GetMapping("/selectDiagnoseList")
+    public Result<List<BuDiagnose>> selectDiagnoseList(String term) throws Exception {
+        Long customerId = getCustomerId();
+        List<BuPrescriptionItemTask> list = buPrescriptionItemTaskService.selectOutpatientAppointmentByTerm(customerId,term);
+        return Result.success(list);
+    }
+
+    @ApiOperation(value = "通过处治预约id获取处方子项列表", notes = "通过处治预约id获取处方子项列表")
+    @ApiImplicitParam(name = "outpatientAppointmentId", value = "处治预约id", required = true)
+    @GetMapping("/getItemList")
+    public Result getItemListByOutpatientAppointmentId(Long outpatientAppointmentId) {
+        List<BuPrescriptionItemTask> list = buPrescriptionItemTaskService.selectItemListByOutpatientAppointmentId(outpatientAppointmentId);
+        return Result.success(list);
     }
 }
 

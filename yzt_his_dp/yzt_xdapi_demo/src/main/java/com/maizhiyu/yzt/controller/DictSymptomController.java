@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,6 +47,9 @@ public class DictSymptomController {
         @Resource
         private FeignYptClient feignYptClient;
 
+        @Value("${customer.id}")
+        private Long customerId;
+
         @ApiOperation(value = "获取his疾病和云平台疾病的映射关系",notes = "获取his疾病和云平台疾病的映射关系")
         @ApiImplicitParam(name = "hisDiseaseName", value = "his方疾病名称", required = true)
         @GetMapping("/check")
@@ -53,7 +57,7 @@ public class DictSymptomController {
                 Assert.notNull(hisDiseaseName, "疾病名称hisDiseaseName不能为空!");
 
                 //1.对his传过来的疾病名称和云平台疾病名称进行翻译
-                DiseaseMapping diseaseMapping = diseaseMappingService.selectByHisName(hisDiseaseName);
+                DiseaseMapping diseaseMapping = diseaseMappingService.selectByCustomerIdAndHisName(customerId,hisDiseaseName);
                 boolean status = Objects.nonNull(diseaseMapping) ? true : false;
                 return Result.success(status);
         }
@@ -69,7 +73,7 @@ public class DictSymptomController {
 
                 //1.对his传过来的疾病名称和云平台疾病名称进行映射(有西医诊断优先匹配西医诊断)
                 String hisDiseaseName = Objects.nonNull(westDiagnose) ? westDiagnose : tcmDiagnose;
-                DiseaseMapping diseaseMapping = diseaseMappingService.selectByHisName(hisDiseaseName);
+                DiseaseMapping diseaseMapping = diseaseMappingService.selectByCustomerIdAndHisName(customerId,hisDiseaseName);
                 Preconditions.checkArgument(Objects.nonNull(diseaseMapping), "his中的诊断：" + hisDiseaseName + " 在云平台中没有与之相匹配的中医诊断!");
 
                 //2.通过Feign远程调用云平台中获取疾病所有症状的接口

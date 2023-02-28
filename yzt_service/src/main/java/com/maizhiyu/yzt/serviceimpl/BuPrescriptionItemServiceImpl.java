@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.base.Preconditions;
 import com.maizhiyu.yzt.entity.BuPrescription;
 import com.maizhiyu.yzt.entity.BuPrescriptionItem;
+import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointment;
 import com.maizhiyu.yzt.mapper.BuPrescriptionItemMapper;
 import com.maizhiyu.yzt.mapper.BuPrescriptionMapper;
 import com.maizhiyu.yzt.ro.WaitSignatureRo;
@@ -101,26 +102,6 @@ public class BuPrescriptionItemServiceImpl extends ServiceImpl<BuPrescriptionIte
         });
 
         return pageResult;
-    }
-
-    @Override
-    public List<BuPrescriptionItem> getPrescriptionItemListByDiagnoseId(Long diagnoseId) {
-        LambdaQueryWrapper<BuPrescription> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(BuPrescription::getIsDel, 0)
-                .eq(BuPrescription::getDiagnoseId, diagnoseId)
-                .orderByDesc(BuPrescription::getId)
-                .last(" limit 1");
-
-        BuPrescription buPrescription = buPrescriptionMapper.selectOne(queryWrapper);
-        Preconditions.checkArgument(Objects.nonNull(buPrescription), "该诊断下尚未开具适宜技术!");
-
-        LambdaQueryWrapper<BuPrescriptionItem> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(BuPrescriptionItem::getIsDel, 0)
-                .eq(BuPrescriptionItem::getPrescriptionId, buPrescription.getId());
-
-        //List<BuPrescriptionItem> buPrescriptionItems = mapper.selectList(wrapper);
-        List<BuPrescriptionItem> buPrescriptionItems = mapper.selectPrescriptionItemListByPrescriptionId(buPrescription.getId());
-        return buPrescriptionItems;
     }
 
     @Override

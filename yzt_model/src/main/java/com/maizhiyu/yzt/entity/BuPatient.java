@@ -63,7 +63,7 @@ public class BuPatient implements Serializable {
     private Date createTime;
 
     @ApiModelProperty(value="HIS中ID")
-    private String hisId;
+    private Long hisId;
 
     @ApiModelProperty(value="其他系统的数据")
     private String extra;

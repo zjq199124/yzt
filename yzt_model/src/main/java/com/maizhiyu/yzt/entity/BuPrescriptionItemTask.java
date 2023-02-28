@@ -44,6 +44,8 @@ public class BuPrescriptionItemTask extends Model<BuPrescriptionItemTask> {
     private Long outpatientId;
     //诊断id
     private Long diagnoseId;
+    //疾病id
+    private Long diseaseId;
     //处置id
     private Long prescriptionId;
     //处置小项目id
@@ -101,5 +103,35 @@ public class BuPrescriptionItemTask extends Model<BuPrescriptionItemTask> {
     private Date createTime;
     //修改时间
     private Date updateTime;
+
+    //预约操作的时间
+    private Date appointmentCreateTime;
+
+    //患者手机号
+    @TableField(exist = false)
+    private String phone;
+
+    //患者姓名
+    @TableField(exist = false)
+    private String name;
+
+    //疾病名称
+    @TableField(exist = false)
+    private String disease;
+
+    //疾病分型
+    @TableField(exist = false)
+    private String syndrome;
+
+    //门诊时间
+    @TableField(exist = false)
+    @ApiModelProperty(value="门诊时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    private Date outPatientTime;
+
+    //用户（医院）名称
+    @TableField(exist = false)
+    private String customerName;
 }
 

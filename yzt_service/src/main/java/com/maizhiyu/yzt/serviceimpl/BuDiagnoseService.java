@@ -12,6 +12,7 @@ import com.maizhiyu.yzt.ro.BuDiagnoseRO;
 import com.maizhiyu.yzt.service.IBuCheckService;
 import com.maizhiyu.yzt.service.IBuDiagnoseService;
 import com.maizhiyu.yzt.service.IDictSyndromeService;
+import com.maizhiyu.yzt.service.ITreatmentMappingService;
 import com.maizhiyu.yzt.vo.BuDiagnoseVO;
 import com.maizhiyu.yzt.vo.DictSymptomVo;
 import com.maizhiyu.yzt.vo.DictSyndromeVo;
@@ -24,6 +25,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -69,6 +71,9 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
 
     @Resource
     private IDictSyndromeService dictSyndromeService;
+
+    @Resource
+    private ITreatmentMappingService treatmentMappingService;
 
     @Resource
     private BuRecommendMapper buRecommendMapper;
@@ -224,7 +229,6 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
         LambdaQueryWrapper<TranPrescription> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(TranPrescription::getPatientId, ro.getPatientId())
                 .eq(TranPrescription::getOutpatientId, ro.getOutpatientId())
-                .eq(TranPrescription::getDoctorId, ro.getHisDoctorId())
                 .eq(TranPrescription::getIsDel, 0)
                 .eq(TranPrescription::getDiagnoseId, buDiagnose.getId())
                 .orderByDesc(TranPrescription::getUpdateTime)
@@ -265,6 +269,7 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
         }
 
         List<BuDiagnoseVO.ShiyiVO> sytechList = buRecommendMapper.getRecommendSytech(syndromeIdList, ro.getDiseaseId(), ro.getSytechId(), ro.getCustomerId());
+        translateSytechToHis(ro.getCustomerId(), sytechList);
         //此时查出来的具体适宜技术entityId和name都是云平台的，要进行翻译
 //        BuDiagnoseRO.GetRecommendRO recommendRo = new BuDiagnoseRO.GetRecommendRO();
 //        recommendRo.setDiseaseId(buDiagnose.getDiseaseId());
@@ -273,6 +278,23 @@ public class BuDiagnoseService extends ServiceImpl<BuDiagnoseMapper, BuDiagnose>
 //        Map<String, Object> stringObjectMap = buRecommendService.selectRecommend(recommendRo);
         resultMap.put("shiyiList", sytechList);
         return resultMap;
+    }
+
+    private void translateSytechToHis(Long customerId, List<BuDiagnoseVO.ShiyiVO> sytechList) {
+        List<Long> entityIdList = sytechList.stream().map(BuDiagnoseVO.ShiyiVO::getEntityId).collect(Collectors.toSet()).stream().collect(Collectors.toList());
+        List<TreatmentMapping> treatmentMappingList = treatmentMappingService.selectByCodeList(customerId, entityIdList);
+        if(CollectionUtils.isEmpty(treatmentMappingList))
+            return;
+
+        Map<Long, TreatmentMapping> codeMap = treatmentMappingList.stream().collect(Collectors.toMap(TreatmentMapping::getCode, Function.identity(), (k1, k2) -> k1));
+        sytechList.forEach(item -> {
+            TreatmentMapping treatmentMapping = codeMap.get(item.getEntityId());
+            if(Objects.isNull(treatmentMapping))
+                return;
+
+            item.setEntityId(treatmentMapping.getHiscode());
+            item.setName(treatmentMapping.getHisname());
+        });
     }
 
     @Override

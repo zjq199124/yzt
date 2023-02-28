@@ -3,7 +3,9 @@ package com.maizhiyu.yzt.task;
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateUtil;
 import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem;
+import com.maizhiyu.yzt.entity.BuPrescriptionItemTask;
 import com.maizhiyu.yzt.enums.SmsTemplateEnum;
+import com.maizhiyu.yzt.service.BuPrescriptionItemTaskService;
 import com.maizhiyu.yzt.service.IBuPrescriptionItemAppointmentItemService;
 import com.maizhiyu.yzt.service.IBuPrescriptionItemAppointmentService;
 import com.maizhiyu.yzt.service.ISmsService;
@@ -29,17 +31,17 @@ public class AppointmentRemindTask {
     private String signName;
 
     @Resource
-    private IBuPrescriptionItemAppointmentItemService buPrescriptionItemAppointmentItemService;
+    private BuPrescriptionItemTaskService buPrescriptionItemTaskService;
 
     @Resource
     private ISmsService smsService;
 
     //当天18:00提醒及时最近一次预约时间及查看方式
-    @Scheduled(cron = "0 0 18 * * ?")
+    //@Scheduled(cron = "0 0 18 * * ?")
     private void RemindLatestAppointmentTask() {
         //查询当天创建的预约数据
         Date startDate = DateUtil.beginOfDay(new Date());
-        List<BuPrescriptionItemAppointmentItem> list = buPrescriptionItemAppointmentItemService.selectRemindLatestAppointmentList(startDate, new Date());
+        List<BuPrescriptionItemTask> list = buPrescriptionItemTaskService.selectRemindLatestAppointmentList(startDate, new Date());
         Map<String, String> map = new HashMap<>();
         map.put("code", "123456");
         if (!CollectionUtils.isEmpty(list)) {
@@ -50,13 +52,13 @@ public class AppointmentRemindTask {
     }
 
     //当天18:00提醒及时最近一次预约时间及查看方式
-    @Scheduled(cron = "0 0 18 * * ?")
+    //@Scheduled(cron = "0 0 18 * * ?")
     private void TreatmentRemindTask() {
         //查询当天创建的预约数据
         //第二天的开始时间和第二天的18点
         Date startDate = DateUtil.beginOfDay( DateUtil.offset(new Date(), DateField.DAY_OF_MONTH,1));
         Date endDate = DateUtil.offset( startDate, DateField.HOUR_OF_DAY,18);
-        List<BuPrescriptionItemAppointmentItem> list = buPrescriptionItemAppointmentItemService.selectTreatmentRemindList(startDate, endDate);
+        List<BuPrescriptionItemTask> list = buPrescriptionItemTaskService.selectTreatmentRemindList(startDate, endDate);
         Map<String, String> map = new HashMap<>();
         map.put("code", "123456");
         if (!CollectionUtils.isEmpty(list)) {

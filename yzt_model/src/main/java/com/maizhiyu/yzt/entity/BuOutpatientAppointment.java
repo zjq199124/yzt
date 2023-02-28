@@ -47,6 +47,9 @@ public class BuOutpatientAppointment extends Model<BuOutpatientAppointment> {
     @ApiModelProperty(value="诊断id")
     private Long diagnoseId;
 
+    @ApiModelProperty(value="疾病id")
+    private Long diseaseId;
+
     @ApiModelProperty(value="就诊时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Shanghai")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
@@ -76,12 +79,20 @@ public class BuOutpatientAppointment extends Model<BuOutpatientAppointment> {
     private String name;
 
     @TableField(exist = false)
+    @ApiModelProperty("患者手机号")
+    private String phone;
+
+    @TableField(exist = false)
     @ApiModelProperty("患者性别")
     private String gender;
 
     @TableField(exist = false)
     @ApiModelProperty("疾病名称")
     private String disease;
+
+    @TableField(exist = false)
+    @ApiModelProperty("疾病分型")
+    private String syndrome;
 
     @TableField(exist = false)
     @ApiModelProperty("部门名称")

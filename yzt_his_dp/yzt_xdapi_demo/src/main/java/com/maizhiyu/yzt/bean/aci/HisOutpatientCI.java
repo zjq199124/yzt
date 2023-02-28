@@ -11,7 +11,7 @@ public interface HisOutpatientCI {
 
     HisOutpatientCI INSTANCE = Mappers.getMapper(HisOutpatientCI.class);
 
-    @Mapping(source = "code", target = "hisId")
+    @Mapping(source = "id", target = "hisId")
     BuOutpatientXO.AddOutpatientXO toAddOutpatientXO(HisOutpatient outpatient);
 
 }

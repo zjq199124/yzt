@@ -7,11 +7,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maizhiyu.yzt.entity.BuDiagnose;
 import com.maizhiyu.yzt.entity.BuPrescription;
 import com.maizhiyu.yzt.entity.DictDisease;
+import com.maizhiyu.yzt.entity.TreatmentMapping;
 import com.maizhiyu.yzt.mapper.BuRecommendMapper;
 import com.maizhiyu.yzt.mapper.DictDiseaseMapper;
 import com.maizhiyu.yzt.ro.BuDiagnoseRO;
 import com.maizhiyu.yzt.service.IBuRecommendService;
 import com.maizhiyu.yzt.service.IDictSyndromeService;
+import com.maizhiyu.yzt.service.ITreatmentMappingService;
 import com.maizhiyu.yzt.vo.BuDiagnoseVO;
 import com.maizhiyu.yzt.vo.DictSymptomVo;
 import com.maizhiyu.yzt.vo.DictSyndromeVo;
@@ -24,6 +26,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -49,6 +52,9 @@ public class BuRecommendService extends ServiceImpl<BuRecommendMapper, Object> i
 
     @Resource
     private BuPrescriptionService buPrescriptionService;
+
+    @Resource
+    private ITreatmentMappingService treatmentMappingService;
 
 
     @Override
@@ -166,11 +172,11 @@ public class BuRecommendService extends ServiceImpl<BuRecommendMapper, Object> i
 
         Map<String, Object> resultMap = new HashMap<>();
         //在没有分型syndromeIdList以及没有症状集合symptomIdList先查询下这次挂号看病是否已经有保存诊断信息和治疗处方
-        /*if (CollectionUtils.isEmpty(ro.getSymptomIdList()) && CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
+        if (CollectionUtils.isEmpty(ro.getSymptomIdList()) && CollectionUtils.isEmpty(ro.getSyndromeIdList())) {
             Map<String, Object> result = buDiagnoseService.getDetails(ro);
             if (Objects.nonNull(result))
                 return result;
-        }*/
+        }
 
         //2.没有syndromeIdList的情况下，判断是否有传症状集合symptomIdList，没有的话通过Feign远程调用云平台中获取疾病所有症状的接口
         if (CollectionUtils.isEmpty(ro.getSyndromeIdList()) && CollectionUtils.isEmpty(ro.getSymptomIdList())) {
@@ -230,8 +236,19 @@ public class BuRecommendService extends ServiceImpl<BuRecommendMapper, Object> i
 
     private void translateSytechToHis(Long customerId, List<BuDiagnoseVO.ShiyiVO> sytechList) {
         List<Long> entityIdList = sytechList.stream().map(BuDiagnoseVO.ShiyiVO::getEntityId).collect(Collectors.toSet()).stream().collect(Collectors.toList());
+        List<TreatmentMapping> treatmentMappingList = treatmentMappingService.selectByCodeList(customerId, entityIdList);
+        if(CollectionUtils.isEmpty(treatmentMappingList))
+            return;
 
+        Map<Long, TreatmentMapping> codeMap = treatmentMappingList.stream().collect(Collectors.toMap(TreatmentMapping::getCode, Function.identity(), (k1, k2) -> k1));
+        sytechList.forEach(item -> {
+            TreatmentMapping treatmentMapping = codeMap.get(item.getEntityId());
+            if(Objects.isNull(treatmentMapping))
+                return;
 
+            item.setEntityId(treatmentMapping.getHiscode());
+            item.setName(treatmentMapping.getHisname());
+        });
     }
 
     // 根据辨证分型获取推荐方案
