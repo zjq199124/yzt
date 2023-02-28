@@ -40,6 +40,7 @@ public class RedissionConfig {
                 //将锁的数据放入DB1
                 .setDatabase(1);
 
+
         //集群模式
         /*config.useClusterServers()
                 .addNodeAddress("redis://192.168.56.101:36379")
