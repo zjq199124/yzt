@@ -53,7 +53,7 @@ public class BaseController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object a = authentication.getPrincipal();
         //匿名用户
-        Assert.isTrue(a.equals("anonymousUser"), "当前用户未登录，或登录已失效");
+        Assert.isTrue(!a.equals("anonymousUser"), "当前用户未登录，或登录已失效");
         HsUserDetails hsUserDetails = (HsUserDetails) authentication.getPrincipal();
         if (Objects.isNull(hsUserDetails)) {
             throw new BusinessException("认证信息获取失败");
