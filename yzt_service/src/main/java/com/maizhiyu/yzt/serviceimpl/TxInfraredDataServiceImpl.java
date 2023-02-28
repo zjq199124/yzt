@@ -12,11 +12,13 @@ import com.maizhiyu.yzt.entity.TxInfraredImage;
 import com.maizhiyu.yzt.enums.FileTypeEnum;
 import com.maizhiyu.yzt.enums.InfraredImageEnum;
 import com.maizhiyu.yzt.enums.OSSCatalogEnum;
+import com.maizhiyu.yzt.exception.BusinessException;
 import com.maizhiyu.yzt.mapper.TxInfraredDataMapper;
 import com.maizhiyu.yzt.service.SysMultimediaService;
 import com.maizhiyu.yzt.service.TxInfraredDataService;
 import com.maizhiyu.yzt.service.TxInfraredImageService;
 import com.maizhiyu.yzt.vo.InfraredCheckVO;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,17 +46,19 @@ public class TxInfraredDataServiceImpl extends ServiceImpl<TxInfraredDataMapper,
 
 
 
+    @SneakyThrows
     @Override
     public TxInfraredData saveTxInfrareData(TxInfraredData txInfraredData, InputStream inputStream, String fileName) {
-        SysMultimedia sysMultimedia = sysMultimediaService.saveMultimedia(inputStream, fileName, OSSCatalogEnum.INFRARED.getPath(), true, OSSCatalogEnum.INFRARED.getRemark(), FileTypeEnum.FILE.getCode());
-        txInfraredData.setMultimediaId(sysMultimedia.getId());
-        save(txInfraredData);
         try {
+            SysMultimedia sysMultimedia = sysMultimediaService.saveMultimedia(inputStream, fileName, OSSCatalogEnum.INFRARED.getPath(), true, OSSCatalogEnum.INFRARED.getRemark(), FileTypeEnum.FILE.getCode());
+            txInfraredData.setMultimediaId(sysMultimedia.getId());
+            save(txInfraredData);
+            return txInfraredData;
+        } catch (Exception e) {
+            throw new BusinessException(e);
+        }finally {
             inputStream.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
-        return txInfraredData;
     }
 
     @Override
