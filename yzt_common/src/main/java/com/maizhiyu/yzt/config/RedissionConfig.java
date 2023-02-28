@@ -22,11 +22,11 @@ import java.util.concurrent.TimeUnit;
 * */
 @Configuration
 public class RedissionConfig {
-    @Value("${redis.host}")
+    @Value("${spring.redis.host}")
     private String host;
-    @Value("${redis.port}")
+    @Value("${spring.redis.port}")
     private String port;
-    @Value("${redis.password}")
+    @Value("${spring.redis.password}")
     private  String password;
 
     @Bean
@@ -36,7 +36,7 @@ public class RedissionConfig {
         //单机模式
         config.useSingleServer()
                 .setAddress("redis://"+host+":"+port)
-                .setPassword(password)
+//                .setPassword(password)
                 //将锁的数据放入DB1
                 .setDatabase(1);
 
@@ -59,6 +59,7 @@ public class RedissionConfig {
         RedissonClient redissonClient = Redisson.create(config);
         return redissonClient;
     }
+
 
 //
 //    //使用实例
