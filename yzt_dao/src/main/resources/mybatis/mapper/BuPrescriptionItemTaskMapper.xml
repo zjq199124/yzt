@@ -420,6 +420,19 @@
         GROUP BY
             temp.outpatient_appointment_id
     </select>
+    <select id="selectOverdueTask" resultType="com.maizhiyu.yzt.entity.BuPrescriptionItemTask">
+        SELECT
+            *
+        FROM
+            bu_prescription_item_task
+        WHERE
+            is_del = 0
+          AND appointment_date BETWEEN #{startDate} AND #{endDate}
+          AND appointment_status = 1
+          AND (
+                    signature_status = 0
+                OR cure_status = 0)
+    </select>
 
 </mapper>
 

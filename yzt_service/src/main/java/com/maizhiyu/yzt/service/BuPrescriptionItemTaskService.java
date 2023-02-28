@@ -45,5 +45,7 @@ public interface BuPrescriptionItemTaskService extends IService<BuPrescriptionIt
     List<BuPrescriptionItemTask> selectOutpatientAppointmentByTerm(Long customerId, String term);
 
     List<BuPrescriptionItemTask> selectItemListByOutpatientAppointmentId(@Param("outpatientAppointmentId") Long outpatientAppointmentId);
+
+    List<BuPrescriptionItemTask> checkOverdueTask(Date startDate, Date endDate);
 }
 

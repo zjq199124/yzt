@@ -330,6 +330,11 @@ public class BuPrescriptionItemTaskServiceImpl extends ServiceImpl<BuPrescriptio
     }
 
     @Override
+    public List<BuPrescriptionItemTask> checkOverdueTask(Date startDate, Date endDate) {
+        return buPrescriptionItemTaskMapper.selectOverdueTask(startDate, endDate);
+    }
+
+    @Override
     public Boolean appointment(AppointmentRo appointmentRo) {
         //1:取出现有要保存或编辑的预约数据的id
         List<Long> idList = appointmentRo.getBuPrescriptionItemTaskRoList().stream().filter(item -> Objects.nonNull(item.getId())).map(BuPrescriptionItemTaskRo::getId).collect(Collectors.toList());

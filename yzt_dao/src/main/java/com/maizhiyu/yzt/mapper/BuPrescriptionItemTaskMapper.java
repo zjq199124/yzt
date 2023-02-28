@@ -38,5 +38,7 @@ public interface BuPrescriptionItemTaskMapper extends BaseMapper<BuPrescriptionI
     List<BuPrescriptionItemTask> selectTreatmentRemindList(Date startDate, Date endDate);
 
     List<BuPrescriptionItemTask> selectOutpatientAppointmentByTerm(@Param("customerId") Long customerId, @Param("term") String term);
+
+    List<BuPrescriptionItemTask> selectOverdueTask(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 }
 

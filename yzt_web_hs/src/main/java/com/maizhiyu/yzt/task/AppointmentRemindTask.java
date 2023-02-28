@@ -2,12 +2,9 @@ package com.maizhiyu.yzt.task;
 
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateUtil;
-import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem;
 import com.maizhiyu.yzt.entity.BuPrescriptionItemTask;
 import com.maizhiyu.yzt.enums.SmsTemplateEnum;
 import com.maizhiyu.yzt.service.BuPrescriptionItemTaskService;
-import com.maizhiyu.yzt.service.IBuPrescriptionItemAppointmentItemService;
-import com.maizhiyu.yzt.service.IBuPrescriptionItemAppointmentService;
 import com.maizhiyu.yzt.service.ISmsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,7 +34,7 @@ public class AppointmentRemindTask {
     private ISmsService smsService;
 
     //当天18:00提醒及时最近一次预约时间及查看方式
-    //@Scheduled(cron = "0 0 18 * * ?")
+    @Scheduled(cron = "0 0 18 * * ?")
     private void RemindLatestAppointmentTask() {
         //查询当天创建的预约数据
         Date startDate = DateUtil.beginOfDay(new Date());
@@ -52,7 +49,7 @@ public class AppointmentRemindTask {
     }
 
     //当天18:00提醒及时最近一次预约时间及查看方式
-    //@Scheduled(cron = "0 0 18 * * ?")
+    @Scheduled(cron = "0 0 18 * * ?")
     private void TreatmentRemindTask() {
         //查询当天创建的预约数据
         //第二天的开始时间和第二天的18点
