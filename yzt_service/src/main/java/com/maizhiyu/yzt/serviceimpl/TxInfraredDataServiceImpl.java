@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -48,6 +49,11 @@ public class TxInfraredDataServiceImpl extends ServiceImpl<TxInfraredDataMapper,
         SysMultimedia sysMultimedia = sysMultimediaService.saveMultimedia(inputStream, fileName, OSSCatalogEnum.INFRARED.getPath(), true, OSSCatalogEnum.INFRARED.getRemark(), FileTypeEnum.FILE.getCode());
         txInfraredData.setMultimediaId(sysMultimedia.getId());
         save(txInfraredData);
+        try {
+            inputStream.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return txInfraredData;
     }
 

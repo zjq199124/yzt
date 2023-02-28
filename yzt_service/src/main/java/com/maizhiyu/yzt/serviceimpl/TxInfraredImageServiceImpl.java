@@ -12,6 +12,7 @@ import com.maizhiyu.yzt.service.TxInfraredImageService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -35,6 +36,11 @@ public class TxInfraredImageServiceImpl extends ServiceImpl<TxInfraredImageMappe
         txInfraredImage.setMultimediaId(sysMultimedia.getId());
         txInfraredImage.setLeibie(type);
         save(txInfraredImage);
+        try {
+            inputStream.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return txInfraredImage;
     }
 }
