@@ -10,6 +10,7 @@ import com.maizhiyu.yzt.entity.TxXzcRun;
 import com.maizhiyu.yzt.mapper.TxXzcCmdMapper;
 import com.maizhiyu.yzt.mapper.TxXzcDataMapper;
 import com.maizhiyu.yzt.mapper.TxXzcRunMapper;
+import com.maizhiyu.yzt.ro.TxXzcCmdRo;
 import com.maizhiyu.yzt.service.ITxXzcService;
 import com.maizhiyu.yzt.utils.ExistCheck;
 import lombok.extern.slf4j.Slf4j;
@@ -198,5 +199,15 @@ public class TxXzcService implements ITxXzcService {
             }
         }
         return list;
+    }
+
+    @Override
+    public TxXzcRun getRunOne(TxXzcCmdRo ro) {
+        return runMapper.selectOne(new QueryWrapper<TxXzcRun>()
+                .eq("code",ro.getCode())
+                .eq("status",1)
+                .orderByDesc("start_time")
+                .last("limit 1")
+        );
     }
 }

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maizhiyu.yzt.entity.TxXzcCmd;
 import com.maizhiyu.yzt.entity.TxXzcData;
 import com.maizhiyu.yzt.entity.TxXzcRun;
+import com.maizhiyu.yzt.ro.TxXzcCmdRo;
 
 import java.util.List;
 import java.util.Map;
@@ -32,4 +33,6 @@ public interface ITxXzcService  {
     List<TxXzcData> getRunData(String code, String runId);
 
     List<Map<String, Object>> getRunWarnList(String code, String runId);
+
+    TxXzcRun getRunOne(TxXzcCmdRo ro);
 }

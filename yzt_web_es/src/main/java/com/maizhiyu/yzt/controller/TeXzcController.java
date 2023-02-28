@@ -1,12 +1,15 @@
 package com.maizhiyu.yzt.controller;
 
 
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.maizhiyu.yzt.entity.*;
 import com.maizhiyu.yzt.exception.BusinessException;
+import com.maizhiyu.yzt.mapper.TxXzcRunMapper;
 import com.maizhiyu.yzt.result.Result;
+import com.maizhiyu.yzt.ro.TxXzcCmdRo;
 import com.maizhiyu.yzt.service.ITeEquipService;
 import com.maizhiyu.yzt.service.ITeMaintainService;
 import com.maizhiyu.yzt.service.ITeWarnService;
@@ -16,13 +19,14 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.ParseException;
 import java.util.Date;
 
 
@@ -44,11 +48,13 @@ public class TeXzcController {
     @Autowired
     private ITeMaintainService maintainService;
 
-
+    @Autowired
+    TxXzcRunMapper runMapper;
     @ApiOperation(value = "数据接口", notes = "数据接口")
     @ApiImplicitParams({})
     @PostMapping(value = "/data", consumes = "application/octet-stream")
-    public Result data(@RequestBody String string) {
+    @Transactional(rollbackFor = Exception.class)
+    public Result data(@RequestBody String string) throws Exception{
         log.info(" ##### " + string);
         try {
             JSONObject jsonObject = JSON.parseObject(string);
@@ -209,10 +215,9 @@ public class TeXzcController {
         if (cmd != null) {
             // 设置基础数据
             object = new JSONObject();
-            // 为了减少传输字节数暂时去掉这三项
-            // object.put("T", 3);
-            // object.put("D", code);
-            // object.put("R", runId);
+            object.put("T", 3);
+            object.put("D", code);
+            object.put("R", runId);
             // 修改命令状态
             cmd.setStatus(2);
             cmd.setExecuteTime(new Date());
@@ -307,11 +312,28 @@ public class TeXzcController {
         equipService.setEquip(equip);
     }
 
+    @ApiOperation(value = "熏蒸床参数设置接口", notes = "熏蒸床参数设置接口")
+    @PostMapping(value = "/cmd")
+    public Result cmd(@RequestBody TxXzcCmdRo ro) throws Exception{
+        //获取当前命令设备下的runid
+        TxXzcRun run = xzcService.getRunOne(ro);
+        if (ObjectUtil.isNotEmpty(run)) {
+            //添加命令数据
+            TxXzcCmd cmd = new TxXzcCmd();
+            BeanUtils.copyProperties(ro, cmd);
+            cmd.setStatus(1);
+            cmd.setRunid(run.getRunid());
+            cmd.setCreateTime(new Date());
+            xzcService.addCmd(cmd);
+        }else {
+            return Result.failure("没有该设备的运行信息，操作失败");
+        }
+        return Result.success("操作成功");
+    }
 //    public static void main(String[] args) throws ParseException {
 //        JSONObject jsonObject = JSON.parseObject("{\"H\":\"220515\"}");
 //        String datestr = jsonObject.getString("H");
 //        Date date = DateUtils.parseDate(datestr, "yyMMdd");
 //        System.out.println(date);
 //    }
-
 }
