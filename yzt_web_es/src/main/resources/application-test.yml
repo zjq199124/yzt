@@ -62,10 +62,10 @@ spring:
   redis:
     #    host: 39.105.85.64
     host: 127.0.0.1
-    port: 6379
+    port: 6300
     #    password: zhanshen@
     timeout: 86400
-    password: 123456
+    password: yzt123456
   # rabbitMQ 配置
   #  rabbitmq:
   #    host: 119.3.230.227

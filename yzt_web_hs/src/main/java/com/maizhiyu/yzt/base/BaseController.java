@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -47,19 +48,22 @@ public class BaseController {
         return claims;
     }
 
-    /**
-     *从sercuity 会话中获取用户信息
-     * @return
-     * @throws Exception
-     */
-    public HsUserDetails getHsUserDetails() throws Exception {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            HsUserDetails hsUserDetails = (HsUserDetails) authentication.getPrincipal();
-            return hsUserDetails;
-        } catch (Exception e) {
-            throw new Exception("后台服务已重启，请退出重新登录!");
+    //security 会话中获取用户登录信息
+    public HsUserDetails getHsUserDetails() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object a = authentication.getPrincipal();
+        //匿名用户
+        Assert.isTrue(a.equals("anonymousUser"), "当前用户未登录，或登录已失效");
+        HsUserDetails hsUserDetails = (HsUserDetails) authentication.getPrincipal();
+        if (Objects.isNull(hsUserDetails)) {
+            throw new BusinessException("认证信息获取失败");
         }
+        return hsUserDetails;
+    }
+
+    //    当前登录用户id
+    public Long getUserId() {
+        return getHsUserDetails().getId();
     }
 
     /**

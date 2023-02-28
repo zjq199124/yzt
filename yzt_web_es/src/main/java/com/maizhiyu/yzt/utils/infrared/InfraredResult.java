@@ -1,19 +1,23 @@
 package com.maizhiyu.yzt.utils.infrared;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.models.auth.In;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @Accessors(chain = true)
 @ApiModel(description = "红外报告信息")
-public class InfraredResult {
+public class InfraredResult implements Serializable {
     /**
      * 姓名
      */
@@ -45,8 +49,9 @@ public class InfraredResult {
      * 创建时间
      */
     @ApiModelProperty(value="创建时间")
-    @NotBlank(message = "创建时间不能为空")
-    private String createTime;
+    @NotNull(message = "创建时间不能为空")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private Date createTime;
 
     /**
      * 身份证

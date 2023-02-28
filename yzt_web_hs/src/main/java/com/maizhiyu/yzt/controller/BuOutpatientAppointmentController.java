@@ -10,7 +10,6 @@ import com.maizhiyu.yzt.entity.BuPrescriptionItemAppointmentItem;
 import com.maizhiyu.yzt.result.Result;
 import com.maizhiyu.yzt.ro.BuPrescriptionItemTaskRo;
 import com.maizhiyu.yzt.ro.OutpatientAppointmentRo;
-import com.maizhiyu.yzt.security.HsUserDetails;
 import com.maizhiyu.yzt.service.IBuOutpatientAppointmentService;
 import com.maizhiyu.yzt.service.IBuPrescriptionItemAppointmentItemService;
 import com.maizhiyu.yzt.service.IBuPrescriptionItemAppointmentService;
@@ -24,8 +23,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 @Slf4j
 @Api(tags = "2.1门诊预约接口")
@@ -48,6 +45,9 @@ public class BuOutpatientAppointmentController extends BaseController {
         log.info("/*************查询待预约列表*************/");
         Long customerId = getCustomerId();
         outpatientAppointmentRo.setCustomerId(customerId);
+    public Result<List<BuOutpatientAppointment>> outpatientAppointmentList(@RequestBody OutpatientAppointmentRo outpatientAppointmentRo) {
+        log.info("/*************查询待签到列表*************/");
+        outpatientAppointmentRo.setCustomerId(getCustomerId());
         Page<BuOutpatientAppointment> page = buOutpatientAppointmentService.list(outpatientAppointmentRo);
         return Result.success(page);
     }
