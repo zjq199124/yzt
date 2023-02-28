@@ -59,6 +59,7 @@ public class TxInfraredDataServiceImpl extends ServiceImpl<TxInfraredDataMapper,
         }finally {
             inputStream.close();
         }
+
     }
 
     @Override

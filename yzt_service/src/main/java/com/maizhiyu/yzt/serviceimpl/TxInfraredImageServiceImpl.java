@@ -46,6 +46,7 @@ public class TxInfraredImageServiceImpl extends ServiceImpl<TxInfraredImageMappe
         }finally {
             inputStream.close();
         }
+
     }
 }
 
