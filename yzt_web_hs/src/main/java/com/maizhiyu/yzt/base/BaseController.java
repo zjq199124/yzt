@@ -75,15 +75,4 @@ public class BaseController {
     public Long getCustomerId() throws Exception {
         return getHsUserDetails().getCustomerId();
     }
-
-    /**
-     * 获取当前会话用户id
-     *
-     * @return
-     * @throws Exception
-     */
-    public Long getUserId() throws Exception {
-        return getHsUserDetails().getId();
-    }
-
 }

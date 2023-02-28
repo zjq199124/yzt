@@ -45,9 +45,6 @@ public class BuOutpatientAppointmentController extends BaseController {
         log.info("/*************查询待预约列表*************/");
         Long customerId = getCustomerId();
         outpatientAppointmentRo.setCustomerId(customerId);
-    public Result<List<BuOutpatientAppointment>> outpatientAppointmentList(@RequestBody OutpatientAppointmentRo outpatientAppointmentRo) {
-        log.info("/*************查询待签到列表*************/");
-        outpatientAppointmentRo.setCustomerId(getCustomerId());
         Page<BuOutpatientAppointment> page = buOutpatientAppointmentService.list(outpatientAppointmentRo);
         return Result.success(page);
     }
