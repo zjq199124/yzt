@@ -301,10 +301,12 @@
                     temp.customer_id,
                     temp.entity_id,
                     temp.phone,
+                    temp.name,
                     temp.ts_name,
-                    temp.name AS customerName,
+                    temp.customerName,
                     bpit1.appointment_date,
-                    bpit1.time_slot
+                    bpit1.time_slot,
+                    temp.dname
                 FROM
                     (
                         SELECT
@@ -315,12 +317,15 @@
                             bpit.entity_id,
                             bpit.ts_name,
                             ms.name AS customerName,
-                            bp.phone
+                            bp.phone,
+                            bp.name,
+                            hd.dname
                         FROM
                             bu_prescription_item_task bpit
-                                LEFT JOIN bu_patient bp ON bpit.patient_id = bp.his_id
+                                LEFT JOIN bu_patient bp ON bpit.patient_id = bp.his_id and bpit.customer_id = bp.customer_id
                                 AND bp.is_del = 0
                                 LEFT JOIN ms_customer ms ON bpit.customer_id = ms.id AND ms.is_del = 0
+                                LEFT JOIN hs_department hd ON bpit.department_id = hd.his_id AND bpit.customer_id = hd.customer_id AND hd.is_del = 0
                         WHERE
                             bpit.is_del = 0
                           AND bpit.appointment_status = 1
@@ -356,15 +361,18 @@
             bpit.entity_id,
             bpit.ts_name,
             ms.name AS customerName,
-            bp.phone
+            bp.phone,
+            bp.name,
+            hd.dname
         FROM
             bu_prescription_item_task bpit
-                LEFT JOIN bu_patient bp ON bpit.patient_id = bp.his_id
+                LEFT JOIN bu_patient bp ON bpit.patient_id = bp.his_id AND bpit.customer_id = bp.customer_id
                 AND bp.is_del = 0
                 LEFT JOIN ms_customer ms ON bpit.customer_id = ms.id AND ms.is_del = 0
+                LEFT JOIN hs_department hd ON bpit.department_id = hd.his_id AND bpit.customer_id = hd.customer_id AND hd.is_del = 0
         WHERE
             bpit.is_del = 0
-          AND bpit.appointment_status = 1
+          AND bpit.appointment_status = 1 AND bpit.cure_status = 0
           AND
             (bpit.appointment_create_time BETWEEN #{startDate} AND #{endDate})
     </select>

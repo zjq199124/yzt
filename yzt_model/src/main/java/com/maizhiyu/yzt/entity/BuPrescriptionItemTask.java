@@ -58,7 +58,7 @@ public class BuPrescriptionItemTask extends Model<BuPrescriptionItemTask> {
     private Integer appointmentStatus;
     //预约日期
     @ApiModelProperty(value="创建时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Shanghai")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @TableField(updateStrategy = FieldStrategy.IGNORED)
     private Date appointmentDate;
@@ -133,5 +133,9 @@ public class BuPrescriptionItemTask extends Model<BuPrescriptionItemTask> {
     //用户（医院）名称
     @TableField(exist = false)
     private String customerName;
+
+    //科室名称
+    @TableField(exist = false)
+    private String dname;
 }
 

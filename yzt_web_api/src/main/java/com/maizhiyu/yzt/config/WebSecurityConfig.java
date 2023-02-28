@@ -13,11 +13,14 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import wiremock.com.google.common.base.Splitter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
+import java.util.stream.Collectors;
 
 
 @Configuration
@@ -134,6 +137,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         System.out.println("password: " + password);
         System.out.println("encoded: " + encoded);*/
+
+        System.out.println(new Date().toLocaleString());
+
+        System.out.println(Splitter.on(' ').splitToList(new Date().toLocaleString()).stream().collect(Collectors.toList()).get(0));
     }
 }
 

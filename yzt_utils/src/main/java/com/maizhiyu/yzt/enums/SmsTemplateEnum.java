@@ -5,7 +5,8 @@ package com.maizhiyu.yzt.enums;
  */
 public enum SmsTemplateEnum {
     VERIFICATION_CODE("SMS_266960575", "短信验证码"),
-    REMIND_LATEST_APPOINTMENT("SMS_266960575", "最近一次预约时间提醒");
+    REMIND_LATEST_APPOINTMENT("SMS_271400565", "最近一次预约时间提醒"),
+    REMIND_TREATMENT("SMS_271450451", "治疗提醒");
 
     private String code;
     private String name;
