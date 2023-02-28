@@ -1,4 +1,4 @@
-package com.maizhiyu.yzt.cheduling;
+package com.maizhiyu.yzt.scheduling;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.maizhiyu.yzt.entity.BuCheck;
