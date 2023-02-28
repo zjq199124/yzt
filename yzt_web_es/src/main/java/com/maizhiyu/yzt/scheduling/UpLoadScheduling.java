@@ -137,6 +137,8 @@ public class UpLoadScheduling {
                     FutureTask<TxInfraredData> futureTaskImg = new FutureTask(upLoadImgTread);
                     //创建Thread对象，并调用start()
                     new Thread(futureTaskImg).start();
+                    //关闭流
+                    doc.close();
                     //保存患者检查数据
                     BuCheck buCheck = new BuCheck();
                     buCheck.setIdCard(infraredResult.getIdCard());
