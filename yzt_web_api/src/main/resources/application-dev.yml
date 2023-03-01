@@ -83,7 +83,7 @@ swagger:
 
 # redis 配置
 redis:
-  host: 192.168.0.90
+  host: 127.0.0.1
   port: 6379
   password:
   timeout: 86400
