@@ -63,8 +63,10 @@ spring:
   redis:
     host: 127.0.0.1
     port: 6379
-    password:
     timeout: 86400
+    password: 123456
+  session:
+    store-type: redis
 
 
 ### mybatis ###
@@ -88,11 +90,6 @@ pagehelper:
 ### swagger ###（生产环境时需要关闭）
 swagger:
   enable: true
-
-
-
-session:
-  store-type: redis
 
 
 ### jwt ###
