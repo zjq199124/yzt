@@ -59,6 +59,14 @@ spring:
       filters: stat,wall,log4j
 
 
+  # redis 配置
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+    timeout: 86400
+
+
 ### mybatis ###
 mybatis-plus:
   type-aliases-package: com.maizhiyu.yzt.entity
@@ -81,12 +89,7 @@ pagehelper:
 swagger:
   enable: true
 
-# redis 配置
-redis:
-  host: 127.0.0.1
-  port: 6379
-  password:
-  timeout: 86400
+
 
 session:
   store-type: redis
