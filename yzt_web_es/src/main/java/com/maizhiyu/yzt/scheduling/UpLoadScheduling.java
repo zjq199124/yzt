@@ -62,6 +62,7 @@ public class UpLoadScheduling {
     RedisUtils redisUtils;
 
     //每天凌晨2点钟执行定时任务上传文件
+
     @Transactional(rollbackFor = Exception.class)
     @Scheduled(cron = "0 0 2 * * ?")
     //@Scheduled(cron = "0/10 * * * * ? ")
