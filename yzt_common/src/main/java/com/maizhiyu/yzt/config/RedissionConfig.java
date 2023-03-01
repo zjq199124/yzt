@@ -1,4 +1,3 @@
-/*
 package com.maizhiyu.yzt.config;
 
 import com.maizhiyu.yzt.exception.BusinessException;
@@ -16,13 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.concurrent.TimeUnit;
 
-*/
 /**
 * @author zjq
 * @date 2023-02-28
 * @describe redission分布式锁配置类
-* *//*
-
+* */
 @Configuration
 public class RedissionConfig {
     @Value("${spring.redis.host}")
@@ -45,24 +42,20 @@ public class RedissionConfig {
 
 
         //集群模式
-        */
-/*config.useClusterServers()
+        /*config.useClusterServers()
                 .addNodeAddress("redis://192.168.56.101:36379")
                 .addNodeAddress("redis://192.168.56.102:36379")
                 .addNodeAddress("redis://192.168.56.103:36379")
                 .setPassword("1111111")
-                .setScanInterval(5000);*//*
-
+                .setScanInterval(5000);*/
 
         //哨兵模式
-        */
-/*config.useSentinelServers().addSentinelAddress("redis://ip1:port1",
+        /*config.useSentinelServers().addSentinelAddress("redis://ip1:port1",
                 "redis://ip2:port2",
                 "redis://ip3:port3")
                 .setMasterName("mymaster")
                 .setPassword("password")
-                .setDatabase(0);*//*
-
+                .setDatabase(0);*/
 
         RedissonClient redissonClient = Redisson.create(config);
         return redissonClient;
@@ -94,4 +87,3 @@ public class RedissionConfig {
 
 
 }
-*/
