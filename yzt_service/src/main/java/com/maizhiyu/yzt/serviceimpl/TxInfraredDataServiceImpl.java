@@ -52,7 +52,7 @@ public class TxInfraredDataServiceImpl extends ServiceImpl<TxInfraredDataMapper,
         try {
             SysMultimedia sysMultimedia = sysMultimediaService.saveMultimedia(inputStream, fileName, OSSCatalogEnum.INFRARED.getPath(), true, OSSCatalogEnum.INFRARED.getRemark(), FileTypeEnum.FILE.getCode());
             txInfraredData.setMultimediaId(sysMultimedia.getId());
-            save(txInfraredData);
+            //save(txInfraredData);
             return txInfraredData;
         } catch (Exception e) {
             throw new BusinessException(e);
