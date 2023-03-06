@@ -19,4 +19,6 @@ public interface MsResourceMapper extends BaseMapper<MsResource> {
 
     List<MsResource> selectUserResourceList(
             @Param("userId") Long userId);
+
+    List<String>selectUserPerms(@Param("userId")Long userId);
 }

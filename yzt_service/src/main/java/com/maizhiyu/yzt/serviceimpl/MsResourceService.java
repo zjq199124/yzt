@@ -44,8 +44,18 @@ public class MsResourceService extends ServiceImpl<MsResourceMapper,MsResource> 
     @Override
     public List<Map<String, Object>> getUserResourceList(Long userId) {
         List<MsResource> list = mapper.selectUserResourceList(userId);
+        if(userId==1L){
+
+        }
          List<Map<String, Object>> result = formatResourceList(list);
+
         return result;
+    }
+
+    @Override
+    public List<String> getUserPerms(Long userId) {
+        List<String> list = mapper.selectUserPerms(userId);
+        return list;
     }
 
     private List<Map<String, Object>> formatResourceList(List<MsResource> resources) {

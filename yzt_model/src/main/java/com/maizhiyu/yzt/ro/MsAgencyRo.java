@@ -1,4 +1,4 @@
-package com.maizhiyu.yzt.entity;
+package com.maizhiyu.yzt.ro;
 
 
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -10,38 +10,45 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
-@Accessors(chain=true)
-@TableName("ms_agency")
 @ApiModel(description="代理商表")
-public class MsAgency {
+public class MsAgencyRo implements Serializable {
 
-    @ApiModelProperty(value="代理商ID")
-    @TableId(type = IdType.AUTO)
+    @ApiModelProperty(value="代理商id")
     private Long id;
+
+    @ApiModelProperty(value="代理商名称")
+    @NotBlank(message = "代理商名称不能为空")
+    private String name;
 
     @ApiModelProperty(value="代理商状态(0:停用 1:启用)")
     private Integer status;
 
-    @ApiModelProperty(value="代理商名称")
-    private String name;
-
     @ApiModelProperty(value="省")
+    @NotBlank(message = "省份不能为空")
     private String province;
 
     @ApiModelProperty(value="市")
+    @NotBlank(message = "城市不能为空")
     private String city;
 
     @ApiModelProperty(value="区")
+    @NotBlank(message = "地区不能为空")
     private String district;
 
-    @ApiModelProperty(value="代理商地址")
+    @ApiModelProperty(value="代理商详细地址")
+    @NotBlank(message = "详细地址不能为空")
     private String address;
 
-    @ApiModelProperty(value="联系人列表")
+    @ApiModelProperty(value="联系人")
     private String contacts;
+
+    @ApiModelProperty(value="代理商联系电话")
+    private String phone;
 
     @ApiModelProperty(value="代理商描述")
     private String descrip;
@@ -53,8 +60,5 @@ public class MsAgency {
     @ApiModelProperty(value="创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="Asia/Shanghai")
     private Date createTime;
-
-    @ApiModelProperty(value="代理商联系电话")
-    private String phone;
 
 }

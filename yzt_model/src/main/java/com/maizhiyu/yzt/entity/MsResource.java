@@ -42,4 +42,7 @@ public class MsResource implements Serializable {
 
     @ApiModelProperty(value="资源描述")
     private String descrip;
+
+    @ApiModelProperty(value="唯一权限标识")
+    private String perm;
 }

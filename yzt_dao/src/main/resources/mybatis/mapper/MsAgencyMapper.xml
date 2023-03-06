@@ -22,11 +22,23 @@
         from
             ms_agency X
         <where>
-            <if test="status != null">
-                and X.status = #{status}
+            <if test="ro.status != null">
+                and X.status = #{ro.status}
             </if>
-            <if test="term != null and term != ''">
-                and (X.name like concat(concat('%',#{term}),'%'))
+            <if test="ro.name != null and ro.name != ''">
+                and (X.name like concat(concat('%',#{ro.name}),'%'))
+            </if>
+            <if test="ro.contacts != null and ro.contacts != ''">
+                and (X.contacts like concat(concat('%',#{contacts}),'%'))
+            </if>
+            <if test="ro.province != null and ro.province != ''">
+                and (X.province like concat(concat('%',#{province}),'%'))
+            </if>
+            <if test="ro.city != null and ro.city != ''">
+                and (X.city like concat(concat('%',#{city}),'%'))
+            </if>
+            <if test="ro.district != null and ro.district != ''">
+                and (X.district like concat(concat('%',#{district}),'%'))
             </if>
         </where>
         order by create_time desc

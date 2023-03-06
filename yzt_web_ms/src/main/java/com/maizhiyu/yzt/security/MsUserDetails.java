@@ -1,79 +1,76 @@
 package com.maizhiyu.yzt.security;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.maizhiyu.yzt.entity.MsUser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("ms_user")
 public class MsUserDetails implements UserDetails {
-    @TableId(type = IdType.AUTO)
-    private Long id;
+    private MsUser user;
 
-    private Integer status;
+    //存储权限信息
+    private List<String> permissions;
 
-    private String username;
 
-    @JsonIgnore
-    private String password;
+    public MsUserDetails(MsUser user,List<String> permissions) {
+        this.user = user;
+        this.permissions = permissions;
+    }
 
-    private String nickname;
 
-    private String realname;
+    //存储SpringSecurity所需要的权限信息的集合
+    @JSONField(serialize = false)
+    private List<GrantedAuthority> authorities;
 
-    private String phone;
-
-    private Date updateTime;
-
-    private Date createTime;
-
-    @JsonIgnore
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+//    @JsonDeserialize(using = CustomAuthorityDeserializer.class)
+    public  Collection<? extends GrantedAuthority> getAuthorities() {
+        if(authorities!=null){
+            return authorities;
+        }
+        //把permissions中字符串类型的权限信息转换成GrantedAuthority对象存入authorities中
+        authorities = permissions.stream().
+                map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+        return authorities;
     }
 
     @Override
     public String getPassword() {
-        return password;
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return user.getUserName();
     }
 
-    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
-    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
-    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
-    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return true;

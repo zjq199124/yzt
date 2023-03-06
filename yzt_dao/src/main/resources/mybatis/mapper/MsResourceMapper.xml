@@ -35,8 +35,31 @@
             ms_resource R
             join ms_role_resource X on X.resource_id = R.id
             join ms_user_role Y on X.role_id = Y.role_id
-        where
-            Y.user_id = #{userId}
+        where 1=1
+        <if test="userId!=null and userId!='' and userId!=1">
+           AND Y.user_id = #{userId}
+        </if>
+          AND Y.is_del = 0
+          AND X.is_del = 0
+          AND R.is_del = 0
+
+    </select>
+    <select id="selectUserPerms" resultType="java.lang.String">
+        SELECT a.value prems from
+            ms_resource a
+                LEFT JOIN ms_role_resource b on a.id = b.resource_id
+                LEFT JOIN ms_role c on b.role_id = c.id
+                LEFT JOIN ms_user_role d ON c.id = d.role_id
+        WHERE 1=1
+          AND a.is_del = 0
+          AND b.is_del = 0
+          AND c.is_del = 0
+          AND c.`status` = 1
+          AND d.is_del = 0
+        <if test="userId!=null and userId!='' and userId!=1">
+          AND d.user_id = #{userId}
+        </if>
+        GROUP BY a.`value`
     </select>
 
 </mapper>

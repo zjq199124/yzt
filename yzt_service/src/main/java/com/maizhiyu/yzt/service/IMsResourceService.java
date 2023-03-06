@@ -13,4 +13,6 @@ public interface IMsResourceService extends IService<MsResource> {
     List<MsResource> getRoleResourceList(Long roleId);
 
     List<Map<String, Object>> getUserResourceList(Long userId);
+
+    List<String> getUserPerms(Long userId);
 }

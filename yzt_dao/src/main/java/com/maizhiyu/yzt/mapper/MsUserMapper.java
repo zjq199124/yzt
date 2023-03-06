@@ -20,6 +20,6 @@ public interface MsUserMapper extends BaseMapper<MsUser> {
             @Param("departmentId") Long departmentId,
             @Param("roleId") Long roleId,
             @Param("status") Integer status,
-            @Param("term") String term);
-
+            @Param("term") String term,
+            @Param("userName") String userName);
 }
